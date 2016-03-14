@@ -111,7 +111,7 @@
     </pluginRepositories>
 
     <build>
-        <finalName>ai-api</finalName>
+        <finalName>api</finalName>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
