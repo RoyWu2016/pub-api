@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+
+    <mvc:annotation-driven/>
+    <context:component-scan base-package="com.ai.api, version" />
+<!--, com.ai.commons.services.TokenJWTService -->
+<!--com.ai.api,     -->
+    <!--<context:annotation-config/>-->
+
+
+    <!--<context:spring-configured/>-->
+
+    <!--<bean id="permissionHandler" class="com.ai.commons.security.PermissionHandler"-->
+          <!--p:userServiceUrl="https://192.168.0.31:8777/user-service" p:module="${securityModule}" />-->
+
+    <mvc:interceptors>
+        <bean class="com.ai.commons.interceptor.SecuredInterceptorAdapter" p:securityModule="customer"/>
+    </mvc:interceptors>
+
+    <!--<context:component-scan base-package="com.ai.api, version">-->
+        <!--&lt;!&ndash;<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>&ndash;&gt;-->
+    <!--</context:component-scan>-->
+
+    <!-- bean that will enable json to be returned -->
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+
+        <property name="contentNegotiationManager">
+            <bean class="org.springframework.web.accept.ContentNegotiationManager">
+                <constructor-arg>
+                    <bean class="org.springframework.web.accept.PathExtensionContentNegotiationStrategy">
+                        <constructor-arg>
+                            <map>
+                                <entry key="json" value="application/json"/>
+                                <entry key="xml" value="application/xml"/>
+                            </map>
+                        </constructor-arg>
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </property>
+
+        <property name="viewResolvers">
+            <list>
+                <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+                    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+                    <property name="prefix" value="/WEB-INF/jsp/"/>
+                    <property name="suffix" value=".jsp"/>
+                </bean>
+            </list>
+        </property>
+        <property name="defaultViews">
+            <list>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+                    <property name="prefixJson" value="true"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+</beans>
