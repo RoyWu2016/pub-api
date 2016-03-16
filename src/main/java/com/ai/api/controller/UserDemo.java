@@ -6,7 +6,7 @@
  ***************************************************************************/
 package com.ai.api.controller;
 
-import com.ai.api.model.UserBean;
+import com.ai.api.model.UserDemoBean;
 import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
@@ -29,6 +29,6 @@ import org.springframework.http.ResponseEntity;
  *</PRE>
  ***************************************************************************/
 
-public interface User {
-	ResponseEntity<UserBean> getUser(long id);
+public interface UserDemo {
+	ResponseEntity<UserDemoBean> getUser(long id);
 }

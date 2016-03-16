@@ -1,6 +1,6 @@
 package com.ai.api.model;
 
-public class UserBean {
+public class UserDemoBean {
 
 	private long id;
 	
@@ -10,11 +10,11 @@ public class UserBean {
 	
 	private double salary;
 
-	public UserBean(){
+	public UserDemoBean(){
 		id=0;
 	}
 	
-	public UserBean(long id, String name, int age, double salary){
+	public UserDemoBean(long id, String name, int age, double salary){
 		this.id = id;
 		this.name = name;
 		this.age = age;
@@ -69,7 +69,7 @@ public class UserBean {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UserBean other = (UserBean) obj;
+		UserDemoBean other = (UserDemoBean) obj;
 		if (id != other.id)
 			return false;
 		return true;

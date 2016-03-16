@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import com.ai.api.model.UserBean;
+import com.ai.api.model.UserDemoBean;
 import org.springframework.web.client.RestTemplate;
 
 public class SpringRestTestClient {
@@ -32,7 +32,7 @@ public class SpringRestTestClient {
 	private static void getUser(){
 		System.out.println("Testing getUser API----------");
 		RestTemplate restTemplate = new RestTemplate();
-        UserBean user = restTemplate.getForObject(REST_SERVICE_URI+"/user/1", UserBean.class);
+        UserDemoBean user = restTemplate.getForObject(REST_SERVICE_URI+"/user/1", UserDemoBean.class);
         System.out.println(user);
 	}
 	
@@ -40,8 +40,8 @@ public class SpringRestTestClient {
     private static void createUser() {
 		System.out.println("Testing create User API----------");
     	RestTemplate restTemplate = new RestTemplate();
-        UserBean user = new UserBean(0,"Sarah",51,134);
-        URI uri = restTemplate.postForLocation(REST_SERVICE_URI+"/user/", user, UserBean.class);
+        UserDemoBean user = new UserDemoBean(0,"Sarah",51,134);
+        URI uri = restTemplate.postForLocation(REST_SERVICE_URI+"/user/", user, UserDemoBean.class);
         System.out.println("Location : "+uri.toASCIIString());
     }
 
@@ -49,7 +49,7 @@ public class SpringRestTestClient {
     private static void updateUser() {
 		System.out.println("Testing update User API----------");
         RestTemplate restTemplate = new RestTemplate();
-        UserBean user  = new UserBean(1,"Tomy",33, 70000);
+        UserDemoBean user  = new UserDemoBean(1,"Tomy",33, 70000);
         restTemplate.put(REST_SERVICE_URI+"/user/1", user);
         System.out.println(user);
     }
