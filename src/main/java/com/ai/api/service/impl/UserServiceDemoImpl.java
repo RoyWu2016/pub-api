@@ -10,7 +10,7 @@ import com.ai.api.service.UserServiceDemo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service("userService")
+@Service("userDemoService")
 @Transactional
 public class UserServiceDemoImpl implements UserServiceDemo {
 	

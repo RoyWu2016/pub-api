@@ -6,22 +6,24 @@
  ***************************************************************************/
 package com.ai.api.controller;
 
-import com.ai.api.model.UserDemoBean;
+import java.io.IOException;
+
+import com.ai.api.model.UserBean;
 import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
  *<PRE>
- *  Project Name    : publicAPI
+ *  Project Name    : api
  *
  *  Package Name    : com.ai.api.controller.impl
  *
  *  File Name       : User.java
  *
- *  Creation Date   : Mar 02, 2016
+ *  Creation Date   : Mar 16, 2016
  *
  *  Author          : Allen Zhang
  *
- *  Purpose         : Demo class for initial use
+ *  Purpose         : Interface for client related resource request
  *
  *
  *  History         : TODO
@@ -29,6 +31,6 @@ import org.springframework.http.ResponseEntity;
  *</PRE>
  ***************************************************************************/
 
-public interface UserDemo {
-	ResponseEntity<UserDemoBean> getUser(long id);
+public interface User {
+	ResponseEntity<UserBean> getUserByLogin(String login) throws IOException;
 }

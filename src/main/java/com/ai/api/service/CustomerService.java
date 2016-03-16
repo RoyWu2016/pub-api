@@ -4,24 +4,25 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.controller;
+package com.ai.api.service;
 
-import com.ai.api.model.UserDemoBean;
-import org.springframework.http.ResponseEntity;
+import java.io.IOException;
+
+import com.ai.api.model.UserBean;
 
 /***************************************************************************
  *<PRE>
- *  Project Name    : publicAPI
+ *  Project Name    : api
  *
- *  Package Name    : com.ai.api.controller.impl
+ *  Package Name    : com.ai.api.service
  *
- *  File Name       : User.java
+ *  File Name       : CustomerService.java
  *
- *  Creation Date   : Mar 02, 2016
+ *  Creation Date   : Mar 16, 2016
  *
  *  Author          : Allen Zhang
  *
- *  Purpose         : Demo class for initial use
+ *  Purpose         : TODO
  *
  *
  *  History         : TODO
@@ -29,6 +30,7 @@ import org.springframework.http.ResponseEntity;
  *</PRE>
  ***************************************************************************/
 
-public interface UserDemo {
-	ResponseEntity<UserDemoBean> getUser(long id);
+public interface CustomerService {
+
+	UserBean getByLogin(String login) throws IOException;
 }
