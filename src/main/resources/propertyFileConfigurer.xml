@@ -13,6 +13,9 @@
         <property name="jndiName" value="java:comp/env/jdbc/dataSource" />
     </bean>
 
+    <bean id="customerDao" class="com.ai.api.dao.impl.db.CustomerDaoImpl">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
     <!--<bean id="dataSource"-->
           <!--class="${datasource.pool}"-->
           <!--destroy-method="close"-->
@@ -46,5 +49,13 @@
         <constructor-arg name="valueColumn" value="PROP_VALUE" />
     </bean>
     <!-- for commons-configuration ends -->
-    
+
+    <!-- Transactions with JdbcTemplate -->
+    <bean id="jdbcTransactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+          scope="singleton">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
 </beans>

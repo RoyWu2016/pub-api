@@ -1,10 +1,8 @@
 /***************************************************************************
- *
  * This document contains confidential and proprietary information
  * subject to non-disclosure agreements with AsiaInspection. This
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
- *
  ***************************************************************************/
 package com.ai.api;
 
@@ -31,18 +29,16 @@ import org.springframework.beans.factory.annotation.Value;
  ***************************************************************************/
 
 //@Component
-public class App
-{
+public class App {
 
-	@Value("${user.service.url}")
-	private String userServiceUrl;
+    @Value("${user.service.url}")
+    private String userServiceUrl;
 
-	public String returnURL() {
-		return userServiceUrl;
-	}
+    public static void main(String[] args) {
+        System.out.println("Hello World!");
+    }
 
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+    public String returnURL() {
+        return userServiceUrl;
     }
 }

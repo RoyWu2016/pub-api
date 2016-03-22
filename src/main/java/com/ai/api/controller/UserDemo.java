@@ -10,25 +10,25 @@ import com.ai.api.model.UserDemoBean;
 import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
- *<PRE>
- *  Project Name    : publicAPI
- *
- *  Package Name    : com.ai.api.controller.impl
- *
- *  File Name       : User.java
- *
- *  Creation Date   : Mar 02, 2016
- *
- *  Author          : Allen Zhang
- *
- *  Purpose         : Demo class for initial use
- *
- *
- *  History         : TODO
- *
- *</PRE>
+ * <PRE>
+ * Project Name    : publicAPI
+ * <p>
+ * Package Name    : com.ai.api.controller.impl
+ * <p>
+ * File Name       : User.java
+ * <p>
+ * Creation Date   : Mar 02, 2016
+ * <p>
+ * Author          : Allen Zhang
+ * <p>
+ * Purpose         : Demo class for initial use
+ * <p>
+ * <p>
+ * History         : TODO
+ * <p>
+ * </PRE>
  ***************************************************************************/
 
 public interface UserDemo {
-	ResponseEntity<UserDemoBean> getUser(long id);
+    ResponseEntity<UserDemoBean> getUser(long id);
 }

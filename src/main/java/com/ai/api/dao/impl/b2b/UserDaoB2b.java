@@ -9,23 +9,23 @@ package com.ai.api.dao.impl.b2b;
 import com.ai.api.dao.UserDao;
 
 /***************************************************************************
- *<PRE>
- *  Project Name    : publicAPI
- *
- *  Package Name    : com.ai.api.dao.impl.b2b
- *
- *  File Name       : UserDaoB2b.java
- *
- *  Creation Date   : Mar 02, 2016
- *
- *  Author          : Allen Zhang
- *
- *  Purpose         : TODO
- *
- *
- *  History         : TODO
- *
- *</PRE>
+ * <PRE>
+ * Project Name    : publicAPI
+ * <p>
+ * Package Name    : com.ai.api.dao.impl.b2b
+ * <p>
+ * File Name       : UserDaoB2b.java
+ * <p>
+ * Creation Date   : Mar 02, 2016
+ * <p>
+ * Author          : Allen Zhang
+ * <p>
+ * Purpose         : TODO
+ * <p>
+ * <p>
+ * History         : TODO
+ * <p>
+ * </PRE>
  ***************************************************************************/
 
 public class UserDaoB2b implements UserDao {

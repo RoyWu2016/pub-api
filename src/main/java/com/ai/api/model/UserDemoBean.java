@@ -2,84 +2,84 @@ package com.ai.api.model;
 
 public class UserDemoBean {
 
-	private long id;
-	
-	private String name;
-	
-	private int age;
-	
-	private double salary;
+    private long id;
 
-	public UserDemoBean(){
-		id=0;
-	}
-	
-	public UserDemoBean(long id, String name, int age, double salary){
-		this.id = id;
-		this.name = name;
-		this.age = age;
-		this.salary = salary;
-	}
-	
-	public long getId() {
-		return id;
-	}
+    private String name;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    private int age;
 
-	public String getName() {
-		return name;
-	}
+    private double salary;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public UserDemoBean() {
+        id = 0;
+    }
 
-	public int getAge() {
-		return age;
-	}
+    public UserDemoBean(long id, String name, int age, double salary) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.salary = salary;
+    }
 
-	public void setAge(int age) {
-		this.age = age;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public double getSalary() {
-		return salary;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public void setSalary(double salary) {
-		this.salary = salary;
-	}
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
-		return result;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		UserDemoBean other = (UserDemoBean) obj;
-		if (id != other.id)
-			return false;
-		return true;
-	}
+    public int getAge() {
+        return age;
+    }
 
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", age=" + age
-				+ ", salary=" + salary + "]";
-	}
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (int) (id ^ (id >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        UserDemoBean other = (UserDemoBean) obj;
+        if (id != other.id)
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", name=" + name + ", age=" + age
+                + ", salary=" + salary + "]";
+    }
 
 
 }
