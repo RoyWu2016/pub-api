@@ -1,7 +1,7 @@
 package com.ai.api.bean;
 
 import com.ai.commons.beans.customer.ProductFamilyInfoBean;
-import com.ai.commons.beans.customer.RelevantCategoryInfoBean;
+import com.ai.api.bean.RelevantCategoryInfoBean;
 
 import java.util.List;
 

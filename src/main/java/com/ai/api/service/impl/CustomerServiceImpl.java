@@ -6,7 +6,14 @@
  ***************************************************************************/
 package com.ai.api.service.impl;
 
+import java.util.ArrayList;
 import com.ai.api.bean.*;
+import com.ai.api.bean.CompanyInfoBean;
+import com.ai.api.bean.ContactBean;
+import com.ai.api.bean.ExtraBean;
+import com.ai.api.bean.OrderBookingBean;
+import com.ai.api.bean.ProductFamilyBean;
+import com.ai.api.bean.RelevantCategoryInfoBean;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
@@ -16,12 +23,13 @@ import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.customer.CustomerBean;
+import com.ai.commons.beans.customer.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 /***************************************************************************
  * <PRE>
@@ -141,7 +149,21 @@ public class CustomerServiceImpl implements CustomerService {
             productfamilyBean.setProduct_type_selection(customer.getProductFamily().getHowToChooseProType());
             productfamilyBean.setRemember_selectd_family(customer.getProductFamily().getRememberSelFamily());
             productfamilyBean.setProduct_family_info(customer.getProductFamily().getProductFamilyInfo());
-            productfamilyBean.setRelevant_category_info(customer.getProductFamily().getRelevantCategoryInfo());
+
+            List<RelevantCategoryInfoBean> list = new ArrayList<RelevantCategoryInfoBean>();
+
+            List<com.ai.commons.beans.customer.RelevantCategoryInfoBean> beanls = customer.getProductFamily().getRelevantCategoryInfo();
+            for (com.ai.commons.beans.customer.RelevantCategoryInfoBean rcbean : beanls) {
+
+                RelevantCategoryInfoBean relevantcatinfoBean = new RelevantCategoryInfoBean();
+                relevantcatinfoBean.setFavourite_family(rcbean.getFavCategory());
+                relevantcatinfoBean.setFavourite_category(rcbean.getFavCategory());
+                relevantcatinfoBean.setFavourite_seq(rcbean.getFavSeq());
+                list.add(relevantcatinfoBean);
+                productfamilyBean.setRelevant_category_info(list);
+
+            }
+
             user.setProduct_family(productfamilyBean);
 
             OrderBookingBean orderBookingBean = new OrderBookingBean();

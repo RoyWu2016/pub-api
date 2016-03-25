@@ -58,6 +58,7 @@ public class UserImpl implements User {
             e.printStackTrace();
         } catch (AIException e) {
             e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         if (user == null) {
             System.out.println("User with login " + login + " not found");

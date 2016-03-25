@@ -5,17 +5,17 @@ package com.ai.api.bean;
  */
 public class RelevantCategoryInfoBean {
 
-    private String favourite_seq;
+    private int favourite_seq;
 
     private String favourite_family;
 
     private String favourite_category;
 
-    public String getFavourite_seq() {
+    public int getFavourite_seq() {
         return favourite_seq;
     }
 
-    public void setFavourite_seq(String favourite_seq) {
+    public void setFavourite_seq(int favourite_seq) {
         this.favourite_seq = favourite_seq;
     }
 
