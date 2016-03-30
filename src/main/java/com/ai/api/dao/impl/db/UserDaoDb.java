@@ -9,23 +9,23 @@ package com.ai.api.dao.impl.db;
 import com.ai.api.dao.UserDao;
 
 /***************************************************************************
- *<PRE>
- *  Project Name    : publicAPI
- *
- *  Package Name    : com.ai.api.dao.impl.db
- *
- *  File Name       : UserDaoDb.java
- *
- *  Creation Date   : Mar 02, 2016
- *
- *  Author          : Allen Zhang
- *
- *  Purpose         : TODO
- *
- *
- *  History         : TODO
- *
- *</PRE>
+ * <PRE>
+ * Project Name    : publicAPI
+ * <p>
+ * Package Name    : com.ai.api.dao.impl.db
+ * <p>
+ * File Name       : UserDaoDb.java
+ * <p>
+ * Creation Date   : Mar 02, 2016
+ * <p>
+ * Author          : Allen Zhang
+ * <p>
+ * Purpose         : TODO
+ * <p>
+ * <p>
+ * History         : TODO
+ * <p>
+ * </PRE>
  ***************************************************************************/
 
 public class UserDaoDb implements UserDao {

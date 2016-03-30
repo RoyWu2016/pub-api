@@ -7,23 +7,23 @@
 package com.ai.api.dao;
 
 /***************************************************************************
- *<PRE>
- *  Project Name    : publicAPI
- *
- *  Package Name    : com.ai.api.dao
- *
- *  File Name       : User.java
- *
- *  Creation Date   : Mar 02, 2016
- *
- *  Author          : Allen Zhang
- *
- *  Purpose         : TODO
- *
- *
- *  History         : TODO
- *
- *</PRE>
+ * <PRE>
+ * Project Name    : publicAPI
+ * <p>
+ * Package Name    : com.ai.api.dao
+ * <p>
+ * File Name       : User.java
+ * <p>
+ * Creation Date   : Mar 02, 2016
+ * <p>
+ * Author          : Allen Zhang
+ * <p>
+ * Purpose         : TODO
+ * <p>
+ * <p>
+ * History         : TODO
+ * <p>
+ * </PRE>
  ***************************************************************************/
 
 public interface UserDao {

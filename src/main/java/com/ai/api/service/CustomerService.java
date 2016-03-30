@@ -6,31 +6,32 @@
  ***************************************************************************/
 package com.ai.api.service;
 
-import java.io.IOException;
-
+import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
 
+import java.io.IOException;
+
 /***************************************************************************
- *<PRE>
- *  Project Name    : api
- *
- *  Package Name    : com.ai.api.service
- *
- *  File Name       : CustomerService.java
- *
- *  Creation Date   : Mar 16, 2016
- *
- *  Author          : Allen Zhang
- *
- *  Purpose         : TODO
- *
- *
- *  History         : TODO
- *
- *</PRE>
+ * <PRE>
+ * Project Name    : api
+ * <p>
+ * Package Name    : com.ai.api.service
+ * <p>
+ * File Name       : CustomerService.java
+ * <p>
+ * Creation Date   : Mar 16, 2016
+ * <p>
+ * Author          : Allen Zhang
+ * <p>
+ * Purpose         : TODO
+ * <p>
+ * <p>
+ * History         : TODO
+ * <p>
+ * </PRE>
  ***************************************************************************/
 
 public interface CustomerService {
 
-	UserBean getByLogin(String login) throws IOException;
+    UserBean getByLogin(String login) throws IOException, AIException;
 }
