@@ -7,6 +7,7 @@
 package com.ai.api.controller.impl;
 
 import com.ai.api.App;
+import com.ai.api.bean.UserChoiceBean;
 import com.ai.api.controller.UserDemo;
 import com.ai.api.model.UserDemoBean;
 import com.ai.api.service.ServiceConfig;
@@ -87,6 +88,7 @@ public class UserDemoImpl implements UserDemo {
     @Secured({CommonAuthConstants.ROLE.ADMIN})
     @RequestMapping(value = "/userdemo/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDemoBean> getUser(@PathVariable("id") long id) {
+
         System.out.println("Fetching User with id " + id);
         UserDemoBean user = userDemoService.getById(id);
         if (user == null) {
@@ -163,5 +165,16 @@ public class UserDemoImpl implements UserDemo {
         userDemoService.deleteAllUsers();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    //------------------- UserChoice save --------------------------------------------------------
 
+    @RequestMapping(value = "/user/{login}", method = RequestMethod.POST)
+    public ResponseEntity<Void> userChoice(@RequestBody UserChoiceBean userChoice, UriComponentsBuilder ucBuilder) {
+        System.out.println("Creating User Choice " + userChoice.getChoices());
+
+        userDemoService.saveUserChoice(userChoice);
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setLocation(ucBuilder.path("/user/questions").buildAndExpand(userChoice.getQuestion(), userChoice.getChoices()).toUri());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    }
 }

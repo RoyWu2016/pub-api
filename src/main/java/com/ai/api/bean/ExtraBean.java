@@ -7,82 +7,82 @@ import java.util.Date;
  */
 public class ExtraBean {
 
-    private String screenshot_needed;
+    private String screenShotNeeded;
 
     private String activated;
 
-    private Date deactived_date;
+    private Date deactivedDate;
 
     private String force_new;
 
-    private Date re_actived_date;
+    private Date reActivedDate;
 
-    private String ai_client;
+    private String aiClient;
 
-    private String is_deleted;
+    private String isDeleted;
 
-    private String is_chb_client;
+    private String isChbClient;
 
-    private String is_fi_client;
+    private String isFiClient;
 
-    private String reminder_type;
+    private String reminderType;
 
-    private String sub_sic_receive_order_email;
+    private String subSicReceiveOrderEmail;
 
-    private String sub_sic_receive_report_email;
+    private String subSicReceiveReportEmail;
 
-    private String is_show_dashboard_survey;
+    private String isShowDashboardSurvey;
 
-    private String remembered_product_family_key;
+    private String rememberedProductFamilyKey;
 
-    private String outstanding_date_login;
+    private String outstandingDateLogin;
 
-    private String outstanding_date_company;
+    private String outstandingDateCompany;
 
-    private String is_first_login_np;
+    private String isFirstLoginNp;
 
-    private String is_detailed_booking_form;
+    private String isDetailedBookingForm;
 
-    private int max_penalty;
+    private int maxPenalty;
 
-    private String max_penalty_unit;
+    private String maxPenaltyUnit;
 
-    private int max_average_penalty;
+    private int maxAveragePenalty;
 
-    private String max_average_penalty_unit;
+    private String maxAveragePenaltyUnit;
 
-    private String is_fb_save_aql;
+    private String isFbSaveAql;
 
-    private String is_display_new_layout;
+    private String isDisplayNewLayout;
 
-    private String kpi_flag;
+    private String kpiFlag;
 
-    private String order_view_type;
+    private String orderViewType;
 
-    private String seen_mobile_app_promotion_banner;
+    private String seenMobileAppPromotionBanner;
 
-    private String first_time_log;
+    private String firstTimeLog;
 
-    private String reg_np;
+    private String regNp;
 
     private String refer;
 
-    private String user_ip;
+    private String userIp;
 
-    private String is_test_account;
+    private String isTestAccount;
 
-    private String save_in;
+    private String saveIn;
 
-    private String new_manday_rate;
+    private String newMandayRate;
 
-    private String domain_name;
+    private String domainName;
 
-    public String getScreenshot_needed() {
-        return screenshot_needed;
+    public String getScreenShotNeeded() {
+        return screenShotNeeded;
     }
 
-    public void setScreenshot_needed(String screenshot_needed) {
-        this.screenshot_needed = screenshot_needed;
+    public void setScreenshotNeeded(String screenshotNeeded) {
+        this.screenShotNeeded = screenshotNeeded;
     }
 
     public String getActivated() {
@@ -93,12 +93,12 @@ public class ExtraBean {
         this.activated = activated;
     }
 
-    public Date getDeactived_date() {
-        return deactived_date;
+    public Date getDeactivedDate() {
+        return deactivedDate;
     }
 
-    public void setDeactived_date(Date deactived_date) {
-        this.deactived_date = deactived_date;
+    public void setDeactivedDate(Date deactivedDate) {
+        this.deactivedDate = deactivedDate;
     }
 
     public String getForce_new() {
@@ -109,204 +109,204 @@ public class ExtraBean {
         this.force_new = force_new;
     }
 
-    public Date getRe_actived_date() {
-        return re_actived_date;
+    public Date getReActivedDate() {
+        return reActivedDate;
     }
 
-    public void setRe_actived_date(Date re_actived_date) {
-        this.re_actived_date = re_actived_date;
+    public void setReActivedDate(Date re_activedDate) {
+        this.reActivedDate = re_activedDate;
     }
 
-    public String getAi_client() {
-        return ai_client;
+    public String getAiClient() {
+        return aiClient;
     }
 
-    public void setAi_client(String ai_client) {
-        this.ai_client = ai_client;
+    public void setAiClient(String aiClient) {
+        this.aiClient = aiClient;
     }
 
-    public String getIs_deleted() {
-        return is_deleted;
+    public String getIsDeleted() {
+        return isDeleted;
     }
 
-    public void setIs_deleted(String is_deleted) {
-        this.is_deleted = is_deleted;
+    public void setIsDeleted(String isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
-    public String getIs_chb_client() {
-        return is_chb_client;
+    public String getIsChbClient() {
+        return isChbClient;
     }
 
-    public void setIs_chb_client(String is_chb_client) {
-        this.is_chb_client = is_chb_client;
+    public void setIsChbClient(String isChbClient) {
+        this.isChbClient = isChbClient;
     }
 
-    public String getIs_fi_client() {
-        return is_fi_client;
+    public String getIsFiClient() {
+        return isFiClient;
     }
 
-    public void setIs_fi_client(String is_fi_client) {
-        this.is_fi_client = is_fi_client;
+    public void setIsFiClient(String isFiClient) {
+        this.isFiClient = isFiClient;
     }
 
-    public String getReminder_type() {
-        return reminder_type;
+    public String getReminderType() {
+        return reminderType;
     }
 
-    public void setReminder_type(String reminder_type) {
-        this.reminder_type = reminder_type;
+    public void setReminderType(String reminderType) {
+        this.reminderType = reminderType;
     }
 
-    public String getSub_sic_receive_order_email() {
-        return sub_sic_receive_order_email;
+    public String getSubSicReceiveOrderEmail() {
+        return subSicReceiveOrderEmail;
     }
 
-    public void setSub_sic_receive_order_email(String sub_sic_receive_order_email) {
-        this.sub_sic_receive_order_email = sub_sic_receive_order_email;
+    public void setSubSicReceiveOrderEmail(String subSicReceiveOrderEmail) {
+        this.subSicReceiveOrderEmail = subSicReceiveOrderEmail;
     }
 
-    public String getSub_sic_receive_report_email() {
-        return sub_sic_receive_report_email;
+    public String getSubSicReceiveReportEmail() {
+        return subSicReceiveReportEmail;
     }
 
-    public void setSub_sic_receive_report_email(String sub_sic_receive_report_email) {
-        this.sub_sic_receive_report_email = sub_sic_receive_report_email;
+    public void setSubSicReceiveReportEmail(String subSicReceiveReportRmail) {
+        this.subSicReceiveReportEmail = subSicReceiveReportRmail;
     }
 
-    public String getIs_show_dashboard_survey() {
-        return is_show_dashboard_survey;
+    public String getIsShowDashboardSurvey() {
+        return isShowDashboardSurvey;
     }
 
-    public void setIs_show_dashboard_survey(String is_show_dashboard_survey) {
-        this.is_show_dashboard_survey = is_show_dashboard_survey;
+    public void setIsShowDashboardSurvey(String isShowDashboardSurvey) {
+        this.isShowDashboardSurvey = isShowDashboardSurvey;
     }
 
-    public String getRemembered_product_family_key() {
-        return remembered_product_family_key;
+    public String getRememberedProductFamilyKey() {
+        return rememberedProductFamilyKey;
     }
 
-    public void setRemembered_product_family_key(String remembered_product_family_key) {
-        this.remembered_product_family_key = remembered_product_family_key;
+    public void setRememberedProductFamilyKey(String rememberedProductFamilyKey) {
+        this.rememberedProductFamilyKey = rememberedProductFamilyKey;
     }
 
-    public String getOutstanding_date_login() {
-        return outstanding_date_login;
+    public String getOutstandingDateLogin() {
+        return outstandingDateLogin;
     }
 
-    public void setOutstanding_date_login(String outstanding_date_login) {
-        this.outstanding_date_login = outstanding_date_login;
+    public void setOutstandingDateLogin(String outstandingDateLogin) {
+        this.outstandingDateLogin = outstandingDateLogin;
     }
 
-    public String getOutstanding_date_company() {
-        return outstanding_date_company;
+    public String getOutstandingDateCompany() {
+        return outstandingDateCompany;
     }
 
-    public void setOutstanding_date_company(String outstanding_date_company) {
-        this.outstanding_date_company = outstanding_date_company;
+    public void setOutstandingDateCompany(String outstandingDateCompany) {
+        this.outstandingDateCompany = outstandingDateCompany;
     }
 
-    public String getIs_first_login_np() {
-        return is_first_login_np;
+    public String getIsFirstLoginNp() {
+        return isFirstLoginNp;
     }
 
-    public void setIs_first_login_np(String is_first_login_np) {
-        this.is_first_login_np = is_first_login_np;
+    public void setIsFirstLoginNp(String isFirstLoginNp) {
+        this.isFirstLoginNp = isFirstLoginNp;
     }
 
-    public String getIs_detailed_booking_form() {
-        return is_detailed_booking_form;
+    public String getIsDetailedBookingForm() {
+        return isDetailedBookingForm;
     }
 
-    public void setIs_detailed_booking_form(String is_detailed_booking_form) {
-        this.is_detailed_booking_form = is_detailed_booking_form;
+    public void setIsDetailedBookingForm(String isDetailedBookingForm) {
+        this.isDetailedBookingForm = isDetailedBookingForm;
     }
 
-    public int getMax_penalty() {
-        return max_penalty;
+    public int getMaxPenalty() {
+        return maxPenalty;
     }
 
-    public void setMax_penalty(int max_penalty) {
-        this.max_penalty = max_penalty;
+    public void setMaxPenalty(int maxPenalty) {
+        this.maxPenalty = maxPenalty;
     }
 
-    public String getMax_penalty_unit() {
-        return max_penalty_unit;
+    public String getMaxPenaltyUnit() {
+        return maxPenaltyUnit;
     }
 
-    public void setMax_penalty_unit(String max_penalty_unit) {
-        this.max_penalty_unit = max_penalty_unit;
+    public void setMaxPenaltyUnit(String maxPenaltyUnit) {
+        this.maxPenaltyUnit = maxPenaltyUnit;
     }
 
-    public int getMax_average_penalty() {
-        return max_average_penalty;
+    public int getMaxAveragePenalty() {
+        return maxAveragePenalty;
     }
 
-    public void setMax_average_penalty(int max_average_penalty) {
-        this.max_average_penalty = max_average_penalty;
+    public void setMaxAveragePenalty(int maxAveragePenalty) {
+        this.maxAveragePenalty = maxAveragePenalty;
     }
 
-    public String getMax_average_penalty_unit() {
-        return max_average_penalty_unit;
+    public String getMaxAveragePenaltyUnit() {
+        return maxAveragePenaltyUnit;
     }
 
-    public void setMax_average_penalty_unit(String max_average_penalty_unit) {
-        this.max_average_penalty_unit = max_average_penalty_unit;
+    public void setMaxAveragePenaltyUnit(String maxAveragePenaltyUnit) {
+        this.maxAveragePenaltyUnit = maxAveragePenaltyUnit;
     }
 
-    public String getIs_fb_save_aql() {
-        return is_fb_save_aql;
+    public String getIsFbSaveAql() {
+        return isFbSaveAql;
     }
 
-    public void setIs_fb_save_aql(String is_fb_save_aql) {
-        this.is_fb_save_aql = is_fb_save_aql;
+    public void setIsFbSaveAql(String isFbSaveAql) {
+        this.isFbSaveAql = isFbSaveAql;
     }
 
-    public String getIs_display_new_layout() {
-        return is_display_new_layout;
+    public String getIsDisplayNewLayout() {
+        return isDisplayNewLayout;
     }
 
-    public void setIs_display_new_layout(String is_display_new_layout) {
-        this.is_display_new_layout = is_display_new_layout;
+    public void setIsDisplayNewLayout(String isDisplayNewLayout) {
+        this.isDisplayNewLayout = isDisplayNewLayout;
     }
 
-    public String getKpi_flag() {
-        return kpi_flag;
+    public String getKpiFlag() {
+        return kpiFlag;
     }
 
-    public void setKpi_flag(String kpi_flag) {
-        this.kpi_flag = kpi_flag;
+    public void setKpiFlag(String kpiFlag) {
+        this.kpiFlag = kpiFlag;
     }
 
-    public String getOrder_view_type() {
-        return order_view_type;
+    public String getOrderViewType() {
+        return orderViewType;
     }
 
-    public void setOrder_view_type(String order_view_type) {
-        this.order_view_type = order_view_type;
+    public void setOrderViewType(String orderViewType) {
+        this.orderViewType = orderViewType;
     }
 
-    public String getSeen_mobile_app_promotion_banner() {
-        return seen_mobile_app_promotion_banner;
+    public String getSeenMobileAppPromotionBanner() {
+        return seenMobileAppPromotionBanner;
     }
 
-    public void setSeen_mobile_app_promotion_banner(String seen_mobile_app_promotion_banner) {
-        this.seen_mobile_app_promotion_banner = seen_mobile_app_promotion_banner;
+    public void setSeenMobileAppPromotionBanner(String seenMobileAppPromotionBanner) {
+        this.seenMobileAppPromotionBanner = seenMobileAppPromotionBanner;
     }
 
-    public String getFirst_time_log() {
-        return first_time_log;
+    public String getFirstTimeLog() {
+        return firstTimeLog;
     }
 
-    public void setFirst_time_log(String first_time_log) {
-        this.first_time_log = first_time_log;
+    public void setFirstTimeLog(String firstTimeLog) {
+        this.firstTimeLog = firstTimeLog;
     }
 
-    public String getReg_np() {
-        return reg_np;
+    public String getRegNp() {
+        return regNp;
     }
 
-    public void setReg_np(String reg_np) {
-        this.reg_np = reg_np;
+    public void setRegNp(String regNp) {
+        this.regNp = regNp;
     }
 
     public String getRefer() {
@@ -317,43 +317,43 @@ public class ExtraBean {
         this.refer = refer;
     }
 
-    public String getUser_ip() {
-        return user_ip;
+    public String getUserIp() {
+        return userIp;
     }
 
-    public void setUser_ip(String user_ip) {
-        this.user_ip = user_ip;
+    public void setUserIp(String userIp) {
+        this.userIp = userIp;
     }
 
-    public String getIs_test_account() {
-        return is_test_account;
+    public String getIsTestAccount() {
+        return isTestAccount;
     }
 
-    public void setIs_test_account(String is_test_account) {
-        this.is_test_account = is_test_account;
+    public void setIsTestAccount(String isTestAccount) {
+        this.isTestAccount = isTestAccount;
     }
 
-    public String getSave_in() {
-        return save_in;
+    public String getSaveIn() {
+        return saveIn;
     }
 
-    public void setSave_in(String save_in) {
-        this.save_in = save_in;
+    public void setSaveIn(String saveIn) {
+        this.saveIn = saveIn;
     }
 
-    public String getNew_manday_rate() {
-        return new_manday_rate;
+    public String getNewMandayRate() {
+        return newMandayRate;
     }
 
-    public void setNew_manday_rate(String new_manday_rate) {
-        this.new_manday_rate = new_manday_rate;
+    public void setNewMandayRate(String newMandayRate) {
+        this.newMandayRate = newMandayRate;
     }
 
-    public String getDomain_name() {
-        return domain_name;
+    public String getDomainName() {
+        return domainName;
     }
 
-    public void setDomain_name(String domain_name) {
-        this.domain_name = domain_name;
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
     }
 }

@@ -5,9 +5,9 @@ package com.ai.api.bean;
  */
 public class ContactBean {
 
-    private String family_name;
+    private String familyName;
 
-    private String given_name;
+    private String givenName;
 
     private String gender;
 
@@ -22,19 +22,19 @@ public class ContactBean {
     private String fax;
 
     public String getFamily_name() {
-        return family_name;
+        return familyName;
     }
 
     public void setFamily_name(String family_name) {
-        this.family_name = family_name;
+        this.familyName = family_name;
     }
 
     public String getGiven_name() {
-        return given_name;
+        return givenName;
     }
 
     public void setGiven_name(String given_name) {
-        this.given_name = given_name;
+        this.givenName = given_name;
     }
 
     public String getGender() {

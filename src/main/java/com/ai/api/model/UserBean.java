@@ -30,37 +30,36 @@ import com.ai.api.bean.*;
 
 public class UserBean {
 
-    private String user_id;
+    private String userId;
 
     private String login;
 
-    private String client_id;
+    private String clientId;
 
-    private String sales_in_charge;
+    private String salesInCharge;
 
-    private String company_type;
+    private String companyType;
 
-    private String business_unit;
+    private String businessUnit;
 
     private ContactBean contact;
 
-    private CompanyInfoBean company_info;
+    private CompanyInfoBean companyInfo;
 
-    private ProductFamilyBean product_family;
+    private ProductFamilyBean productFamily;
 
-    private OrderBookingBean order_booking;
+    private OrderBookingBean orderBooking;
 
-    private MultiReferenceBookingBean multi_reference_booking;
+    private MultiReferenceBookingBean multiReferenceBooking;
 
     private ExtraBean extra;
 
-
-    public String getUser_id() {
-        return user_id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getLogin() {
@@ -71,36 +70,36 @@ public class UserBean {
         this.login = login;
     }
 
-    public String getClient_id() {
-        return client_id;
+    public String getClientId() {
+        return clientId;
     }
 
-    public void setClient_id(String client_id) {
-        this.client_id = client_id;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
-    public String getSales_in_charge() {
-        return sales_in_charge;
+    public String getSalesInCharge() {
+        return salesInCharge;
     }
 
-    public void setSales_in_charge(String sales_in_charge) {
-        this.sales_in_charge = sales_in_charge;
+    public void setSalesInCharge(String salesInCharge) {
+        this.salesInCharge = salesInCharge;
     }
 
-    public String getCompany_type() {
-        return company_type;
+    public String getCompanyType() {
+        return companyType;
     }
 
-    public void setCompany_type(String company_type) {
-        this.company_type = company_type;
+    public void setCompanyType(String companyType) {
+        this.companyType = companyType;
     }
 
-    public String getBusiness_unit() {
-        return business_unit;
+    public String getBusinessUnit() {
+        return businessUnit;
     }
 
-    public void setBusiness_unit(String business_unit) {
-        this.business_unit = business_unit;
+    public void setBusinessUnit(String businessUnit) {
+        this.businessUnit = businessUnit;
     }
 
     public ContactBean getContact() {
@@ -111,36 +110,36 @@ public class UserBean {
         this.contact = contact;
     }
 
-    public CompanyInfoBean getCompany_info() {
-        return company_info;
+    public CompanyInfoBean getCompanyInfo() {
+        return companyInfo;
     }
 
-    public void setCompany_info(CompanyInfoBean company_info) {
-        this.company_info = company_info;
+    public void setCompanyInfo(CompanyInfoBean companyInfo) {
+        this.companyInfo = companyInfo;
     }
 
-    public ProductFamilyBean getProduct_family() {
-        return product_family;
+    public ProductFamilyBean getProductFamily() {
+        return productFamily;
     }
 
-    public void setProduct_family(ProductFamilyBean product_family) {
-        this.product_family = product_family;
+    public void setProductFamily(ProductFamilyBean productFamily) {
+        this.productFamily = productFamily;
     }
 
-    public OrderBookingBean getOrder_booking() {
-        return order_booking;
+    public OrderBookingBean getOrderBooking() {
+        return orderBooking;
     }
 
-    public void setOrder_booking(OrderBookingBean order_booking) {
-        this.order_booking = order_booking;
+    public void setOrderBooking(OrderBookingBean orderBooking) {
+        this.orderBooking = orderBooking;
     }
 
-    public MultiReferenceBookingBean getMulti_reference_booking() {
-        return multi_reference_booking;
+    public MultiReferenceBookingBean getMultiReferenceBooking() {
+        return multiReferenceBooking;
     }
 
-    public void setMulti_reference_booking(MultiReferenceBookingBean multi_reference_booking) {
-        this.multi_reference_booking = multi_reference_booking;
+    public void setMultiReferenceBooking(MultiReferenceBookingBean multiReferenceBooking) {
+        this.multiReferenceBooking = multiReferenceBooking;
     }
 
     public ExtraBean getExtra() {

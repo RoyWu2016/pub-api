@@ -1,7 +1,6 @@
 package com.ai.api.bean;
 
 import com.ai.commons.beans.customer.ProductFamilyInfoBean;
-import com.ai.api.bean.RelevantCategoryInfoBean;
 
 import java.util.List;
 
@@ -10,43 +9,43 @@ import java.util.List;
  */
 public class ProductFamilyBean {
 
-    private String product_type_selection;
+    private String productTypeSelection;
 
-    private String remember_selectd_family;
+    private String rememberSelectdFamily;
 
-    private List<ProductFamilyInfoBean> product_family_info;
+    private List<ProductFamilyInfoBean> productFamilyInfo;
 
-    private List<RelevantCategoryInfoBean> relevant_category_info;
+    private List<RelevantCategoryInfoBean> relevantCategoryInfo;
 
-    public String getProduct_type_selection() {
-        return product_type_selection;
+    public String getProductTypeSelection() {
+        return productTypeSelection;
     }
 
-    public void setProduct_type_selection(String product_type_selection) {
-        this.product_type_selection = product_type_selection;
+    public void setProductTypeSelection(String productTypeSelection) {
+        this.productTypeSelection = productTypeSelection;
     }
 
-    public String getRemember_selectd_family() {
-        return remember_selectd_family;
+    public String getRememberSelectdFamily() {
+        return rememberSelectdFamily;
     }
 
-    public void setRemember_selectd_family(String remember_selectd_family) {
-        this.remember_selectd_family = remember_selectd_family;
+    public void setRememberSelectdFamily(String rememberSelectdFamily) {
+        this.rememberSelectdFamily = rememberSelectdFamily;
     }
 
-    public List<ProductFamilyInfoBean> getProduct_family_info() {
-        return product_family_info;
+    public List<ProductFamilyInfoBean> getProductFamilyInfo() {
+        return productFamilyInfo;
     }
 
-    public void setProduct_family_info(List<ProductFamilyInfoBean> product_family_info) {
-        this.product_family_info = product_family_info;
+    public void setProductFamilyInfo(List<ProductFamilyInfoBean> productFamilyInfo) {
+        this.productFamilyInfo = productFamilyInfo;
     }
 
-    public List<RelevantCategoryInfoBean> getRelevant_category_info() {
-        return relevant_category_info;
+    public List<RelevantCategoryInfoBean> getRelevantCategoryInfo() {
+        return relevantCategoryInfo;
     }
 
-    public void setRelevant_category_info(List<RelevantCategoryInfoBean> relevant_category_info) {
-        this.relevant_category_info = relevant_category_info;
+    public void setRelevantCategoryInfo(List<RelevantCategoryInfoBean> relevantCategoryInfo) {
+        this.relevantCategoryInfo = relevantCategoryInfo;
     }
 }

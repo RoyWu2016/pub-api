@@ -5,113 +5,113 @@ package com.ai.api.bean;
  */
 public class MultiReferenceBookingBean {
 
-    private String approve_references;
+    private String approveReferences;
 
-    private String ask_number_of_references;
+    private String askNumberOfReferences;
 
-    private int number_of_reference_per_product;
+    private int numberOfReferencePerProduct;
 
-    private int number_of_reference_per_report;
+    private int numberOfReferencePerReport;
 
-    private int number_of_reference_per_manday;
+    private int numberOfReferencePerManday;
 
-    private int number_of_pcs_per_reference;
+    private int numberOfPcsPerReference;
 
-    private int number_of_report_per_manday;
+    private int numberOfReportPerManday;
 
-    private int clc_number_of_reports;
+    private int clcNumberOfReports;
 
-    private int clc_number_of_container;
+    private int clcNumberOfContainer;
 
-    private String peo_calculation;
+    private String peoCalculation;
 
-    private int container_rate;
+    private int containerRate;
 
-    public String getApprove_references() {
-        return approve_references;
+    public String getApproveReferences() {
+        return approveReferences;
     }
 
-    public void setApprove_references(String approve_references) {
-        this.approve_references = approve_references;
+    public void setApproveReferences(String approveReferences) {
+        this.approveReferences = approveReferences;
     }
 
-    public String getAsk_number_of_references() {
-        return ask_number_of_references;
+    public String getAskNumberOfReferences() {
+        return askNumberOfReferences;
     }
 
-    public void setAsk_number_of_references(String ask_number_of_references) {
-        this.ask_number_of_references = ask_number_of_references;
+    public void setAskNumberOfReferences(String askNumberOfReferences) {
+        this.askNumberOfReferences = askNumberOfReferences;
     }
 
-    public int getNumber_of_reference_per_product() {
-        return number_of_reference_per_product;
+    public int getNumberOfReferencePerProduct() {
+        return numberOfReferencePerProduct;
     }
 
-    public void setNumber_of_reference_per_product(int number_of_reference_per_product) {
-        this.number_of_reference_per_product = number_of_reference_per_product;
+    public void setNumberOfReferencePerProduct(int numberOfReferencePerProduct) {
+        this.numberOfReferencePerProduct = numberOfReferencePerProduct;
     }
 
-    public int getNumber_of_reference_per_report() {
-        return number_of_reference_per_report;
+    public int getNumberOfReferencePerReport() {
+        return numberOfReferencePerReport;
     }
 
-    public void setNumber_of_reference_per_report(int number_of_reference_per_report) {
-        this.number_of_reference_per_report = number_of_reference_per_report;
+    public void setNumberOfReferencePerReport(int numberOfReferencePerReport) {
+        this.numberOfReferencePerReport = numberOfReferencePerReport;
     }
 
-    public int getNumber_of_reference_per_manday() {
-        return number_of_reference_per_manday;
+    public int getNumberOfReferencePerManday() {
+        return numberOfReferencePerManday;
     }
 
-    public void setNumber_of_reference_per_manday(int number_of_reference_per_manday) {
-        this.number_of_reference_per_manday = number_of_reference_per_manday;
+    public void setNumberOfReferencePerManday(int numberOfReferencePerManday) {
+        this.numberOfReferencePerManday = numberOfReferencePerManday;
     }
 
-    public int getNumber_of_pcs_per_reference() {
-        return number_of_pcs_per_reference;
+    public int getNumberOfPcsPerReference() {
+        return numberOfPcsPerReference;
     }
 
-    public void setNumber_of_pcs_per_reference(int number_of_pcs_per_reference) {
-        this.number_of_pcs_per_reference = number_of_pcs_per_reference;
+    public void setNumberOfPcsPerReference(int numberOfPcsPerReference) {
+        this.numberOfPcsPerReference = numberOfPcsPerReference;
     }
 
-    public int getNumber_of_report_per_manday() {
-        return number_of_report_per_manday;
+    public int getNumberOfReportPerManday() {
+        return numberOfReportPerManday;
     }
 
-    public void setNumber_of_report_per_manday(int number_of_report_per_manday) {
-        this.number_of_report_per_manday = number_of_report_per_manday;
+    public void setNumberOfReportPerManday(int numberOfReportPerManday) {
+        this.numberOfReportPerManday = numberOfReportPerManday;
     }
 
-    public int getClc_number_of_reports() {
-        return clc_number_of_reports;
+    public int getClcNumberOfReports() {
+        return clcNumberOfReports;
     }
 
-    public void setClc_number_of_reports(int clc_number_of_reports) {
-        this.clc_number_of_reports = clc_number_of_reports;
+    public void setClcNumberOfReports(int clcNumberOfReports) {
+        this.clcNumberOfReports = clcNumberOfReports;
     }
 
-    public int getClc_number_of_container() {
-        return clc_number_of_container;
+    public int getClcNumberOfContainer() {
+        return clcNumberOfContainer;
     }
 
-    public void setClc_number_of_container(int clc_number_of_container) {
-        this.clc_number_of_container = clc_number_of_container;
+    public void setClcNumberOfContainer(int clcNumberOfContainer) {
+        this.clcNumberOfContainer = clcNumberOfContainer;
     }
 
-    public String getPeo_calculation() {
-        return peo_calculation;
+    public String getPeoCalculation() {
+        return peoCalculation;
     }
 
-    public void setPeo_calculation(String peo_calculation) {
-        this.peo_calculation = peo_calculation;
+    public void setPeoCalculation(String peoCalculation) {
+        this.peoCalculation = peoCalculation;
     }
 
-    public int getContainer_rate() {
-        return container_rate;
+    public int getContainerRate() {
+        return containerRate;
     }
 
-    public void setContainer_rate(int container_rate) {
-        this.container_rate = container_rate;
+    public void setContainerRate(int containerRate) {
+        this.containerRate = containerRate;
     }
 }
