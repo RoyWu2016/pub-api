@@ -5,34 +5,33 @@ package com.ai.api.bean;
  */
 public class RelevantCategoryInfoBean {
 
-    private int favourite_seq;
+    private int favouriteSeq;
 
-    private String favourite_family;
+    private String favouriteFamily;
 
-    private String favourite_category;
+    private String favouriteCategory;
 
-    public int getFavourite_seq() {
-        return favourite_seq;
+    public int getFavouriteSeq() {
+        return favouriteSeq;
     }
 
-    public void setFavourite_seq(int favourite_seq) {
-        this.favourite_seq = favourite_seq;
+    public void setFavouriteSeq(int favouriteSeq) {
+        this.favouriteSeq = favouriteSeq;
     }
 
-    public String getFavourite_family() {
-        return favourite_family;
+    public String getFavouriteFamily() {
+        return favouriteFamily;
     }
 
-    public void setFavourite_family(String favourite_family) {
-        this.favourite_family = favourite_family;
+    public void setFavouriteFamily(String favouriteFamily) {
+        this.favouriteFamily = favouriteFamily;
     }
 
-    public String getFavourite_category() {
-        return favourite_category;
+    public String getFavouriteCategory() {
+        return favouriteCategory;
     }
 
-    public void setFavourite_category(String favourite_category) {
-        this.favourite_category = favourite_category;
+    public void setFavouriteCategory(String favouriteCategory) {
+        this.favouriteCategory = favouriteCategory;
     }
-
 }

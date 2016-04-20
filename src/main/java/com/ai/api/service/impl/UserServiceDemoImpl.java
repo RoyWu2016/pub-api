@@ -1,5 +1,6 @@
 package com.ai.api.service.impl;
 
+import com.ai.api.bean.UserChoiceBean;
 import com.ai.api.model.UserDemoBean;
 import com.ai.api.service.UserServiceDemo;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ public class UserServiceDemoImpl implements UserServiceDemo {
     private static final AtomicLong counter = new AtomicLong();
 
     private static List<UserDemoBean> users;
+
+    private static List<UserChoiceBean> usersChoice;
 
     static {
         users = populateDummyUsers();
@@ -79,6 +82,15 @@ public class UserServiceDemoImpl implements UserServiceDemo {
 
     public void deleteAllUsers() {
         users.clear();
+    }
+
+// ---------  KK  -----------
+
+
+    public void saveUserChoice(UserChoiceBean userChoice) {
+        usersChoice = new ArrayList<UserChoiceBean>();
+        usersChoice.add(userChoice);
+
     }
 
 }

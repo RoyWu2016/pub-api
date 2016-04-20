@@ -9,263 +9,263 @@ import java.util.List;
  */
 public class OrderBookingBean {
 
-    private int clc_percentage;
+    private int clcPercentage;
 
-    private int psi_percentage;
+    private int psiPercentage;
 
-    private int dupro_percentage;
+    private int duproPercentage;
 
-    private int ipc_percentage;
+    private int ipcPercentage;
 
-    private int pm_percentage;
+    private int pmPercentage;
 
-    private int clc_percentage_packed;
+    private int clcPercentagePacked;
 
-    private int psi_percentage_packed;
+    private int psiPercentagePacked;
 
-    private int dupro_percentage_packed;
+    private int duproPercentagePacked;
 
-    private int ipc_percentage_packed;
+    private int ipcPercentagePacked;
 
-    private int pm_percentage_packed;
+    private int pmPercentagePacked;
 
-    private String send_modification_mail;
+    private String sendModificationMail;
 
-    private String send_sample_to_factory;
+    private String sendSampleToFactory;
 
-    private String po_compulsory;
+    private String poCompulsory;
 
-    private String require_drop_testing;
+    private String requireDropTesting;
 
-    private String share_perferred_tests;
+    private String sharePerferredTests;
 
-    private String share_checklist;
+    private String shareChecklist;
 
-    private String turn_off_ai_access;
+    private String turnOffAiAccess;
 
-    private List<FavoriteTestBean> favorite_tests;
+    private List<FavoriteTestBean> favoriteTests;
 
-    private String allow_change_aql;
+    private String allowChangeAql;
 
-    private String custom_aql_level;
+    private String customAqlLevel;
 
-    private String critical_defects;
+    private String criticalDefects;
 
-    private String major_defects;
+    private String majorDefects;
 
-    private String minor_defects;
+    private String minorDefects;
 
-    private String max_mea_defects;
+    private String maxMeaDefects;
 
-    private String customized_sample_level;
+    private String customizedSampleLevel;
 
-    private String measurement_sample_level;
+    private String measurementSampleLevel;
 
-    public int getClc_percentage() {
-        return clc_percentage;
+    public int getClcPercentage() {
+        return clcPercentage;
     }
 
-    public void setClc_percentage(int clc_percentage) {
-        this.clc_percentage = clc_percentage;
+    public void setClcPercentage(int clcPercentage) {
+        this.clcPercentage = clcPercentage;
     }
 
-    public int getPsi_percentage() {
-        return psi_percentage;
+    public int getPsiPercentage() {
+        return psiPercentage;
     }
 
-    public void setPsi_percentage(int psi_percentage) {
-        this.psi_percentage = psi_percentage;
+    public void setPsiPercentage(int psiPercentage) {
+        this.psiPercentage = psiPercentage;
     }
 
-    public int getDupro_percentage() {
-        return dupro_percentage;
+    public int getDuproPercentage() {
+        return duproPercentage;
     }
 
-    public void setDupro_percentage(int dupro_percentage) {
-        this.dupro_percentage = dupro_percentage;
+    public void setDuproPercentage(int duproPercentage) {
+        this.duproPercentage = duproPercentage;
     }
 
-    public int getIpc_percentage() {
-        return ipc_percentage;
+    public int getIpcPercentage() {
+        return ipcPercentage;
     }
 
-    public void setIpc_percentage(int ipc_percentage) {
-        this.ipc_percentage = ipc_percentage;
+    public void setIpcPercentage(int ipcPercentage) {
+        this.ipcPercentage = ipcPercentage;
     }
 
-    public int getPm_percentage() {
-        return pm_percentage;
+    public int getPmPercentage() {
+        return pmPercentage;
     }
 
-    public void setPm_percentage(int pm_percentage) {
-        this.pm_percentage = pm_percentage;
+    public void setPmPercentage(int pmPercentage) {
+        this.pmPercentage = pmPercentage;
     }
 
-    public int getClc_percentage_packed() {
-        return clc_percentage_packed;
+    public int getClcPercentagePacked() {
+        return clcPercentagePacked;
     }
 
-    public void setClc_percentage_packed(int clc_percentage_packed) {
-        this.clc_percentage_packed = clc_percentage_packed;
+    public void setClcPercentagePacked(int clcPercentagePacked) {
+        this.clcPercentagePacked = clcPercentagePacked;
     }
 
-    public int getPsi_percentage_packed() {
-        return psi_percentage_packed;
+    public int getPsiPercentagePacked() {
+        return psiPercentagePacked;
     }
 
-    public void setPsi_percentage_packed(int psi_percentage_packed) {
-        this.psi_percentage_packed = psi_percentage_packed;
+    public void setPsiPercentagePacked(int psiPercentagePacked) {
+        this.psiPercentagePacked = psiPercentagePacked;
     }
 
-    public int getDupro_percentage_packed() {
-        return dupro_percentage_packed;
+    public int getDuproPercentagePacked() {
+        return duproPercentagePacked;
     }
 
-    public void setDupro_percentage_packed(int dupro_percentage_packed) {
-        this.dupro_percentage_packed = dupro_percentage_packed;
+    public void setDuproPercentagePacked(int duproPercentagePacked) {
+        this.duproPercentagePacked = duproPercentagePacked;
     }
 
-    public int getIpc_percentage_packed() {
-        return ipc_percentage_packed;
+    public int getIpcPercentagePacked() {
+        return ipcPercentagePacked;
     }
 
-    public void setIpc_percentage_packed(int ipc_percentage_packed) {
-        this.ipc_percentage_packed = ipc_percentage_packed;
+    public void setIpcPercentagePacked(int ipcPercentagePacked) {
+        this.ipcPercentagePacked = ipcPercentagePacked;
     }
 
-    public int getPm_percentage_packed() {
-        return pm_percentage_packed;
+    public int getPmPercentagePacked() {
+        return pmPercentagePacked;
     }
 
-    public void setPm_percentage_packed(int pm_percentage_packed) {
-        this.pm_percentage_packed = pm_percentage_packed;
+    public void setPmPercentagePacked(int pmPercentagePacked) {
+        this.pmPercentagePacked = pmPercentagePacked;
     }
 
-    public String getSend_modification_mail() {
-        return send_modification_mail;
+    public String getSendModificationMail() {
+        return sendModificationMail;
     }
 
-    public void setSend_modification_mail(String send_modification_mail) {
-        this.send_modification_mail = send_modification_mail;
+    public void setSendModificationMail(String sendModificationMail) {
+        this.sendModificationMail = sendModificationMail;
     }
 
-    public String getSend_sample_to_factory() {
-        return send_sample_to_factory;
+    public String getSendSampleToFactory() {
+        return sendSampleToFactory;
     }
 
-    public void setSend_sample_to_factory(String send_sample_to_factory) {
-        this.send_sample_to_factory = send_sample_to_factory;
+    public void setSendSampleToFactory(String sendSampleToFactory) {
+        this.sendSampleToFactory = sendSampleToFactory;
     }
 
-    public String getPo_compulsory() {
-        return po_compulsory;
+    public String getPoCompulsory() {
+        return poCompulsory;
     }
 
-    public void setPo_compulsory(String po_compulsory) {
-        this.po_compulsory = po_compulsory;
+    public void setPoCompulsory(String poCompulsory) {
+        this.poCompulsory = poCompulsory;
     }
 
-    public String getRequire_drop_testing() {
-        return require_drop_testing;
+    public String getRequireDropTesting() {
+        return requireDropTesting;
     }
 
-    public void setRequire_drop_testing(String require_drop_testing) {
-        this.require_drop_testing = require_drop_testing;
+    public void setRequireDropTesting(String requireDropTesting) {
+        this.requireDropTesting = requireDropTesting;
     }
 
-    public String getShare_perferred_tests() {
-        return share_perferred_tests;
+    public String getSharePerferredTests() {
+        return sharePerferredTests;
     }
 
-    public void setShare_perferred_tests(String share_perferred_tests) {
-        this.share_perferred_tests = share_perferred_tests;
+    public void setSharePerferredTests(String sharePerferredTests) {
+        this.sharePerferredTests = sharePerferredTests;
     }
 
-    public String getShare_checklist() {
-        return share_checklist;
+    public String getShareChecklist() {
+        return shareChecklist;
     }
 
-    public void setShare_checklist(String share_checklist) {
-        this.share_checklist = share_checklist;
+    public void setShareChecklist(String shareChecklist) {
+        this.shareChecklist = shareChecklist;
     }
 
-    public String getTurn_off_ai_access() {
-        return turn_off_ai_access;
+    public String getTurnOffAiAccess() {
+        return turnOffAiAccess;
     }
 
-    public void setTurn_off_ai_access(String turn_off_ai_access) {
-        this.turn_off_ai_access = turn_off_ai_access;
+    public void setTurnOffAiAccess(String turnOffAiAccess) {
+        this.turnOffAiAccess = turnOffAiAccess;
     }
 
-    public List<FavoriteTestBean> getFavorite_tests() {
-        return favorite_tests;
+    public List<FavoriteTestBean> getFavoriteTests() {
+        return favoriteTests;
     }
 
-    public void setFavorite_tests(List<FavoriteTestBean> favorite_tests) {
-        this.favorite_tests = favorite_tests;
+    public void setFavoriteTests(List<FavoriteTestBean> favoriteTests) {
+        this.favoriteTests = favoriteTests;
     }
 
-    public String getAllow_change_aql() {
-        return allow_change_aql;
+    public String getAllowChangeAql() {
+        return allowChangeAql;
     }
 
-    public void setAllow_change_aql(String allow_change_aql) {
-        this.allow_change_aql = allow_change_aql;
+    public void setAllowChangeAql(String allowChangeAql) {
+        this.allowChangeAql = allowChangeAql;
     }
 
-    public String getCustom_aql_level() {
-        return custom_aql_level;
+    public String getCustomAqlLevel() {
+        return customAqlLevel;
     }
 
-    public void setCustom_aql_level(String custom_aql_level) {
-        this.custom_aql_level = custom_aql_level;
+    public void setCustomAqlLevel(String customAqlLevel) {
+        this.customAqlLevel = customAqlLevel;
     }
 
-    public String getCritical_defects() {
-        return critical_defects;
+    public String getCriticalDefects() {
+        return criticalDefects;
     }
 
-    public void setCritical_defects(String critical_defects) {
-        this.critical_defects = critical_defects;
+    public void setCriticalDefects(String criticalDefects) {
+        this.criticalDefects = criticalDefects;
     }
 
-    public String getMajor_defects() {
-        return major_defects;
+    public String getMajorDefects() {
+        return majorDefects;
     }
 
-    public void setMajor_defects(String major_defects) {
-        this.major_defects = major_defects;
+    public void setMajorDefects(String majorDefects) {
+        this.majorDefects = majorDefects;
     }
 
-    public String getMinor_defects() {
-        return minor_defects;
+    public String getMinorDefects() {
+        return minorDefects;
     }
 
-    public void setMinor_defects(String minor_defects) {
-        this.minor_defects = minor_defects;
+    public void setMinorDefects(String minorDefects) {
+        this.minorDefects = minorDefects;
     }
 
-    public String getMax_mea_defects() {
-        return max_mea_defects;
+    public String getMaxMeaDefects() {
+        return maxMeaDefects;
     }
 
-    public void setMax_mea_defects(String max_mea_defects) {
-        this.max_mea_defects = max_mea_defects;
+    public void setMaxMeaDefects(String maxMeaDefects) {
+        this.maxMeaDefects = maxMeaDefects;
     }
 
-    public String getCustomized_sample_level() {
-        return customized_sample_level;
+    public String getCustomizedSampleLevel() {
+        return customizedSampleLevel;
     }
 
-    public void setCustomized_sample_level(String customized_sample_level) {
-        this.customized_sample_level = customized_sample_level;
+    public void setCustomizedSampleLevel(String customizedSampleLevel) {
+        this.customizedSampleLevel = customizedSampleLevel;
     }
 
-    public String getMeasurement_sample_level() {
-        return measurement_sample_level;
+    public String getMeasurementSampleLevel() {
+        return measurementSampleLevel;
     }
 
-    public void setMeasurement_sample_level(String measurement_sample_level) {
-        this.measurement_sample_level = measurement_sample_level;
+    public void setMeasurementSampleLevel(String measurementSampleLevel) {
+        this.measurementSampleLevel = measurementSampleLevel;
     }
 }

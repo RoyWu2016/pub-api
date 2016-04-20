@@ -1,5 +1,6 @@
 package com.ai.api.service;
 
+import com.ai.api.bean.UserChoiceBean;
 import com.ai.api.model.UserDemoBean;
 
 import java.util.List;
@@ -22,5 +23,7 @@ public interface UserServiceDemo {
     void deleteAllUsers();
 
     boolean isUserExist(UserDemoBean user);
+
+    void saveUserChoice(UserChoiceBean userChoice);
 
 }
