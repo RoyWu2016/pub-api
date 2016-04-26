@@ -244,9 +244,110 @@ public class CustomerServiceImpl implements CustomerService {
             extraBean.setDomainName(customer.getExtra().getDomainName());
             user.setExtra(extraBean);
 
-
             return user;
         }
         return null;
     }
+
+    //***********************25-04 by KK****************
+
+    @Override
+    public com.ai.api.model.CustomerBean getCustByLogin(String login) throws IOException, AIException {
+
+        String customer_id = customerDao.getCustomerIdByCustomerLogin(login);
+
+        String url = config.getCustomerServiceUrl() + "/customer/" + customer_id;
+
+        System.out.println("will get from: " + url);
+
+
+        //do below for now
+        GetRequest request = GetRequest.newInstance().setUrl(url);
+        ServiceCallResult result = HttpUtil.issueGetRequest(request);
+
+        System.out.println("Result status Code ----->" + result.getStatusCode());
+
+
+        CustomerBean customer;
+
+        com.ai.api.model.CustomerBean cust = new com.ai.api.model.CustomerBean();
+        if (result.getStatusCode() == 200 || result.getStatusCode() == 202) {
+            customer = JsonUtil.mapToObject(result.getResponseString(),
+                    CustomerBean.class);
+
+
+            cust.setUserId(customer.getCustomerId());
+            cust.setSic(customer.getOverview().getSic());
+
+            PreferencesBean preferencesBean = new PreferencesBean();
+
+            BookingBean bookingbean = new BookingBean();
+
+            bookingbean.setShouldSendRefSampleToFactory(customer.getOrderBooking().getSendSampleToFactory());
+            bookingbean.setIsPoMandatory(customer.getOrderBooking().getPoCompulsory());
+            bookingbean.setUseQuickFormByDefault(null);
+
+            AqlAndSamplingSizeBean aqlbean = new AqlAndSamplingSizeBean();
+
+            aqlbean.setCanModify(null);
+            aqlbean.setCustomDefaultSampleLevel(null);
+            aqlbean.setUseCustomAQL(null);
+
+            CustomAQLBean custaqlbean = new CustomAQLBean();
+
+            custaqlbean.setCriticalDefects(null);
+            custaqlbean.setMajorDefects(null);
+            custaqlbean.setMaxMeasurementDefects(null);
+            custaqlbean.setMinorDefects(null);
+
+            aqlbean.setCustomAQL(custaqlbean);
+
+            bookingbean.setAqlAndSamplingSize(aqlbean);
+
+            MinQuantityToBeReadyBean minquantbean = new MinQuantityToBeReadyBean();
+
+            minquantbean.setServiceType(null);
+            minquantbean.setMinQty(null);
+
+            bookingbean.setMinQuantityToBeReady(minquantbean);
+
+            preferencesBean.setBooking(bookingbean);
+
+            cust.setPreferences(preferencesBean);
+
+
+            CompanyBean companybean = new CompanyBean();
+            companybean.setAddress(customer.getCompanyInfo().getAddress());
+            companybean.setCity(customer.getCompanyInfo().getCity());
+            companybean.setIndustry(customer.getCompanyInfo().getIndustry());
+            companybean.setPostcode(customer.getCompanyInfo().getPostCode());
+            companybean.setName(customer.getCompanyInfo().getCompanyName());
+            companybean.setCountry(customer.getCompanyInfo().getCountry());
+
+            cust.setCompany(companybean);
+
+            ContactInfoBean contactinfobean = new ContactInfoBean();
+
+            BillingBean billingbean = new BillingBean();
+            billingbean.setIsSameAsMainContact(null);
+
+            contactinfobean.setBilling(billingbean);
+
+            MainBean mainbean = new MainBean();
+
+            mainbean.setPosition(null);
+            mainbean.setEmail(null);
+            mainbean.setFamilyName(null);
+            mainbean.setGivenName(null);
+            mainbean.setPhoneNumber(null);
+            mainbean.setSalutation(null);
+            contactinfobean.setMain(mainbean);
+
+            cust.setContactInfo(contactinfobean);
+
+            return cust;
+        }
+        return null;
+    }
+
 }
