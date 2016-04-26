@@ -7,6 +7,7 @@
 package com.ai.api.service;
 
 import com.ai.api.exception.AIException;
+import com.ai.api.model.CustomerBean;
 import com.ai.api.model.UserBean;
 
 import java.io.IOException;
@@ -34,4 +35,7 @@ import java.io.IOException;
 public interface CustomerService {
 
     UserBean getByLogin(String login) throws IOException, AIException;
+
+    CustomerBean getCustByLogin(String login) throws IOException, AIException;
+
 }
