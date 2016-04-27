@@ -7,6 +7,7 @@
 package com.ai.api.controller;
 
 import com.ai.api.exception.AIException;
+import com.ai.api.model.CustomerBean;
 import com.ai.api.model.UserBean;
 import org.springframework.http.ResponseEntity;
 
@@ -33,5 +34,7 @@ import java.io.IOException;
  ***************************************************************************/
 
 public interface User {
-    ResponseEntity<UserBean> getUserByLogin(String login) throws IOException, AIException;
+    ResponseEntity<UserBean> getUser(String login) throws IOException, AIException;
+
+    ResponseEntity<CustomerBean> getCustomerByLogin(String login) throws IOException, AIException;
 }

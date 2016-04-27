@@ -49,8 +49,6 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
 
     //TODO: fix the injection here
-//	@Value("${customer.service.url}")
-//	private String customerServiceUrl;
 
     @Autowired
     @Qualifier("serviceConfig")
@@ -64,30 +62,15 @@ public class CustomerServiceImpl implements CustomerService {
     public UserBean getByLogin(String login) throws IOException, AIException {
         //TODO: find customer by login, hard code it for now
 
-
-        //String customer_id = "0273AC1639A6254248257DCE0012DC40";
         String customer_id = customerDao.getCustomerIdByCustomerLogin(login);
-
-//		String url = customerServiceUrl + "/customer/";
         String url = config.getCustomerServiceUrl() + "/customer/" + customer_id;
 
         System.out.println("will get from: " + url);
 
         //TODO: pass session with USM
-//		final UserSecurityModel usm = (UserSecurityModel) session.getAttribute(SSOConstant.ATTR_USM);
-//
-//		ServiceCallResult result = HttpUtil.issueGetRequest(url, new HashMap<String, String>() {
-//			private static final long serialVersionUID = 2623229072511782593L; {
-//				put("Authorization", "Bearer " + usm.getToken());
-//			}
-//		}, session);
 
-        //do below for now
         GetRequest request = GetRequest.newInstance().setUrl(url);
         ServiceCallResult result = HttpUtil.issueGetRequest(request);
-
-        System.out.println("Result status Code ----->" + result.getStatusCode());
-        // System.out.println("Response ----- " + result.getResponseString());
 
         CustomerBean customer;
 
@@ -264,9 +247,6 @@ public class CustomerServiceImpl implements CustomerService {
         //do below for now
         GetRequest request = GetRequest.newInstance().setUrl(url);
         ServiceCallResult result = HttpUtil.issueGetRequest(request);
-
-        System.out.println("Result status Code ----->" + result.getStatusCode());
-
 
         CustomerBean customer;
 

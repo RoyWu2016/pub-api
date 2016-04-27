@@ -13,7 +13,7 @@
         <property name="jndiName" value="java:comp/env/jdbc/dataSource" />
     </bean>
 
-    <bean id="customerDao" class="com.ai.api.dao.impl.db.CustomerDaoImpl">
+    <bean id="customerDao" class="com.ai.api.dao.impl.db.UserDaoImpl">
         <property name="dataSource" ref="dataSource"/>
     </bean>
     <!--<bean id="dataSource"-->
