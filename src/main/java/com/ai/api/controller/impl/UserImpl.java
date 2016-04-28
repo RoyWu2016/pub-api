@@ -6,11 +6,12 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
+import java.io.IOException;
+
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
-import com.ai.api.model.CustomerBean;
 import com.ai.api.model.UserBean;
-import com.ai.api.service.CustomerService;
+import com.ai.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,8 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
 
 /***************************************************************************
  * <PRE>
@@ -46,36 +45,36 @@ import java.io.IOException;
 public class UserImpl implements User {
 
     @Autowired
-    CustomerService customerService;  //Service which will do all data retrieval/manipulation work
+    UserService userService;  //Service which will do all data retrieval/manipulation work
 
-    @Override
-    @RequestMapping(value = "/user/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserBean> getUser(@PathVariable("login") String login) throws IOException, AIException {
-        System.out.println("login: " + login);
-        UserBean user = null;
-        try {
-            user = customerService.getByLogin(login);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (AIException e) {
-            e.printStackTrace();
-        }
-        if (user == null) {
-            System.out.println("User with login " + login + " not found");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
+//    @Override
+//    @RequestMapping(value = "/user/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<UserBean> getUser(@PathVariable("login") String login) throws IOException, AIException {
+//        System.out.println("login: " + login);
+//        UserBean user = null;
+//        try {
+//            user = customerService.getByLogin(login);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (AIException e) {
+//            e.printStackTrace();
+//        }
+//        if (user == null) {
+//            System.out.println("User with login " + login + " not found");
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        return new ResponseEntity<>(user, HttpStatus.OK);
+//    }
 
 
     @Override
     @RequestMapping(value = "/user/{login}/profile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CustomerBean> getCustomerByLogin(@PathVariable("login") String login) throws IOException, AIException {
+    public ResponseEntity<UserBean> getUserProfileByLogin(@PathVariable("login") String login) throws IOException, AIException {
         System.out.println("login: " + login);
-        CustomerBean cust = null;
+        UserBean cust = null;
 
         try {
-            cust = customerService.getCustByLogin(login);
+            cust = userService.getCustByLogin(login);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (AIException e) {

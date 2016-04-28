@@ -6,12 +6,11 @@
  ***************************************************************************/
 package com.ai.api.controller;
 
+import java.io.IOException;
+
 import com.ai.api.exception.AIException;
-import com.ai.api.model.CustomerBean;
 import com.ai.api.model.UserBean;
 import org.springframework.http.ResponseEntity;
-
-import java.io.IOException;
 
 /***************************************************************************
  * <PRE>
@@ -34,7 +33,6 @@ import java.io.IOException;
  ***************************************************************************/
 
 public interface User {
-    ResponseEntity<UserBean> getUser(String login) throws IOException, AIException;
 
-    ResponseEntity<CustomerBean> getCustomerByLogin(String login) throws IOException, AIException;
+    ResponseEntity<UserBean> getUserProfileByLogin(String login) throws IOException, AIException;
 }
