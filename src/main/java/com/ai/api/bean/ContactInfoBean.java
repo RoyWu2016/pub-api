@@ -4,9 +4,9 @@ package com.ai.api.bean;
  * Created by KK on 4/25/2016.
  */
 public class ContactInfoBean {
-    private BillingBean billing;
-
     private MainBean main;
+
+    private BillingBean billing;
 
     public BillingBean getBilling() {
         return billing;

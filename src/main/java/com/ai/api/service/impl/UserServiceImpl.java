@@ -6,17 +6,10 @@
  ***************************************************************************/
 package com.ai.api.service.impl;
 
-import java.io.IOException;
-
-import com.ai.api.bean.AqlAndSamplingSizeBean;
 import com.ai.api.bean.BillingBean;
-import com.ai.api.bean.BookingBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.ContactInfoBean;
-import com.ai.api.bean.CustomAQLBean;
 import com.ai.api.bean.MainBean;
-import com.ai.api.bean.MinQuantityToBeReadyBean;
-import com.ai.api.bean.PreferencesBean;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
@@ -27,9 +20,14 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.CustomerBean;
+
+import com.ai.commons.beans.customer.GeneralUserViewBean;
+import com.ai.commons.beans.customer.ContactBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 /***************************************************************************
  * <PRE>
@@ -64,182 +62,7 @@ public class UserServiceImpl implements UserService {
     @Qualifier("customerDao")
     private CustomerDao customerDao;
 
-//    @Override
-//    public UserBean getByLogin(String login) throws IOException, AIException {
-//        //TODO: find customer by login, hard code it for now
-//
-//        String customer_id = customerDao.getCustomerIdByCustomerLogin(login);
-//        String url = config.getCustomerServiceUrl() + "/customer/" + customer_id;
-//
-//        System.out.println("will get from: " + url);
-//
-//        //TODO: pass session with USM
-//
-//        GetRequest request = GetRequest.newInstance().setUrl(url);
-//        ServiceCallResult result = HttpUtil.issueGetRequest(request);
-//
-//        CustomerBean customer;
-//
-//        UserBean user = new UserBean();
-//        if (result.getStatusCode() == 200 || result.getStatusCode() == 202) {
-//            customer = JsonUtil.mapToObject(result.getResponseString(),
-//                    CustomerBean.class);
-//
-//
-//            user.setUserId(customer.getCustomerId());
-//            user.setLogin(login);
-//            user.setClientId(customer.getOverview().getClientId());
-//            user.setSalesInCharge(customer.getOverview().getSic());
-//            user.setCompanyType(customer.getOverview().getCompanyType());
-//            user.setBusinessUnit(customer.getOverview().getBusinessUnit());
-//
-//            ContactBean contactBean = new ContactBean();
-//
-//            contactBean.setFamily_name(customer.getContact().getMainFamilyName());
-//            contactBean.setGiven_name(customer.getContact().getMainGivenName());
-//            contactBean.setGender(customer.getContact().getMainGender());
-//            contactBean.setEmail(customer.getContact().getMainEmail());
-//            contactBean.setPosition(customer.getContact().getMainPosition());
-//            contactBean.setTelephone(customer.getContact().getAccountingTelephone());
-//            contactBean.setMobile(customer.getContact().getMainMobile());
-//            contactBean.setFax(customer.getContact().getMainFax());
-//            user.setContact(contactBean);
-//
-//            CompanyInfoBean companyInfoBean = new CompanyInfoBean();
-//
-//            companyInfoBean.setIndustry(customer.getCompanyInfo().getIndustry());
-//            companyInfoBean.setAddress(customer.getCompanyInfo().getAddress());
-//            companyInfoBean.setCity(customer.getCompanyInfo().getCity());
-//            companyInfoBean.setPostCode(customer.getCompanyInfo().getPostCode());
-//            companyInfoBean.setCountry(customer.getCompanyInfo().getCountry());
-//            companyInfoBean.setProvince(customer.getCompanyInfo().getProvince());
-//            companyInfoBean.setDecisionCountry(customer.getCompanyInfo().getDecisionCountry());
-//            companyInfoBean.setSalesTurnover(customer.getCompanyInfo().getSalesTurnover());
-//            companyInfoBean.setPurchaseAmount(customer.getCompanyInfo().getPurchaseAmount());
-//            companyInfoBean.setCompanyId(customer.getCompanyInfo().getCompanyId());
-//            companyInfoBean.setCompanyType(customer.getCompanyInfo().getCompanyType());
-//            companyInfoBean.setCompanyName(customer.getCompanyInfo().getCompanyName());
-//            companyInfoBean.setCompanyCnName(customer.getCompanyInfo().getCompanyNameCn());
-//            companyInfoBean.setCityId(customer.getCompanyInfo().getCityId());
-//            companyInfoBean.setCountryId(customer.getCompanyInfo().getCountryId());
-//            companyInfoBean.setDecisionCountryId(customer.getCompanyInfo().getDecisionCountryId());
-//            companyInfoBean.setWebsite(customer.getCompanyInfo().getWebsite());
-//            companyInfoBean.setEmployeeNbr(customer.getCompanyInfo().getEmployeeNb());
-//            user.setCompanyInfo(companyInfoBean);
-//
-//            ProductFamilyBean productfamilyBean = new ProductFamilyBean();
-//
-//            productfamilyBean.setProductTypeSelection(customer.getProductFamily().getHowToChooseProType());
-//            productfamilyBean.setRememberSelectdFamily(customer.getProductFamily().getRememberSelFamily());
-//            productfamilyBean.setProductFamilyInfo(customer.getProductFamily().getProductFamilyInfo());
-//
-//            List<RelevantCategoryInfoBean> list = new ArrayList<RelevantCategoryInfoBean>();
-//
-//            List<com.ai.commons.beans.customer.RelevantCategoryInfoBean> beanls = customer.getProductFamily().getRelevantCategoryInfo();
-//            for (com.ai.commons.beans.customer.RelevantCategoryInfoBean rcbean : beanls) {
-//
-//                RelevantCategoryInfoBean relevantcatinfoBean = new RelevantCategoryInfoBean();
-//                relevantcatinfoBean.setFavouriteFamily(rcbean.getFavCategory());
-//                relevantcatinfoBean.setFavouriteCategory(rcbean.getFavCategory());
-//                relevantcatinfoBean.setFavouriteSeq(rcbean.getFavSeq());
-//                list.add(relevantcatinfoBean);
-//                productfamilyBean.setRelevantCategoryInfo(list);
-//
-//            }
-//
-//            user.setProductFamily(productfamilyBean);
-//
-//            OrderBookingBean orderBookingBean = new OrderBookingBean();
-//
-//            orderBookingBean.setClcPercentage(customer.getOrderBooking().getClcPercentage());
-//            orderBookingBean.setPsiPercentage(customer.getOrderBooking().getPsiPercentage());
-//            orderBookingBean.setDuproPercentage(customer.getOrderBooking().getDuproPercentage());
-//            orderBookingBean.setIpcPercentage(customer.getOrderBooking().getIpcPercentage());
-//            orderBookingBean.setPmPercentage(customer.getOrderBooking().getPmPercentage());
-//            orderBookingBean.setClcPercentagePacked(customer.getOrderBooking().getClcPercentagePacked());
-//            orderBookingBean.setPsiPercentagePacked(customer.getOrderBooking().getPsiPercentagePacked());
-//            orderBookingBean.setDuproPercentagePacked(customer.getOrderBooking().getDuproPercentagePacked());
-//            orderBookingBean.setIpcPercentagePacked(customer.getOrderBooking().getIpcPercentagePacked());
-//            orderBookingBean.setPmPercentagePacked(customer.getOrderBooking().getPmPercentagePacked());
-//            orderBookingBean.setSendModificationMail(customer.getOrderBooking().getSendModificationMail());
-//            orderBookingBean.setSendSampleToFactory(customer.getOrderBooking().getSendSampleToFactory());
-//            orderBookingBean.setPoCompulsory(customer.getOrderBooking().getPoCompulsory());
-//            orderBookingBean.setRequireDropTesting(customer.getOrderBooking().getRequireDropTesting());
-//            orderBookingBean.setSharePerferredTests(customer.getOrderBooking().getSharePerferredTests());
-//            orderBookingBean.setShareChecklist(customer.getOrderBooking().getShareChecklist());
-//            orderBookingBean.setTurnOffAiAccess(customer.getOrderBooking().getTurnOffAIAccess());
-//            orderBookingBean.setFavoriteTests(customer.getOrderBooking().getFavoriteTests());
-//            orderBookingBean.setAllowChangeAql(customer.getOrderBooking().getAllowChangeAql());
-//            orderBookingBean.setCustomAqlLevel(customer.getOrderBooking().getCustAqlLevel());
-//            orderBookingBean.setCriticalDefects(customer.getOrderBooking().getCriticalDefects());
-//            orderBookingBean.setMajorDefects(customer.getOrderBooking().getMajorDefects());
-//            orderBookingBean.setMinorDefects(customer.getOrderBooking().getMinorDefects());
-//            orderBookingBean.setMaxMeaDefects(customer.getOrderBooking().getMaxMeaDefects());
-//            orderBookingBean.setCustomizedSampleLevel(customer.getOrderBooking().getCustomizedSampleLevel());
-//            orderBookingBean.setMeasurementSampleLevel(customer.getOrderBooking().getMeasurementSampleLevel());
-//            user.setOrderBooking(orderBookingBean);
-//
-//            MultiReferenceBookingBean multirefBookingBean = new MultiReferenceBookingBean();
-//
-//            multirefBookingBean.setApproveReferences(customer.getMultiRefBooking().getApproveReferences());
-//            multirefBookingBean.setAskNumberOfReferences(customer.getMultiRefBooking().getAskNumberOfReferences());
-//            multirefBookingBean.setNumberOfReferencePerProduct(customer.getMultiRefBooking().getNumberOfRefPerProduct());
-//            multirefBookingBean.setNumberOfReferencePerReport(customer.getMultiRefBooking().getNumberOfRefPerReport());
-//            multirefBookingBean.setNumberOfReferencePerManday(customer.getMultiRefBooking().getNumberOfRefPerMd());
-//            multirefBookingBean.setNumberOfPcsPerReference(customer.getMultiRefBooking().getNumberOfPcsPerRef());
-//            multirefBookingBean.setNumberOfReportPerManday(customer.getMultiRefBooking().getNumberOfReportPerMd());
-//            multirefBookingBean.setClcNumberOfReports(customer.getMultiRefBooking().getClcNumberOfReports());
-//            multirefBookingBean.setClcNumberOfContainer(customer.getMultiRefBooking().getClcNumberOfContainer());
-//            multirefBookingBean.setPeoCalculation(customer.getMultiRefBooking().getPeoCalculation());
-//            multirefBookingBean.setContainerRate(customer.getMultiRefBooking().getContainerRate());
-//            user.setMultiReferenceBooking(multirefBookingBean);
-//
-//            ExtraBean extraBean = new ExtraBean();
-//
-//            extraBean.setScreenshotNeeded(customer.getExtra().getIsScreenshotNeeded());
-//            extraBean.setActivated(customer.getExtra().getIsActivated());
-//            extraBean.setDeactivedDate(customer.getExtra().getDeactivedDate());
-//            extraBean.setForce_new(customer.getExtra().getForceNew());
-//            extraBean.setReActivedDate(customer.getExtra().getReActivedTime());
-//            extraBean.setAiClient(customer.getExtra().getAiClient());
-//            extraBean.setIsDeleted(customer.getExtra().getIsDeleted());
-//            extraBean.setIsChbClient(customer.getExtra().getIsChb());
-//            extraBean.setIsFiClient(customer.getExtra().getIsFI());
-//            extraBean.setReminderType(customer.getExtra().getReminderType());
-//            extraBean.setSubSicReceiveOrderEmail(customer.getExtra().getSubSicRecOrderEmail());
-//            extraBean.setSubSicReceiveReportEmail(customer.getExtra().getSubSicRecReportEmail());
-//            extraBean.setIsShowDashboardSurvey(customer.getExtra().getIsShowDashboardSurvey());
-//            extraBean.setRememberedProductFamilyKey(customer.getExtra().getRememberedProductFamilyKey());
-//            extraBean.setOutstandingDateLogin(customer.getExtra().getOutstandingDateLogin());
-//            extraBean.setOutstandingDateCompany(customer.getExtra().getOutstandingDateCompany());
-//            extraBean.setIsFirstLoginNp(customer.getExtra().getIsFirstLoginNP());
-//            extraBean.setIsDetailedBookingForm(customer.getExtra().getIsDetailedBookingForm());
-//            extraBean.setMaxPenalty(customer.getExtra().getMaxPenalty());
-//            extraBean.setMaxPenaltyUnit(customer.getExtra().getMaxPenaltyUnit());
-//            extraBean.setMaxAveragePenalty(customer.getExtra().getMaxAveragePenalty());
-//            extraBean.setMaxAveragePenaltyUnit(customer.getExtra().getMaxAveragePenaltyUnit());
-//            extraBean.setIsFbSaveAql(customer.getExtra().getIsFbSaveAQL());
-//            extraBean.setIsDisplayNewLayout(customer.getExtra().getIsDisplayNewLayout());
-//            extraBean.setKpiFlag(customer.getExtra().getKpiFlag());
-//            extraBean.setOrderViewType(customer.getExtra().getOrderViewType());
-//            extraBean.setSeenMobileAppPromotionBanner(customer.getExtra().getHasSeenMobAppPromoBanner());
-//            extraBean.setFirstTimeLog(customer.getExtra().getFirstTimeLog());
-//            extraBean.setRegNp(customer.getExtra().getRegNP());
-//            extraBean.setRefer(customer.getExtra().getRefer());
-//            extraBean.setUserIp(customer.getExtra().getUserip());
-//            extraBean.setIsTestAccount(customer.getExtra().getIsTestAccount());
-//            extraBean.setSaveIn(customer.getExtra().getSaveIn());
-//            extraBean.setNewMandayRate(customer.getExtra().getNewMDRate());
-//            extraBean.setDomainName(customer.getExtra().getDomainName());
-//            user.setExtra(extraBean);
-//
-//            return user;
-//        }
-//        return null;
-//    }
-
     //***********************25-04 by KK****************
-
     @Override
     public UserBean getCustByLogin(String login) throws IOException, AIException {
 
@@ -247,89 +70,95 @@ public class UserServiceImpl implements UserService {
 
         String url = config.getCustomerServiceUrl() + "/customer/" + customer_id;
 
-        System.out.println("will get from: " + url);
+        String url1 = config.getCustomerServiceUrl() + "/users/" + customer_id;
+
+        //String url1 = "http://192.168.0.31:8093/customer-service/users/2E85EB892D5BF11AE050A8C00600456F";
+
+        System.out.println("will get from url--: " + url);
 
 
         //do below for now
         GetRequest request = GetRequest.newInstance().setUrl(url);
+        GetRequest request1 = GetRequest.newInstance().setUrl(url1);
         ServiceCallResult result = HttpUtil.issueGetRequest(request);
+        ServiceCallResult result1 = HttpUtil.issueGetRequest(request1);
+
+
 
         CustomerBean customer;
+        GeneralUserViewBean generalUserBean;
+        ContactBean contactBean;
 
         UserBean cust = new UserBean();
         if (result.getStatusCode() == 200 || result.getStatusCode() == 202) {
-            customer = JsonUtil.mapToObject(result.getResponseString(),
-                    CustomerBean.class);
+            customer = JsonUtil.mapToObject(result.getResponseString(), CustomerBean.class);
+
+            //System.out.println("-result--------->"+result.getResponseString());
 
 
-            cust.setUserId(customer.getCustomerId());
+            generalUserBean = JsonUtil.mapToObject(result1.getResponseString(), GeneralUserViewBean.class);
+            contactBean = JsonUtil.mapToObject(result.getResponseString(), ContactBean.class);
+
+            //System.out.println("-result1--------->"+result1.getResponseString());
+
+            cust.setId(generalUserBean.getUser().getUserId());
+            cust.setLogin(generalUserBean.getUser().getLogin());
             cust.setSic(customer.getOverview().getSic());
-
-            PreferencesBean preferencesBean = new PreferencesBean();
-
-            BookingBean bookingbean = new BookingBean();
-
-            bookingbean.setShouldSendRefSampleToFactory(customer.getOrderBooking().getSendSampleToFactory());
-            bookingbean.setIsPoMandatory(customer.getOrderBooking().getPoCompulsory());
-            bookingbean.setUseQuickFormByDefault(null);
-
-            AqlAndSamplingSizeBean aqlbean = new AqlAndSamplingSizeBean();
-
-            aqlbean.setCanModify(null);
-            aqlbean.setCustomDefaultSampleLevel(null);
-            aqlbean.setUseCustomAQL(null);
-
-            CustomAQLBean custaqlbean = new CustomAQLBean();
-
-            custaqlbean.setCriticalDefects(null);
-            custaqlbean.setMajorDefects(null);
-            custaqlbean.setMaxMeasurementDefects(null);
-            custaqlbean.setMinorDefects(null);
-
-            aqlbean.setCustomAQL(custaqlbean);
-
-            bookingbean.setAqlAndSamplingSize(aqlbean);
-
-            MinQuantityToBeReadyBean minquantbean = new MinQuantityToBeReadyBean();
-
-            minquantbean.setServiceType(null);
-            minquantbean.setMinQty(null);
-
-            bookingbean.setMinQuantityToBeReady(minquantbean);
-
-            preferencesBean.setBooking(bookingbean);
-
-            cust.setPreferences(preferencesBean);
+            cust.setStatus(generalUserBean.getUser().getStatusText());
 
 
-            CompanyBean companybean = new CompanyBean();
-            companybean.setAddress(customer.getCompanyInfo().getAddress());
-            companybean.setCity(customer.getCompanyInfo().getCity());
-            companybean.setIndustry(customer.getCompanyInfo().getIndustry());
-            companybean.setPostcode(customer.getCompanyInfo().getPostCode());
-            companybean.setName(customer.getCompanyInfo().getCompanyName());
-            companybean.setCountry(customer.getCompanyInfo().getCountry());
+            String status = customer.getExtra().getIsChb();
+            String status1 = customer.getExtra().getIsFI();
+            String status2 = generalUserBean.getSettingBean().getBusinessUnitText();
 
-            cust.setCompany(companybean);
+            if (status.equalsIgnoreCase("Yes")) {
+                cust.setBusinessUnit("CHB");
+            } else if (status1.equalsIgnoreCase("Yes")) {
+                cust.setBusinessUnit("AFI");
+            } else if (status2.equals("AG")) {
+                cust.setBusinessUnit("AG");
+            } else {
+                cust.setBusinessUnit("AI");
+            }
 
-            ContactInfoBean contactinfobean = new ContactInfoBean();
 
-            BillingBean billingbean = new BillingBean();
-            billingbean.setIsSameAsMainContact(null);
+            CompanyBean comp = new CompanyBean();
 
-            contactinfobean.setBilling(billingbean);
+            comp.setName(generalUserBean.getCompany().getCompanyName());
+            comp.setNameCN(generalUserBean.getCompany().getCompanyNameCN());
+            comp.setIndustry(generalUserBean.getCompany().getIndustry());
+            comp.setCountry(generalUserBean.getCompany().getCountryRegion());
+            comp.setAddress(generalUserBean.getCompany().getAddress1() + " " + generalUserBean.getCompany().getAddress2() + " " + generalUserBean.getCompany().getAddress3());
+            comp.setCity(generalUserBean.getCompany().getCity());
+            comp.setPostcode(generalUserBean.getCompany().getPostCode());
 
-            MainBean mainbean = new MainBean();
+            cust.setCompany(comp);
 
-            mainbean.setPosition(null);
-            mainbean.setEmail(null);
-            mainbean.setFamilyName(null);
-            mainbean.setGivenName(null);
-            mainbean.setPhoneNumber(null);
-            mainbean.setSalutation(null);
-            contactinfobean.setMain(mainbean);
 
-            cust.setContactInfo(contactinfobean);
+            ContactInfoBean contactInfoBean = new ContactInfoBean();
+
+            MainBean main = new MainBean();
+
+            main.setSalutation(generalUserBean.getUser().getFollowName());
+            main.setFamilyName(generalUserBean.getUser().getLastName());
+            main.setGivenName(generalUserBean.getUser().getFirstName());
+            main.setPosition(customer.getContact().getMainPosition());
+            main.setEmail(generalUserBean.getUser().getPersonalEmail());
+            main.setPhoneNumber(generalUserBean.getUser().getLandline());
+            main.setMobileNumber(generalUserBean.getUser().getMobile());
+
+            contactInfoBean.setMain(main);
+
+            BillingBean billingBean = new BillingBean();
+
+            billingBean.setSalutation(customer.getContact().getAccountingGender());
+            billingBean.setFamilyName(customer.getContact().getAccountingName());
+            billingBean.setGivenName(customer.getContact().getAccountingGivenName());
+            billingBean.setEmail(customer.getContact().getAccountingEmail());
+            billingBean.setIsSameAsMainContact("false");
+
+            contactInfoBean.setBilling(billingBean);
+            cust.setContactInfo(contactInfoBean);
 
             return cust;
         }

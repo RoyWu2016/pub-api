@@ -6,22 +6,59 @@ import com.ai.api.bean.*;
  *
  */
 public class UserBean {
-    private PreferencesBean preferences;
+
+    private String id;
+
+    private String login;
+
+    private String sic;
+
+    private String status;
+
+    private String businessUnit;
 
     private CompanyBean company;
 
     private ContactInfoBean contactInfo;
 
-    private String sic;
-
-    private String userId;
-
-    public PreferencesBean getPreferences() {
-        return preferences;
+    public String getId() {
+        return id;
     }
 
-    public void setPreferences(PreferencesBean preferences) {
-        this.preferences = preferences;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getSic() {
+        return sic;
+    }
+
+    public void setSic(String sic) {
+        this.sic = sic;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getBusinessUnit() {
+        return businessUnit;
+    }
+
+    public void setBusinessUnit(String businessUnit) {
+        this.businessUnit = businessUnit;
     }
 
     public CompanyBean getCompany() {
@@ -38,21 +75,5 @@ public class UserBean {
 
     public void setContactInfo(ContactInfoBean contactInfo) {
         this.contactInfo = contactInfo;
-    }
-
-    public String getSic() {
-        return sic;
-    }
-
-    public void setSic(String sic) {
-        this.sic = sic;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 }

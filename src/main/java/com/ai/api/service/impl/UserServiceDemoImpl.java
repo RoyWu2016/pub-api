@@ -84,9 +84,7 @@ public class UserServiceDemoImpl implements UserServiceDemo {
         users.clear();
     }
 
-// ---------  KK  -----------
-
-
+    //--
     public void saveUserChoice(UserChoiceBean userChoice) {
         usersChoice = new ArrayList<UserChoiceBean>();
         usersChoice.add(userChoice);

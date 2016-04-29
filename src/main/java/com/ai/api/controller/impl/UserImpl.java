@@ -6,8 +6,6 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
-import java.io.IOException;
-
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
@@ -20,6 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 /***************************************************************************
  * <PRE>
@@ -46,26 +46,6 @@ public class UserImpl implements User {
 
     @Autowired
     UserService userService;  //Service which will do all data retrieval/manipulation work
-
-//    @Override
-//    @RequestMapping(value = "/user/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<UserBean> getUser(@PathVariable("login") String login) throws IOException, AIException {
-//        System.out.println("login: " + login);
-//        UserBean user = null;
-//        try {
-//            user = customerService.getByLogin(login);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (AIException e) {
-//            e.printStackTrace();
-//        }
-//        if (user == null) {
-//            System.out.println("User with login " + login + " not found");
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//        return new ResponseEntity<>(user, HttpStatus.OK);
-//    }
-
 
     @Override
     @RequestMapping(value = "/user/{login}/profile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

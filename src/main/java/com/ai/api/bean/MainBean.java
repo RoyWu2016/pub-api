@@ -4,40 +4,26 @@ package com.ai.api.bean;
  * Created by KK on 4/25/2016.
  */
 public class MainBean {
-    private String position;
-
-    private String phoneNumber;
-
-    private String email;
+    private String salutation;
 
     private String familyName;
 
     private String givenName;
 
-    private String salutation;
+    private String position;
 
-    public String getPosition() {
-        return position;
+    private String email;
+
+    private String phoneNumber;
+
+    private String mobileNumber;
+
+    public String getSalutation() {
+        return salutation;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setSalutation(String salutation) {
+        this.salutation = salutation;
     }
 
     public String getFamilyName() {
@@ -56,12 +42,35 @@ public class MainBean {
         this.givenName = givenName;
     }
 
-    public String getSalutation() {
-        return salutation;
+    public String getPosition() {
+        return position;
     }
 
-    public void setSalutation(String salutation) {
-        this.salutation = salutation;
+    public void setPosition(String position) {
+        this.position = position;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
 }

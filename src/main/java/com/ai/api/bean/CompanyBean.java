@@ -4,25 +4,20 @@ package com.ai.api.bean;
  * Created by KK on 4/25/2016.
  */
 public class CompanyBean {
-    private String address;
 
     private String name;
 
-    private String postcode;
+    private String nameCN;
 
     private String industry;
 
-    private String city;
-
     private String country;
 
-    public String getAddress() {
-        return address;
-    }
+    private String address;
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+    private String city;
+
+    private String postcode;
 
     public String getName() {
         return name;
@@ -32,12 +27,12 @@ public class CompanyBean {
         this.name = name;
     }
 
-    public String getPostcode() {
-        return postcode;
+    public String getNameCN() {
+        return nameCN;
     }
 
-    public void setPostcode(String postcode) {
-        this.postcode = postcode;
+    public void setNameCN(String nameCN) {
+        this.nameCN = nameCN;
     }
 
     public String getIndustry() {
@@ -48,6 +43,22 @@ public class CompanyBean {
         this.industry = industry;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public String getCity() {
         return city;
     }
@@ -56,11 +67,11 @@ public class CompanyBean {
         this.city = city;
     }
 
-    public String getCountry() {
-        return country;
+    public String getPostcode() {
+        return postcode;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
     }
 }
