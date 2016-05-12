@@ -203,4 +203,10 @@ public final class Get {
     public static final String GET_GENERAL_FEATURE = "SELECT * FROM GENERAL_FEATURE WHERE FEATURE_CODE = ?";
 
     public static final String GET_LAB_ALL_COUNTRY = "SELECT DISTINCT COUNTRY from LAB_PROFILE WHERE COUNTRY IS NOT NULL";
+
+
+    //-----------------------------------
+
+
+
 }

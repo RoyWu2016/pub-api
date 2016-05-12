@@ -7,12 +7,17 @@
 package com.ai.api.controller.impl;
 
 import com.ai.api.App;
-import com.ai.api.bean.UserChoiceBean;
 import com.ai.api.controller.UserDemo;
+import com.ai.api.exception.AIException;
 import com.ai.api.model.UserDemoBean;
+import com.ai.api.model.UserProfileBookingPreference;
+import com.ai.api.model.UserProfileContactRequest;
+import com.ai.api.model.UserProfileRequest;
 import com.ai.api.service.ServiceConfig;
 import com.ai.api.service.UserServiceDemo;
 import com.ai.commons.annotation.Secured;
+import com.ai.commons.beans.customer.*;
+import com.ai.commons.beans.user.GeneralUserBean;
 import com.ai.consts.CommonAuthConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.util.List;
 
 /***************************************************************************
@@ -165,16 +171,87 @@ public class UserDemoImpl implements UserDemo {
         userDemoService.deleteAllUsers();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    //------------------- UserChoice save --------------------------------------------------------
+    //------------------- User Profile Company Update --------------------------------------------------------
 
-    @RequestMapping(value = "/user/{login}", method = RequestMethod.POST)
-    public ResponseEntity<Void> userChoice(@RequestBody UserChoiceBean userChoice, UriComponentsBuilder ucBuilder) {
-        System.out.println("Creating User Choice " + userChoice.getChoices());
+    @RequestMapping(value = "/user/{USER_ID}/profile/company", method = RequestMethod.PUT)
+    public ResponseEntity<Void> updateUserProfileCompany(@PathVariable("USER_ID") String USER_ID, @RequestBody UserProfileRequest userProfileRequest) throws IOException, AIException {
+        System.out.println("Creating User Choice " + USER_ID);
 
-        userDemoService.saveUserChoice(userChoice);
-        HttpHeaders headers = new HttpHeaders();
+        GeneralUserViewBean generalUserViewBean = new GeneralUserViewBean();
 
-        headers.setLocation(ucBuilder.path("/user/questions").buildAndExpand(userChoice.getQuestion(), userChoice.getChoices()).toUri());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        CrmCompanyBean crmCompanyBean = new CrmCompanyBean();
+
+        crmCompanyBean.setCompanyNameCN(userProfileRequest.getNameCN());
+        crmCompanyBean.setIndustry(userProfileRequest.getIndustry());
+        crmCompanyBean.setCountryRegion(userProfileRequest.getCountry());
+        crmCompanyBean.setAddress1(userProfileRequest.getAddress());
+        crmCompanyBean.setCity(userProfileRequest.getCity());
+        crmCompanyBean.setPostCode(userProfileRequest.getPostcode());
+
+
+        generalUserViewBean.setCompany(crmCompanyBean);
+
+        userDemoService.getProfileUpdate(generalUserViewBean, USER_ID);
+
+        return null;
+    }
+
+    //------------------- User Profile Contact Update --------------------------------------------------------
+
+    @RequestMapping(value = "/user/{USER_ID}/profile/contactInfo", method = RequestMethod.PUT)
+    public ResponseEntity<Void> updateUserProfileContact(@PathVariable("USER_ID") String USER_ID, @RequestBody UserProfileContactRequest userProfileContactRequest) throws IOException, AIException {
+        System.out.println("Creating User Choice " + USER_ID);
+
+        GeneralUserViewBean generalUserViewBean = new GeneralUserViewBean();
+        GeneralUserBean generalUserBean = new GeneralUserBean();
+        ContactBean contactBean = new ContactBean();
+
+        generalUserBean.setFollowName(userProfileContactRequest.getMainSalutation());
+        generalUserBean.setLastName(userProfileContactRequest.getMainFamilyName());
+        generalUserBean.setFirstName(userProfileContactRequest.getMainGivenName());
+        contactBean.setMainPosition(userProfileContactRequest.getMainPosition());
+        generalUserBean.setPersonalEmail(userProfileContactRequest.getMainEmail());
+        generalUserBean.setLandline(userProfileContactRequest.getMainPhoneNumber());
+        generalUserBean.setMobile(userProfileContactRequest.getMainMobileNumber());
+
+        contactBean.setAccountingGender(userProfileContactRequest.getBillingSalutation());
+        contactBean.setAccountingName(userProfileContactRequest.getBillingFamilyName());
+        contactBean.setAccountingGivenName(userProfileContactRequest.getBillingGivenName());
+        contactBean.setAccountingEmail(userProfileContactRequest.getBillingEmail());
+        //contactBean.set(userProfileContactRequest.getBillingEmail());
+        generalUserViewBean.setUser(generalUserBean);
+
+        userDemoService.getProfileContactUpdate(generalUserViewBean, contactBean, USER_ID);
+
+        return null;
+    }
+
+
+    //------------------- User Profile Booking Preference Update --------------------------------------------------------
+
+    @RequestMapping(value = "/user/{USER_ID}/profile/preference/booking", method = RequestMethod.PUT)
+    public ResponseEntity<Void> updateUserProfileContact(@PathVariable("USER_ID") String USER_ID, @RequestBody UserProfileBookingPreference userProfileBookingPreference) throws IOException, AIException {
+        System.out.println("Creating User Choice " + USER_ID);
+
+        OrderBookingBean orderBookingBean = new OrderBookingBean();
+
+        orderBookingBean.setSendSampleToFactory(userProfileBookingPreference.getShouldSendRefSampleToFactory());
+        orderBookingBean.setPoCompulsory(userProfileBookingPreference.getIsPoMandatory());
+        orderBookingBean.setPsiPercentage(userProfileBookingPreference.getMinQuantityToBeReadyPsiPercentage());
+        orderBookingBean.setDuproPercentage(userProfileBookingPreference.getMinQuantityToBeReadyDuproPercentage());
+        orderBookingBean.setIpcPercentage(userProfileBookingPreference.getMinQuantityToBeReadyIpcPercentage());
+        orderBookingBean.setClcPercentage(userProfileBookingPreference.getMinQuantityToBeReadyClcPercentage());
+        orderBookingBean.setPmPercentage(userProfileBookingPreference.getMinQuantityToBeReadyPmPercentage());
+        orderBookingBean.setAllowChangeAql(userProfileBookingPreference.getAleCanModify());
+        orderBookingBean.setCustomizedSampleLevel(userProfileBookingPreference.getAqlCustomDefaultSampleLevel());
+        orderBookingBean.setCustAqlLevel(userProfileBookingPreference.getUseCustomAQL());
+        orderBookingBean.setCriticalDefects(userProfileBookingPreference.getCustomAQLCriticalDefects());
+        orderBookingBean.setMajorDefects(userProfileBookingPreference.getCustomAQLMajorDefects());
+        orderBookingBean.setMinorDefects(userProfileBookingPreference.getCustoMAQLMinorDefects());
+        orderBookingBean.setMaxMeaDefects(userProfileBookingPreference.getCustoMAQLMaxMeasurementDefects());
+
+        userDemoService.getProfileBookingPreferenceUpdate(orderBookingBean, USER_ID);
+
+        return null;
     }
 }

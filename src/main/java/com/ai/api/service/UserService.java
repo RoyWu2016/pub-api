@@ -6,10 +6,11 @@
  ***************************************************************************/
 package com.ai.api.service;
 
-import java.io.IOException;
-
 import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
+import com.ai.commons.beans.customer.GeneralUserViewBean;
+
+import java.io.IOException;
 
 /***************************************************************************
  * <PRE>
@@ -34,5 +35,6 @@ import com.ai.api.model.UserBean;
 public interface UserService {
 
     UserBean getCustByLogin(String login) throws IOException, AIException;
+
 
 }

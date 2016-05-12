@@ -1,6 +1,9 @@
 package com.ai.api.dao;
 
 import com.ai.api.exception.AIException;
+import com.ai.commons.beans.customer.ContactBean;
+import com.ai.commons.beans.customer.GeneralUserViewBean;
+import com.ai.commons.beans.customer.OrderBookingBean;
 
 import java.util.List;
 
@@ -27,6 +30,16 @@ public interface CustomerDao {
      */
     public String getCustomerIdByCustomerLogin(String login) throws AIException;
 
+
+    //------------------kk updateProfileCompany----------------------
+
+    public void updateProfileCompany(GeneralUserViewBean generalUserViewBean, String user_id) throws AIException;
+
+    public void updateProfileContact(GeneralUserViewBean generalUserViewBean, ContactBean contactBean, String user_id) throws AIException;
+
+    public void updateBookingPreference(OrderBookingBean orderBookingBean, String user_id) throws AIException;
+
+
     /**
      * Gets the customer IDs associated to the customer company name given in parameter.
      *
@@ -45,5 +58,9 @@ public interface CustomerDao {
      * @throws AIException Database issue
      */
     public List<String> getMobileDeviceIdsByLogin(String login) throws AIException;
+
+    //======================KK
+
+
 
 }

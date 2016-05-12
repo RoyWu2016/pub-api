@@ -4,17 +4,11 @@ package com.ai.api.bean;
  * Created by KK on 4/25/2016.
  */
 public class MinQuantityToBeReadyBean {
-    private String minQty;
 
     private String serviceType;
 
-    public String getMinQty() {
-        return minQty;
-    }
+    private int minQty;
 
-    public void setMinQty(String minQty) {
-        this.minQty = minQty;
-    }
 
     public String getServiceType() {
         return serviceType;
@@ -22,5 +16,13 @@ public class MinQuantityToBeReadyBean {
 
     public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
+    }
+
+    public int getMinQty() {
+        return minQty;
+    }
+
+    public void setMinQty(int minQty) {
+        this.minQty = minQty;
     }
 }

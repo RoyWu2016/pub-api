@@ -1,11 +1,19 @@
 package com.ai.api.service.impl;
 
 import com.ai.api.bean.UserChoiceBean;
+import com.ai.api.dao.CustomerDao;
+import com.ai.api.exception.AIException;
 import com.ai.api.model.UserDemoBean;
 import com.ai.api.service.UserServiceDemo;
+import com.ai.commons.beans.customer.ContactBean;
+import com.ai.commons.beans.customer.GeneralUserViewBean;
+import com.ai.commons.beans.customer.OrderBookingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +22,11 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service("userDemoService")
 @Transactional
 public class UserServiceDemoImpl implements UserServiceDemo {
+
+    @Autowired
+    @Qualifier("customerDao")
+    private CustomerDao customerDao;
+
 
     private static final AtomicLong counter = new AtomicLong();
 
@@ -84,11 +97,16 @@ public class UserServiceDemoImpl implements UserServiceDemo {
         users.clear();
     }
 
-    //--
-    public void saveUserChoice(UserChoiceBean userChoice) {
-        usersChoice = new ArrayList<UserChoiceBean>();
-        usersChoice.add(userChoice);
-
+    //-------------------By kk ---------------------------
+    public void getProfileUpdate(GeneralUserViewBean generalUserViewBean, String user_id) throws AIException {
+        customerDao.updateProfileCompany(generalUserViewBean, user_id);
     }
 
+    public void getProfileContactUpdate(GeneralUserViewBean generalUserViewBean, ContactBean contactBean, String user_id) throws IOException, AIException {
+        customerDao.updateProfileContact(generalUserViewBean, contactBean, user_id);
+    }
+
+    public void getProfileBookingPreferenceUpdate(OrderBookingBean orderBookingBean, String user_id) throws IOException, AIException {
+        customerDao.updateBookingPreference(orderBookingBean, user_id);
+    }
 }

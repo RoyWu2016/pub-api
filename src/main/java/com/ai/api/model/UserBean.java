@@ -21,6 +21,8 @@ public class UserBean {
 
     private ContactInfoBean contactInfo;
 
+    private PreferencesBean preferencesBean;
+
     public String getId() {
         return id;
     }
@@ -75,5 +77,13 @@ public class UserBean {
 
     public void setContactInfo(ContactInfoBean contactInfo) {
         this.contactInfo = contactInfo;
+    }
+
+    public PreferencesBean getPreferencesBean() {
+        return preferencesBean;
+    }
+
+    public void setPreferencesBean(PreferencesBean preferencesBean) {
+        this.preferencesBean = preferencesBean;
     }
 }

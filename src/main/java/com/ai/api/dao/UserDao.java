@@ -28,4 +28,5 @@ package com.ai.api.dao;
 
 public interface UserDao {
 
+
 }

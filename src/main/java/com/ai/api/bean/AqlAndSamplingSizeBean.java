@@ -4,20 +4,22 @@ package com.ai.api.bean;
  * Created by KK on 4/25/2016.
  */
 public class AqlAndSamplingSizeBean {
-    private CustomAQLBean customAQL;
 
-    private String customDefaultSampleLevel;
 
     private String canModify;
 
+    private String customDefaultSampleLevel;
+
     private String useCustomAQL;
 
-    public CustomAQLBean getCustomAQL() {
-        return customAQL;
+    private CustomAQLBean customAQL;
+
+    public String getCanModify() {
+        return canModify;
     }
 
-    public void setCustomAQL(CustomAQLBean customAQL) {
-        this.customAQL = customAQL;
+    public void setCanModify(String canModify) {
+        this.canModify = canModify;
     }
 
     public String getCustomDefaultSampleLevel() {
@@ -28,14 +30,6 @@ public class AqlAndSamplingSizeBean {
         this.customDefaultSampleLevel = customDefaultSampleLevel;
     }
 
-    public String getCanModify() {
-        return canModify;
-    }
-
-    public void setCanModify(String canModify) {
-        this.canModify = canModify;
-    }
-
     public String getUseCustomAQL() {
         return useCustomAQL;
     }
@@ -44,4 +38,11 @@ public class AqlAndSamplingSizeBean {
         this.useCustomAQL = useCustomAQL;
     }
 
+    public CustomAQLBean getCustomAQL() {
+        return customAQL;
+    }
+
+    public void setCustomAQL(CustomAQLBean customAQL) {
+        this.customAQL = customAQL;
+    }
 }
