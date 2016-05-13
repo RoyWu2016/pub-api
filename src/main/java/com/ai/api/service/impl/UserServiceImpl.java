@@ -6,6 +6,8 @@
  ***************************************************************************/
 package com.ai.api.service.impl;
 
+import java.io.IOException;
+
 import com.ai.api.bean.BillingBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.ContactInfoBean;
@@ -19,15 +21,13 @@ import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.customer.CustomerBean;
-
-import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.customer.ContactBean;
+import com.ai.commons.beans.customer.CustomerBean;
+import com.ai.commons.beans.customer.GeneralUserViewBean;
+import com.ai.commons.beans.customer.OverviewBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 
 /***************************************************************************
  * <PRE>
@@ -68,9 +68,22 @@ public class UserServiceImpl implements UserService {
 
         String customer_id = customerDao.getCustomerIdByCustomerLogin(login);
 
+	    String compUrl = config.getCustomerServiceUrl() + "/users/" + customer_id;
+
+	    GeneralUserViewBean generalUserBean;
+
+	    ServiceCallResult compResult = HttpUtil.issueGetRequest(GetRequest.newInstance().setUrl(compUrl));
+		generalUserBean = JsonUtil.mapToObject(compResult.getResponseString(), GeneralUserViewBean.class);
+
+		String compID = generalUserBean.getCompany().getCompanyId();
+	    String sicUrl = config.getCustomerServiceUrl() + "/customer/" + compID + "/overview";
+	    ServiceCallResult sicResult = HttpUtil.issueGetRequest(GetRequest.newInstance().setUrl(sicUrl));
+	    OverviewBean overview = JsonUtil.mapToObject(sicResult.getResponseString(), OverviewBean.class);
+
+
         String url = config.getCustomerServiceUrl() + "/customer/" + customer_id;
 
-        String url1 = config.getCustomerServiceUrl() + "/users/" + customer_id;
+
 
         //String url1 = "http://192.168.0.31:8093/customer-service/users/2E85EB892D5BF11AE050A8C00600456F";
 
@@ -79,24 +92,19 @@ public class UserServiceImpl implements UserService {
 
         //do below for now
         GetRequest request = GetRequest.newInstance().setUrl(url);
-        GetRequest request1 = GetRequest.newInstance().setUrl(url1);
         ServiceCallResult result = HttpUtil.issueGetRequest(request);
-        ServiceCallResult result1 = HttpUtil.issueGetRequest(request1);
 
 
 
         CustomerBean customer;
-        GeneralUserViewBean generalUserBean;
         ContactBean contactBean;
 
         UserBean cust = new UserBean();
         if (result.getStatusCode() == 200 || result.getStatusCode() == 202) {
             customer = JsonUtil.mapToObject(result.getResponseString(), CustomerBean.class);
 
-            //System.out.println("-result--------->"+result.getResponseString());
 
 
-            generalUserBean = JsonUtil.mapToObject(result1.getResponseString(), GeneralUserViewBean.class);
             contactBean = JsonUtil.mapToObject(result.getResponseString(), ContactBean.class);
 
             //System.out.println("-result1--------->"+result1.getResponseString());

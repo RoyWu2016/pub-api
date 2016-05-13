@@ -1,15 +1,15 @@
 package com.ai.api.dao.impl.db;
 
+import static com.ai.api.dao.impl.sql.Get.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.exception.AIException;
 import org.apache.log4j.Logger;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.ai.api.dao.impl.sql.Get.*;
 
 public class UserDaoImpl extends JdbcDaoSupport implements CustomerDao {
     private static final Logger LOGGER = Logger.getLogger(UserDaoImpl.class);
@@ -30,7 +30,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements CustomerDao {
     @Override
     public String getCustomerIdByCustomerLogin(String login) throws AIException {
         try {
-            return getJdbcTemplate().queryForObject(GET_CUSTOMER_ID_BY_LOGIN, new Object[]{login},
+            return getJdbcTemplate().queryForObject(GET_USER_ID_BY_LOGIN, new Object[]{login},
                     String.class);
         } catch (EmptyResultDataAccessException ee) {
             LOGGER.info("Customer " + login + " not found");
