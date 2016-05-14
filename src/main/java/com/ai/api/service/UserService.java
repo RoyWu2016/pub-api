@@ -8,7 +8,9 @@ package com.ai.api.service;
 
 import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
+import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
+import com.ai.commons.beans.customer.OrderBookingBean;
 
 import java.io.IOException;
 
@@ -35,6 +37,12 @@ import java.io.IOException;
 public interface UserService {
 
     UserBean getCustByLogin(String login) throws IOException, AIException;
+
+    void getProfileUpdate(GeneralUserViewBean generalUserViewBean, String user_id) throws IOException, AIException;
+
+    void getProfileContactUpdate(GeneralUserViewBean generalUserViewBean, ContactBean contactBean, String user_id) throws IOException, AIException;
+
+    void getProfileBookingPreferenceUpdate(OrderBookingBean orderBookingBean, String user_id) throws IOException, AIException;
 
 
 }

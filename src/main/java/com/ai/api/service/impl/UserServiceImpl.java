@@ -26,8 +26,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /***************************************************************************
  * <PRE>
@@ -68,13 +66,10 @@ public class UserServiceImpl implements UserService {
     public UserBean getCustByLogin(String login) throws IOException, AIException {
 
         String customer_id = customerDao.getCustomerIdByCustomerLogin(login);
-
-        // String url = config.getCustomerServiceUrl() + "/customer/" + customer_id;
         System.out.println("---**----customer_id--**---" + customer_id);
 
         //-------------------5-10  by KK  ----------
 
-        // String generalUVBeanURL = config.getCustomerServiceUrl() + "/users/" + "718469922EDD45E296276563B122E701";
         String generalUVBeanURL = config.getCustomerServiceUrl() + "/users/" + customer_id;
         GetRequest request = GetRequest.newInstance().setUrl(generalUVBeanURL);
         ServiceCallResult result = HttpUtil.issueGetRequest(request);
@@ -177,7 +172,6 @@ public class UserServiceImpl implements UserService {
             comp.setName(generalUserBean.getCompany().getCompanyName());
             comp.setNameCN(generalUserBean.getCompany().getCompanyNameCN());
             comp.setIndustry(generalUserBean.getCompany().getIndustry());
-            comp.setCountry(generalUserBean.getCompany().getCountryRegion());
             comp.setAddress(generalUserBean.getCompany().getAddress1() + " " + generalUserBean.getCompany().getAddress2() + " " + generalUserBean.getCompany().getAddress3());
             comp.setCity(generalUserBean.getCompany().getCity());
             comp.setPostcode(generalUserBean.getCompany().getPostCode());
@@ -304,15 +298,17 @@ public class UserServiceImpl implements UserService {
             PreferredProductFamilies preferredProductFamilies = new PreferredProductFamilies();
 
             int a = productFamilyBean.getRelevantCategoryInfo().size();
-            List<String> list = new ArrayList<>();
+            PreferredProductFamilies[] preferredProductFamiliesarray = new PreferredProductFamilies[a];
 
             System.out.println("Product Family Data Size : " + a);
 
             for (int i = 0; i < a; i++) {
-                list.add(productFamilyBean.getRelevantCategoryInfo().get(i).getFavFamily());
+                preferredProductFamilies.setProductCategoryId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavCategory());
+                preferredProductFamilies.setProductFamilyId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavFamily());
+                preferredProductFamiliesarray[i] = preferredProductFamilies;
             }
 
-            bookingbean.setPreferredProductFamilies(list);
+            bookingbean.setPreferredProductFamilies(preferredProductFamiliesarray);
 
             // ------------Set QualityManual Properties ----------------
 
@@ -331,5 +327,17 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    //-------------------By kk ---------------------------
+    public void getProfileUpdate(GeneralUserViewBean generalUserViewBean, String user_id) throws AIException {
+        customerDao.updateProfileCompany(generalUserViewBean, user_id);
+    }
+
+    public void getProfileContactUpdate(GeneralUserViewBean generalUserViewBean, ContactBean contactBean, String user_id) throws IOException, AIException {
+        customerDao.updateProfileContact(generalUserViewBean, contactBean, user_id);
+    }
+
+    public void getProfileBookingPreferenceUpdate(OrderBookingBean orderBookingBean, String user_id) throws IOException, AIException {
+        customerDao.updateBookingPreference(orderBookingBean, user_id);
+    }
 
 }

@@ -1,8 +1,6 @@
 package com.ai.api.bean;
 
 
-import java.util.List;
-
 /**
  * Created by KK on 4/25/2016.
  */
@@ -18,7 +16,7 @@ public class BookingBean {
 
     private AqlAndSamplingSizeBean aqlAndSamplingSize;
 
-    private List<String> preferredProductFamilies;
+    private PreferredProductFamilies[] preferredProductFamilies;
 
     private QualityManual qualityManual;
 
@@ -62,11 +60,11 @@ public class BookingBean {
         this.aqlAndSamplingSize = aqlAndSamplingSize;
     }
 
-    public List<String> getPreferredProductFamilies() {
+    public PreferredProductFamilies[] getPreferredProductFamilies() {
         return preferredProductFamilies;
     }
 
-    public void setPreferredProductFamilies(List<String> preferredProductFamilies) {
+    public void setPreferredProductFamilies(PreferredProductFamilies[] preferredProductFamilies) {
         this.preferredProductFamilies = preferredProductFamilies;
     }
 

@@ -32,6 +32,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements CustomerDao {
 
     @Override
     public String getCustomerIdByCustomerLogin(String login) throws AIException {
+
         try {
             return getJdbcTemplate().queryForObject(GET_CUSTOMER_ID_BY_LOGIN, new Object[]{login},
                     String.class);
@@ -68,6 +69,9 @@ public class UserDaoImpl extends JdbcDaoSupport implements CustomerDao {
             throw new AIException(UserDaoImpl.class, e.getMessage(), e);
         }
     }
+//---------------------------- BY KK -------------
+
+    //---------------------------- Update Profile Company ----------------------
 
     public void updateProfileCompany(GeneralUserViewBean generalUserViewBean, String user_id) throws AIException {
         try {
@@ -83,6 +87,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements CustomerDao {
         }
     }
 
+    //---------------------------- Update Profile Contact----------------------
 
     public void updateProfileContact(GeneralUserViewBean generalUserViewBean, ContactBean contactBean, String user_id) throws AIException {
         try {
@@ -99,6 +104,8 @@ public class UserDaoImpl extends JdbcDaoSupport implements CustomerDao {
         }
 
     }
+
+    //---------------------------- Update Profile Booking Preference----------------------
 
     public void updateBookingPreference(OrderBookingBean orderBookingBean, String user_id) throws AIException {
         try {
