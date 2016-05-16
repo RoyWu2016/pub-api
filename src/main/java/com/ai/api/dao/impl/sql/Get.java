@@ -121,7 +121,13 @@ public final class Get {
             + "AND UPPER(CUST_MASTER_ACC_SETTINGS.IS_MASTER) = UPPER('Yes') "
             + "AND UPPER(CUST_MASTER_SUB_COMPANY.SUB_COMPANY) = UPPER(?)";
 
-    public static final String GET_USER_ID_BY_LOGIN = "SELECT ID FROM GENERAL_USER WHERE UPPER(LOGIN) = UPPER(?)";
+//    public static final String GET_CUSTOMER_ID_BY_LOGIN = "SELECT CUST_PROFILE.CUST_ID "
+//            + "FROM CUST_PROFILE " + "JOIN CUST_PROFILE_EXT_FIELDS "
+//            + "ON CUST_PROFILE.CUST_ID = CUST_PROFILE_EXT_FIELDS.CUST_ID "
+//            + "WHERE UPPER(IS_DELETED) = UPPER('No') " + "AND UPPER(LOGIN)        = UPPER(?)";
+
+    public static final String GET_CUSTOMER_ID_BY_LOGIN = "SELECT ID FROM GENERAL_USER WHERE LOGIN =?";
+
 
     public static final String GET_MASTER_SUB_COMPANIES = "SELECT SUB_COMPANY FROM CUST_MASTER_SUB_COMPANY "
             + "WHERE CUST_ID = ?";
@@ -200,4 +206,10 @@ public final class Get {
     public static final String GET_GENERAL_FEATURE = "SELECT * FROM GENERAL_FEATURE WHERE FEATURE_CODE = ?";
 
     public static final String GET_LAB_ALL_COUNTRY = "SELECT DISTINCT COUNTRY from LAB_PROFILE WHERE COUNTRY IS NOT NULL";
+
+
+    //-----------------------------------
+
+
+
 }

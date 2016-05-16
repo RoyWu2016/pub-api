@@ -16,6 +16,7 @@
     <bean id="customerDao" class="com.ai.api.dao.impl.db.UserDaoImpl">
         <property name="dataSource" ref="dataSource"/>
     </bean>
+
     <!--<bean id="dataSource"-->
           <!--class="${datasource.pool}"-->
           <!--destroy-method="close"-->

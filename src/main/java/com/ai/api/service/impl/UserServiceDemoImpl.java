@@ -1,8 +1,11 @@
 package com.ai.api.service.impl;
 
 import com.ai.api.bean.UserChoiceBean;
+import com.ai.api.dao.CustomerDao;
 import com.ai.api.model.UserDemoBean;
 import com.ai.api.service.UserServiceDemo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +17,11 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service("userDemoService")
 @Transactional
 public class UserServiceDemoImpl implements UserServiceDemo {
+
+    @Autowired
+    @Qualifier("customerDao")
+    private CustomerDao customerDao;
+
 
     private static final AtomicLong counter = new AtomicLong();
 
@@ -82,13 +90,6 @@ public class UserServiceDemoImpl implements UserServiceDemo {
 
     public void deleteAllUsers() {
         users.clear();
-    }
-
-    //--
-    public void saveUserChoice(UserChoiceBean userChoice) {
-        usersChoice = new ArrayList<UserChoiceBean>();
-        usersChoice.add(userChoice);
-
     }
 
 }

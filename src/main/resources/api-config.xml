@@ -32,7 +32,6 @@
 
     <bean id="app" class="com.ai.api.App"/>
 
-
     <!-- Version bean for application information -->
     <bean id="versionBean" class="version.Version"/>
 </beans>

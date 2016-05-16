@@ -11,8 +11,6 @@ public class CompanyBean {
 
     private String industry;
 
-    private String country;
-
     private String address;
 
     private String city;
@@ -41,14 +39,6 @@ public class CompanyBean {
 
     public void setIndustry(String industry) {
         this.industry = industry;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
     }
 
     public String getAddress() {

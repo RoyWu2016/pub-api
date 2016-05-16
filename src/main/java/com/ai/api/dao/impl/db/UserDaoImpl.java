@@ -1,16 +1,19 @@
 package com.ai.api.dao.impl.db;
 
-import static com.ai.api.dao.impl.sql.Get.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.exception.AIException;
+import com.ai.commons.beans.customer.ContactBean;
+import com.ai.commons.beans.customer.GeneralUserViewBean;
+import com.ai.commons.beans.customer.OrderBookingBean;
 import org.apache.log4j.Logger;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.ai.api.dao.impl.sql.Get.*;
+import static com.ai.api.dao.impl.sql.Update.*;
 public class UserDaoImpl extends JdbcDaoSupport implements CustomerDao {
     private static final Logger LOGGER = Logger.getLogger(UserDaoImpl.class);
 
@@ -29,8 +32,9 @@ public class UserDaoImpl extends JdbcDaoSupport implements CustomerDao {
 
     @Override
     public String getCustomerIdByCustomerLogin(String login) throws AIException {
+
         try {
-            return getJdbcTemplate().queryForObject(GET_USER_ID_BY_LOGIN, new Object[]{login},
+            return getJdbcTemplate().queryForObject(GET_CUSTOMER_ID_BY_LOGIN, new Object[]{login},
                     String.class);
         } catch (EmptyResultDataAccessException ee) {
             LOGGER.info("Customer " + login + " not found");
@@ -61,6 +65,59 @@ public class UserDaoImpl extends JdbcDaoSupport implements CustomerDao {
         } catch (EmptyResultDataAccessException ee) {
             LOGGER.info("Mobile IDs not found for the login " + login);
             return new ArrayList<String>();
+        } catch (Exception e) {
+            throw new AIException(UserDaoImpl.class, e.getMessage(), e);
+        }
+    }
+//---------------------------- BY KK -------------
+
+    //---------------------------- Update Profile Company ----------------------
+
+    public void updateProfileCompany(GeneralUserViewBean generalUserViewBean, String user_id) throws AIException {
+        try {
+
+            getJdbcTemplate().update(
+                    User_Profile_Company,
+                    new Object[]{generalUserViewBean.getCompany().getCompanyNameCN(), generalUserViewBean.getCompany().getIndustry(),
+                            generalUserViewBean.getCompany().getCountryRegion(), generalUserViewBean.getCompany().getAddress1(),
+                            generalUserViewBean.getCompany().getCity(), generalUserViewBean.getCompany().getPostCode(),
+                            user_id});
+        } catch (Exception e) {
+            throw new AIException(UserDaoImpl.class, e.getMessage(), e);
+        }
+    }
+
+    //---------------------------- Update Profile Contact----------------------
+
+    public void updateProfileContact(GeneralUserViewBean generalUserViewBean, ContactBean contactBean, String user_id) throws AIException {
+        try {
+
+            getJdbcTemplate().update(
+                    User_Profile_Contact,
+                    new Object[]{generalUserViewBean.getUser().getFollowName(), generalUserViewBean.getUser().getLastName(),
+                            generalUserViewBean.getUser().getFirstName(), generalUserViewBean.getUser().getPersonalEmail(),
+                            generalUserViewBean.getUser().getLandline(), generalUserViewBean.getUser().getMobile(),
+                            contactBean.getMainPosition(), contactBean.getAccountingGender(), contactBean.getAccountingName(),
+                            contactBean.getAccountingGivenName(), contactBean.getAccountingEmail(), user_id});
+        } catch (Exception e) {
+            throw new AIException(UserDaoImpl.class, e.getMessage(), e);
+        }
+
+    }
+
+    //---------------------------- Update Profile Booking Preference----------------------
+
+    public void updateBookingPreference(OrderBookingBean orderBookingBean, String user_id) throws AIException {
+        try {
+
+            getJdbcTemplate().update(
+                    User_Profile_Booking_Preference,
+                    new Object[]{orderBookingBean.getSendSampleToFactory(),
+                            orderBookingBean.getPoCompulsory(), orderBookingBean.getPsiPercentage(),
+                            orderBookingBean.getDuproPercentage(), orderBookingBean.getIpcPercentage(),
+                            orderBookingBean.getClcPercentage(), orderBookingBean.getPmPercentage(), orderBookingBean.getAllowChangeAql(),
+                            orderBookingBean.getCustomizedSampleLevel(), orderBookingBean.getCustAqlLevel(), orderBookingBean.getCriticalDefects(),
+                            orderBookingBean.getMajorDefects(), orderBookingBean.getMinorDefects(), orderBookingBean.getMaxMeaDefects(), user_id});
         } catch (Exception e) {
             throw new AIException(UserDaoImpl.class, e.getMessage(), e);
         }

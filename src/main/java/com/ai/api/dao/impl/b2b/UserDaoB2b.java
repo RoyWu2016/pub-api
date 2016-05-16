@@ -28,6 +28,6 @@ import com.ai.api.dao.UserDao;
  * </PRE>
  ***************************************************************************/
 
-public class UserDaoB2b implements UserDao {
+public abstract class UserDaoB2b implements UserDao {
 
 }
