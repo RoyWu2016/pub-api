@@ -6,7 +6,19 @@
  ***************************************************************************/
 package com.ai.api.service.impl;
 
-import com.ai.api.bean.*;
+import java.io.IOException;
+
+import com.ai.api.bean.AqlAndSamplingSizeBean;
+import com.ai.api.bean.BillingBean;
+import com.ai.api.bean.BookingBean;
+import com.ai.api.bean.CompanyBean;
+import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.CustomAQLBean;
+import com.ai.api.bean.MainBean;
+import com.ai.api.bean.MinQuantityToBeReadyBean;
+import com.ai.api.bean.PreferencesBean;
+import com.ai.api.bean.PreferredProductFamilies;
+import com.ai.api.bean.QualityManual;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
@@ -18,14 +30,14 @@ import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.ExtraBean;
-import com.ai.commons.beans.customer.*;
+import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.customer.OrderBookingBean;
+import com.ai.commons.beans.customer.OverviewBean;
 import com.ai.commons.beans.customer.ProductFamilyBean;
+import com.ai.commons.beans.customer.QualityManualBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 
 /***************************************************************************
  * <PRE>
@@ -47,7 +59,8 @@ import java.io.IOException;
  * </PRE>
  ***************************************************************************/
 
-@Service("customerService")
+//@Service("customerService")
+@Service("userService")
 public class UserServiceImpl implements UserService {
 
     //TODO: fix the injection here
