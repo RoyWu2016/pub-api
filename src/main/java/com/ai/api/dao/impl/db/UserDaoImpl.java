@@ -75,6 +75,13 @@ public class UserDaoImpl extends JdbcDaoSupport implements CustomerDao {
 
     public void updateProfileCompany(GeneralUserViewBean generalUserViewBean, String user_id) throws AIException {
         try {
+            System.out.println("--DaoImpl---NameCN------" + generalUserViewBean.getCompany().getCompanyNameCN());
+            System.out.println("-----Industry------" + generalUserViewBean.getCompany().getIndustry());
+            System.out.println("-----CountryRegion------" + generalUserViewBean.getCompany().getCountryRegion());
+            System.out.println("-----Address1------" + generalUserViewBean.getCompany().getAddress1());
+            System.out.println("-----City------" + generalUserViewBean.getCompany().getCity());
+            System.out.println("-----PostCode------" + generalUserViewBean.getCompany().getPostCode());
+            System.out.println("-----ID-----" + user_id);
 
             getJdbcTemplate().update(
                     User_Profile_Company,
@@ -82,6 +89,10 @@ public class UserDaoImpl extends JdbcDaoSupport implements CustomerDao {
                             generalUserViewBean.getCompany().getCountryRegion(), generalUserViewBean.getCompany().getAddress1(),
                             generalUserViewBean.getCompany().getCity(), generalUserViewBean.getCompany().getPostCode(),
                             user_id});
+//            getJdbcTemplate().update(
+//                    User_Profile_Company,
+//                    new Object[]{"Prakash Mehta","Lue info services","Bihar", "Patna","Patna", "803201", "002F7C45A47FC2E3C1256F81006893B1"});
+
         } catch (Exception e) {
             throw new AIException(UserDaoImpl.class, e.getMessage(), e);
         }

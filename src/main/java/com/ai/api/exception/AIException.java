@@ -56,5 +56,7 @@ public class AIException extends Exception {
         LOGGER = Logger.getLogger(exceptionClass);
         LOGGER.error(e.fillInStackTrace());
         LOGGER.error(Arrays.toString(e.getStackTrace()));
+        LOGGER.error("------------print------------");
+        e.printStackTrace();
     }
 }

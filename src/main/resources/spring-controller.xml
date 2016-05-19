@@ -10,7 +10,17 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 
     <mvc:annotation-driven/>
     <context:component-scan base-package="com.ai.api, version" />
-<!--, com.ai.commons.services.TokenJWTService -->
+
+    <!--  <context:property-placeholder location="classpath*:classfields.properties"/>-->
+    <!--<bean id="messageSource"-->
+    <!--class="org.springframework.context.support.ResourceBundleMessageSource">-->
+    <!--<property name="basename">-->
+    <!--<value>classfields</value>-->
+    <!--</property>-->
+    <!--</bean>-->
+
+
+    <!--, com.ai.commons.services.TokenJWTService -->
 <!--com.ai.api,     -->
     <!--<context:annotation-config/>-->
 

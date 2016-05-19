@@ -10,8 +10,8 @@ import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
 import com.ai.api.model.UserProfileBookingPreference;
-import com.ai.api.model.UserProfileContactRequest;
 import com.ai.api.model.UserProfileCompanyRequest;
+import com.ai.api.model.UserProfileContactRequest;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.CrmCompanyBean;
@@ -75,6 +75,7 @@ public class UserImpl implements User {
 
     //------------------- User Profile Company Update --------------------------------------------------------
 
+
     @RequestMapping(value = "/user/{USER_ID}/profile/company", method = RequestMethod.PUT)
     public ResponseEntity<Void> updateUserProfileCompany(@PathVariable("USER_ID") String USER_ID, @RequestBody UserProfileCompanyRequest userProfileCompanyRequest) throws IOException, AIException {
         System.out.println("Creating User Choice " + USER_ID);
@@ -99,6 +100,7 @@ public class UserImpl implements User {
     }
 
     //------------------- User Profile Contact Update --------------------------------------------------------
+
 
     @RequestMapping(value = "/user/{USER_ID}/profile/contactInfo", method = RequestMethod.PUT)
     public ResponseEntity<Void> updateUserProfileContact(@PathVariable("USER_ID") String USER_ID, @RequestBody UserProfileContactRequest userProfileContactRequest) throws IOException, AIException {
@@ -130,6 +132,7 @@ public class UserImpl implements User {
 
 
     //------------------- User Profile Booking Preference Update --------------------------------------------------------
+
 
     @RequestMapping(value = "/user/{USER_ID}/profile/preference/booking/", method = RequestMethod.PUT)
     public ResponseEntity<Void> updateUserProfileContact(@PathVariable("USER_ID") String USER_ID, @RequestBody UserProfileBookingPreference userProfileBookingPreference) throws IOException, AIException {

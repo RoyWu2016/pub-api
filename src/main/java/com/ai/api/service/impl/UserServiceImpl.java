@@ -21,11 +21,15 @@ import com.ai.commons.beans.customer.ExtraBean;
 import com.ai.commons.beans.customer.*;
 import com.ai.commons.beans.customer.OrderBookingBean;
 import com.ai.commons.beans.customer.ProductFamilyBean;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /***************************************************************************
  * <PRE>
@@ -59,6 +63,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     @Qualifier("customerDao")
     private CustomerDao customerDao;
+
     String comp_id;
 
     //***********************25-04 by KK****************
@@ -140,6 +145,52 @@ public class UserServiceImpl implements UserService {
             ServiceCallResult result6 = HttpUtil.issueGetRequest(request6);
             com.ai.commons.beans.customer.QualityManualBean qualityManualBean = new QualityManualBean();
             qualityManualBean = JsonUtil.mapToObject(result6.getResponseString(), QualityManualBean.class);
+
+
+            // ------------SysProductCategoryBean URL ----------------
+
+            //String SysProductCategoryURL = config.getCustomerServiceUrl()+"/param-service/p/list-product-category";
+            String SysProductCategoryURL = "http://192.168.0.31:8090/param-service/p/list-product-category";
+
+            GetRequest request7 = GetRequest.newInstance().setUrl(SysProductCategoryURL);
+            ServiceCallResult result7 = HttpUtil.issueGetRequest(request7);
+
+            JSONArray jsonArray = new JSONArray(result7.getResponseString().toString());
+            List<String> id = new ArrayList<String>();
+            List<String> name = new ArrayList<String>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject obj = jsonArray.getJSONObject(i);
+                name.add(obj.getString("name"));
+                id.add(obj.getString("id"));
+            }
+            SysProductCategoryBean sysProductCategoryBean = new SysProductCategoryBean();
+            sysProductCategoryBean.setId(id);
+            sysProductCategoryBean.setName(name);
+
+
+            //----------------SysProductFamilyBean URL ----------------
+
+            //String SysProductFamilyBeanURL = config.getCustomerServiceUrl()+"/param-service/p/list-product-family";
+            String SysProductFamilyBeanURL = "http://192.168.0.31:8090/param-service/p/list-product-family";
+
+            GetRequest request8 = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
+            ServiceCallResult result8 = HttpUtil.issueGetRequest(request8);
+
+            JSONArray jsonArray1 = new JSONArray(result8.getResponseString().toString());
+            List<String> familycatid = new ArrayList<String>();
+            List<String> familyid = new ArrayList<String>();
+            List<String> familyname = new ArrayList<String>();
+            for (int i = 0; i < jsonArray1.length(); i++) {
+                JSONObject obj = jsonArray1.getJSONObject(i);
+                familycatid.add(obj.getString("categoryId"));
+                familyname.add(obj.getString("name"));
+                familyid.add(obj.getString("id"));
+            }
+            SysProductFamilyBean sysProductFamilyBean = new SysProductFamilyBean();
+            sysProductFamilyBean.setCategoryId(familycatid);
+            sysProductFamilyBean.setId(familyid);
+            sysProductFamilyBean.setName(familyname);
+
 
 
             // ------------Set USerBean Properties ----------------
@@ -305,6 +356,22 @@ public class UserServiceImpl implements UserService {
             for (int i = 0; i < a; i++) {
                 preferredProductFamilies.setProductCategoryId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavCategory());
                 preferredProductFamilies.setProductFamilyId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavFamily());
+                String catid = productFamilyBean.getRelevantCategoryInfo().get(i).getFavCategory();
+                for (int j = 0; j < id.size(); j++) {
+
+                    String catname = sysProductCategoryBean.getId().get(j);
+                    if (catid.equals(catname)) {
+                        preferredProductFamilies.setProductCategoryName(sysProductCategoryBean.getName().get(j));
+                    }
+                }
+
+                for (int k = 0; k < familycatid.size(); k++) {
+
+                    String famcatid = sysProductFamilyBean.getCategoryId().get(k);
+                    if (catid.equals(famcatid)) {
+                        preferredProductFamilies.setProductFamilyName(sysProductFamilyBean.getName().get(k));
+                    }
+                }
                 preferredProductFamiliesarray[i] = preferredProductFamilies;
             }
 
@@ -328,7 +395,18 @@ public class UserServiceImpl implements UserService {
     }
 
     //-------------------By kk ---------------------------
-    public void getProfileUpdate(GeneralUserViewBean generalUserViewBean, String user_id) throws AIException {
+    public void getProfileUpdate(GeneralUserViewBean generalUserViewBean, String user_id) throws IOException, AIException {
+
+        System.out.println("--Simpl---NameCN------" + generalUserViewBean.getCompany().getCompanyNameCN());
+        System.out.println("-----Industry------" + generalUserViewBean.getCompany().getIndustry());
+        System.out.println("-----CountryRegion------" + generalUserViewBean.getCompany().getCountryRegion());
+        System.out.println("-----Address1------" + generalUserViewBean.getCompany().getAddress1());
+        System.out.println("-----City------" + generalUserViewBean.getCompany().getCity());
+        System.out.println("-----PostCode------" + generalUserViewBean.getCompany().getPostCode());
+        System.out.println("-----ID-----" + user_id);
+//        UserDaoImpl userDao =  new UserDaoImpl();
+//        userDao.updateProfileCompany(generalUserViewBean, user_id);
+        System.out.println("-----generalUserViewBean-----1" + generalUserViewBean + "---" + user_id + " " + customerDao);
         customerDao.updateProfileCompany(generalUserViewBean, user_id);
     }
 
@@ -337,6 +415,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void getProfileBookingPreferenceUpdate(OrderBookingBean orderBookingBean, String user_id) throws IOException, AIException {
+        System.out.println("-----orderBookingBean-----" + orderBookingBean + "---" + user_id);
         customerDao.updateBookingPreference(orderBookingBean, user_id);
     }
 

@@ -44,4 +44,6 @@ public class PreferredProductFamilies {
     public void setProductFamilyName(String productFamilyName) {
         this.productFamilyName = productFamilyName;
     }
+
+
 }

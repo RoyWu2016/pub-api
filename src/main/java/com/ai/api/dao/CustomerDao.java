@@ -33,6 +33,7 @@ public interface CustomerDao {
 
     //------------------kk updateProfileCompany----------------------
 
+
     public void updateProfileCompany(GeneralUserViewBean generalUserViewBean, String user_id) throws AIException;
 
     public void updateProfileContact(GeneralUserViewBean generalUserViewBean, ContactBean contactBean, String user_id) throws AIException;
