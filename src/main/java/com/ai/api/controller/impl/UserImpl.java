@@ -13,11 +13,24 @@ import com.ai.api.model.UserProfileBookingPreference;
 import com.ai.api.model.UserProfileCompanyRequest;
 import com.ai.api.model.UserProfileContactRequest;
 import com.ai.api.service.UserService;
+import com.ai.commons.beans.RestServiceCallClient;
 import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.CrmCompanyBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.customer.OrderBookingBean;
 import com.ai.commons.beans.user.GeneralUserBean;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,6 +38,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+//import org.apache.http.impl.client.HttpClientBuilder;
+//import javax.ws.rs.core.HttpHeaders;
 
 /***************************************************************************
  * <PRE>
@@ -93,6 +108,37 @@ public class UserImpl implements User {
 
 
         generalUserViewBean.setCompany(crmCompanyBean);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = objectMapper.writeValueAsString(crmCompanyBean);
+
+        RestServiceCallClient restServiceCallClient = new RestServiceCallClient();
+        HttpUriRequest httpUriRequest = new HttpPost("http://192.168.0.31:8093/customer-service/customer/002F7C45A47FC2E3C1256F81006893B1/profile/company");
+        System.out.println("------------" + httpUriRequest);
+        restServiceCallClient.execute(httpUriRequest);
+
+        httpUriRequest.setHeader(HttpHeaders.CONTENT_TYPE, "Application/JSON");
+        StringEntity stringEntity = new StringEntity(jsonString);
+        stringEntity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+        // httpUriRequest.setEntity(stringEntity);
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        HttpResponse response = httpClient.execute(httpUriRequest);
+        String responceBody = EntityUtils.toString(response.getEntity());
+        JSONObject jsonObject = new JSONObject(responceBody);
+        System.out.println("User IMPL Company Update---->" + jsonObject);
+
+//        HttpPut putreRequest =  new HttpPut("http://192.168.0.31:8093/customer-service/customer/002F7C45A47FC2E3C1256F81006893B1/profile/company");
+//        putreRequest.setHeader(HttpHeaders.CONTENT_TYPE,"Application/JSON");
+//        StringEntity stringEntity = new StringEntity(jsonString);
+//        stringEntity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
+//        putreRequest.setEntity(stringEntity);
+//        HttpClient httpClient = HttpClientBuilder.create().build();
+//        HttpResponse response =  httpClient.execute(putreRequest);
+//        String responceBody = EntityUtils.toString(response.getEntity());
+//        JSONObject jsonObject = new JSONObject(responceBody);
+//        System.out.println("User IMPL Company Update---->"+jsonObject);
+
+
 
         userService.getProfileUpdate(generalUserViewBean, USER_ID);
 
