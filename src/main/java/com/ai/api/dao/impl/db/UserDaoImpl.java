@@ -3,6 +3,7 @@ package com.ai.api.dao.impl.db;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.customer.ContactBean;
+import com.ai.commons.beans.customer.CrmCompanyBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.customer.OrderBookingBean;
 import org.apache.log4j.Logger;
@@ -73,21 +74,22 @@ public class UserDaoImpl extends JdbcDaoSupport implements CustomerDao {
 
     //---------------------------- Update Profile Company ----------------------
 
-    public void updateProfileCompany(GeneralUserViewBean generalUserViewBean, String user_id) throws AIException {
+    public void updateProfileCompany(CrmCompanyBean crmCompanyBean, String user_id) throws AIException {
         try {
-            System.out.println("--DaoImpl---NameCN------" + generalUserViewBean.getCompany().getCompanyNameCN());
-            System.out.println("-----Industry------" + generalUserViewBean.getCompany().getIndustry());
-            System.out.println("-----CountryRegion------" + generalUserViewBean.getCompany().getCountryRegion());
-            System.out.println("-----Address1------" + generalUserViewBean.getCompany().getAddress1());
-            System.out.println("-----City------" + generalUserViewBean.getCompany().getCity());
-            System.out.println("-----PostCode------" + generalUserViewBean.getCompany().getPostCode());
+
+            System.out.println("--DaoImpl---NameCN------" + crmCompanyBean.getCompanyNameCN());
+            System.out.println("-----Industry------" + crmCompanyBean.getIndustry());
+            System.out.println("-----CountryRegion------" + crmCompanyBean.getCountryRegion());
+            System.out.println("-----Address1------" + crmCompanyBean.getAddress1());
+            System.out.println("-----City------" + crmCompanyBean.getCity());
+            System.out.println("-----PostCode------" + crmCompanyBean.getPostCode());
             System.out.println("-----ID-----" + user_id);
 
             getJdbcTemplate().update(
                     User_Profile_Company,
-                    new Object[]{generalUserViewBean.getCompany().getCompanyNameCN(), generalUserViewBean.getCompany().getIndustry(),
-                            generalUserViewBean.getCompany().getCountryRegion(), generalUserViewBean.getCompany().getAddress1(),
-                            generalUserViewBean.getCompany().getCity(), generalUserViewBean.getCompany().getPostCode(),
+                    new Object[]{crmCompanyBean.getCompanyNameCN(), crmCompanyBean.getIndustry(),
+                            crmCompanyBean.getCountryRegion(), crmCompanyBean.getAddress1(),
+                            crmCompanyBean.getCity(), crmCompanyBean.getPostCode(),
                             user_id});
 //            getJdbcTemplate().update(
 //                    User_Profile_Company,

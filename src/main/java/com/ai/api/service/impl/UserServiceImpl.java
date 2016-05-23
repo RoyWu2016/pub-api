@@ -17,10 +17,11 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.ContactBean;
-import com.ai.commons.beans.customer.ExtraBean;
 import com.ai.commons.beans.customer.*;
+import com.ai.commons.beans.customer.ExtraBean;
 import com.ai.commons.beans.customer.OrderBookingBean;
 import com.ai.commons.beans.customer.ProductFamilyBean;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /***************************************************************************
@@ -54,6 +56,7 @@ import java.util.List;
 //@Service("customerService")
 @Service("userService")
 public class UserServiceImpl implements UserService {
+    protected Logger logger = Logger.getLogger(UserServiceImpl.class);
 
     //TODO: fix the injection here
 
@@ -396,28 +399,59 @@ public class UserServiceImpl implements UserService {
     }
 
     //-------------------By kk ---------------------------
-    public void getProfileUpdate(GeneralUserViewBean generalUserViewBean, String user_id) throws IOException, AIException {
+    public boolean getProfileUpdate(CrmCompanyBean crmCompanyBean, String user_id) throws IOException, AIException {
 
-        System.out.println("--Simpl---NameCN------" + generalUserViewBean.getCompany().getCompanyNameCN());
-        System.out.println("-----Industry------" + generalUserViewBean.getCompany().getIndustry());
-        System.out.println("-----CountryRegion------" + generalUserViewBean.getCompany().getCountryRegion());
-        System.out.println("-----Address1------" + generalUserViewBean.getCompany().getAddress1());
-        System.out.println("-----City------" + generalUserViewBean.getCompany().getCity());
-        System.out.println("-----PostCode------" + generalUserViewBean.getCompany().getPostCode());
+        System.out.println("--Simpl---NameCN------" + crmCompanyBean.getCompanyNameCN());
+        System.out.println("-----Industry------" + crmCompanyBean.getIndustry());
+        System.out.println("-----CountryRegion------" + crmCompanyBean.getCountryRegion());
+        System.out.println("-----Address1------" + crmCompanyBean.getAddress1());
+        System.out.println("-----City------" + crmCompanyBean.getCity());
+        System.out.println("-----PostCode------" + crmCompanyBean.getPostCode());
         System.out.println("-----ID-----" + user_id);
-//        UserDaoImpl userDao =  new UserDaoImpl();
-//        userDao.updateProfileCompany(generalUserViewBean, user_id);
-        System.out.println("-----generalUserViewBean-----1" + generalUserViewBean + "---" + user_id + " " + customerDao);
-        customerDao.updateProfileCompany(generalUserViewBean, user_id);
+        System.out.println("-----generalUserViewBean-----1" + crmCompanyBean + "---" + user_id + " " + customerDao);
+        // customerDao.updateProfileCompany(crmCompanyBean, user_id);
+        String url = "http://192.168.0.31:8093/customer-service/customer/" + user_id + "/company-info";
+        try {
+            ServiceCallResult result = HttpUtil.issuePostRequest(url, null,
+                    crmCompanyBean);
+            if (result.getStatusCode() == 200 || result.getStatusCode() == 202) {
+                return true;
+            }
+        } catch (IOException e) {
+            logger.error(Arrays.asList(e.getStackTrace()));
+        }
+        return false;
     }
 
-    public void getProfileContactUpdate(GeneralUserViewBean generalUserViewBean, ContactBean contactBean, String user_id) throws IOException, AIException {
-        customerDao.updateProfileContact(generalUserViewBean, contactBean, user_id);
+    public boolean getProfileContactUpdate(GeneralUserViewBean generalUserViewBean, ContactBean contactBean, String user_id) throws IOException, AIException {
+        // customerDao.updateProfileContact(generalUserViewBean, contactBean, user_id);
+        String url = "http://192.168.0.31:8093/customer-service/customer/" + user_id + "/contact";
+        try {
+            ServiceCallResult result = HttpUtil.issuePostRequest(url, null,
+                    generalUserViewBean);
+            if (result.getStatusCode() == 200 || result.getStatusCode() == 202) {
+                return true;
+            }
+        } catch (IOException e) {
+            logger.error(Arrays.asList(e.getStackTrace()));
+        }
+        return false;
     }
 
-    public void getProfileBookingPreferenceUpdate(OrderBookingBean orderBookingBean, String user_id) throws IOException, AIException {
+    public boolean getProfileBookingPreferenceUpdate(OrderBookingBean orderBookingBean, String user_id) throws IOException, AIException {
         System.out.println("-----orderBookingBean-----" + orderBookingBean + "---" + user_id);
-        customerDao.updateBookingPreference(orderBookingBean, user_id);
+        // customerDao.updateBookingPreference(orderBookingBean, user_id);
+        String url = "http://192.168.0.31:8093/customer-service/customer/" + user_id + "/order-booking";
+        try {
+            ServiceCallResult result = HttpUtil.issuePostRequest(url, null,
+                    orderBookingBean);
+            if (result.getStatusCode() == 200 || result.getStatusCode() == 202) {
+                return true;
+            }
+        } catch (IOException e) {
+            logger.error(Arrays.asList(e.getStackTrace()));
+        }
+        return false;
     }
 
 }

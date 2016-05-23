@@ -28,6 +28,7 @@
         <com.ai.commons.version>1.4.7-SNAPSHOT</com.ai.commons.version>
     </properties>
 
+
     <dependencies>
         <!--<dependency>-->
         <!--<groupId>junit</groupId>-->
@@ -36,12 +37,35 @@
         <!--<scope>test</scope>-->
         <!--</dependency>-->
 
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.2</version>
+        </dependency>
+
+
+        <!--&lt;!&ndash; http://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore &ndash;&gt;-->
+        <!--<dependency>-->
+        <!--<groupId>org.apache.httpcomponents</groupId>-->
+        <!--<artifactId>httpcore</artifactId>-->
+        <!--<version>4.3.3</version>-->
+        <!--</dependency>-->
+
+
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <!-- Junit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
         </dependency>
+
         <!--<dependency>-->
         <!--<groupId>org.mockito</groupId>-->
         <!--<artifactId>mockito-all</artifactId>-->

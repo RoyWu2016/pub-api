@@ -83,7 +83,7 @@ public class UserServiceImplTest {
     @Test
     public void getProfileUpdate_test() throws IOException, AIException {
         // UserServiceImpl userService = new UserServiceImpl();
-        userService.getProfileUpdate(generalUserViewBean, "002F7C45A47FC2E3C1256F81006893B");
+        userService.getProfileUpdate(crm, "002F7C45A47FC2E3C1256F81006893B");
 
 
     }

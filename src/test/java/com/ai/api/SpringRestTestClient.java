@@ -11,13 +11,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 
+//@Configuration
 //@PropertySource("classpath:classfields.properties")
 public class SpringRestTestClient {
 
 	public static final String REST_SERVICE_URI = "http://localhost:8888/api";
 
-//	@Value("${Company.nameCN}")
-//	static String name;
+	//@Value("${Company.nameCN}")
+	static String propertyValue;
 
 	/* GET */
 	@SuppressWarnings("unchecked")
@@ -85,7 +86,7 @@ public class SpringRestTestClient {
 
 		UserProfileCompanyRequest userProfileCompanyRequest = new UserProfileCompanyRequest();
 
-		userProfileCompanyRequest.setNameCN("Prakash");
+		userProfileCompanyRequest.setNameCN("Company.nameCN");
 		userProfileCompanyRequest.setIndustry("Lue Info Services");
 		userProfileCompanyRequest.setCountry("INDIA");
 		userProfileCompanyRequest.setAddress("PATNA");
@@ -131,33 +132,19 @@ public class SpringRestTestClient {
 		RestTemplate restTemplate = new RestTemplate();
 
 		UserProfileBookingPreference userProfileBookingPreference = new UserProfileBookingPreference();
-
 		userProfileBookingPreference.setShouldSendRefSampleToFactory("NO");
-
 		userProfileBookingPreference.setIsPoMandatory("NO");
-
 		userProfileBookingPreference.setMinQuantityToBeReadyPsiPercentage(9);
-
 		userProfileBookingPreference.setMinQuantityToBeReadyDuproPercentage(9);
-
 		userProfileBookingPreference.setMinQuantityToBeReadyIpcPercentage(9);
-
 		userProfileBookingPreference.setMinQuantityToBeReadyClcPercentage(9);
-
 		userProfileBookingPreference.setMinQuantityToBeReadyPmPercentage(9);
-
 		userProfileBookingPreference.setAleCanModify("No");
-
 		userProfileBookingPreference.setAqlCustomDefaultSampleLevel("NO");
-
 		userProfileBookingPreference.setUseCustomAQL("No");
-
 		userProfileBookingPreference.setCustomAQLCriticalDefects("Not allowed");
-
 		userProfileBookingPreference.setCustomAQLMajorDefects("300");
-
 		userProfileBookingPreference.setCustoMAQLMinorDefects("20");
-
 		userProfileBookingPreference.setCustoMAQLMaxMeasurementDefects("Not allowed");
 
 		restTemplate.put(REST_SERVICE_URI + "/user/281539258F3217F4E050A8C0060063A0/profile/preference/booking/", userProfileBookingPreference);

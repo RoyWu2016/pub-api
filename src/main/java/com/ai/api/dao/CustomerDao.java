@@ -2,6 +2,7 @@ package com.ai.api.dao;
 
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.customer.ContactBean;
+import com.ai.commons.beans.customer.CrmCompanyBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.customer.OrderBookingBean;
 
@@ -34,7 +35,7 @@ public interface CustomerDao {
     //------------------kk updateProfileCompany----------------------
 
 
-    public void updateProfileCompany(GeneralUserViewBean generalUserViewBean, String user_id) throws AIException;
+    public void updateProfileCompany(CrmCompanyBean crmCompanyBean, String user_id) throws AIException;
 
     public void updateProfileContact(GeneralUserViewBean generalUserViewBean, ContactBean contactBean, String user_id) throws AIException;
 
