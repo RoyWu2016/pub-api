@@ -13,7 +13,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
@@ -21,8 +23,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
+@TestPropertySource("classpath:testData.properties")
 @ContextConfiguration( {"classpath:testDataSource.xml", "classpath:api-config.xml"})
 public class UserServiceImplTest {
+	String userID;
+	String compID;
 
     GeneralUserViewBean generalUserViewBean;
     CrmCompanyBean crm;
@@ -33,9 +38,15 @@ public class UserServiceImplTest {
     @Autowired
     UserService userService;
 
+	@Autowired
+	private Environment env;
 
     @Before
     public void setup() {
+	    userID = env.getProperty("userID");
+	    compID = env.getProperty("compID");
+	    System.out.println("userid:" + userID);
+
         generalUserViewBean = new GeneralUserViewBean();
         crm = new CrmCompanyBean();
         crm.setCompanyNameCN("Prakash Mehta");
@@ -77,13 +88,23 @@ public class UserServiceImplTest {
         orderBookingBean.setMinorDefects("20");
         orderBookingBean.setMaxMeaDefects("NOT=ALLOWED");
 
-
     }
 
     @Test
     public void getProfileUpdate_test() throws IOException, AIException {
         // UserServiceImpl userService = new UserServiceImpl();
-        userService.getProfileUpdate(crm, "002F7C45A47FC2E3C1256F81006893B");
+	    //get compID of given user
+	    //call user service to get compID
+
+	    CrmCompanyBean crmCompanyBean = new CrmCompanyBean();
+	    crmCompanyBean.setCompanyNameCN(env.getProperty("compNameCN"));
+	    crmCompanyBean.setIndustry(env.getProperty("compIndustry"));
+	    crmCompanyBean.setCountryRegion(env.getProperty("compCountry"));
+	    crmCompanyBean.setAddress1(env.getProperty("compAddress"));
+	    crmCompanyBean.setCity(env.getProperty("compCity"));
+	    crmCompanyBean.setPostCode(env.getProperty("compPostCode"));
+	    userService.getProfileUpdate(crmCompanyBean, userID);
+
 
 
     }

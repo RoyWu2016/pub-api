@@ -4,30 +4,31 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.dao.impl.b2b;
+package com.ai.api.dao;
 
-import com.ai.api.dao.UserDao;
+import com.ai.api.bean.SysProductCategoryBean;
 
 /***************************************************************************
- * <PRE>
- * Project Name    : publicAPI
- * <p>
- * Package Name    : com.ai.api.dao.impl.b2b
- * <p>
- * File Name       : UserDaoB2b.java
- * <p>
- * Creation Date   : Mar 02, 2016
- * <p>
- * Author          : Allen Zhang
- * <p>
- * Purpose         : TODO
- * <p>
- * <p>
- * History         : TODO
- * <p>
- * </PRE>
+ *<PRE>
+ *  Project Name    : api
+ *
+ *  Package Name    : com.ai.api.dao
+ *
+ *  File Name       : ParameterDao.java
+ *
+ *  Creation Date   : May 24, 2016
+ *
+ *  Author          : Allen Zhang
+ *
+ *  Purpose         : TODO
+ *
+ *
+ *  History         : TODO
+ *
+ *</PRE>
  ***************************************************************************/
 
-public abstract class UserDaoB2b implements UserDao {
+public interface ParameterDao {
 
+	SysProductCategoryBean getSysProductCategory();
 }

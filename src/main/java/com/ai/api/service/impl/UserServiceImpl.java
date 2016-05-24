@@ -6,8 +6,26 @@
  ***************************************************************************/
 package com.ai.api.service.impl;
 
-import com.ai.api.bean.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import com.ai.api.bean.AqlAndSamplingSizeBean;
+import com.ai.api.bean.BillingBean;
+import com.ai.api.bean.BookingBean;
+import com.ai.api.bean.CompanyBean;
+import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.CustomAQLBean;
+import com.ai.api.bean.MainBean;
+import com.ai.api.bean.MinQuantityToBeReadyBean;
+import com.ai.api.bean.PreferencesBean;
+import com.ai.api.bean.PreferredProductFamilies;
+import com.ai.api.bean.QualityManual;
+import com.ai.api.bean.SysProductCategoryBean;
+import com.ai.api.bean.SysProductFamilyBean;
 import com.ai.api.dao.CustomerDao;
+import com.ai.api.dao.ParameterDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
 import com.ai.api.service.ServiceConfig;
@@ -17,21 +35,19 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.ContactBean;
-import com.ai.commons.beans.customer.*;
+import com.ai.commons.beans.customer.CrmCompanyBean;
 import com.ai.commons.beans.customer.ExtraBean;
+import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.customer.OrderBookingBean;
+import com.ai.commons.beans.customer.OverviewBean;
 import com.ai.commons.beans.customer.ProductFamilyBean;
+import com.ai.commons.beans.customer.QualityManualBean;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /***************************************************************************
  * <PRE>
@@ -53,7 +69,6 @@ import java.util.List;
  * </PRE>
  ***************************************************************************/
 
-//@Service("customerService")
 @Service("userService")
 public class UserServiceImpl implements UserService {
     protected Logger logger = Logger.getLogger(UserServiceImpl.class);
@@ -68,6 +83,10 @@ public class UserServiceImpl implements UserService {
     @Qualifier("customerDao")
     private CustomerDao customerDao;
 
+	@Autowired
+	@Qualifier("paramDao")
+	private ParameterDao paramDao;
+
     String comp_id;
 
     //***********************25-04 by KK****************
@@ -77,18 +96,19 @@ public class UserServiceImpl implements UserService {
         String customer_id = customerDao.getCustomerIdByCustomerLogin(login);
         System.out.println("---**----customer_id--**---" + customer_id);
 
+	    UserBean user = new UserBean();
+
         //-------------------5-10  by KK  ----------
+		//get GeneralUserViewBean
+	    GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(customer_id);
 
-        String generalUVBeanURL = config.getCustomerServiceUrl() + "/users/" + customer_id;
-        GetRequest request = GetRequest.newInstance().setUrl(generalUVBeanURL);
-        ServiceCallResult result = HttpUtil.issueGetRequest(request);
-        GeneralUserViewBean generalUserBean;
-        generalUserBean = JsonUtil.mapToObject(result.getResponseString(), GeneralUserViewBean.class);
+//        String generalUVBeanURL = config.getCustomerServiceUrl() + "/users/" + customer_id;
+//        GetRequest request = GetRequest.newInstance().setUrl(generalUVBeanURL);
+//        ServiceCallResult result = HttpUtil.issueGetRequest(request);
+//        GeneralUserViewBean generalUserBean;
+//        generalUserBean = JsonUtil.mapToObject(result.getResponseString(), GeneralUserViewBean.class);
 
-
-        UserBean user = new UserBean();
-
-        if (result.getStatusCode() == 200 || result.getStatusCode() == 202) {
+//        if (result.getStatusCode() == 200 || result.getStatusCode() == 202) {
             comp_id = generalUserBean.getCompany().getCompanyId();
 
             // ------------OverViewBean URL ----------------
@@ -96,6 +116,9 @@ public class UserServiceImpl implements UserService {
             String overviewBeanURL = config.getCustomerServiceUrl() + "/customer/" + comp_id + "/overview";
             GetRequest request1 = GetRequest.newInstance().setUrl(overviewBeanURL);
             ServiceCallResult result1 = HttpUtil.issueGetRequest(request1);
+
+	        //TODO: please implement this as getGeneralUserViewBean
+//			OverviewBean overviewBean = customerDao.getCompanyOverview(customer_id);
             OverviewBean overviewBean;
             overviewBean = JsonUtil.mapToObject(result1.getResponseString(), OverviewBean.class);
 
@@ -106,6 +129,8 @@ public class UserServiceImpl implements UserService {
             String contactBeanURL = config.getCustomerServiceUrl() + "/customer/" + comp_id + "/contact";
             GetRequest request2 = GetRequest.newInstance().setUrl(contactBeanURL);
             ServiceCallResult result2 = HttpUtil.issueGetRequest(request2);
+			//TODO: please implement this as getGeneralUserViewBean
+//	        com.ai.commons.beans.customer.ContactBean contactBean = customerDao.getCompanyContact(comp_id);
             com.ai.commons.beans.customer.ContactBean contactBean = new ContactBean();
             contactBean = JsonUtil.mapToObject(result2.getResponseString(), ContactBean.class);
 
@@ -116,6 +141,8 @@ public class UserServiceImpl implements UserService {
             String orderBBeanURL = config.getCustomerServiceUrl() + "/customer/" + comp_id + "/order-booking";
             GetRequest request3 = GetRequest.newInstance().setUrl(orderBBeanURL);
             ServiceCallResult result3 = HttpUtil.issueGetRequest(request3);
+			//TODO: please implement this as getGeneralUserViewBean
+//	        OrderBookingBean orderBookingBean = customerDao.getCompanyOrderBooking(comp_id);
             OrderBookingBean orderBookingBean = new OrderBookingBean();
             orderBookingBean = JsonUtil.mapToObject(result3.getResponseString(), OrderBookingBean.class);
 
@@ -126,17 +153,19 @@ public class UserServiceImpl implements UserService {
             String extraURL = config.getCustomerServiceUrl() + "/customer/" + comp_id + "/extra";
             GetRequest request4 = GetRequest.newInstance().setUrl(extraURL);
             ServiceCallResult result4 = HttpUtil.issueGetRequest(request4);
+			//TODO: please implement this as getGeneralUserViewBean
+//	        com.ai.commons.beans.customer.ExtraBean extrabean = customerDao.getCompanyExtra(comp_id);
             com.ai.commons.beans.customer.ExtraBean extrabean = new ExtraBean();
             extrabean = JsonUtil.mapToObject(result4.getResponseString(), ExtraBean.class);
 
 
             // ------------ProductFamilyBean URL ----------------
-
-
             String productFamilyURL = config.getCustomerServiceUrl() + "/customer/" + comp_id + "/product-family";
 
             GetRequest request5 = GetRequest.newInstance().setUrl(productFamilyURL);
             ServiceCallResult result5 = HttpUtil.issueGetRequest(request5);
+			//TODO: please implement this as getGeneralUserViewBean
+//	        com.ai.commons.beans.customer.ProductFamilyBean productFamilyBean = customerDao.getCompanyProductFamily(comp_id);
             com.ai.commons.beans.customer.ProductFamilyBean productFamilyBean = new ProductFamilyBean();
             productFamilyBean = JsonUtil.mapToObject(result5.getResponseString(), ProductFamilyBean.class);
 
@@ -147,14 +176,15 @@ public class UserServiceImpl implements UserService {
 
             GetRequest request6 = GetRequest.newInstance().setUrl(qualitymanualURL);
             ServiceCallResult result6 = HttpUtil.issueGetRequest(request6);
+			//TODO: please implement this as getGeneralUserViewBean
+//	        com.ai.commons.beans.customer.QualityManualBean qualityManualBean = customerDao.getCompanyQualityManual(comp_id);
             com.ai.commons.beans.customer.QualityManualBean qualityManualBean = new QualityManualBean();
             qualityManualBean = JsonUtil.mapToObject(result6.getResponseString(), QualityManualBean.class);
 
 
             // ------------SysProductCategoryBean URL ----------------
 
-            //String SysProductCategoryURL = config.getCustomerServiceUrl()+"/param-service/p/list-product-category";
-            String SysProductCategoryURL = "http://192.168.0.31:8090/param-service/p/list-product-category";
+            String SysProductCategoryURL = config.getParamServiceUrl() + "/p/list-product-category";
 
             GetRequest request7 = GetRequest.newInstance().setUrl(SysProductCategoryURL);
             ServiceCallResult result7 = HttpUtil.issueGetRequest(request7);
@@ -167,6 +197,9 @@ public class UserServiceImpl implements UserService {
                 name.add(obj.getString("name"));
                 id.add(obj.getString("id"));
             }
+			//TODO: please implement this as getGeneralUserViewBean
+
+//			SysProductCategoryBean sysProductCategoryBean = paramDao.getSysProductCategory();
             SysProductCategoryBean sysProductCategoryBean = new SysProductCategoryBean();
             sysProductCategoryBean.setId(id);
             sysProductCategoryBean.setName(name);
@@ -174,8 +207,7 @@ public class UserServiceImpl implements UserService {
 
             //----------------SysProductFamilyBean URL ----------------
 
-            //String SysProductFamilyBeanURL = config.getCustomerServiceUrl()+"/param-service/p/list-product-family";
-            String SysProductFamilyBeanURL = "http://192.168.0.31:8090/param-service/p/list-product-family";
+            String SysProductFamilyBeanURL = config.getParamServiceUrl() +"/p/list-product-family";
 
             GetRequest request8 = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
             ServiceCallResult result8 = HttpUtil.issueGetRequest(request8);
@@ -394,12 +426,12 @@ public class UserServiceImpl implements UserService {
             user.setPreferencesBean(preferencesBean);
 
             return user;
-        }
-        return null;
+//        }
+//        return null;
     }
 
     //-------------------By kk ---------------------------
-    public boolean getProfileUpdate(CrmCompanyBean crmCompanyBean, String user_id) throws IOException, AIException {
+    public boolean getProfileUpdate(CrmCompanyBean crmCompanyBean, String userID) throws IOException, AIException {
 
         System.out.println("--Simpl---NameCN------" + crmCompanyBean.getCompanyNameCN());
         System.out.println("-----Industry------" + crmCompanyBean.getIndustry());
@@ -407,10 +439,16 @@ public class UserServiceImpl implements UserService {
         System.out.println("-----Address1------" + crmCompanyBean.getAddress1());
         System.out.println("-----City------" + crmCompanyBean.getCity());
         System.out.println("-----PostCode------" + crmCompanyBean.getPostCode());
-        System.out.println("-----ID-----" + user_id);
-        System.out.println("-----generalUserViewBean-----1" + crmCompanyBean + "---" + user_id + " " + customerDao);
+        System.out.println("-----comp ID-----" + userID);
+        System.out.println("-----generalUserViewBean-----1" + crmCompanyBean + "---" + userID + " " + customerDao);
         // customerDao.updateProfileCompany(crmCompanyBean, user_id);
-        String url = "http://192.168.0.31:8093/customer-service/customer/" + user_id + "/company-info";
+
+	    //update company in customer need company id, not user id, get company id by user id first
+	    //call customer service to get latest crmCompanyBean first
+
+
+
+        String url = config.getCustomerServiceUrl() + "/customer/" + userID + "/company-info";
         try {
             ServiceCallResult result = HttpUtil.issuePostRequest(url, null,
                     crmCompanyBean);

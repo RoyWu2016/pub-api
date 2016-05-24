@@ -32,6 +32,8 @@ public class ServiceConfig {
 
     private String customerServiceUrl;
 
+	private String paramServiceUrl;
+
     /**
      * @return the baseURL
      */
@@ -46,8 +48,15 @@ public class ServiceConfig {
         this.baseURL = baseURL;
     }
 
+	public String getParamServiceUrl() {
+		return paramServiceUrl;
+	}
 
-    public String getCustomerServiceUrl() {
+	public void setParamServiceUrl(String paramServiceUrl) {
+		this.paramServiceUrl = paramServiceUrl;
+	}
+
+	public String getCustomerServiceUrl() {
         return customerServiceUrl;
     }
 
