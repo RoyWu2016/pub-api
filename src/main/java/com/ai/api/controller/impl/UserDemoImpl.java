@@ -13,8 +13,7 @@ import com.ai.api.controller.UserDemo;
 import com.ai.api.model.UserDemoBean;
 import com.ai.api.service.ServiceConfig;
 import com.ai.api.service.UserServiceDemo;
-import com.ai.commons.annotation.Secured;
-import com.ai.consts.CommonAuthConstants;
+import com.ai.commons.annotation.ClientAccountTokenCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -88,7 +87,8 @@ public class UserDemoImpl implements UserDemo {
 
     //-------------------Retrieve Single User--------------------------------------------------------
 
-    @Secured({CommonAuthConstants.ROLE.ADMIN})
+//    @Secured({CommonAuthConstants.ROLE.ADMIN})
+    @ClientAccountTokenCheck
     @RequestMapping(value = "/userdemo/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDemoBean> getUser(@PathVariable("id") long id) {
 
