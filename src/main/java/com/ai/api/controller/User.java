@@ -8,29 +8,31 @@ package com.ai.api.controller;
 
 import java.io.IOException;
 
+import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
 import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
- *<PRE>
- *  Project Name    : api
- *
- *  Package Name    : com.ai.api.controller.impl
- *
- *  File Name       : User.java
- *
- *  Creation Date   : Mar 16, 2016
- *
- *  Author          : Allen Zhang
- *
- *  Purpose         : Interface for client related resource request
- *
- *
- *  History         : TODO
- *
- *</PRE>
+ * <PRE>
+ * Project Name    : api
+ * <p>
+ * Package Name    : com.ai.api.controller.impl
+ * <p>
+ * File Name       : User.java
+ * <p>
+ * Creation Date   : Mar 16, 2016
+ * <p>
+ * Author          : Allen Zhang
+ * <p>
+ * Purpose         : Interface for client related resource request
+ * <p>
+ * <p>
+ * History         : TODO
+ * <p>
+ * </PRE>
  ***************************************************************************/
 
 public interface User {
-	ResponseEntity<UserBean> getUserByLogin(String login) throws IOException;
+
+    ResponseEntity<UserBean> getUserProfileByLogin(String login) throws IOException, AIException;
 }

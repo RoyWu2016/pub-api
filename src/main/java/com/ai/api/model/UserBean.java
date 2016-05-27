@@ -1,66 +1,89 @@
-/***************************************************************************
- * This document contains confidential and proprietary information
- * subject to non-disclosure agreements with AsiaInspection. This
- * information shall not be distributed or copied without written
- * permission from the AsiaInspection.
- ***************************************************************************/
 package com.ai.api.model;
 
-/***************************************************************************
- *<PRE>
- *  Project Name    : api
- *
- *  Package Name    : com.ai.api.model
- *
- *  File Name       : UserBean.java
- *
- *  Creation Date   : Mar 16, 2016
- *
- *  Author          : Allen Zhang
- *
- *  Purpose         : TODO
- *
- *
- *  History         : TODO
- *
- *</PRE>
- ***************************************************************************/
+import com.ai.api.bean.*;
 
+/**
+ *
+ */
 public class UserBean {
-	private String user_id;
-	private String login;
-	private String client_id;
-	private String sic;
 
-	public String getUser_id() {
-		return user_id;
-	}
+    private String id;
 
-	public void setUser_id(String user_id) {
-		this.user_id = user_id;
-	}
+    private String login;
 
-	public String getLogin() {
-		return login;
-	}
+    private String sic;
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
+    private String status;
 
-	public String getClient_id() {
-		return client_id;
-	}
+    private String businessUnit;
 
-	public void setClient_id(String client_id) {
-		this.client_id = client_id;
-	}
+    private CompanyBean company;
 
-	public String getSic() {
-		return sic;
-	}
+    private ContactInfoBean contactInfo;
 
-	public void setSic(String sic) {
-		this.sic = sic;
-	}
+    private PreferencesBean preferencesBean;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getSic() {
+        return sic;
+    }
+
+    public void setSic(String sic) {
+        this.sic = sic;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getBusinessUnit() {
+        return businessUnit;
+    }
+
+    public void setBusinessUnit(String businessUnit) {
+        this.businessUnit = businessUnit;
+    }
+
+    public CompanyBean getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyBean company) {
+        this.company = company;
+    }
+
+    public ContactInfoBean getContactInfo() {
+        return contactInfo;
+    }
+
+    public void setContactInfo(ContactInfoBean contactInfo) {
+        this.contactInfo = contactInfo;
+    }
+
+    public PreferencesBean getPreferencesBean() {
+        return preferencesBean;
+    }
+
+    public void setPreferencesBean(PreferencesBean preferencesBean) {
+        this.preferencesBean = preferencesBean;
+    }
 }

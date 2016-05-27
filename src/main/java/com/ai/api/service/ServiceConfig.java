@@ -28,31 +28,40 @@ package com.ai.api.service;
 
 public class ServiceConfig {
 
-	private String baseURL;
+    private String baseURL;
 
-	private String customerServiceUrl;
+    private String customerServiceUrl;
 
-	/**
-	 * @return the baseURL
-	 */
-	public String getBaseURL() {
-		return baseURL;
+	private String paramServiceUrl;
+
+    /**
+     * @return the baseURL
+     */
+    public String getBaseURL() {
+        return baseURL;
+    }
+
+    /**
+     * @param baseURL the baseURL to set
+     */
+    public void setBaseURL(String baseURL) {
+        this.baseURL = baseURL;
+    }
+
+	public String getParamServiceUrl() {
+		return paramServiceUrl;
 	}
 
-	/**
-	 * @param baseURL the baseURL to set
-	 */
-	public void setBaseURL(String baseURL) {
-		this.baseURL = baseURL;
+	public void setParamServiceUrl(String paramServiceUrl) {
+		this.paramServiceUrl = paramServiceUrl;
 	}
-
 
 	public String getCustomerServiceUrl() {
-		return customerServiceUrl;
-	}
+        return customerServiceUrl;
+    }
 
-	public void setCustomerServiceUrl(String customerServiceUrl) {
-		this.customerServiceUrl = customerServiceUrl;
-	}
+    public void setCustomerServiceUrl(String customerServiceUrl) {
+        this.customerServiceUrl = customerServiceUrl;
+    }
 
 }

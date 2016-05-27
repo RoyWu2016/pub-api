@@ -4,19 +4,20 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.dao.impl.db;
+package com.ai.api.dao;
 
-import com.ai.api.dao.UserDao;
+import com.ai.api.bean.SysProductCategoryBean;
+import com.ai.api.bean.SysProductFamilyBean;
 
 /***************************************************************************
  *<PRE>
- *  Project Name    : publicAPI
+ *  Project Name    : api
  *
- *  Package Name    : com.ai.api.dao.impl.db
+ *  Package Name    : com.ai.api.dao
  *
- *  File Name       : UserDaoDb.java
+ *  File Name       : ParameterDao.java
  *
- *  Creation Date   : Mar 02, 2016
+ *  Creation Date   : May 24, 2016
  *
  *  Author          : Allen Zhang
  *
@@ -28,6 +29,9 @@ import com.ai.api.dao.UserDao;
  *</PRE>
  ***************************************************************************/
 
-public class UserDaoDb implements UserDao {
+public interface ParameterDao {
 
+	SysProductCategoryBean getSysProductCategory();
+
+	SysProductFamilyBean getSysProductFamily();
 }

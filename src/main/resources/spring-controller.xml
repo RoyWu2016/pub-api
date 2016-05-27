@@ -10,7 +10,8 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 
     <mvc:annotation-driven/>
     <context:component-scan base-package="com.ai.api, version" />
-<!--, com.ai.commons.services.TokenJWTService -->
+
+    <!--, com.ai.commons.services.TokenJWTService -->
 <!--com.ai.api,     -->
     <!--<context:annotation-config/>-->
 
@@ -21,7 +22,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
           <!--p:userServiceUrl="https://192.168.0.31:8777/user-service" p:module="${securityModule}" />-->
 
     <mvc:interceptors>
-        <bean class="com.ai.commons.interceptor.SecuredInterceptorAdapter" p:securityModule="customer"/>
+        <bean class="com.ai.commons.interceptor.ClientAccountTokenCheckInterceptor" />
     </mvc:interceptors>
 
     <!--<context:component-scan base-package="com.ai.api, version">-->

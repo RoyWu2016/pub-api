@@ -5,19 +5,28 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.ai.api.model.UserDemoBean;
+import com.ai.api.model.UserProfileBookingPreference;
+import com.ai.api.model.UserProfileCompanyRequest;
+import com.ai.api.model.UserProfileContactRequest;
 import org.springframework.web.client.RestTemplate;
 
+
+//@Configuration
+//@PropertySource("classpath:classfields.properties")
 public class SpringRestTestClient {
 
 	public static final String REST_SERVICE_URI = "http://localhost:8080/api";
-	
+
+	//@Value("${Company.nameCN}")
+	static String propertyValue;
+
 	/* GET */
 	@SuppressWarnings("unchecked")
 	private static void listAllUsers(){
 		System.out.println("Testing listAllUsers API-----------");
 		
 		RestTemplate restTemplate = new RestTemplate();
-		List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(REST_SERVICE_URI+"/user/", List.class);
+		List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(REST_SERVICE_URI+"/userdemo/", List.class);
 		
 		if(usersMap!=null){
 			for(LinkedHashMap<String, Object> map : usersMap){
@@ -41,7 +50,7 @@ public class SpringRestTestClient {
 		System.out.println("Testing create User API----------");
     	RestTemplate restTemplate = new RestTemplate();
         UserDemoBean user = new UserDemoBean(0,"Sarah",51,134);
-        URI uri = restTemplate.postForLocation(REST_SERVICE_URI+"/user/", user, UserDemoBean.class);
+        URI uri = restTemplate.postForLocation(REST_SERVICE_URI+"/userdemo/", user, UserDemoBean.class);
         System.out.println("Location : "+uri.toASCIIString());
     }
 
@@ -69,9 +78,84 @@ public class SpringRestTestClient {
         restTemplate.delete(REST_SERVICE_URI+"/user/");
     }
 
+	/* Profile Company UPDATE */
+
+	private static void getProfileUpdate_test() {
+		System.out.println("Testing Company UPDATE API----------");
+		RestTemplate restTemplate = new RestTemplate();
+
+		UserProfileCompanyRequest userProfileCompanyRequest = new UserProfileCompanyRequest();
+
+		userProfileCompanyRequest.setNameCN("Company.nameCN");
+		userProfileCompanyRequest.setIndustry("Lue Info Services");
+		userProfileCompanyRequest.setCountry("INDIA");
+		userProfileCompanyRequest.setAddress("PATNA");
+		userProfileCompanyRequest.setCity("PATNA");
+		userProfileCompanyRequest.setPostcode("800020");
+
+
+		restTemplate.put(REST_SERVICE_URI + "/user/002F7C45A47FC2E3C1256F81006893B1/profile/company", userProfileCompanyRequest);
+		System.out.println(userProfileCompanyRequest);
+	}
+
+	/* Profile Contact UPDATE */
+
+	private static void getProfileContactUpdate_test() {
+		System.out.println("Testing Profile Contact Update API----------");
+		RestTemplate restTemplate = new RestTemplate();
+
+		UserProfileContactRequest userProfileContactRequest = new UserProfileContactRequest();
+
+		userProfileContactRequest.setMainSalutation("ER.");
+		userProfileContactRequest.setMainFamilyName("C Prakash");
+		userProfileContactRequest.setMainGivenName("LIServices");
+		userProfileContactRequest.setMainPosition("S java developer");
+		userProfileContactRequest.setMainEmail("p@gml.com");
+		userProfileContactRequest.setMainPhoneNumber("440905");
+		userProfileContactRequest.setMainMobileNumber("8434323334");
+		userProfileContactRequest.setBillingSalutation("DR.");
+		userProfileContactRequest.setBillingFamilyName("Rahul");
+		userProfileContactRequest.setBillingGivenName("Saksena");
+		userProfileContactRequest.setBillingEmail("r@gml.com");
+		userProfileContactRequest.setBillinIsSameAsMainContact("true");
+
+
+		restTemplate.put(REST_SERVICE_URI + "/user/002F7C45A47FC2E3C1256F81006893B1/profile/contactInfo", userProfileContactRequest);
+		System.out.println(userProfileContactRequest);
+	}
+
+
+   /* ProfileBookingPreference UPDATE */
+
+	private static void getProfileBookingPreferenceUpdate_test() {
+		System.out.println("Testing Profile Booking Preference Update API----------");
+		RestTemplate restTemplate = new RestTemplate();
+
+		UserProfileBookingPreference userProfileBookingPreference = new UserProfileBookingPreference();
+		userProfileBookingPreference.setShouldSendRefSampleToFactory("NO");
+		userProfileBookingPreference.setIsPoMandatory("NO");
+		userProfileBookingPreference.setMinQuantityToBeReadyPsiPercentage(9);
+		userProfileBookingPreference.setMinQuantityToBeReadyDuproPercentage(9);
+		userProfileBookingPreference.setMinQuantityToBeReadyIpcPercentage(9);
+		userProfileBookingPreference.setMinQuantityToBeReadyClcPercentage(9);
+		userProfileBookingPreference.setMinQuantityToBeReadyPmPercentage(9);
+		userProfileBookingPreference.setAleCanModify("No");
+		userProfileBookingPreference.setAqlCustomDefaultSampleLevel("NO");
+		userProfileBookingPreference.setUseCustomAQL("No");
+		userProfileBookingPreference.setCustomAQLCriticalDefects("Not allowed");
+		userProfileBookingPreference.setCustomAQLMajorDefects("300");
+		userProfileBookingPreference.setCustoMAQLMinorDefects("20");
+		userProfileBookingPreference.setCustoMAQLMaxMeasurementDefects("Not allowed");
+
+		restTemplate.put(REST_SERVICE_URI + "/user/281539258F3217F4E050A8C0060063A0/profile/preference/booking/", userProfileBookingPreference);
+		System.out.println(userProfileBookingPreference);
+	}
+
+
+
     public static void main(String args[]){
-		listAllUsers();
-		getUser();
+		//listAllUsers();
+		//getUser();
 //		createUser();
 //		listAllUsers();
 //		updateUser();
@@ -80,5 +164,14 @@ public class SpringRestTestClient {
 //		listAllUsers();
 //		deleteAllUsers();
 //		listAllUsers();
-    }
+//		getProfileUpdate_test();
+//		getProfileContactUpdate_test();
+//		getProfileBookingPreferenceUpdate_test();
+	}
 }
+
+
+
+
+
+

@@ -4,21 +4,19 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.service;
+package com.ai.api.dao;
 
-import java.io.IOException;
-
-import com.ai.api.model.UserBean;
+import com.ai.commons.beans.customer.CrmCompanyBean;
 
 /***************************************************************************
  *<PRE>
  *  Project Name    : api
  *
- *  Package Name    : com.ai.api.service
+ *  Package Name    : com.ai.api.dao
  *
- *  File Name       : CustomerService.java
+ *  File Name       : CompanyDao.java
  *
- *  Creation Date   : Mar 16, 2016
+ *  Creation Date   : May 25, 2016
  *
  *  Author          : Allen Zhang
  *
@@ -30,7 +28,10 @@ import com.ai.api.model.UserBean;
  *</PRE>
  ***************************************************************************/
 
-public interface CustomerService {
+public interface CompanyDao {
 
-	UserBean getByLogin(String login) throws IOException;
+	CrmCompanyBean getCrmCompany(String compId);
+
+	boolean updateCrmCompany(CrmCompanyBean company);
+	
 }

@@ -4,17 +4,20 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.dao;
+package com.ai.api.util;
+
+import com.ai.commons.beans.customer.ExtraBean;
+import com.ai.commons.beans.customer.GeneralUserViewBean;
 
 /***************************************************************************
  *<PRE>
- *  Project Name    : publicAPI
+ *  Project Name    : api
  *
- *  Package Name    : com.ai.api.dao
+ *  Package Name    : com.ai.api.util
  *
- *  File Name       : User.java
+ *  File Name       : AIUtil.java
  *
- *  Creation Date   : Mar 02, 2016
+ *  Creation Date   : May 25, 2016
  *
  *  Author          : Allen Zhang
  *
@@ -26,6 +29,17 @@ package com.ai.api.dao;
  *</PRE>
  ***************************************************************************/
 
-public interface UserDao {
+public class AIUtil {
+	public static String getUserBusinessUnit(GeneralUserViewBean user, ExtraBean extra) {
+		if (extra.getIsChb().equalsIgnoreCase("Yes")) {
+			return "CHB";
+		} else if (extra.getIsFI().equalsIgnoreCase("Yes")) {
+			return "AFI";
+		} else if (user.getSettingBean().getBusinessUnitText().equals("AG")) {
+			return "AG";
+		} else {
+			return "AI";
+		}
 
+	}
 }
