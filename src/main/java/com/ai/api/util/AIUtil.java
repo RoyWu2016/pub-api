@@ -4,20 +4,20 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.dao;
+package com.ai.api.util;
 
-import com.ai.api.bean.SysProductCategoryBean;
-import com.ai.api.bean.SysProductFamilyBean;
+import com.ai.commons.beans.customer.ExtraBean;
+import com.ai.commons.beans.customer.GeneralUserViewBean;
 
 /***************************************************************************
  *<PRE>
  *  Project Name    : api
  *
- *  Package Name    : com.ai.api.dao
+ *  Package Name    : com.ai.api.util
  *
- *  File Name       : ParameterDao.java
+ *  File Name       : AIUtil.java
  *
- *  Creation Date   : May 24, 2016
+ *  Creation Date   : May 25, 2016
  *
  *  Author          : Allen Zhang
  *
@@ -29,9 +29,17 @@ import com.ai.api.bean.SysProductFamilyBean;
  *</PRE>
  ***************************************************************************/
 
-public interface ParameterDao {
+public class AIUtil {
+	public static String getUserBusinessUnit(GeneralUserViewBean user, ExtraBean extra) {
+		if (extra.getIsChb().equalsIgnoreCase("Yes")) {
+			return "CHB";
+		} else if (extra.getIsFI().equalsIgnoreCase("Yes")) {
+			return "AFI";
+		} else if (user.getSettingBean().getBusinessUnitText().equals("AG")) {
+			return "AG";
+		} else {
+			return "AI";
+		}
 
-	SysProductCategoryBean getSysProductCategory();
-
-	SysProductFamilyBean getSysProductFamily();
+	}
 }

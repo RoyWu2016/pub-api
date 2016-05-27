@@ -39,7 +39,8 @@
     </bean>
 
     <bean id="paramDao" class="com.ai.api.dao.impl.ParameterDaoImpl"/>
+    <bean id="companyDao" class="com.ai.api.dao.impl.CompanyDaoImpl"/>
 
     <!-- Version bean for application information -->
-    <bean id="versionBean" class="version.Version"/>
+    <!--<bean id="versionBean" class="version.Version"/>-->
 </beans>

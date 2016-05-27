@@ -1,21 +1,21 @@
 package com.ai.api;
 
+import java.net.URI;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import com.ai.api.model.UserDemoBean;
 import com.ai.api.model.UserProfileBookingPreference;
 import com.ai.api.model.UserProfileCompanyRequest;
 import com.ai.api.model.UserProfileContactRequest;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 
 //@Configuration
 //@PropertySource("classpath:classfields.properties")
 public class SpringRestTestClient {
 
-	public static final String REST_SERVICE_URI = "http://localhost:8888/api";
+	public static final String REST_SERVICE_URI = "http://localhost:8080/api";
 
 	//@Value("${Company.nameCN}")
 	static String propertyValue;
@@ -26,7 +26,7 @@ public class SpringRestTestClient {
 		System.out.println("Testing listAllUsers API-----------");
 		
 		RestTemplate restTemplate = new RestTemplate();
-		List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(REST_SERVICE_URI+"/user/", List.class);
+		List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(REST_SERVICE_URI+"/userdemo/", List.class);
 		
 		if(usersMap!=null){
 			for(LinkedHashMap<String, Object> map : usersMap){
@@ -50,7 +50,7 @@ public class SpringRestTestClient {
 		System.out.println("Testing create User API----------");
     	RestTemplate restTemplate = new RestTemplate();
         UserDemoBean user = new UserDemoBean(0,"Sarah",51,134);
-        URI uri = restTemplate.postForLocation(REST_SERVICE_URI+"/user/", user, UserDemoBean.class);
+        URI uri = restTemplate.postForLocation(REST_SERVICE_URI+"/userdemo/", user, UserDemoBean.class);
         System.out.println("Location : "+uri.toASCIIString());
     }
 
@@ -164,9 +164,9 @@ public class SpringRestTestClient {
 //		listAllUsers();
 //		deleteAllUsers();
 //		listAllUsers();
-		getProfileUpdate_test();
-		getProfileContactUpdate_test();
-		getProfileBookingPreferenceUpdate_test();
+//		getProfileUpdate_test();
+//		getProfileContactUpdate_test();
+//		getProfileBookingPreferenceUpdate_test();
 	}
 }
 

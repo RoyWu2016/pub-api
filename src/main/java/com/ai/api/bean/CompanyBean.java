@@ -4,6 +4,7 @@ package com.ai.api.bean;
  * Created by KK on 4/25/2016.
  */
 public class CompanyBean {
+	private String id;
 
     private String name;
 
@@ -17,7 +18,9 @@ public class CompanyBean {
 
     private String postcode;
 
-    public String getName() {
+	private String country;
+
+	public String getName() {
         return name;
     }
 
@@ -64,4 +67,21 @@ public class CompanyBean {
     public void setPostcode(String postcode) {
         this.postcode = postcode;
     }
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 }

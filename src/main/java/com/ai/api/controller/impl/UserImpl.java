@@ -8,15 +8,14 @@ package com.ai.api.controller.impl;
 
 import java.io.IOException;
 
+import com.ai.api.bean.CompanyBean;
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
 import com.ai.api.model.UserProfileBookingPreference;
-import com.ai.api.model.UserProfileCompanyRequest;
 import com.ai.api.model.UserProfileContactRequest;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.customer.ContactBean;
-import com.ai.commons.beans.customer.CrmCompanyBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.customer.OrderBookingBean;
 import com.ai.commons.beans.user.GeneralUserBean;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 /***************************************************************************
  * <PRE>
  * Project Name    : api
@@ -67,8 +65,6 @@ public class UserImpl implements User {
 			cust = userService.getCustByLogin(login);
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (AIException e) {
-			e.printStackTrace();
 		}
 		if (cust == null) {
 			System.out.println("User with login " + login + " not found");
@@ -81,22 +77,17 @@ public class UserImpl implements User {
 	//------------------- User Profile Company Update --------------------------------------------------------
 
 
-	@RequestMapping(value = "/user/{USER_ID}/profile/company", method = RequestMethod.POST)
-	public ResponseEntity<Void> updateUserProfileCompany(@PathVariable("USER_ID") String USER_ID, @RequestBody UserProfileCompanyRequest userProfileCompanyRequest) throws IOException, AIException {
-		System.out.println("Creating User Choice " + USER_ID);
+	@RequestMapping(value = "/user/{userId}/profile/company", method = RequestMethod.PUT)
+	public ResponseEntity<Boolean> updateUserProfileCompany(@PathVariable("userId") String userId,
+	                                                     @RequestBody CompanyBean newComp)
+			throws IOException, AIException {
+		System.out.println("updating company for user: " + userId);
+		if (userService.updateCompany(newComp, userId)){
+			return new ResponseEntity<>(true, HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(false, HttpStatus.OK);
 
-		CrmCompanyBean crmCompanyBean = new CrmCompanyBean();
-
-		crmCompanyBean.setCompanyNameCN(userProfileCompanyRequest.getNameCN());
-		crmCompanyBean.setIndustry(userProfileCompanyRequest.getIndustry());
-		crmCompanyBean.setCountryRegion(userProfileCompanyRequest.getCountry());
-		crmCompanyBean.setAddress1(userProfileCompanyRequest.getAddress());
-		crmCompanyBean.setCity(userProfileCompanyRequest.getCity());
-		crmCompanyBean.setPostCode(userProfileCompanyRequest.getPostcode());
-
-		userService.getProfileUpdate(crmCompanyBean, USER_ID);
-
-		return null;
+		}
 	}
 
 	//------------------- User Profile Contact Update --------------------------------------------------------
@@ -125,7 +116,7 @@ public class UserImpl implements User {
 		//contactBean.set(userProfileContactRequest.getBillingEmail());
 		generalUserViewBean.setUser(generalUserBean);
 
-		userService.getProfileContactUpdate(generalUserViewBean, contactBean, USER_ID);
+		userService.updateContact(generalUserViewBean, contactBean, USER_ID);
 
 
 		return null;
@@ -156,7 +147,7 @@ public class UserImpl implements User {
 		orderBookingBean.setMinorDefects(userProfileBookingPreference.getCustoMAQLMinorDefects());
 		orderBookingBean.setMaxMeaDefects(userProfileBookingPreference.getCustoMAQLMaxMeasurementDefects());
 
-		userService.getProfileBookingPreferenceUpdate(orderBookingBean, USER_ID);
+		userService.updateBookingPreference(orderBookingBean, USER_ID);
 
 		return null;
 	}

@@ -6,8 +6,7 @@
  ***************************************************************************/
 package com.ai.api.dao;
 
-import com.ai.api.bean.SysProductCategoryBean;
-import com.ai.api.bean.SysProductFamilyBean;
+import com.ai.commons.beans.customer.CrmCompanyBean;
 
 /***************************************************************************
  *<PRE>
@@ -15,9 +14,9 @@ import com.ai.api.bean.SysProductFamilyBean;
  *
  *  Package Name    : com.ai.api.dao
  *
- *  File Name       : ParameterDao.java
+ *  File Name       : CompanyDao.java
  *
- *  Creation Date   : May 24, 2016
+ *  Creation Date   : May 25, 2016
  *
  *  Author          : Allen Zhang
  *
@@ -29,9 +28,10 @@ import com.ai.api.bean.SysProductFamilyBean;
  *</PRE>
  ***************************************************************************/
 
-public interface ParameterDao {
+public interface CompanyDao {
 
-	SysProductCategoryBean getSysProductCategory();
+	CrmCompanyBean getCrmCompany(String compId);
 
-	SysProductFamilyBean getSysProductFamily();
+	boolean updateCrmCompany(CrmCompanyBean company);
+	
 }
