@@ -15,6 +15,7 @@ import com.ai.api.model.UserBean;
 import com.ai.api.model.UserProfileBookingPreference;
 import com.ai.api.model.UserProfileContactRequest;
 import com.ai.api.service.UserService;
+import com.ai.commons.annotation.ClientAccountTokenCheck;
 import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.customer.OrderBookingBean;
@@ -55,6 +56,7 @@ public class UserImpl implements User {
 	UserService userService;  //Service which will do all data retrieval/manipulation work
 
 	@Override
+	@ClientAccountTokenCheck
 	@RequestMapping(value = "/user/{login}/profile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserBean> getUserProfileByLogin(@PathVariable("login") String login)
 			throws IOException, AIException {
@@ -73,10 +75,8 @@ public class UserImpl implements User {
 		return new ResponseEntity<>(cust, HttpStatus.OK);
 	}
 
-
-	//------------------- User Profile Company Update --------------------------------------------------------
-
-
+	@Override
+	@ClientAccountTokenCheck
 	@RequestMapping(value = "/user/{userId}/profile/company", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> updateUserProfileCompany(@PathVariable("userId") String userId,
 	                                                     @RequestBody CompanyBean newComp)
@@ -90,9 +90,8 @@ public class UserImpl implements User {
 		}
 	}
 
-	//------------------- User Profile Contact Update --------------------------------------------------------
-
-
+	@Override
+	@ClientAccountTokenCheck
 	@RequestMapping(value = "/user/{USER_ID}/profile/contactInfo", method = RequestMethod.PUT)
 	public ResponseEntity<Void> updateUserProfileContact(@PathVariable("USER_ID") String USER_ID, @RequestBody UserProfileContactRequest userProfileContactRequest) throws IOException, AIException {
 		System.out.println("Creating User Choice " + USER_ID);
@@ -122,10 +121,8 @@ public class UserImpl implements User {
 		return null;
 	}
 
-
-	//------------------- User Profile Booking Preference Update --------------------------------------------------------
-
-
+	@Override
+	@ClientAccountTokenCheck
 	@RequestMapping(value = "/user/{USER_ID}/profile/preference/booking/", method = RequestMethod.PUT)
 	public ResponseEntity<Void> updateUserProfileContact(@PathVariable("USER_ID") String USER_ID, @RequestBody UserProfileBookingPreference userProfileBookingPreference) throws IOException, AIException {
 		System.out.println("Creating User Choice " + USER_ID);

@@ -92,6 +92,10 @@ public class UserServiceImplTest {
 
 	}
 
+	/**
+	 * test update user company info
+	 * @throws Exception
+	 */
 	@Test
 	public void updateUserProfileCompany() throws Exception {
 		CompanyBean newComp = new CompanyBean();
@@ -118,8 +122,7 @@ public class UserServiceImplTest {
 	}
 
 	@Test
-	public void getProfileContactUpdate_test() throws IOException, AIException {
-		// UserServiceImpl userService = new UserServiceImpl();
+	public void updateUserProfileContact() throws IOException, AIException {
 		userService.updateContact(generalUserViewBean, contactBean, "002F7C45A47FC2E3C1256F81006893B");
 	}
 
