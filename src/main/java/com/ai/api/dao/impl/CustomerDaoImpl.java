@@ -19,17 +19,13 @@ import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.customer.ContactBean;
-import com.ai.commons.beans.customer.ExtraBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
-import com.ai.commons.beans.customer.OrderBookingBean;
-import com.ai.commons.beans.customer.OverviewBean;
-import com.ai.commons.beans.customer.ProductFamilyBean;
-import com.ai.commons.beans.customer.QualityManualBean;
+import com.ai.commons.beans.user.GeneralUserBean;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 /***************************************************************************
@@ -92,15 +88,16 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	}
 
 	@Override
-	public OverviewBean getCompanyOverview(String compId) {
-		String overviewBeanURL = config.getCustomerServiceUrl() + "/customer/" + compId + "/overview";
-		GetRequest request = GetRequest.newInstance().setUrl(overviewBeanURL);
+	public GeneralUserBean getGeneralUser(String userId) {
+
+		String generalUVBeanURL = config.getCustomerServiceUrl() + "/users/general-user/" + userId;
+		GetRequest request = GetRequest.newInstance().setUrl(generalUVBeanURL);
 		ServiceCallResult result;
-		OverviewBean overviewBean;
+		GeneralUserBean generalUserBean;
 		try {
 			result = HttpUtil.issueGetRequest(request);
-			overviewBean = JsonUtil.mapToObject(result.getResponseString(), OverviewBean.class);
-			return overviewBean;
+			generalUserBean = JsonUtil.mapToObject(result.getResponseString(), GeneralUserBean.class);
+			return generalUserBean;
 		} catch (IOException e) {
 			LOGGER.error(Arrays.asList(e.getStackTrace()));
 		}
@@ -108,84 +105,20 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	}
 
 	@Override
-	public ContactBean getCompanyContact(String compId) {
-
-		String contactBeanURL = config.getCustomerServiceUrl() + "/customer/" + compId + "/contact";
-		GetRequest request = GetRequest.newInstance().setUrl(contactBeanURL);
-		ServiceCallResult result;
-		ContactBean contactBean;
+	public boolean updateGeneralUser(GeneralUserBean newUser) {
+		String url = config.getCustomerServiceUrl() + "/users/" + newUser.getUserId() + "/general-user";
 		try {
-			result = HttpUtil.issueGetRequest(request);
-			contactBean = JsonUtil.mapToObject(result.getResponseString(), ContactBean.class);
-			return contactBean;
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, newUser);
+			if (result.getStatusCode() == HttpStatus.OK.value() &&
+					result.getResponseString().isEmpty() &&
+					result.getReasonPhase().equalsIgnoreCase("OK")) {
+
+				return true;
+			}
 		} catch (IOException e) {
 			LOGGER.error(Arrays.asList(e.getStackTrace()));
 		}
-		return null;
+		return false;
 	}
 
-	@Override
-	public OrderBookingBean getCompanyOrderBooking(String compId) {
-		String orderBBeanURL = config.getCustomerServiceUrl() + "/customer/" + compId + "/order-booking";
-		GetRequest request = GetRequest.newInstance().setUrl(orderBBeanURL);
-		ServiceCallResult result;
-		OrderBookingBean orderBookingBean;
-		try {
-			result = HttpUtil.issueGetRequest(request);
-			orderBookingBean = JsonUtil.mapToObject(result.getResponseString(), OrderBookingBean.class);
-			return orderBookingBean;
-		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
-		}
-		return null;
-	}
-
-	@Override
-	public ExtraBean getCompanyExtra(String compId) {
-		String extraURL = config.getCustomerServiceUrl() + "/customer/" + compId + "/extra";
-		GetRequest request = GetRequest.newInstance().setUrl(extraURL);
-		ServiceCallResult result;
-		ExtraBean extraBean;
-		try {
-			result = HttpUtil.issueGetRequest(request);
-			extraBean = JsonUtil.mapToObject(result.getResponseString(), ExtraBean.class);
-			return extraBean;
-		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
-		}
-
-		return null;
-	}
-
-	@Override
-	public QualityManualBean getCompanyQualityManual(String compId) {
-		String qualitymanualURL = config.getCustomerServiceUrl() + "/customer/" + compId + "/quality-manual";
-		GetRequest request = GetRequest.newInstance().setUrl(qualitymanualURL);
-		ServiceCallResult result;
-		QualityManualBean qualityManualBean;
-		try {
-			result = HttpUtil.issueGetRequest(request);
-			qualityManualBean = JsonUtil.mapToObject(result.getResponseString(), QualityManualBean.class);
-			return qualityManualBean;
-		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
-		}
-		return null;
-	}
-
-	@Override
-	public ProductFamilyBean getCompanyProductFamily(String compId) {
-		String productFamilyURL = config.getCustomerServiceUrl() + "/customer/" + compId + "/product-family";
-		GetRequest request = GetRequest.newInstance().setUrl(productFamilyURL);
-		ServiceCallResult result;
-		ProductFamilyBean productFamilyBean;
-		try {
-			result = HttpUtil.issueGetRequest(request);
-			productFamilyBean = JsonUtil.mapToObject(result.getResponseString(), ProductFamilyBean.class);
-			return productFamilyBean;
-		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
-		}
-		return null;
-	}
 }

@@ -7,12 +7,12 @@
 package com.ai.api.service.impl;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ai.api.bean.AqlAndSamplingSizeBean;
 import com.ai.api.bean.BillingBean;
-import com.ai.api.bean.BookingBean;
+import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.bean.CustomAQLBean;
@@ -31,8 +31,7 @@ import com.ai.api.model.UserBean;
 import com.ai.api.service.ServiceConfig;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
-import com.ai.commons.HttpUtil;
-import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.StringUtils;
 import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.CrmCompanyBean;
 import com.ai.commons.beans.customer.ExtraBean;
@@ -41,6 +40,8 @@ import com.ai.commons.beans.customer.OrderBookingBean;
 import com.ai.commons.beans.customer.OverviewBean;
 import com.ai.commons.beans.customer.ProductFamilyBean;
 import com.ai.commons.beans.customer.QualityManualBean;
+import com.ai.commons.beans.customer.RelevantCategoryInfoBean;
+import com.ai.commons.beans.user.GeneralUserBean;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -98,13 +99,13 @@ public class UserServiceImpl implements UserService {
 	    //get all needed beans
 	    GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(customerId);
 	    String compId = generalUserBean.getCompany().getCompanyId();
-		OverviewBean overviewBean = customerDao.getCompanyOverview(compId);
-		ContactBean contactBean = customerDao.getCompanyContact(compId);
-		OrderBookingBean orderBookingBean = customerDao.getCompanyOrderBooking(compId);
-		ExtraBean extrabean = customerDao.getCompanyExtra(compId);
+		OverviewBean overviewBean = companyDao.getCompanyOverview(compId);
+		ContactBean contactBean = companyDao.getCompanyContact(compId);
+		OrderBookingBean orderBookingBean = companyDao.getCompanyOrderBooking(compId);
+		ExtraBean extrabean = companyDao.getCompanyExtra(compId);
 
-		ProductFamilyBean productFamilyBean = customerDao.getCompanyProductFamily(compId);
-		QualityManualBean qualityManualBean = customerDao.getCompanyQualityManual(compId);
+		ProductFamilyBean productFamilyBean = companyDao.getCompanyProductFamily(compId);
+		QualityManualBean qualityManualBean = companyDao.getCompanyQualityManual(compId);
 	    SysProductCategoryBean sysProductCategoryBean = paramDao.getSysProductCategory();
 	    SysProductFamilyBean sysProductFamilyBean = paramDao.getSysProductFamily();
 
@@ -142,7 +143,6 @@ public class UserServiceImpl implements UserService {
 		contactInfoBean.setMain(main);
 
 		// ------------Set BillingBean Properties ----------------
-
 		BillingBean billingBean = new BillingBean();
 
 		billingBean.setSalutation(contactBean.getAccountingGender());
@@ -172,7 +172,7 @@ public class UserServiceImpl implements UserService {
 		// ------------Set PreferencesBean Properties ----------------
 
 		PreferencesBean preferencesBean = new PreferencesBean();
-		BookingBean bookingbean = new BookingBean();
+		BookingPreferenceBean bookingbean = new BookingPreferenceBean();
 
 		bookingbean.setUseQuickFormByDefault(extrabean.getIsDetailedBookingForm());
 		bookingbean.setShouldSendRefSampleToFactory(orderBookingBean.getSendSampleToFactory());
@@ -290,6 +290,7 @@ public class UserServiceImpl implements UserService {
 		return user;
     }
 
+	@Override
     public boolean updateCompany(CompanyBean newComp, String userID) throws IOException, AIException {
 	    //call customer service to get latest crmCompanyBean first
 	    GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userID);
@@ -308,39 +309,110 @@ public class UserServiceImpl implements UserService {
 	    return companyDao.updateCrmCompany(company);
     }
 
-    public boolean updateContact(GeneralUserViewBean generalUserViewBean, ContactBean contactBean, String user_id) throws IOException, AIException {
-        // customerDao.updateProfileContact(generalUserViewBean, contactBean, user_id);
-        String url = "http://192.168.0.31:8093/customer-service/customer/" + user_id + "/contact";
-        try {
-            ServiceCallResult result = HttpUtil.issuePostRequest(url, null,
-                    generalUserViewBean);
-            if (result.getStatusCode() == 200 || result.getStatusCode() == 202) {
-                return true;
-            }
-        } catch (IOException e) {
-            logger.error(Arrays.asList(e.getStackTrace()));
-        }
-        return false;
-    }
+	@Override
+    public boolean updateContact(ContactInfoBean newContact, String userID) throws IOException, AIException {
+	    //get general user bean
+	    GeneralUserBean user = customerDao.getGeneralUser(userID);
+	    user.setFollowName(newContact.getMain().getSalutation());
+	    user.setFirstName(newContact.getMain().getGivenName());
+	    user.setLastName(newContact.getMain().getFamilyName());
+	    user.setPersonalEmail(newContact.getMain().getEmail());
+	    user.setLandline(newContact.getMain().getPhoneNumber());
+	    user.setMobile(newContact.getMain().getMobileNumber());
 
-    public boolean updateBookingPreference(OrderBookingBean orderBookingBean, String user_id) throws IOException, AIException {
-        System.out.println("-----orderBookingBean-----" + orderBookingBean + "---" + user_id);
-        // customerDao.updateBookingPreference(orderBookingBean, user_id);
-        String url = "http://192.168.0.31:8093/customer-service/customer/" + user_id + "/order-booking";
-        try {
-            ServiceCallResult result = HttpUtil.issuePostRequest(url, null,
-                    orderBookingBean);
-            if (result.getStatusCode() == 200 || result.getStatusCode() == 202) {
-                return true;
-            }
-        } catch (IOException e) {
-            logger.error(Arrays.asList(e.getStackTrace()));
-        }
-        return false;
+	    //get comp id
+	    GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userID);
+	    String compId = generalUserBean.getCompany().getCompanyId();
+
+	    //get contact bean
+	    ContactBean contact = companyDao.getCompanyContact(compId);
+	    contact.setMainPosition(newContact.getMain().getPosition());
+	    if (newContact.getBilling().getIsSameAsMainContact().equalsIgnoreCase("true")) {
+		    contact.setAccountingGender(newContact.getMain().getSalutation());
+		    contact.setAccountingGivenName(newContact.getMain().getGivenName());
+		    contact.setAccountingName(newContact.getMain().getFamilyName());
+		    contact.setAccountingEmail(newContact.getMain().getEmail());
+	    }else {
+		    contact.setAccountingGender(newContact.getBilling().getSalutation());
+		    contact.setAccountingGivenName(newContact.getBilling().getGivenName());
+		    contact.setAccountingName(newContact.getBilling().getFamilyName());
+		    contact.setAccountingEmail(newContact.getBilling().getEmail());
+	    }
+
+	    //update general user and company contact
+	    return customerDao.updateGeneralUser(user) && companyDao.updateCompanyContact(compId, contact);
     }
 
 	@Override
-	public boolean updateProductCategory(List<String> categoryList, String userId) {
-		return false;
+    public boolean updateBookingPreference(BookingPreferenceBean newBookingPref, String userId) throws IOException, AIException {
+        System.out.println("-----orderBookingBean-----" + newBookingPref + "---" + userId);
+
+		//get comp id
+		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
+		String compId = generalUserBean.getCompany().getCompanyId();
+
+		//get booking preference first
+		OrderBookingBean booking = companyDao.getCompanyOrderBooking(compId);
+		booking.setSendSampleToFactory(StringUtils.getYesNo(newBookingPref.getShouldSendRefSampleToFactory()));
+		booking.setPoCompulsory(StringUtils.getYesNo(newBookingPref.getIsPoMandatory()));
+		booking.setPsiPercentage(newBookingPref.getMinQuantityToBeReady()[0].getMinQty());
+		booking.setDuproPercentage(newBookingPref.getMinQuantityToBeReady()[1].getMinQty());
+		booking.setIpcPercentage(newBookingPref.getMinQuantityToBeReady()[2].getMinQty());
+		booking.setClcPercentage(newBookingPref.getMinQuantityToBeReady()[3].getMinQty());
+		booking.setPmPercentage(newBookingPref.getMinQuantityToBeReady()[4].getMinQty());
+
+		booking.setAllowChangeAql(StringUtils.getOneZero(newBookingPref.getAqlAndSamplingSize().getCanModify()));
+		booking.setCustomizedSampleLevel(newBookingPref.getAqlAndSamplingSize().getCustomDefaultSampleLevel());
+		booking.setCustAqlLevel(StringUtils.getYesNo(newBookingPref.getAqlAndSamplingSize().getUseCustomAQL()));
+		if (newBookingPref.getAqlAndSamplingSize().getUseCustomAQL().equalsIgnoreCase("false")) {
+			booking.setCriticalDefects("");
+			booking.setMajorDefects("");
+			booking.setMinorDefects("");
+			booking.setMaxMeaDefects("");
+		} else {
+			booking.setCriticalDefects(newBookingPref.getAqlAndSamplingSize().getCustomAQL().getCriticalDefects());
+			booking.setMajorDefects(newBookingPref.getAqlAndSamplingSize().getCustomAQL().getMajorDefects());
+			booking.setMinorDefects(newBookingPref.getAqlAndSamplingSize().getCustomAQL().getMinorDefects());
+			booking.setMaxMeaDefects(newBookingPref.getAqlAndSamplingSize().getCustomAQL().getMaxMeasurementDefects());
+		}
+
+		//get extra first
+		ExtraBean extra= companyDao.getCompanyExtra(compId);
+		extra.setIsDetailedBookingForm(StringUtils.getYesNo(newBookingPref.getUseQuickFormByDefault()));
+
+		//update order booking and extra
+		return companyDao.updateCompanyExtra(compId, extra) && companyDao.updateCompanyOrderBooking(compId, booking);
+    }
+
+	@Override
+	public boolean updateBookingPreferredProductFamily(List<String> newPreferred, String userId) {
+		//get comp id
+		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
+		String compId = generalUserBean.getCompany().getCompanyId();
+
+		//get current product family
+		ProductFamilyBean family = companyDao.getCompanyProductFamily(compId);
+		System.out.println(family.getProductFamilyInfo());
+
+		List<RelevantCategoryInfoBean> infos = new ArrayList<>();
+		SysProductFamilyBean sys = paramDao.getSysProductFamily();
+		int index = 1;
+		for (String familyID : newPreferred) {
+			//get product category by product family id
+			for (int i=0; i< sys.getId().size(); i++) {
+				if (sys.getId().get(i).equals(familyID)) {
+					String categoryID = sys.getCategoryId().get(i);
+					RelevantCategoryInfoBean newInfo = new RelevantCategoryInfoBean();
+					newInfo.setFavFamily(familyID);
+					newInfo.setFavCategory(categoryID);
+					newInfo.setFavSeq(index);
+					infos.add(newInfo);
+					index++;
+					break;
+				}
+			}
+		}
+		family.setRelevantCategoryInfo(infos);
+		return companyDao.updateCompanyProductFamily(compId, family);
 	}
 }

@@ -6,7 +6,13 @@
  ***************************************************************************/
 package com.ai.api.dao;
 
+import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.CrmCompanyBean;
+import com.ai.commons.beans.customer.ExtraBean;
+import com.ai.commons.beans.customer.OrderBookingBean;
+import com.ai.commons.beans.customer.OverviewBean;
+import com.ai.commons.beans.customer.ProductFamilyBean;
+import com.ai.commons.beans.customer.QualityManualBean;
 
 /***************************************************************************
  *<PRE>
@@ -33,5 +39,24 @@ public interface CompanyDao {
 	CrmCompanyBean getCrmCompany(String compId);
 
 	boolean updateCrmCompany(CrmCompanyBean company);
-	
+
+	OverviewBean getCompanyOverview(String compId);
+
+	ContactBean getCompanyContact(String compId);
+
+	boolean updateCompanyContact(String compId, ContactBean newContact);
+
+	OrderBookingBean getCompanyOrderBooking(String compId);
+
+	ExtraBean getCompanyExtra(String compId);
+
+	QualityManualBean getCompanyQualityManual(String compId);
+
+	boolean updateCompanyExtra(String compId, ExtraBean extra);
+
+	boolean updateCompanyOrderBooking(String compId, OrderBookingBean booking);
+
+	ProductFamilyBean getCompanyProductFamily(String compId);
+
+	boolean updateCompanyProductFamily(String compId, ProductFamilyBean prodFamily);
 }

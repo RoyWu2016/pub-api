@@ -1,13 +1,8 @@
 package com.ai.api.dao;
 
 import com.ai.api.exception.AIException;
-import com.ai.commons.beans.customer.ContactBean;
-import com.ai.commons.beans.customer.ExtraBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
-import com.ai.commons.beans.customer.OrderBookingBean;
-import com.ai.commons.beans.customer.OverviewBean;
-import com.ai.commons.beans.customer.ProductFamilyBean;
-import com.ai.commons.beans.customer.QualityManualBean;
+import com.ai.commons.beans.user.GeneralUserBean;
 
 public interface CustomerDao {
 
@@ -15,16 +10,8 @@ public interface CustomerDao {
 
 	GeneralUserViewBean getGeneralUserViewBean(String customer_id);
 
-	OverviewBean getCompanyOverview(String customer_id);
+	GeneralUserBean getGeneralUser(String userId);
 
-	ContactBean getCompanyContact(String compId);
-
-	OrderBookingBean getCompanyOrderBooking(String compId);
-
-	ExtraBean getCompanyExtra(String compId);
-
-	ProductFamilyBean getCompanyProductFamily(String compId);
-
-	QualityManualBean getCompanyQualityManual(String compId);
+	boolean updateGeneralUser(GeneralUserBean newUser);
 
 }
