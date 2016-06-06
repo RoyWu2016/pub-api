@@ -4,13 +4,13 @@ package com.ai.api.bean;
  * Created by KK on 4/25/2016.
  */
 public class PreferencesBean {
-    private BookingBean booking;
+    private BookingPreferenceBean booking;
 
-    public BookingBean getBooking() {
+    public BookingPreferenceBean getBooking() {
         return booking;
     }
 
-    public void setBooking(BookingBean booking) {
+    public void setBooking(BookingPreferenceBean booking) {
         this.booking = booking;
     }
 
