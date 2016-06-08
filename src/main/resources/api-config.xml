@@ -29,10 +29,11 @@
 
     <bean id="serviceConfig" class="com.ai.api.service.ServiceConfig"
           p:baseURL="${user.service.url}" p:customerServiceUrl="${customer.service.url}"
-          p:paramServiceUrl="${parameter.service.url}"/>
+          p:paramServiceUrl="${parameter.service.url}" p:ssoUserServiceUrl="${user.service.url}"/>
 
     <bean id="app" class="com.ai.api.App"/>
     <bean id="userService" class="com.ai.api.service.impl.UserServiceImpl" />
+
 
     <bean id="customerDao" class="com.ai.api.dao.impl.CustomerDaoImpl">
         <property name="dataSource" ref="dataSource"/>
@@ -40,6 +41,7 @@
 
     <bean id="paramDao" class="com.ai.api.dao.impl.ParameterDaoImpl"/>
     <bean id="companyDao" class="com.ai.api.dao.impl.CompanyDaoImpl"/>
+    <bean id="ssoUserServiceDao" class="com.ai.api.dao.impl.SSOUserServiceDaoImpl" />
 
     <!-- Version bean for application information -->
     <!--<bean id="versionBean" class="version.Version"/>-->
