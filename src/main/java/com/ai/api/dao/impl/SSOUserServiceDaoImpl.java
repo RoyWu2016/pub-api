@@ -15,6 +15,7 @@ import com.ai.api.dao.SSOUserServiceDao;
 import com.ai.api.service.ServiceConfig;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.beans.ServiceCallResult;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -42,6 +43,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 
 	private static final Logger LOGGER = Logger.getLogger(SSOUserServiceDaoImpl.class);
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	@Autowired
 	@Qualifier("serviceConfig")
@@ -57,7 +59,9 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 		obj.put("password", password);
 		obj.put("tokenCategory", tokenCategory);
 		try {
-			return HttpUtil.issuePostRequest(ssoUserServiceUrl, null, obj);
+			ServiceCallResult result = HttpUtil.issuePostRequest(ssoUserServiceUrl, null, obj);
+			return mapper.readValue(result.getResponseString(), ServiceCallResult.class);
+
 		} catch (IOException e) {
 			LOGGER.error(Arrays.asList(e.getStackTrace()));
 		}
@@ -74,7 +78,8 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 		obj.put("password", password);
 //		obj.put("tokenCategory", tokenCategory);
 		try {
-			return HttpUtil.issuePostRequest(ssoUserServiceUrl, null, obj);
+			ServiceCallResult result = HttpUtil.issuePostRequest(ssoUserServiceUrl, null, obj);
+			return mapper.readValue(result.getResponseString(), ServiceCallResult.class);
 		} catch (IOException e) {
 			LOGGER.error(Arrays.asList(e.getStackTrace()));
 		}
