@@ -54,20 +54,18 @@ public class UserImpl implements User {
 
 	@Override
 	@ClientAccountTokenCheck
-//	@RequestMapping(value = "/user/{login}/profile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@RequestMapping(value = "/user/{login}/profile", method = RequestMethod.GET)
-	public ResponseEntity<UserBean> getUserProfileByLogin(@PathVariable("login") String login)
+	@RequestMapping(value = "/user/{userId}/profile", method = RequestMethod.GET)
+	public ResponseEntity<UserBean> getUserProfileByLogin(@PathVariable("userId") String userId)
 			throws IOException, AIException {
-		System.out.println("login: " + login);
 		UserBean cust = null;
 
 		try {
-			cust = userService.getCustByLogin(login);
+			cust = userService.getCustById(userId);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		if (cust == null) {
-			System.out.println("User with login " + login + " not found");
+			System.out.println("User with id " + userId + " not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(cust, HttpStatus.OK);
