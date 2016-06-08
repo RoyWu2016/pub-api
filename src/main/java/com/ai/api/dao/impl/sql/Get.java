@@ -1,7 +1,7 @@
 package com.ai.api.dao.impl.sql;
 
 public final class Get {
-	public static final String GET_CUSTOMER_ID_BY_LOGIN = "SELECT ID FROM GENERAL_USER WHERE LOGIN =?";
+//	public static final String GET_CUSTOMER_ID_BY_LOGIN = "SELECT ID FROM GENERAL_USER WHERE LOGIN =?";
 
 //    public static final String GET_OVERVIEW = "SELECT * FROM CUST_PROFILE WHERE CUST_ID = ?";
 //

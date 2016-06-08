@@ -37,7 +37,7 @@ import com.ai.api.model.UserBean;
 
 public interface UserService {
 
-    UserBean getCustByLogin(String login) throws IOException, AIException;
+    UserBean getCustById(String userId) throws IOException, AIException;
 
     boolean updateCompany(CompanyBean crmCompanyBean, String userId) throws IOException, AIException;
 

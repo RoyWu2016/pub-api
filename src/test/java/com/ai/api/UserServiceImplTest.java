@@ -95,7 +95,7 @@ public class UserServiceImplTest {
 	@Test
 	public void getUserProfile() throws Exception {
 
-		mockMvc.perform(get("/user/" + login + "/profile"))
+		mockMvc.perform(get("/user/" + userID + "/profile"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json;charset=UTF-8"));
 

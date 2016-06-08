@@ -89,15 +89,12 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserBean getCustByLogin(String login) throws IOException, AIException {
-
-        String customerId = customerDao.getCustomerIdByCustomerLogin(login);
-        System.out.println("---**----customerId--**---" + customerId);
+    public UserBean getCustById(String userId) throws IOException, AIException {
 
 	    UserBean user = new UserBean();
 
 	    //get all needed beans
-	    GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(customerId);
+	    GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
 	    String compId = generalUserBean.getCompany().getCompanyId();
 		OverviewBean overviewBean = companyDao.getCompanyOverview(compId);
 		ContactBean contactBean = companyDao.getCompanyContact(compId);

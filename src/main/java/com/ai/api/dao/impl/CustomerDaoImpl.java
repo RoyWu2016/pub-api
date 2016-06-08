@@ -6,14 +6,10 @@
  ***************************************************************************/
 package com.ai.api.dao.impl;
 
-import static com.ai.api.dao.impl.sql.Get.GET_CUSTOMER_ID_BY_LOGIN;
-
 import java.io.IOException;
 import java.util.Arrays;
 
 import com.ai.api.dao.CustomerDao;
-import com.ai.api.dao.impl.db.UserDaoImpl;
-import com.ai.api.exception.AIException;
 import com.ai.api.service.ServiceConfig;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
@@ -24,7 +20,6 @@ import com.ai.commons.beans.user.GeneralUserBean;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
@@ -57,18 +52,18 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	private ServiceConfig config;
 
 
-	@Override
-	public String getCustomerIdByCustomerLogin(String login) throws AIException {
-		try {
-			return getJdbcTemplate().queryForObject(GET_CUSTOMER_ID_BY_LOGIN, new Object[]{login},
-					String.class);
-		} catch (EmptyResultDataAccessException ee) {
-			LOGGER.info("Customer " + login + " not found");
-			return "";
-		} catch (Exception e) {
-			throw new AIException(UserDaoImpl.class, e.getMessage(), e);
-		}
-	}
+//	@Override
+//	public String getCustomerIdByCustomerLogin(String login) throws AIException {
+//		try {
+//			return getJdbcTemplate().queryForObject(GET_CUSTOMER_ID_BY_LOGIN, new Object[]{login},
+//					String.class);
+//		} catch (EmptyResultDataAccessException ee) {
+//			LOGGER.info("Customer " + login + " not found");
+//			return "";
+//		} catch (Exception e) {
+//			throw new AIException(UserDaoImpl.class, e.getMessage(), e);
+//		}
+//	}
 
 	@Override
 	public GeneralUserViewBean getGeneralUserViewBean(String userId) {
