@@ -116,6 +116,26 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Swagger 2.0 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+        <!--
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>swagger-ui</artifactId>
+            <version>2.1.8-M1</version>
+        </dependency>-->
+
     </dependencies>
 
     <repositories>
@@ -123,6 +143,7 @@
             <id>ai-nexus</id>
             <name>AsiaInspection Nexus</name>
             <url>http://192.168.0.31:8081/nexus/content/groups/public</url>
+            <!--<url>http://202.66.128.138:8081/nexus/content/groups/public</url>-->
             <releases>
                 <enabled>true</enabled>
             </releases>
