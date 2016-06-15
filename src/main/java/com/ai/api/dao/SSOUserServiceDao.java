@@ -30,7 +30,7 @@ import com.ai.commons.beans.ServiceCallResult;
 
 public interface SSOUserServiceDao {
 
-	ServiceCallResult clientAccountLogin(String username, String password, String tokenCategory);
+	ServiceCallResult clientAccountLogin(String username, String password, String accessToken);
 
 	ServiceCallResult employeeAccountLogin(String username, String password, String tokenCategory);
 }

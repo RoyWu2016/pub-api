@@ -13,6 +13,7 @@ import java.util.Map;
 
 import com.ai.api.dao.SSOUserServiceDao;
 import com.ai.api.service.ServiceConfig;
+import com.ai.commons.Consts;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.beans.ServiceCallResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,13 +52,13 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 
 	@Override
 	public ServiceCallResult clientAccountLogin(final String username, final String password,
-	                                            final String tokenCategory){
+	                                            final String accessToken){
 
 		String ssoUserServiceUrl = config.getSsoUserServiceUrl() + "/auth/client-account-token";
 		Map<String, String> obj = new HashMap<>();
 		obj.put("username", username);
 		obj.put("password", password);
-		obj.put("tokenCategory", tokenCategory);
+		obj.put(Consts.Http.PUBLIC_API_ACCESS_TOKEN_HEADER, accessToken);
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(ssoUserServiceUrl, null, obj);
 			return mapper.readValue(result.getResponseString(), ServiceCallResult.class);
@@ -76,7 +77,6 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 		Map<String, String> obj = new HashMap<>();
 		obj.put("username", username);
 		obj.put("password", password);
-//		obj.put("tokenCategory", tokenCategory);
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(ssoUserServiceUrl, null, obj);
 			return mapper.readValue(result.getResponseString(), ServiceCallResult.class);
