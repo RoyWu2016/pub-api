@@ -29,6 +29,13 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
         <!--&lt;!&ndash;<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>&ndash;&gt;-->
     <!--</context:component-scan>-->
 
+    <!-- Enables swgger ui-->
+    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>
+    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
+
+    <!-- Include a swagger configuration-->
+    <bean name="/applicationSwaggerConfig" class="com.ai.api.config.ApplicationSwaggerConfig"/>
+
     <!-- bean that will enable json to be returned -->
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
 
