@@ -6,6 +6,9 @@
  ***************************************************************************/
 package com.ai.api.dao;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ai.commons.beans.ServiceCallResult;
 
 /***************************************************************************
@@ -33,4 +36,8 @@ public interface SSOUserServiceDao {
 	ServiceCallResult clientAccountLogin(String username, String password, String accessToken);
 
 	ServiceCallResult employeeAccountLogin(String username, String password, String tokenCategory);
+
+	ServiceCallResult refreshClientAccountToken(HttpServletRequest request, HttpServletResponse response);
+
+	ServiceCallResult removeClientAccountToken(HttpServletRequest request, HttpServletResponse response);
 }

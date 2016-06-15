@@ -73,7 +73,7 @@ public class AuthenticationImpl implements Authentication {
 
 		}
 
-		//check token category
+		//check api access token
 		boolean validateResult = HttpUtil.validatePublicAPICallToken(request);
 		if (!validateResult) {
 			result.setStatusCode(HttpServletResponse.SC_FORBIDDEN);
@@ -85,6 +85,29 @@ public class AuthenticationImpl implements Authentication {
 		result = ssoUserServiceDao.clientAccountLogin(username, password, HttpUtil.getPublicAPICallToken(request));
 		return mapper.writeValueAsString(result);
 	}
+
+
+	@Override
+	@RequestMapping(method = RequestMethod.PUT, value = "/auth/refresh-client-account-token")
+	@ResponseBody
+	public String refreshClientAccountToken(HttpServletRequest request, HttpServletResponse response)
+			throws JsonProcessingException {
+
+		ObjectMapper mapper = new ObjectMapper();
+		ServiceCallResult result = ssoUserServiceDao.refreshClientAccountToken(request, response);
+		return mapper.writeValueAsString(result);
+	}
+
+	@Override
+	@RequestMapping(method = RequestMethod.PUT, value = "/auth/remove-client-account-token")
+	@ResponseBody
+	public String removeClientAccountToken(HttpServletRequest request, HttpServletResponse response)
+			throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		ServiceCallResult result = ssoUserServiceDao.removeClientAccountToken(request, response);
+		return mapper.writeValueAsString(result);
+	}
+
 
 	@Override
 	@RequestMapping(method = RequestMethod.POST, value = "/auth/employee-account-token")

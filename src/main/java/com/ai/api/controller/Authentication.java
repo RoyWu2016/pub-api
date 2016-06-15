@@ -38,6 +38,12 @@ public interface Authentication {
 	String clientAccountLogin(HashMap<String, String> credentials,  HttpServletRequest request,
 	                          HttpServletResponse response) throws JsonProcessingException;
 
+	String refreshClientAccountToken(HttpServletRequest request, HttpServletResponse response)
+			throws JsonProcessingException;
+
+	String removeClientAccountToken(HttpServletRequest request, HttpServletResponse response)
+			throws JsonProcessingException;
+
 	String employeeAccountLogin(HashMap<String, String> credentials,  HttpServletRequest request,
 	                          HttpServletResponse response) throws JsonProcessingException;
 
