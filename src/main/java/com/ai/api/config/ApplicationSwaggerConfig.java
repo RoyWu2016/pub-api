@@ -18,7 +18,7 @@ public class ApplicationSwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("com.ai.api.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }

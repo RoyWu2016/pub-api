@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
+import springfox.documentation.annotations.ApiIgnore;
 
 /***************************************************************************
  * <PRE>
@@ -42,6 +43,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * </PRE>
  ***************************************************************************/
 
+@ApiIgnore
 @RestController
 public class UserDemoImpl implements UserDemo {
 
