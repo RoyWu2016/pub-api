@@ -415,7 +415,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException {
+	public int updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException {
 		return customerDao.updateGeneralUserPassword(userId, pwdMap);
 	}
 }

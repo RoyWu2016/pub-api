@@ -118,20 +118,17 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	}
 
 	@Override
-	public boolean updateGeneralUserPassword(String userId, HashMap<String,String> pwdMap) {
+	public int updateGeneralUserPassword(String userId, HashMap<String,String> pwdMap) {
 		String url = config.getCustomerServiceUrl() + "/users/general-user/" + userId + "/password";
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, pwdMap);
-			if (result.getStatusCode() == HttpStatus.OK.value() &&
-					result.getResponseString().isEmpty() &&
-					result.getReasonPhase().equalsIgnoreCase("OK")) {
+			return result.getStatusCode();
 
-				return true;
-			}
 		} catch (IOException e) {
 			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			return HttpStatus.BAD_REQUEST.value();
 		}
-		return false;
+
 	}
 
 }

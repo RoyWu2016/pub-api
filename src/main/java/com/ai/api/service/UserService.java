@@ -48,5 +48,5 @@ public interface UserService {
 
 	boolean updateBookingPreferredProductFamily(List<String> newPreferred, String user_id);
 
-    boolean updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException;
+    int updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException;
 }

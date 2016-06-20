@@ -15,5 +15,5 @@ public interface CustomerDao {
 
 	boolean updateGeneralUser(GeneralUserBean newUser);
 
-	boolean updateGeneralUserPassword(String userId, HashMap<String,String> pwdMap);
+	int updateGeneralUserPassword(String userId, HashMap<String,String> pwdMap);
 }

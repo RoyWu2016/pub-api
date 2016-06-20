@@ -139,10 +139,15 @@ public class UserImpl implements User {
 			throws IOException, AIException {
 		System.out.println("Updating User password: " + USER_ID);
 
-		if (userService.updateUserPassword(USER_ID, pwdMap)) {
+		int result = userService.updateUserPassword(USER_ID, pwdMap);
+
+		if(result == HttpStatus.OK.value()){
 			return new ResponseEntity<>(true, HttpStatus.OK);
-		} else {
+		}else if(result == HttpStatus.UNAUTHORIZED.value()){
+			return new ResponseEntity<>(true, HttpStatus.UNAUTHORIZED);
+		}else{
 			return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
 		}
+
 	}
 }

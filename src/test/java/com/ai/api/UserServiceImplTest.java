@@ -278,16 +278,22 @@ public class UserServiceImplTest {
 
 		String updateUserPasswordUrl = "/user/" + userID + "/profile/password";
 
+		GeneralUserBean general = customerDao.getGeneralUser(userID);
+
 		//update
 		mockMvc.perform(put(updateUserPasswordUrl)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(new ObjectMapper().writeValueAsString(pwdMap)))
 				.andExpect(status().isOk());
 
-		GeneralUserBean general = customerDao.getGeneralUser(userID);
+		//Assert.assertEquals(DigestUtils.shaHex(MD5.toMD5(newPwd)), general.getPassword());
 
-		Assert.assertEquals(DigestUtils.shaHex(MD5.toMD5(newPwd)), general.getPassword());
+		//change password back
+		HashMap<String, String> secPwdMap = new HashMap<String,String>();
+		secPwdMap.put("current", newPwd);
+		secPwdMap.put("new",currentPwd);
 
+		customerDao.updateGeneralUserPassword(userID,secPwdMap);
 	}
 
 	@Test
