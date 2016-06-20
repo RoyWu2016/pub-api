@@ -6,24 +6,21 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
-import com.ai.api.App;
-import com.ai.api.bean.UserChoiceBean;
+import java.util.List;
+
 import com.ai.api.controller.UserDemo;
 import com.ai.api.model.UserDemoBean;
-import com.ai.api.service.ServiceConfig;
 import com.ai.api.service.UserServiceDemo;
-import com.ai.commons.annotation.Secured;
-import com.ai.consts.CommonAuthConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.List;
 
 /***************************************************************************
  * <PRE>
@@ -51,31 +48,11 @@ public class UserDemoImpl implements UserDemo {
     @Autowired
     UserServiceDemo userDemoService;  //Service which will do all data retrieval/manipulation work
 
-//	@Value("${user.service.url}")
-//	private String userServiceUrl;
-//
-//
-//	@Value("${mail.password}")
-//	private String mailPwd;
-
-    @Autowired
-    @Qualifier("serviceConfig")
-    private ServiceConfig config;
-
-    @Autowired
-    @Qualifier("app")
-    private App app;
-
-
     //-------------------Retrieve All Users--------------------------------------------------------
 
     //	@Secured({CommonAuthConstants.ROLE.READER})
     @RequestMapping(value = "/userdemo/", method = RequestMethod.GET)
     public ResponseEntity<List<UserDemoBean>> listAllUsers() {
-//		System.out.println("user: " + userServiceUrl);
-        System.out.println("user url: " + config.getBaseURL());
-
-        System.out.println("app bean url: " + app.returnURL());
         List<UserDemoBean> users = userDemoService.findAllUsers();
         if (users.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);//You many decide to return HttpStatus.NOT_FOUND
@@ -85,8 +62,10 @@ public class UserDemoImpl implements UserDemo {
 
     //-------------------Retrieve Single User--------------------------------------------------------
 
-    @Secured({CommonAuthConstants.ROLE.ADMIN})
-    @RequestMapping(value = "/userdemo/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    @Secured({CommonAuthConstants.ROLE.ADMIN})
+//    @ClientAccountTokenCheck
+	//, produces = MediaType.APPLICATION_JSON_VALUE
+    @RequestMapping(value = "/userdemo/{id}", method = RequestMethod.GET)
     public ResponseEntity<UserDemoBean> getUser(@PathVariable("id") long id) {
 
         System.out.println("Fetching User with id " + id);
@@ -165,16 +144,5 @@ public class UserDemoImpl implements UserDemo {
         userDemoService.deleteAllUsers();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    //------------------- UserChoice save --------------------------------------------------------
 
-    @RequestMapping(value = "/user/{login}", method = RequestMethod.POST)
-    public ResponseEntity<Void> userChoice(@RequestBody UserChoiceBean userChoice, UriComponentsBuilder ucBuilder) {
-        System.out.println("Creating User Choice " + userChoice.getChoices());
-
-        userDemoService.saveUserChoice(userChoice);
-        HttpHeaders headers = new HttpHeaders();
-
-        headers.setLocation(ucBuilder.path("/user/questions").buildAndExpand(userChoice.getQuestion(), userChoice.getChoices()).toUri());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
-    }
 }

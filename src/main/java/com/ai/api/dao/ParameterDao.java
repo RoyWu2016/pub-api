@@ -6,26 +6,32 @@
  ***************************************************************************/
 package com.ai.api.dao;
 
+import com.ai.api.bean.SysProductCategoryBean;
+import com.ai.api.bean.SysProductFamilyBean;
+
 /***************************************************************************
- * <PRE>
- * Project Name    : publicAPI
- * <p>
- * Package Name    : com.ai.api.dao
- * <p>
- * File Name       : User.java
- * <p>
- * Creation Date   : Mar 02, 2016
- * <p>
- * Author          : Allen Zhang
- * <p>
- * Purpose         : TODO
- * <p>
- * <p>
- * History         : TODO
- * <p>
- * </PRE>
+ *<PRE>
+ *  Project Name    : api
+ *
+ *  Package Name    : com.ai.api.dao
+ *
+ *  File Name       : ParameterDao.java
+ *
+ *  Creation Date   : May 24, 2016
+ *
+ *  Author          : Allen Zhang
+ *
+ *  Purpose         : TODO
+ *
+ *
+ *  History         : TODO
+ *
+ *</PRE>
  ***************************************************************************/
 
-public interface UserDao {
+public interface ParameterDao {
 
+	SysProductCategoryBean getSysProductCategory();
+
+	SysProductFamilyBean getSysProductFamily();
 }

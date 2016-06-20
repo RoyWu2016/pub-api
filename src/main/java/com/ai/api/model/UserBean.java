@@ -1,65 +1,34 @@
-/***************************************************************************
- * This document contains confidential and proprietary information
- * subject to non-disclosure agreements with AsiaInspection. This
- * information shall not be distributed or copied without written
- * permission from the AsiaInspection.
- ***************************************************************************/
 package com.ai.api.model;
 
 import com.ai.api.bean.*;
 
-/***************************************************************************
- * <PRE>
- * Project Name    : api
- * <p>
- * Package Name    : com.ai.api.model
- * <p>
- * File Name       : UserBean.java
- * <p>
- * Creation Date   : Mar 16, 2016
- * <p>
- * Author          : Allen Zhang
- * <p>
- * Purpose         : TODO
- * <p>
- * <p>
- * History         : TODO
- * <p>
- * </PRE>
- ***************************************************************************/
-
+/**
+ *
+ */
 public class UserBean {
 
-    private String userId;
+    private String id;
 
     private String login;
 
-    private String clientId;
+    private String sic;
 
-    private String salesInCharge;
-
-    private String companyType;
+    private String status;
 
     private String businessUnit;
 
-    private ContactBean contact;
+    private CompanyBean company;
 
-    private CompanyInfoBean companyInfo;
+    private ContactInfoBean contactInfo;
 
-    private ProductFamilyBean productFamily;
+    private PreferencesBean preferencesBean;
 
-    private OrderBookingBean orderBooking;
-
-    private MultiReferenceBookingBean multiReferenceBooking;
-
-    private ExtraBean extra;
-
-    public String getUserId() {
-        return userId;
+    public String getId() {
+        return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getLogin() {
@@ -70,28 +39,20 @@ public class UserBean {
         this.login = login;
     }
 
-    public String getClientId() {
-        return clientId;
+    public String getSic() {
+        return sic;
     }
 
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
+    public void setSic(String sic) {
+        this.sic = sic;
     }
 
-    public String getSalesInCharge() {
-        return salesInCharge;
+    public String getStatus() {
+        return status;
     }
 
-    public void setSalesInCharge(String salesInCharge) {
-        this.salesInCharge = salesInCharge;
-    }
-
-    public String getCompanyType() {
-        return companyType;
-    }
-
-    public void setCompanyType(String companyType) {
-        this.companyType = companyType;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getBusinessUnit() {
@@ -102,51 +63,27 @@ public class UserBean {
         this.businessUnit = businessUnit;
     }
 
-    public ContactBean getContact() {
-        return contact;
+    public CompanyBean getCompany() {
+        return company;
     }
 
-    public void setContact(ContactBean contact) {
-        this.contact = contact;
+    public void setCompany(CompanyBean company) {
+        this.company = company;
     }
 
-    public CompanyInfoBean getCompanyInfo() {
-        return companyInfo;
+    public ContactInfoBean getContactInfo() {
+        return contactInfo;
     }
 
-    public void setCompanyInfo(CompanyInfoBean companyInfo) {
-        this.companyInfo = companyInfo;
+    public void setContactInfo(ContactInfoBean contactInfo) {
+        this.contactInfo = contactInfo;
     }
 
-    public ProductFamilyBean getProductFamily() {
-        return productFamily;
+    public PreferencesBean getPreferencesBean() {
+        return preferencesBean;
     }
 
-    public void setProductFamily(ProductFamilyBean productFamily) {
-        this.productFamily = productFamily;
-    }
-
-    public OrderBookingBean getOrderBooking() {
-        return orderBooking;
-    }
-
-    public void setOrderBooking(OrderBookingBean orderBooking) {
-        this.orderBooking = orderBooking;
-    }
-
-    public MultiReferenceBookingBean getMultiReferenceBooking() {
-        return multiReferenceBooking;
-    }
-
-    public void setMultiReferenceBooking(MultiReferenceBookingBean multiReferenceBooking) {
-        this.multiReferenceBooking = multiReferenceBooking;
-    }
-
-    public ExtraBean getExtra() {
-        return extra;
-    }
-
-    public void setExtra(ExtraBean extra) {
-        this.extra = extra;
+    public void setPreferencesBean(PreferencesBean preferencesBean) {
+        this.preferencesBean = preferencesBean;
     }
 }

@@ -6,10 +6,14 @@
  ***************************************************************************/
 package com.ai.api.service;
 
+import java.io.IOException;
+import java.util.List;
+
+import com.ai.api.bean.BookingPreferenceBean;
+import com.ai.api.bean.CompanyBean;
+import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
-
-import java.io.IOException;
 
 /***************************************************************************
  * <PRE>
@@ -31,7 +35,15 @@ import java.io.IOException;
  * </PRE>
  ***************************************************************************/
 
-public interface CustomerService {
+public interface UserService {
 
-    UserBean getByLogin(String login) throws IOException, AIException;
+    UserBean getCustById(String userId) throws IOException, AIException;
+
+    boolean updateCompany(CompanyBean crmCompanyBean, String userId) throws IOException, AIException;
+
+    boolean updateContact(ContactInfoBean newContact, String userId) throws IOException, AIException;
+
+	boolean updateBookingPreference(BookingPreferenceBean newBookingPref, String user_id) throws IOException, AIException;
+
+	boolean updateBookingPreferredProductFamily(List<String> newPreferred, String user_id);
 }
