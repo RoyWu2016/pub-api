@@ -7,6 +7,7 @@
 package com.ai.api.controller.impl;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import com.ai.api.bean.BookingPreferenceBean;
@@ -124,6 +125,21 @@ public class UserImpl implements User {
 		System.out.println("Updating User preferred product family: " + USER_ID);
 
 		if (userService.updateBookingPreferredProductFamily(newPreferred, USER_ID)) {
+			return new ResponseEntity<>(true, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	@ClientAccountTokenCheck
+	@RequestMapping(value = "/user/{userId}/profile/password", method = RequestMethod.PUT)
+	public ResponseEntity<Boolean> updateUserPassword(@PathVariable("userId") String USER_ID,
+													  @RequestBody HashMap<String, String> pwdMap)
+			throws IOException, AIException {
+		System.out.println("Updating User password: " + USER_ID);
+
+		if (userService.updateUserPassword(USER_ID, pwdMap)) {
 			return new ResponseEntity<>(true, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);

@@ -5,7 +5,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ai.api.bean.AqlAndSamplingSizeBean;
 import com.ai.api.bean.BillingBean;
@@ -24,7 +26,9 @@ import com.ai.commons.beans.customer.ExtraBean;
 import com.ai.commons.beans.customer.OrderBookingBean;
 import com.ai.commons.beans.customer.ProductFamilyBean;
 import com.ai.commons.beans.user.GeneralUserBean;
+import com.ai.userservice.common.util.MD5;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -258,6 +262,31 @@ public class UserServiceImplTest {
 		Assert.assertEquals(pref.getSendSampleToFactory(), "Yes");
 		Assert.assertEquals(pref.getPoCompulsory(), "Yes");
 		Assert.assertEquals(extra.getIsDetailedBookingForm(), "No");
+
+	}
+
+
+	@Test
+	public void updateUserProfilePassword() throws Exception {
+
+		String currentPwd = env.getProperty("currentPwd");
+		String newPwd =env.getProperty("newPwd");
+
+		Map<String, String> pwdMap = new HashMap<String,String>();
+		pwdMap.put("current", currentPwd);
+		pwdMap.put("new",newPwd);
+
+		String updateUserPasswordUrl = "/user/" + userID + "/profile/password";
+
+		//update
+		mockMvc.perform(put(updateUserPasswordUrl)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(new ObjectMapper().writeValueAsString(pwdMap)))
+				.andExpect(status().isOk());
+
+		GeneralUserBean general = customerDao.getGeneralUser(userID);
+
+		Assert.assertEquals(DigestUtils.shaHex(MD5.toMD5(newPwd)), general.getPassword());
 
 	}
 
