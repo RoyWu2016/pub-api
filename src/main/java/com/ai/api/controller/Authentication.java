@@ -35,16 +35,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface Authentication {
 
-	String clientAccountLogin(HashMap<String, String> credentials,  HttpServletRequest request,
+	String userLogin(HashMap<String, String> credentials,  HttpServletRequest request,
 	                          HttpServletResponse response) throws JsonProcessingException;
 
-	String refreshClientAccountToken(HttpServletRequest request, HttpServletResponse response)
+	String refreshAPIToken(HashMap<String, String> credentials, HttpServletRequest request,
+	                       HttpServletResponse response)
 			throws JsonProcessingException;
 
-	String removeClientAccountToken(HttpServletRequest request, HttpServletResponse response)
+	String removeAPIToken(HttpServletRequest request, HttpServletResponse response)
 			throws JsonProcessingException;
 
-	String employeeAccountLogin(HashMap<String, String> credentials,  HttpServletRequest request,
-	                          HttpServletResponse response) throws JsonProcessingException;
+//	String employeeAccountLogin(HashMap<String, String> credentials,  HttpServletRequest request,
+//	                          HttpServletResponse response) throws JsonProcessingException;
 
 }
