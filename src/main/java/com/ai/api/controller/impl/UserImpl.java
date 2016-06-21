@@ -132,7 +132,7 @@ public class UserImpl implements User {
 	}
 
 	@Override
-	@ClientAccountTokenCheck
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/profile/password", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> updateUserPassword(@PathVariable("userId") String USER_ID,
 													  @RequestBody HashMap<String, String> pwdMap)
