@@ -16,7 +16,7 @@ import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
 import com.ai.api.service.UserService;
-import com.ai.commons.annotation.ClientAccountTokenCheck;
+import com.ai.commons.annotation.TokenSecured;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +53,7 @@ public class UserImpl implements User {
 	UserService userService;  //Service which will do all data retrieval/manipulation work
 
 	@Override
-	@ClientAccountTokenCheck
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/profile", method = RequestMethod.GET)
 	public ResponseEntity<UserBean> getUserProfileByLogin(@PathVariable("userId") String userId)
 			throws IOException, AIException {
@@ -72,7 +72,7 @@ public class UserImpl implements User {
 	}
 
 	@Override
-	@ClientAccountTokenCheck
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/profile/company", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> updateUserProfileCompany(@PathVariable("userId") String userId,
 	                                                        @RequestBody CompanyBean newComp)
@@ -86,7 +86,7 @@ public class UserImpl implements User {
 	}
 
 	@Override
-	@ClientAccountTokenCheck
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/profile/contactInfo", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> updateUserProfileContact(@PathVariable("userId") String USER_ID,
 	                                                        @RequestBody ContactInfoBean newContact)
@@ -101,7 +101,7 @@ public class UserImpl implements User {
 
 
 	@Override
-	@ClientAccountTokenCheck
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/profile/preference/booking", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> updateUserBookingPreference(@PathVariable("userId") String USER_ID,
 	                                                           @RequestBody BookingPreferenceBean newBookingPref)
@@ -116,7 +116,7 @@ public class UserImpl implements User {
 	}
 
 	@Override
-	@ClientAccountTokenCheck
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/profile/preference/booking/preferredProductFamilies", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String USER_ID,
 	                                                           @RequestBody List<String> newPreferred)

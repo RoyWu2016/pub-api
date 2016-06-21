@@ -14,12 +14,9 @@ import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
-import com.ai.commons.annotation.ClientAccountTokenCheck;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /***************************************************************************
  * <PRE>
@@ -53,8 +50,6 @@ public interface User {
 	ResponseEntity<Boolean> updateUserBookingPreference(String USER_ID,
 	                                                    BookingPreferenceBean newBookingPref) throws IOException, AIException;
 
-	@ClientAccountTokenCheck
-	@RequestMapping(value = "/user/{userId}/profile/preference/booking/preferredProductFamilies", method = RequestMethod.PUT)
 	ResponseEntity<Boolean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String USER_ID,
 	                                                                @RequestBody List<String> newPreferred)
 			throws IOException, AIException;
