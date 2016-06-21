@@ -7,6 +7,7 @@
 package com.ai.api.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import com.ai.api.bean.BookingPreferenceBean;
@@ -53,4 +54,7 @@ public interface User {
 	ResponseEntity<Boolean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String USER_ID,
 	                                                                @RequestBody List<String> newPreferred)
 			throws IOException, AIException;
+
+	ResponseEntity<Boolean> updateUserPassword(String USER_ID, HashMap<String, String> pwdMap) throws IOException, AIException;
+
 }

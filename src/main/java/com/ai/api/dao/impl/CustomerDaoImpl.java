@@ -8,6 +8,7 @@ package com.ai.api.dao.impl;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.service.ServiceConfig;
@@ -114,6 +115,20 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			LOGGER.error(Arrays.asList(e.getStackTrace()));
 		}
 		return false;
+	}
+
+	@Override
+	public int updateGeneralUserPassword(String userId, HashMap<String,String> pwdMap) {
+		String url = config.getCustomerServiceUrl() + "/users/general-user/" + userId + "/password";
+		try {
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, pwdMap);
+			return result.getStatusCode();
+
+		} catch (IOException e) {
+			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			return HttpStatus.BAD_REQUEST.value();
+		}
+
 	}
 
 }

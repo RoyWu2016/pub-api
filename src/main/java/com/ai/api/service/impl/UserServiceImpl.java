@@ -8,6 +8,7 @@ package com.ai.api.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.ai.api.bean.AqlAndSamplingSizeBean;
@@ -411,5 +412,10 @@ public class UserServiceImpl implements UserService {
 		}
 		family.setRelevantCategoryInfo(infos);
 		return companyDao.updateCompanyProductFamily(compId, family);
+	}
+
+	@Override
+	public int updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException {
+		return customerDao.updateGeneralUserPassword(userId, pwdMap);
 	}
 }

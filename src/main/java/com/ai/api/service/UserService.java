@@ -7,6 +7,7 @@
 package com.ai.api.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import com.ai.api.bean.BookingPreferenceBean;
@@ -46,4 +47,6 @@ public interface UserService {
 	boolean updateBookingPreference(BookingPreferenceBean newBookingPref, String user_id) throws IOException, AIException;
 
 	boolean updateBookingPreferredProductFamily(List<String> newPreferred, String user_id);
+
+    int updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException;
 }
