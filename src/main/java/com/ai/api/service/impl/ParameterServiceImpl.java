@@ -1,17 +1,16 @@
 package com.ai.api.service.impl;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.ParameterService;
-import com.ai.api.service.ServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by Administrator on 2016/6/21 0021.
@@ -19,10 +18,6 @@ import java.util.List;
 
 @Service("parameterService")
 public class ParameterServiceImpl implements ParameterService {
-
-    @Autowired
-    @Qualifier("serviceConfig")
-    private ServiceConfig config;
 
     @Autowired
     @Qualifier("paramDao")

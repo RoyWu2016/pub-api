@@ -57,7 +57,7 @@ public class ParameterDaoImpl implements ParameterDao {
 		String SysProductCategoryURL = config.getParamServiceUrl() + "/p/list-product-category";
 		GetRequest request7 = GetRequest.newInstance().setUrl(SysProductCategoryURL);
 
-		List<ProductCategoryDtoBean> prodcutCategoryList = new ArrayList<ProductCategoryDtoBean>();
+		List<ProductCategoryDtoBean> prodcutCategoryList = new ArrayList<>();
 
 		try{
 			ServiceCallResult result = HttpUtil.issueGetRequest(request7);
@@ -80,7 +80,7 @@ public class ParameterDaoImpl implements ParameterDao {
 		String SysProductFamilyBeanURL = config.getParamServiceUrl() +"/p/list-product-family";
 		GetRequest request7 = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
 
-		List<ProductFamilyDtoBean> productFamilyList = new ArrayList<ProductFamilyDtoBean>();
+		List<ProductFamilyDtoBean> productFamilyList = new ArrayList<>();
 
 		try{
 			ServiceCallResult result = HttpUtil.issueGetRequest(request7);

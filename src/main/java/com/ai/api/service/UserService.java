@@ -14,7 +14,7 @@ import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.exception.AIException;
-import com.ai.api.model.UserBean;
+import com.ai.api.bean.UserBean;
 
 /***************************************************************************
  * <PRE>

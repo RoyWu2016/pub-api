@@ -6,12 +6,10 @@
  ***************************************************************************/
 package com.ai.api.dao;
 
+import java.util.List;
+
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
-import com.ai.api.bean.SysProductCategoryBean;
-import com.ai.api.bean.SysProductFamilyBean;
-
-import java.util.List;
 
 /***************************************************************************
  *<PRE>

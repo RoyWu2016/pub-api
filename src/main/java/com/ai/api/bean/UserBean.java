@@ -1,6 +1,4 @@
-package com.ai.api.model;
-
-import com.ai.api.bean.*;
+package com.ai.api.bean;
 
 /**
  *
