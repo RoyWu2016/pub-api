@@ -1,7 +1,5 @@
 package com.ai.api.service;
 
-import com.ai.api.bean.SysProductCategoryBean;
-import com.ai.api.bean.SysProductFamilyBean;
 import com.ai.api.exception.AIException;
 
 import java.io.IOException;
@@ -11,7 +9,7 @@ import java.io.IOException;
  */
 public interface ParameterService {
 
-    SysProductCategoryBean getProductCategoryBeanList() throws IOException, AIException;
+    String getProductCategoryList() throws IOException, AIException;
 
-    SysProductFamilyBean getProductFamilyBeanList() throws IOException, AIException;
+    String getProductFamilyList() throws IOException, AIException;
 }

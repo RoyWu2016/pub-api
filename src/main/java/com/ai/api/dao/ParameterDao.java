@@ -6,9 +6,6 @@
  ***************************************************************************/
 package com.ai.api.dao;
 
-import com.ai.api.bean.SysProductCategoryBean;
-import com.ai.api.bean.SysProductFamilyBean;
-
 /***************************************************************************
  *<PRE>
  *  Project Name    : api
@@ -31,7 +28,7 @@ import com.ai.api.bean.SysProductFamilyBean;
 
 public interface ParameterDao {
 
-	SysProductCategoryBean getSysProductCategory();
+	String getProductCategoryList();
 
-	SysProductFamilyBean getSysProductFamily();
+	String getProductFamilyList();
 }

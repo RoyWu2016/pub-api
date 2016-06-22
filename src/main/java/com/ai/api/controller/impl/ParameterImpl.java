@@ -1,7 +1,5 @@
 package com.ai.api.controller.impl;
 
-import com.ai.api.bean.SysProductCategoryBean;
-import com.ai.api.bean.SysProductFamilyBean;
 import com.ai.api.controller.Parameter;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.ParameterService;
@@ -28,41 +26,40 @@ public class ParameterImpl implements Parameter {
     @Override
     @TokenSecured
     @RequestMapping(value = "/parameter/product-category-list", method = RequestMethod.GET)
-    public ResponseEntity<SysProductCategoryBean> getProductCategoryList() throws IOException, AIException {
+    public ResponseEntity<String> getProductCategoryList() throws IOException, AIException {
 
-        SysProductCategoryBean productCategoryBean = null;
+        String result = null;
 
         try{
-            productCategoryBean = parameterService.getProductCategoryBeanList();
+            result = parameterService.getProductCategoryList();
         } catch (Exception e){
             e.printStackTrace();
         }
 
-        if(productCategoryBean==null){
+        if(result==null){
             System.out.println("Product category list not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(productCategoryBean, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Override
     @TokenSecured
     @RequestMapping(value = "/parameter/product-family-list", method = RequestMethod.GET)
-    public ResponseEntity<SysProductFamilyBean> getProductFamilyList() throws IOException, AIException {
+    public ResponseEntity<String> getProductFamilyList() throws IOException, AIException {
 
-        SysProductFamilyBean productFamilyBean = null;
+        String result = null;
 
         try{
-            productFamilyBean = parameterService.getProductFamilyBeanList();
+            result = parameterService.getProductFamilyList();
         } catch (Exception e){
             e.printStackTrace();
         }
 
-        if(productFamilyBean==null){
+        if(result==null){
             System.out.println("Product family list not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(productFamilyBean, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
-
 }
