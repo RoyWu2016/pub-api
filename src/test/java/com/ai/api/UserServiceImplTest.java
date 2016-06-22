@@ -27,7 +27,9 @@ import com.ai.commons.beans.customer.ExtraBean;
 import com.ai.commons.beans.customer.OrderBookingBean;
 import com.ai.commons.beans.customer.ProductFamilyBean;
 import com.ai.commons.beans.user.GeneralUserBean;
+import com.ai.commons.security.MD5;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -266,7 +268,6 @@ public class UserServiceImplTest {
 
 		String updateUserPasswordUrl = "/user/" + userID + "/profile/password";
 
-		GeneralUserBean general = customerDao.getGeneralUser(userID);
 
 		//update
 		mockMvc.perform(put(updateUserPasswordUrl)
@@ -274,7 +275,9 @@ public class UserServiceImplTest {
 				.content(new ObjectMapper().writeValueAsString(pwdMap)))
 				.andExpect(status().isOk());
 
-		//Assert.assertEquals(DigestUtils.shaHex(MD5.toMD5(newPwd)), general.getPassword());
+		GeneralUserBean general = customerDao.getGeneralUser(userID);
+
+		Assert.assertEquals(DigestUtils.shaHex(MD5.toMD5(newPwd)), general.getPassword());
 
 		//change password back
 		HashMap<String, String> secPwdMap = new HashMap<String,String>();
