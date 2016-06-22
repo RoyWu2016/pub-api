@@ -27,7 +27,7 @@
           p:protectEverything="false" p:ignoreServiceCallTokenCheck="true"
           p:millisBetweenCleanUps="120000"/>
 
-    <bean id="serviceConfig" class="com.ai.api.service.ServiceConfig"
+    <bean id="serviceConfig" class="com.ai.api.config.ServiceConfig"
           p:baseURL="${user.service.url}" p:customerServiceUrl="${customer.service.url}"
           p:paramServiceUrl="${parameter.service.url}" p:ssoUserServiceUrl="${user.service.url}"/>
 

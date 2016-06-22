@@ -4,7 +4,7 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.service;
+package com.ai.api.config;
 
 /***************************************************************************
  * <PRE>

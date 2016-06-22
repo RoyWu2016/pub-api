@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.dao.SSOUserServiceDao;
-import com.ai.api.service.ServiceConfig;
+import com.ai.api.config.ServiceConfig;
 import com.ai.commons.Consts;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.beans.ServiceCallResult;

@@ -29,7 +29,7 @@ import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.model.UserBean;
-import com.ai.api.service.ServiceConfig;
+import com.ai.api.config.ServiceConfig;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.commons.StringUtils;
