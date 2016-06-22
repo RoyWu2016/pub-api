@@ -1,5 +1,7 @@
 package com.ai.api.service.impl;
 
+import com.ai.api.bean.ProductCategoryDtoBean;
+import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.ParameterService;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/6/21 0021.
@@ -26,12 +29,12 @@ public class ParameterServiceImpl implements ParameterService {
     private ParameterDao paramDao;
 
     @Override
-    public String getProductCategoryList() throws IOException, AIException{
+    public List<ProductCategoryDtoBean> getProductCategoryList() throws IOException, AIException{
         return paramDao.getProductCategoryList();
     }
 
     @Override
-    public String getProductFamilyList() throws IOException, AIException{
+    public List<ProductFamilyDtoBean>  getProductFamilyList() throws IOException, AIException{
         return paramDao.getProductFamilyList();
     }
 }

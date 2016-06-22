@@ -1,5 +1,7 @@
 package com.ai.api.controller.impl;
 
+import com.ai.api.bean.ProductCategoryDtoBean;
+import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.controller.Parameter;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.ParameterService;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/6/21 0021.
@@ -25,10 +29,10 @@ public class ParameterImpl implements Parameter {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/parameter/product-category-list", method = RequestMethod.GET)
-    public ResponseEntity<String> getProductCategoryList() throws IOException, AIException {
+    @RequestMapping(value = "/parameter/productCategories", method = RequestMethod.GET)
+    public ResponseEntity<List<ProductCategoryDtoBean>> getProductCategoryList() throws IOException, AIException {
 
-        String result = null;
+        List<ProductCategoryDtoBean> result = new ArrayList<ProductCategoryDtoBean>();
 
         try{
             result = parameterService.getProductCategoryList();
@@ -45,10 +49,10 @@ public class ParameterImpl implements Parameter {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/parameter/product-family-list", method = RequestMethod.GET)
-    public ResponseEntity<String> getProductFamilyList() throws IOException, AIException {
+    @RequestMapping(value = "/parameter/productFamilies", method = RequestMethod.GET)
+    public ResponseEntity<List<ProductFamilyDtoBean>> getProductFamilyList() throws IOException, AIException {
 
-        String result = null;
+        List<ProductFamilyDtoBean> result = new ArrayList<ProductFamilyDtoBean>();
 
         try{
             result = parameterService.getProductFamilyList();

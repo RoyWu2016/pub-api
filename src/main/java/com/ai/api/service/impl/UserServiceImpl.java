@@ -11,19 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.ai.api.bean.AqlAndSamplingSizeBean;
-import com.ai.api.bean.BillingBean;
-import com.ai.api.bean.BookingPreferenceBean;
-import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.ContactInfoBean;
-import com.ai.api.bean.CustomAQLBean;
-import com.ai.api.bean.MainBean;
-import com.ai.api.bean.MinQuantityToBeReadyBean;
-import com.ai.api.bean.PreferencesBean;
-import com.ai.api.bean.PreferredProductFamilies;
-import com.ai.api.bean.QualityManual;
-import com.ai.api.bean.SysProductCategoryBean;
-import com.ai.api.bean.SysProductFamilyBean;
+import com.ai.api.bean.*;
 import com.ai.api.dao.CompanyDao;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ParameterDao;
@@ -104,8 +92,10 @@ public class UserServiceImpl implements UserService {
 
 		ProductFamilyBean productFamilyBean = companyDao.getCompanyProductFamily(compId);
 		QualityManualBean qualityManualBean = companyDao.getCompanyQualityManual(compId);
-	    SysProductCategoryBean sysProductCategoryBean = paramDao.getSysProductCategory();
-	    SysProductFamilyBean sysProductFamilyBean = paramDao.getSysProductFamily();
+
+		List<ProductCategoryDtoBean> productCategoryDtoBeanList = paramDao.getProductCategoryList();
+
+		List<ProductFamilyDtoBean> productFamilyDtoBeanList = paramDao.getProductFamilyList();
 
 	    //1st level fields
 	    user.setId(generalUserBean.getUser().getUserId());
@@ -253,21 +243,21 @@ public class UserServiceImpl implements UserService {
 			preferredProductFamilies.setProductCategoryId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavCategory());
 			preferredProductFamilies.setProductFamilyId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavFamily());
 			String catid = productFamilyBean.getRelevantCategoryInfo().get(i).getFavCategory();
-			for (int j = 0; j < sysProductCategoryBean.getId().size(); j++) {
 
-				String catname = sysProductCategoryBean.getId().get(j);
-				if (catid.equals(catname)) {
-					preferredProductFamilies.setProductCategoryName(sysProductCategoryBean.getName().get(j));
+			for(int j = 0; j<productCategoryDtoBeanList.size(); j++){
+				ProductCategoryDtoBean productCategoryDto = productCategoryDtoBeanList.get(j);
+				if (catid.equals(productCategoryDto.getId())){
+					preferredProductFamilies.setProductCategoryName(productCategoryDto.getName());
 				}
 			}
 
-			for (int k = 0; k < sysProductFamilyBean.getId().size(); k++) {
-
-				String famcatid = sysProductFamilyBean.getCategoryId().get(k);
-				if (catid.equals(famcatid)) {
-					preferredProductFamilies.setProductFamilyName(sysProductFamilyBean.getName().get(k));
+			for (int k = 0; k < productFamilyDtoBeanList.size();k++) {
+				ProductFamilyDtoBean productFamilyDtoBean = productFamilyDtoBeanList.get(k);
+				if(catid.equals(productFamilyDtoBean.getId())){
+					preferredProductFamilies.setProductFamilyName(productFamilyDtoBean.getName());
 				}
 			}
+
 			preferredProductFamiliesarray[i] = preferredProductFamilies;
 		}
 
@@ -393,13 +383,17 @@ public class UserServiceImpl implements UserService {
 		System.out.println(family.getProductFamilyInfo());
 
 		List<RelevantCategoryInfoBean> infos = new ArrayList<>();
-		SysProductFamilyBean sys = paramDao.getSysProductFamily();
+
+		List<ProductFamilyDtoBean> productFamilyDtoBeanList = paramDao.getProductFamilyList();
+
 		int index = 1;
 		for (String familyID : newPreferred) {
 			//get product category by product family id
-			for (int i=0; i< sys.getId().size(); i++) {
-				if (sys.getId().get(i).equals(familyID)) {
-					String categoryID = sys.getCategoryId().get(i);
+
+			for(int i=0;i<productFamilyDtoBeanList.size();i++){
+				ProductFamilyDtoBean productFamilyDtoBean = productFamilyDtoBeanList.get(i);
+				if(familyID.equals(productFamilyDtoBean.getId())){
+					String categoryID = productFamilyDtoBean.getCategoryId();
 					RelevantCategoryInfoBean newInfo = new RelevantCategoryInfoBean();
 					newInfo.setFavFamily(familyID);
 					newInfo.setFavCategory(categoryID);
