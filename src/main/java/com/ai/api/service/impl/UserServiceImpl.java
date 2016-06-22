@@ -232,7 +232,6 @@ public class UserServiceImpl implements UserService {
 
 		// ------------Set PreferredProductFamilies Properties ----------------
 
-		PreferredProductFamilies preferredProductFamilies = new PreferredProductFamilies();
 
 		int a = productFamilyBean.getRelevantCategoryInfo().size();
 		PreferredProductFamilies[] preferredProductFamiliesarray = new PreferredProductFamilies[a];
@@ -240,21 +239,24 @@ public class UserServiceImpl implements UserService {
 		System.out.println("Product Family Data Size : " + a);
 
 		for (int i = 0; i < a; i++) {
+			PreferredProductFamilies preferredProductFamilies = new PreferredProductFamilies();
+
 			preferredProductFamilies.setProductCategoryId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavCategory());
 			preferredProductFamilies.setProductFamilyId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavFamily());
-			String catid = productFamilyBean.getRelevantCategoryInfo().get(i).getFavCategory();
 
-			for(int j = 0; j<productCategoryDtoBeanList.size(); j++){
-				ProductCategoryDtoBean productCategoryDto = productCategoryDtoBeanList.get(j);
-				if (catid.equals(productCategoryDto.getId())){
+			//set product category name
+			for (ProductCategoryDtoBean productCategoryDto : productCategoryDtoBeanList) {
+				if (preferredProductFamilies.getProductCategoryId().equals(productCategoryDto.getId())) {
 					preferredProductFamilies.setProductCategoryName(productCategoryDto.getName());
+					break;
 				}
 			}
 
-			for (int k = 0; k < productFamilyDtoBeanList.size();k++) {
-				ProductFamilyDtoBean productFamilyDtoBean = productFamilyDtoBeanList.get(k);
-				if(catid.equals(productFamilyDtoBean.getId())){
+			//set product family name
+			for (ProductFamilyDtoBean productFamilyDtoBean : productFamilyDtoBeanList) {
+				if (preferredProductFamilies.getProductFamilyId().equals(productFamilyDtoBean.getId())) {
 					preferredProductFamilies.setProductFamilyName(productFamilyDtoBean.getName());
+					break;
 				}
 			}
 
