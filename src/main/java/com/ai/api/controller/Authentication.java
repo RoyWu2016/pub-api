@@ -45,7 +45,4 @@ public interface Authentication {
 	String removeAPIToken(HttpServletRequest request, HttpServletResponse response)
 			throws JsonProcessingException;
 
-//	String employeeAccountLogin(HashMap<String, String> credentials,  HttpServletRequest request,
-//	                          HttpServletResponse response) throws JsonProcessingException;
-
 }

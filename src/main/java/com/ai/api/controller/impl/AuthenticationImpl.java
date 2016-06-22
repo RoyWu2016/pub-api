@@ -98,7 +98,7 @@ public class AuthenticationImpl implements Authentication {
 
 
 	@Override
-	@RequestMapping(method = RequestMethod.PUT, value = "/auth/refresh-token")
+	@RequestMapping(method = RequestMethod.PUT, value = "/auth/refreshToken")
 	@ResponseBody
 	public String refreshAPIToken(@RequestBody HashMap<String, String> data,
 	                              HttpServletRequest request, HttpServletResponse response)
@@ -110,7 +110,7 @@ public class AuthenticationImpl implements Authentication {
 	}
 
 	@Override
-	@RequestMapping(method = RequestMethod.PUT, value = "/auth/remove-token")
+	@RequestMapping(method = RequestMethod.PUT, value = "/auth/removeToken")
 	@ResponseBody
 	public String removeAPIToken(HttpServletRequest request, HttpServletResponse response)
 			throws JsonProcessingException {
@@ -119,35 +119,4 @@ public class AuthenticationImpl implements Authentication {
 		return mapper.writeValueAsString(result);
 	}
 
-
-//	@Override
-//	@RequestMapping(method = RequestMethod.POST, value = "/auth/employee-account-token")
-//	@ResponseBody
-//	public String employeeAccountLogin(@RequestBody HashMap<String, String> credentials,
-//	                                   HttpServletRequest request, HttpServletResponse response)
-//			throws JsonProcessingException {
-//		String username = credentials.get("username");
-//		String password = credentials.get("password");
-//
-//		ServiceCallResult result = new ServiceCallResult();
-//		ObjectMapper mapper = new ObjectMapper();
-//
-//		if ((username != null && username.isEmpty() ) || (password != null && password.isEmpty())) {
-//			result.setStatusCode(HttpServletResponse.SC_FORBIDDEN);
-//			result.setResponseString("");
-//			result.setReasonPhase("username/password empty.");
-//			return mapper.writeValueAsString(result);
-//
-//		}
-////		boolean validateResult = HttpUtil.validatePublicAPICallToken(request);
-////		if (!validateResult) {
-////			result.setStatusCode(HttpServletResponse.SC_FORBIDDEN);
-////			result.setResponseString("");
-////			result.setReasonPhase("AI API call token not present or invalid for login.");
-////			return mapper.writeValueAsString(result);
-////		}
-//
-//		result = ssoUserServiceDao.employeeAccountLogin(username, password, HttpUtil.getPublicAPICallToken(request));
-//		return mapper.writeValueAsString(result);
-//	}
 }
