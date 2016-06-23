@@ -18,6 +18,7 @@ import com.ai.api.exception.AIException;
 import com.ai.api.bean.UserBean;
 import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ServiceCallResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -134,19 +135,17 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/profile/password", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> updateUserPassword(@PathVariable("userId") String USER_ID,
+	public ResponseEntity<ServiceCallResult> updateUserPassword(@PathVariable("userId") String USER_ID,
 													  @RequestBody HashMap<String, String> pwdMap)
 			throws IOException, AIException {
 		System.out.println("Updating User password: " + USER_ID);
 
-		int result = userService.updateUserPassword(USER_ID, pwdMap);
+		ServiceCallResult result = userService.updateUserPassword(USER_ID, pwdMap);
 
-		if(result == HttpStatus.OK.value()){
-			return new ResponseEntity<>(true, HttpStatus.OK);
-		}else if(result == HttpStatus.UNAUTHORIZED.value()){
-			return new ResponseEntity<>(true, HttpStatus.UNAUTHORIZED);
+		if(result.getStatusCode() == HttpStatus.OK.value()){
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		}else{
-			return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
 		}
 
 	}

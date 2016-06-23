@@ -21,6 +21,7 @@ import com.ai.api.config.ServiceConfig;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.commons.StringUtils;
+import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.CrmCompanyBean;
 import com.ai.commons.beans.customer.ExtraBean;
@@ -84,6 +85,8 @@ public class UserServiceImpl implements UserService {
 
 	    //get all needed beans
 	    GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
+	    if (generalUserBean == null) return null;
+
 	    String compId = generalUserBean.getCompany().getCompanyId();
 		OverviewBean overviewBean = companyDao.getCompanyOverview(compId);
 		ContactBean contactBean = companyDao.getCompanyContact(compId);
@@ -339,6 +342,8 @@ public class UserServiceImpl implements UserService {
 
 		//get comp id
 		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
+		if (generalUserBean == null) return false;
+
 		String compId = generalUserBean.getCompany().getCompanyId();
 
 		//get booking preference first
@@ -411,7 +416,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public int updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException {
+	public ServiceCallResult updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException {
 		return customerDao.updateGeneralUserPassword(userId, pwdMap);
 	}
 }
