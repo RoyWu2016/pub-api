@@ -85,6 +85,8 @@ public class UserServiceImpl implements UserService {
 
 	    //get all needed beans
 	    GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
+	    if (generalUserBean == null) return null;
+
 	    String compId = generalUserBean.getCompany().getCompanyId();
 		OverviewBean overviewBean = companyDao.getCompanyOverview(compId);
 		ContactBean contactBean = companyDao.getCompanyContact(compId);
@@ -340,6 +342,8 @@ public class UserServiceImpl implements UserService {
 
 		//get comp id
 		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
+		if (generalUserBean == null) return false;
+
 		String compId = generalUserBean.getCompany().getCompanyId();
 
 		//get booking preference first
