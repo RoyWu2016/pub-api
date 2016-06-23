@@ -24,7 +24,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
-            <mvc:exclude-mapping path="/swagger-ui.html"/>
+            <mvc:exclude-mapping path="/*.html"/>
             <bean class="com.ai.commons.interceptor.TokenCheckInterceptor" />
         </mvc:interceptor>
     </mvc:interceptors>
