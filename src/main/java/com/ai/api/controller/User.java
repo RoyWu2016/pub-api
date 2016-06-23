@@ -15,6 +15,7 @@ import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.exception.AIException;
 import com.ai.api.bean.UserBean;
+import com.ai.commons.beans.ServiceCallResult;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,6 +56,6 @@ public interface User {
 	                                                                @RequestBody List<String> newPreferred)
 			throws IOException, AIException;
 
-	ResponseEntity<Boolean> updateUserPassword(String USER_ID, HashMap<String, String> pwdMap) throws IOException, AIException;
+	ResponseEntity<ServiceCallResult> updateUserPassword(String USER_ID, HashMap<String, String> pwdMap) throws IOException, AIException;
 
 }

@@ -10,8 +10,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import com.ai.api.dao.CustomerDao;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ai.api.config.ServiceConfig;
+import com.ai.api.dao.CustomerDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
@@ -118,15 +120,19 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	}
 
 	@Override
-	public int updateGeneralUserPassword(String userId, HashMap<String,String> pwdMap) {
+	public ServiceCallResult updateGeneralUserPassword(String userId, HashMap<String,String> pwdMap) {
 		String url = config.getCustomerServiceUrl() + "/users/general-user/" + userId + "/password";
+
 		try {
-			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, pwdMap);
-			return result.getStatusCode();
+			return HttpUtil.issuePostRequest(url, null, pwdMap);
 
 		} catch (IOException e) {
 			LOGGER.error(Arrays.asList(e.getStackTrace()));
-			return HttpStatus.BAD_REQUEST.value();
+			ServiceCallResult result = new ServiceCallResult();
+			result.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			result.setReasonPhase("error when updating user password.");
+			result.setResponseString("error when updating user password.");
+			return result;
 		}
 
 	}

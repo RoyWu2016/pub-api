@@ -1,9 +1,10 @@
 package com.ai.api.dao;
 
+import java.util.HashMap;
+
+import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.user.GeneralUserBean;
-
-import java.util.HashMap;
 
 public interface CustomerDao {
 
@@ -15,5 +16,5 @@ public interface CustomerDao {
 
 	boolean updateGeneralUser(GeneralUserBean newUser);
 
-	int updateGeneralUserPassword(String userId, HashMap<String,String> pwdMap);
+	ServiceCallResult updateGeneralUserPassword(String userId, HashMap<String,String> pwdMap);
 }
