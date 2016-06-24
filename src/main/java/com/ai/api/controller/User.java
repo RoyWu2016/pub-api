@@ -44,15 +44,15 @@ public interface User {
 
 	ResponseEntity<UserBean> getUserProfileByLogin(String login) throws IOException, AIException;
 
-	ResponseEntity<Boolean> updateUserProfileCompany(String userId, CompanyBean newComp) throws IOException, AIException;
+	ResponseEntity<UserBean> updateUserProfileCompany(String userId, CompanyBean newComp) throws IOException, AIException;
 
-	ResponseEntity<Boolean> updateUserProfileContact(String USER_ID,
+	ResponseEntity<UserBean> updateUserProfileContact(String USER_ID,
 	                                                 ContactInfoBean newContact) throws IOException, AIException;
 
-	ResponseEntity<Boolean> updateUserBookingPreference(String USER_ID,
+	ResponseEntity<UserBean> updateUserBookingPreference(String USER_ID,
 	                                                    BookingPreferenceBean newBookingPref) throws IOException, AIException;
 
-	ResponseEntity<Boolean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String USER_ID,
+	ResponseEntity<UserBean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String USER_ID,
 	                                                                @RequestBody List<String> newPreferred)
 			throws IOException, AIException;
 
