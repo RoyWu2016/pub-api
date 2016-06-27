@@ -76,28 +76,30 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/profile/company", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> updateUserProfileCompany(@PathVariable("userId") String userId,
+	public ResponseEntity<UserBean> updateUserProfileCompany(@PathVariable("userId") String userId,
 	                                                        @RequestBody CompanyBean newComp)
 			throws IOException, AIException {
 		System.out.println("updating company for user: " + userId);
 		if (userService.updateCompany(newComp, userId)) {
-			return new ResponseEntity<>(true, HttpStatus.OK);
+			UserBean cust = userService.getCustById(userId);
+			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/profile/contactInfo", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> updateUserProfileContact(@PathVariable("userId") String USER_ID,
+	public ResponseEntity<UserBean> updateUserProfileContact(@PathVariable("userId") String userId,
 	                                                        @RequestBody ContactInfoBean newContact)
 			throws IOException, AIException {
-		System.out.println("updating User contact " + USER_ID);
-		if (userService.updateContact(newContact, USER_ID)) {
-			return new ResponseEntity<>(true, HttpStatus.OK);
+		System.out.println("updating User contact " + userId);
+		if (userService.updateContact(newContact, userId)) {
+			UserBean cust = userService.getCustById(userId);
+			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -105,30 +107,32 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/profile/preference/booking", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> updateUserBookingPreference(@PathVariable("userId") String USER_ID,
+	public ResponseEntity<UserBean> updateUserBookingPreference(@PathVariable("userId") String userId,
 	                                                           @RequestBody BookingPreferenceBean newBookingPref)
 			throws IOException, AIException {
-		System.out.println("Updating User booking preference: " + USER_ID);
+		System.out.println("Updating User booking preference: " + userId);
 
-		if (userService.updateBookingPreference(newBookingPref, USER_ID)) {
-			return new ResponseEntity<>(true, HttpStatus.OK);
+		if (userService.updateBookingPreference(newBookingPref, userId)) {
+			UserBean cust = userService.getCustById(userId);
+			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/profile/preference/booking/preferredProductFamilies", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String USER_ID,
+	public ResponseEntity<UserBean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String userId,
 	                                                           @RequestBody List<String> newPreferred)
 			throws IOException, AIException {
-		System.out.println("Updating User preferred product family: " + USER_ID);
+		System.out.println("Updating User preferred product family: " + userId);
 
-		if (userService.updateBookingPreferredProductFamily(newPreferred, USER_ID)) {
-			return new ResponseEntity<>(true, HttpStatus.OK);
+		if (userService.updateBookingPreferredProductFamily(newPreferred, userId)) {
+			UserBean cust = userService.getCustById(userId);
+			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
