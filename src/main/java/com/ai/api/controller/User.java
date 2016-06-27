@@ -58,4 +58,5 @@ public interface User {
 
 	ResponseEntity<ServiceCallResult> updateUserPassword(String USER_ID, HashMap<String, String> pwdMap) throws IOException, AIException;
 
+	ResponseEntity<ServiceCallResult> getUserSupplierById(@PathVariable("userId") String userId) throws IOException, AIException;
 }

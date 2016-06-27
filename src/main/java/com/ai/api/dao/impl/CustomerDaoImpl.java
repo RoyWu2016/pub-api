@@ -123,4 +123,21 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 
 	}
 
+	@Override
+	public ServiceCallResult getUserSupplierById(String userId){
+		String url = config.getCustomerServiceUrl() + "/factory-service/search?universalId="+userId+"&criteria=";
+		GetRequest request = GetRequest.newInstance().setUrl(url);
+		ServiceCallResult result = new ServiceCallResult();
+		try {
+			result = HttpUtil.issueGetRequest(request);
+
+		} catch (IOException e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+			result.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			result.setReasonPhase("error when getting user suppliers.");
+			result.setResponseString("error when getting user suppliers.");
+		}
+		return result;
+	}
+
 }

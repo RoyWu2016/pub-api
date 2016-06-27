@@ -149,4 +149,21 @@ public class UserImpl implements User {
 		}
 
 	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/suppliers", method = RequestMethod.GET)
+	public ResponseEntity<ServiceCallResult> getUserSupplierById(@PathVariable("userId") String userId)
+			throws IOException, AIException {
+		System.out.println("get user's suppliers by userId: " + userId);
+
+		ServiceCallResult result = userService.getUserSupplierById(userId);
+
+		if(result.getStatusCode() == HttpStatus.OK.value()){
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}else{
+			return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
+		}
+	}
+
 }
