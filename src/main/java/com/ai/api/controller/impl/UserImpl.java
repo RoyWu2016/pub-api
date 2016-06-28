@@ -10,12 +10,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-import com.ai.api.bean.BookingPreferenceBean;
-import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.*;
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
-import com.ai.api.bean.UserBean;
 import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ServiceCallResult;
@@ -164,6 +161,22 @@ public class UserImpl implements User {
 		ServiceCallResult result = userService.getUserSupplierById(userId);
 
 		if(result.getStatusCode() == HttpStatus.OK.value()){
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}else{
+			return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/supplier/{supplierId}", method = RequestMethod.GET)
+	public ResponseEntity<SupplierDetailBean> getUserSupplierDetailInfoById(@PathVariable("userId") String userId, @PathVariable("supplierId") String supplierId)
+			throws IOException, AIException {
+		System.out.println("get user's supplier detail by supplierId: " + supplierId);
+
+		SupplierDetailBean result = userService.getUserSupplierDetailInfoById(userId, supplierId);
+
+		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}else{
 			return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);

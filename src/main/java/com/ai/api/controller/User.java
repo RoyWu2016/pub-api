@@ -10,11 +10,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-import com.ai.api.bean.BookingPreferenceBean;
-import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.*;
 import com.ai.api.exception.AIException;
-import com.ai.api.bean.UserBean;
 import com.ai.commons.beans.ServiceCallResult;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,5 +55,8 @@ public interface User {
 
 	ResponseEntity<ServiceCallResult> updateUserPassword(String USER_ID, HashMap<String, String> pwdMap) throws IOException, AIException;
 
-	ResponseEntity<ServiceCallResult> getUserSupplierById(@PathVariable("userId") String userId) throws IOException, AIException;
+	ResponseEntity<ServiceCallResult> getUserSupplierById( String userId ) throws IOException, AIException;
+
+	ResponseEntity<SupplierDetailBean> getUserSupplierDetailInfoById(String userId, String supplierId) throws IOException, AIException;
+
 }
