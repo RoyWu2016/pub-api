@@ -36,6 +36,8 @@ public class ServiceConfig {
 
 	private String ssoUserServiceUrl;
 
+    private String fileServiceUrl;
+
     /**
      * @return the baseURL
      */
@@ -73,4 +75,12 @@ public class ServiceConfig {
 	public void setSsoUserServiceUrl(String ssoUserServiceUrl) {
 		this.ssoUserServiceUrl = ssoUserServiceUrl;
 	}
+
+    public String getFileServiceUrl() {
+        return fileServiceUrl;
+    }
+
+    public void setFileServiceUrl(String fileServiceUrl) {
+        this.fileServiceUrl = fileServiceUrl;
+    }
 }
