@@ -43,6 +43,7 @@
     <bean id="paramDao" class="com.ai.api.dao.impl.ParameterDaoImpl"/>
     <bean id="companyDao" class="com.ai.api.dao.impl.CompanyDaoImpl"/>
     <bean id="ssoUserServiceDao" class="com.ai.api.dao.impl.SSOUserServiceDaoImpl" />
+    <bean id="factoryDao" class="com.ai.api.dao.impl.FactoryDaoImpl"/>
 
     <!-- Version bean for application information -->
     <!--<bean id="versionBean" class="version.Version"/>-->

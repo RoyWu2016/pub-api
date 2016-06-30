@@ -420,13 +420,4 @@ public class UserServiceImpl implements UserService {
 		return customerDao.updateGeneralUserPassword(userId, pwdMap);
 	}
 
-	@Override
-	public ServiceCallResult getUserSupplierById(String userId) throws IOException, AIException{
-		return customerDao.getUserSupplierById(userId);
-	}
-
-	@Override
-	public SupplierDetailBean getUserSupplierDetailInfoById(String userId,String supplierId) throws IOException, AIException{
-		return customerDao.getUserSupplierDetailInfoById(userId, supplierId);
-	}
 }

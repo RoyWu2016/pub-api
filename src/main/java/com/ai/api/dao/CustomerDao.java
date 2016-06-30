@@ -19,7 +19,4 @@ public interface CustomerDao {
 
 	ServiceCallResult updateGeneralUserPassword(String userId, HashMap<String,String> pwdMap);
 
-	ServiceCallResult getUserSupplierById(String userId);
-
-	SupplierDetailBean getUserSupplierDetailInfoById(String userId, String supplierId);
 }

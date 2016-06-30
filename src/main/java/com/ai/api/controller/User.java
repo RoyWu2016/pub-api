@@ -55,8 +55,4 @@ public interface User {
 
 	ResponseEntity<ServiceCallResult> updateUserPassword(String USER_ID, HashMap<String, String> pwdMap) throws IOException, AIException;
 
-	ResponseEntity<ServiceCallResult> getUserSupplierById( String userId ) throws IOException, AIException;
-
-	ResponseEntity<SupplierDetailBean> getUserSupplierDetailInfoById(String userId, String supplierId) throws IOException, AIException;
-
 }

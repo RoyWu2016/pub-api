@@ -47,7 +47,5 @@ public interface UserService {
 	boolean updateBookingPreferredProductFamily(List<String> newPreferred, String user_id);
 
     ServiceCallResult updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException;
-    ServiceCallResult getUserSupplierById(String userId) throws IOException, AIException;
 
-    SupplierDetailBean getUserSupplierDetailInfoById(String userId, String supplierId) throws IOException, AIException;
 }
