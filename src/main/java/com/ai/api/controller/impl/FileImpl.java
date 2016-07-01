@@ -5,7 +5,12 @@ import com.ai.api.controller.File;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.FileService;
 import com.ai.commons.annotation.TokenSecured;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,16 +78,24 @@ public class FileImpl implements File {
     public void downloadFile(@PathVariable("userId") String userId, @PathVariable("fileId") String fileId,
                              HttpServletResponse httpResponse) {
         try {
-            byte[] s = fileService.downloadFile(userId,fileId);
+            InputStream instream = fileService.downloadFile(userId,fileId);
 //            httpResponse.getOutputStream().write(s);
 //            httpResponse.setStatus(HttpServletResponse.SC_OK);
+
+//            String url = "http://192.168.0.31:8092/file-service/getFile?id=4ebef3ba-4398-4321-8caa-02c9a192a2c5";
+//            HttpClient httpclient = new DefaultHttpClient();
+//            HttpGet httpget = new HttpGet(url);
+//            HttpResponse response = httpclient.execute(httpget);
+//            HttpEntity entity = response.getEntity();
+//            InputStream instream = entity.getContent();
 
             httpResponse.setHeader("Pragma", "No-cache");
             httpResponse.setHeader("Cache-Control", "no-cache");
             httpResponse.setDateHeader("Expires", 0);
             httpResponse.setContentType("image/jpeg");
-            BufferedImage image = ImageIO.read(new ByteArrayInputStream(s));
+            BufferedImage image = ImageIO.read(instream);
             ImageIO.write(image, "jpg", httpResponse.getOutputStream());
+            logger.info("success!");
         }catch (Exception e){
             logger.error("ERROR! from[downloadFile]:",e);
         }

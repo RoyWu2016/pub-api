@@ -2,6 +2,8 @@ package com.ai.api.dao;
 
 import com.ai.commons.beans.fileservice.FileMetaBean;
 
+import java.io.InputStream;
+
 /***************************************************************************
  * <PRE>
  * Project Name    : api
@@ -23,5 +25,5 @@ public interface FileDao {
 
     FileMetaBean getFileDetailInfo(String fileId);
 
-    byte[] downloadFile(String fileId);
+    InputStream downloadFile(String fileId);
 }

@@ -8,11 +8,19 @@ import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /***************************************************************************
  * <PRE>
@@ -57,47 +65,18 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public byte[] downloadFile(String fileId) {
+    public InputStream downloadFile(String fileId) {
         String url = config.getFileServiceUrl()+ "/getFile?id=" + fileId;
-
-//        CloseableHttpClient httpClient = HttpClients.createDefault();
-//        HttpGet httpGet = new HttpGet(url);
-//        RequestConfig requestConfig = RequestConfig.custom()
-//                .setConnectionRequestTimeout(60000)
-//                .setSocketTimeout(60000)
-//                .setConnectTimeout(60000).build();//设置请求和传输超时时间
-//        httpGet.setConfig(requestConfig);
-//
-//        CloseableHttpResponse response = null;
-//        String responseStr = "";
-//        try {
-//            response = httpClient.execute(httpGet);
-//            responseStr = EntityUtils.toString(response.getEntity());
-//        } catch (Exception e) {
-//
-//        } finally {
-//            try {
-//                if (response != null) {
-//                    response.close();
-//                }
-//                if (httpClient != null) {
-//                    httpClient.close();
-//                }
-//            } catch (IOException e) {
-//            }
-//            return responseStr.getBytes();
-//        }
-
-
-
-        GetRequest request = GetRequest.newInstance().setUrl(url);
-        ServiceCallResult result;
+        InputStream instream = null;
         try {
-            result = HttpUtil.issueGetRequest(request);
-            return result.getResponseString().getBytes();
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(url);
+            HttpResponse response = httpclient.execute(httpget);
+            HttpEntity entity = response.getEntity();
+            instream = entity.getContent();
         }catch (Exception e){
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("",e);
         }
-        return new byte[0];
+        return instream;
     }
 }

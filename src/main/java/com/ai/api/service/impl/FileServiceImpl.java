@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /***************************************************************************
  * <PRE>
@@ -53,7 +54,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public byte[] downloadFile(String userId, String fileId) {
+    public InputStream downloadFile(String userId, String fileId) {
         return  fileDao.downloadFile(fileId);
     }
 }

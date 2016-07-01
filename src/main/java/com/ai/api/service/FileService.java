@@ -5,6 +5,7 @@ import com.ai.api.exception.AIException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /***************************************************************************
  * <PRE>
@@ -27,5 +28,5 @@ public interface FileService {
 
     FileDetailBean getFileDetailInfo(String userId,String fileId) throws IOException, AIException;
 
-    byte[] downloadFile(String userId, String fileId);
+    InputStream downloadFile(String userId, String fileId);
 }
