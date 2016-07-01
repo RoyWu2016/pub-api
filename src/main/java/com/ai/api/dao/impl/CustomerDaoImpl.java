@@ -7,20 +7,28 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.*;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.api.bean.SupplierContactInfoBean;
+import com.ai.api.bean.SupplierContactInfoMainAlternateBean;
+import com.ai.api.bean.FileDetailBean;
+import com.ai.api.bean.SupplierDetailBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.CustomerDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
+import com.ai.commons.StringUtils;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
+import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -122,5 +130,4 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 		}
 
 	}
-
 }

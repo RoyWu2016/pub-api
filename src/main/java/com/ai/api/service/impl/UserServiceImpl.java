@@ -419,4 +419,5 @@ public class UserServiceImpl implements UserService {
 	public ServiceCallResult updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException {
 		return customerDao.updateGeneralUserPassword(userId, pwdMap);
 	}
+
 }
