@@ -21,8 +21,10 @@ public class FileDetailBean {
     private String id;
     private String docType;
     private String fileName;
-    private Long fileSize;
+    private long filesize;
     private String url;
+
+    public FileDetailBean(){}
 
     public String getId() {
         return id;

@@ -10,12 +10,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-import com.ai.api.bean.BookingPreferenceBean;
-import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.*;
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
-import com.ai.api.bean.UserBean;
 import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ServiceCallResult;
@@ -153,4 +150,5 @@ public class UserImpl implements User {
 		}
 
 	}
+
 }
