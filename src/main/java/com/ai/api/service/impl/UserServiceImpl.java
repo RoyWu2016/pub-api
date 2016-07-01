@@ -8,30 +8,20 @@ package com.ai.api.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import com.ai.api.bean.AqlAndSamplingSizeBean;
-import com.ai.api.bean.BillingBean;
-import com.ai.api.bean.BookingPreferenceBean;
-import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.ContactInfoBean;
-import com.ai.api.bean.CustomAQLBean;
-import com.ai.api.bean.MainBean;
-import com.ai.api.bean.MinQuantityToBeReadyBean;
-import com.ai.api.bean.PreferencesBean;
-import com.ai.api.bean.PreferredProductFamilies;
-import com.ai.api.bean.QualityManual;
-import com.ai.api.bean.SysProductCategoryBean;
-import com.ai.api.bean.SysProductFamilyBean;
+import com.ai.api.bean.*;
 import com.ai.api.dao.CompanyDao;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.exception.AIException;
-import com.ai.api.model.UserBean;
-import com.ai.api.service.ServiceConfig;
+import com.ai.api.bean.UserBean;
+import com.ai.api.config.ServiceConfig;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.commons.StringUtils;
+import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.CrmCompanyBean;
 import com.ai.commons.beans.customer.ExtraBean;
@@ -95,6 +85,8 @@ public class UserServiceImpl implements UserService {
 
 	    //get all needed beans
 	    GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
+	    if (generalUserBean == null) return null;
+
 	    String compId = generalUserBean.getCompany().getCompanyId();
 		OverviewBean overviewBean = companyDao.getCompanyOverview(compId);
 		ContactBean contactBean = companyDao.getCompanyContact(compId);
@@ -103,8 +95,10 @@ public class UserServiceImpl implements UserService {
 
 		ProductFamilyBean productFamilyBean = companyDao.getCompanyProductFamily(compId);
 		QualityManualBean qualityManualBean = companyDao.getCompanyQualityManual(compId);
-	    SysProductCategoryBean sysProductCategoryBean = paramDao.getSysProductCategory();
-	    SysProductFamilyBean sysProductFamilyBean = paramDao.getSysProductFamily();
+
+		List<ProductCategoryDtoBean> productCategoryDtoBeanList = paramDao.getProductCategoryList();
+
+		List<ProductFamilyDtoBean> productFamilyDtoBeanList = paramDao.getProductFamilyList();
 
 	    //1st level fields
 	    user.setId(generalUserBean.getUser().getUserId());
@@ -241,7 +235,6 @@ public class UserServiceImpl implements UserService {
 
 		// ------------Set PreferredProductFamilies Properties ----------------
 
-		PreferredProductFamilies preferredProductFamilies = new PreferredProductFamilies();
 
 		int a = productFamilyBean.getRelevantCategoryInfo().size();
 		PreferredProductFamilies[] preferredProductFamiliesarray = new PreferredProductFamilies[a];
@@ -249,24 +242,27 @@ public class UserServiceImpl implements UserService {
 		System.out.println("Product Family Data Size : " + a);
 
 		for (int i = 0; i < a; i++) {
+			PreferredProductFamilies preferredProductFamilies = new PreferredProductFamilies();
+
 			preferredProductFamilies.setProductCategoryId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavCategory());
 			preferredProductFamilies.setProductFamilyId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavFamily());
-			String catid = productFamilyBean.getRelevantCategoryInfo().get(i).getFavCategory();
-			for (int j = 0; j < sysProductCategoryBean.getId().size(); j++) {
 
-				String catname = sysProductCategoryBean.getId().get(j);
-				if (catid.equals(catname)) {
-					preferredProductFamilies.setProductCategoryName(sysProductCategoryBean.getName().get(j));
+			//set product category name
+			for (ProductCategoryDtoBean productCategoryDto : productCategoryDtoBeanList) {
+				if (preferredProductFamilies.getProductCategoryId().equals(productCategoryDto.getId())) {
+					preferredProductFamilies.setProductCategoryName(productCategoryDto.getName());
+					break;
 				}
 			}
 
-			for (int k = 0; k < sysProductFamilyBean.getId().size(); k++) {
-
-				String famcatid = sysProductFamilyBean.getCategoryId().get(k);
-				if (catid.equals(famcatid)) {
-					preferredProductFamilies.setProductFamilyName(sysProductFamilyBean.getName().get(k));
+			//set product family name
+			for (ProductFamilyDtoBean productFamilyDtoBean : productFamilyDtoBeanList) {
+				if (preferredProductFamilies.getProductFamilyId().equals(productFamilyDtoBean.getId())) {
+					preferredProductFamilies.setProductFamilyName(productFamilyDtoBean.getName());
+					break;
 				}
 			}
+
 			preferredProductFamiliesarray[i] = preferredProductFamilies;
 		}
 
@@ -346,6 +342,8 @@ public class UserServiceImpl implements UserService {
 
 		//get comp id
 		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
+		if (generalUserBean == null) return false;
+
 		String compId = generalUserBean.getCompany().getCompanyId();
 
 		//get booking preference first
@@ -392,13 +390,17 @@ public class UserServiceImpl implements UserService {
 		System.out.println(family.getProductFamilyInfo());
 
 		List<RelevantCategoryInfoBean> infos = new ArrayList<>();
-		SysProductFamilyBean sys = paramDao.getSysProductFamily();
+
+		List<ProductFamilyDtoBean> productFamilyDtoBeanList = paramDao.getProductFamilyList();
+
 		int index = 1;
 		for (String familyID : newPreferred) {
 			//get product category by product family id
-			for (int i=0; i< sys.getId().size(); i++) {
-				if (sys.getId().get(i).equals(familyID)) {
-					String categoryID = sys.getCategoryId().get(i);
+
+			for(int i=0;i<productFamilyDtoBeanList.size();i++){
+				ProductFamilyDtoBean productFamilyDtoBean = productFamilyDtoBeanList.get(i);
+				if(familyID.equals(productFamilyDtoBean.getId())){
+					String categoryID = productFamilyDtoBean.getCategoryId();
 					RelevantCategoryInfoBean newInfo = new RelevantCategoryInfoBean();
 					newInfo.setFavFamily(familyID);
 					newInfo.setFavCategory(categoryID);
@@ -411,5 +413,10 @@ public class UserServiceImpl implements UserService {
 		}
 		family.setRelevantCategoryInfo(infos);
 		return companyDao.updateCompanyProductFamily(compId, family);
+	}
+
+	@Override
+	public ServiceCallResult updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException {
+		return customerDao.updateGeneralUserPassword(userId, pwdMap);
 	}
 }

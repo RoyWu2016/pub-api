@@ -7,16 +7,19 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.HashMap;
 
+import javax.servlet.http.HttpServletResponse;
+
+import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.CustomerDao;
-import com.ai.api.service.ServiceConfig;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.user.GeneralUserBean;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -51,20 +54,6 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
 
-
-//	@Override
-//	public String getCustomerIdByCustomerLogin(String login) throws AIException {
-//		try {
-//			return getJdbcTemplate().queryForObject(GET_CUSTOMER_ID_BY_LOGIN, new Object[]{login},
-//					String.class);
-//		} catch (EmptyResultDataAccessException ee) {
-//			LOGGER.info("Customer " + login + " not found");
-//			return "";
-//		} catch (Exception e) {
-//			throw new AIException(UserDaoImpl.class, e.getMessage(), e);
-//		}
-//	}
-
 	@Override
 	public GeneralUserViewBean getGeneralUserViewBean(String userId) {
 
@@ -76,8 +65,8 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			result = HttpUtil.issueGetRequest(request);
 			generalUserBean = JsonUtil.mapToObject(result.getResponseString(), GeneralUserViewBean.class);
 			return generalUserBean;
-		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+		} catch (Exception e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
@@ -94,7 +83,7 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			generalUserBean = JsonUtil.mapToObject(result.getResponseString(), GeneralUserBean.class);
 			return generalUserBean;
 		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
@@ -111,9 +100,27 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 				return true;
 			}
 		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return false;
+	}
+
+	@Override
+	public ServiceCallResult updateGeneralUserPassword(String userId, HashMap<String,String> pwdMap) {
+		String url = config.getCustomerServiceUrl() + "/users/general-user/" + userId + "/password";
+
+		try {
+			return HttpUtil.issuePostRequest(url, null, pwdMap);
+
+		} catch (IOException e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+			ServiceCallResult result = new ServiceCallResult();
+			result.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			result.setReasonPhase("error when updating user password.");
+			result.setResponseString("error when updating user password.");
+			return result;
+		}
+
 	}
 
 }

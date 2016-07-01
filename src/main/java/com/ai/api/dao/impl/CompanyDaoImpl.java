@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.ai.api.dao.CompanyDao;
-import com.ai.api.service.ServiceConfig;
+import com.ai.api.config.ServiceConfig;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;

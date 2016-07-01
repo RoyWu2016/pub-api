@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ai.api.bean.SysProductCategoryBean;
-import com.ai.api.bean.SysProductFamilyBean;
+import com.ai.api.bean.ProductCategoryDtoBean;
+import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.dao.ParameterDao;
-import com.ai.api.service.ServiceConfig;
+import com.ai.api.config.ServiceConfig;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
@@ -52,58 +52,49 @@ public class ParameterDaoImpl implements ParameterDao {
 	private ServiceConfig config;
 
 	@Override
-	public SysProductCategoryBean getSysProductCategory() {
+	public List<ProductCategoryDtoBean> getProductCategoryList(){
+
 		String SysProductCategoryURL = config.getParamServiceUrl() + "/p/list-product-category";
 		GetRequest request7 = GetRequest.newInstance().setUrl(SysProductCategoryURL);
-		List<String> id = new ArrayList<>();
-		List<String> name = new ArrayList<>();
-		SysProductCategoryBean sysProductCategoryBean = new SysProductCategoryBean();
 
-		try {
+		List<ProductCategoryDtoBean> prodcutCategoryList = new ArrayList<>();
+
+		try{
 			ServiceCallResult result = HttpUtil.issueGetRequest(request7);
 			JSONArray jsonArray = new JSONArray(result.getResponseString());
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject obj = jsonArray.getJSONObject(i);
-				name.add(obj.getString("name"));
-				id.add(obj.getString("id"));
+				ProductCategoryDtoBean productCategory = new ProductCategoryDtoBean(obj);
+				prodcutCategoryList.add(productCategory);
 			}
-			sysProductCategoryBean.setId(id);
-			sysProductCategoryBean.setName(name);
 
-			return sysProductCategoryBean;
-		} catch (IOException e) {
+		}catch(IOException e){
 			LOGGER.error(Arrays.asList(e.getStackTrace()));
 		}
-		return null;
+		return prodcutCategoryList;
 	}
 
 	@Override
-	public SysProductFamilyBean getSysProductFamily() {
+	public List<ProductFamilyDtoBean> getProductFamilyList(){
+
 		String SysProductFamilyBeanURL = config.getParamServiceUrl() +"/p/list-product-family";
 		GetRequest request7 = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
-		List<String> familycatid = new ArrayList<>();
-		List<String> familyid = new ArrayList<>();
-		List<String> familyname = new ArrayList<>();
-		SysProductFamilyBean sysProductFamilyBean = new SysProductFamilyBean();
 
-		try {
+		List<ProductFamilyDtoBean> productFamilyList = new ArrayList<>();
+
+		try{
 			ServiceCallResult result = HttpUtil.issueGetRequest(request7);
 			JSONArray jsonArray = new JSONArray(result.getResponseString());
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject obj = jsonArray.getJSONObject(i);
-				familycatid.add(obj.getString("categoryId"));
-				familyname.add(obj.getString("name"));
-				familyid.add(obj.getString("id"));
+				ProductFamilyDtoBean productFamily = new ProductFamilyDtoBean(obj);
+				productFamilyList.add(productFamily);
 			}
 
-			sysProductFamilyBean.setCategoryId(familycatid);
-			sysProductFamilyBean.setId(familyid);
-			sysProductFamilyBean.setName(familyname);
-			return sysProductFamilyBean;
-
-		} catch (IOException e) {
+		}catch(IOException e){
 			LOGGER.error(Arrays.asList(e.getStackTrace()));
 		}
-		return null;
+		return productFamilyList;
 	}
+
 }

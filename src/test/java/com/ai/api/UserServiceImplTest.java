@@ -2,10 +2,13 @@ package com.ai.api;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ai.api.bean.AqlAndSamplingSizeBean;
 import com.ai.api.bean.BillingBean;
@@ -24,7 +27,9 @@ import com.ai.commons.beans.customer.ExtraBean;
 import com.ai.commons.beans.customer.OrderBookingBean;
 import com.ai.commons.beans.customer.ProductFamilyBean;
 import com.ai.commons.beans.user.GeneralUserBean;
+import com.ai.commons.security.MD5;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,17 +84,6 @@ public class UserServiceImplTest {
 		compID = env.getProperty("compID");
 		login = env.getProperty("login");
 
-	}
-
-	@Test
-	public void getUserList() throws Exception {
-		mockMvc.perform(get("/userdemo/"))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"))
-				.andExpect(jsonPath("$[0]['id']").exists())
-				.andExpect(jsonPath("$[0]['name']").exists())
-				.andExpect(jsonPath("$[0]['name']").value("Sam"))
-		;
 	}
 
 	@Test
@@ -259,6 +253,38 @@ public class UserServiceImplTest {
 		Assert.assertEquals(pref.getPoCompulsory(), "Yes");
 		Assert.assertEquals(extra.getIsDetailedBookingForm(), "No");
 
+	}
+
+
+	@Test
+	public void updateUserProfilePassword() throws Exception {
+
+		String currentPwd = env.getProperty("currentPwd");
+		String newPwd =env.getProperty("newPwd");
+
+		Map<String, String> pwdMap = new HashMap<String,String>();
+		pwdMap.put("current", currentPwd);
+		pwdMap.put("new",newPwd);
+
+		String updateUserPasswordUrl = "/user/" + userID + "/profile/password";
+
+
+		//update
+		mockMvc.perform(put(updateUserPasswordUrl)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(new ObjectMapper().writeValueAsString(pwdMap)))
+				.andExpect(status().isOk());
+
+		GeneralUserBean general = customerDao.getGeneralUser(userID);
+
+		Assert.assertEquals(DigestUtils.shaHex(MD5.toMD5(newPwd)), general.getPassword());
+
+		//change password back
+		HashMap<String, String> secPwdMap = new HashMap<String,String>();
+		secPwdMap.put("current", newPwd);
+		secPwdMap.put("new",currentPwd);
+
+		customerDao.updateGeneralUserPassword(userID,secPwdMap);
 	}
 
 	@Test
