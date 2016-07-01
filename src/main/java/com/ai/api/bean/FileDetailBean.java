@@ -21,7 +21,7 @@ public class FileDetailBean {
     private String id;
     private String docType;
     private String fileName;
-    private long filesize;
+    private long fileSize;
     private String url;
 
     public FileDetailBean(){}
@@ -50,11 +50,11 @@ public class FileDetailBean {
         this.fileName = fileName;
     }
 
-    public Long getFileSize() {
+    public long getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(Long fileSize) {
+    public void setFileSize(long fileSize) {
         this.fileSize = fileSize;
     }
 

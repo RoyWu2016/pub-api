@@ -67,7 +67,7 @@ public class FileImpl implements File {
 
 	@Override
 	@RequestMapping(value = "/user/{userId}/file/{fileId}", method = RequestMethod.GET)
-	public void downloadFile(@PathVariable("userId") String userId, @PathVariable("fileId") String fileId,
+	public void getFile(@PathVariable("userId") String userId, @PathVariable("fileId") String fileId,
 	                         HttpServletResponse httpResponse) {
 		try {
 			boolean b = fileService.downloadFile(userId, fileId, httpResponse);

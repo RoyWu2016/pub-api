@@ -1,11 +1,12 @@
 package com.ai.api.controller;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
+
 import com.ai.api.bean.FileDetailBean;
 import com.ai.api.exception.AIException;
 import org.springframework.http.ResponseEntity;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /***************************************************************************
  * <PRE>
@@ -28,5 +29,5 @@ import java.io.IOException;
 public interface File {
     ResponseEntity<FileDetailBean> getFileDetailInfo(String userId,String fileId) throws IOException, AIException;
 
-    void downloadFile(String userId,String fileId,HttpServletResponse httpResponse);
+    void getFile(String userId,String fileId,HttpServletResponse httpResponse);
 }

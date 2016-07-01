@@ -1,35 +1,30 @@
 package com.ai.api.dao.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
 import com.ai.api.bean.FileDetailBean;
 import com.ai.api.bean.SupplierContactInfoBean;
-import com.ai.api.bean.SupplierContactInfoMainAlternateBean;
 import com.ai.api.bean.SupplierDetailBean;
 import com.ai.api.bean.legacy.AttachmentDocBean;
 import com.ai.api.bean.legacy.ClientFactoryBean;
-import com.ai.api.bean.legacy.ContactBean;
 import com.ai.api.bean.legacy.FactorySearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.FactoryDao;
 import com.ai.api.exception.AIException;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
-import com.ai.commons.StringUtils;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by Administrator on 2016/6/29 0029.
@@ -104,7 +99,7 @@ public class FactoryDaoImpl implements FactoryDao {
                     accessMapBean.setId(fileId);
                     accessMapBean.setDocType(fileMetaBean.getFileType());
                     accessMapBean.setFileName(fileMetaBean.getFileName());
-                    accessMapBean.setFilesize(fileMetaBean.getFileSize());
+                    accessMapBean.setFileSize(fileMetaBean.getFileSize());
                     accessMapBean.setUrl(config.getFileServiceUrl() + "/getFile?id="+fileId);
                     accessMapList.add(accessMapBean);
                 }
@@ -150,7 +145,7 @@ public class FactoryDaoImpl implements FactoryDao {
                 //bean.setDocType(fileMetaBean.getFileType());
                 bean.setId(id);
                 bean.setFileName(fileMetaBean.getFileName());
-                bean.setFilesize(fileMetaBean.getFileSize());
+                bean.setFileSize(fileMetaBean.getFileSize());
                 bean.setUrl(config.getFileServiceUrl() + "/getFile?id=" + id);
             }
         }catch(Exception e){

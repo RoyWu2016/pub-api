@@ -94,11 +94,4 @@ public class ServiceConfig {
         this.factoryServiceUrl = factoryServiceUrl;
     }
 
-    public String getFileServiceUrl() {
-        return fileServiceUrl;
-    }
-
-    public void setFileServiceUrl(String fileServiceUrl) {
-        this.fileServiceUrl = fileServiceUrl;
-    }
 }
