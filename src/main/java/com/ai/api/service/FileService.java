@@ -4,6 +4,7 @@ import com.ai.api.bean.FileDetailBean;
 import com.ai.api.exception.AIException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -28,5 +29,5 @@ public interface FileService {
 
     FileDetailBean getFileDetailInfo(String userId,String fileId) throws IOException, AIException;
 
-    InputStream downloadFile(String userId, String fileId);
+    boolean downloadFile(String userId, String fileId,HttpServletResponse httpResponse) throws IOException, AIException;
 }

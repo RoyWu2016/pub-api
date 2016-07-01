@@ -11,8 +11,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /***************************************************************************
  * <PRE>
@@ -54,7 +59,24 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public InputStream downloadFile(String userId, String fileId) {
-        return  fileDao.downloadFile(fileId);
+    public boolean downloadFile(String userId, String fileId,HttpServletResponse httpResponse) throws IOException, AIException  {
+        FileMetaBean fileMetaBean = fileDao.getFileDetailInfo(fileId);
+        String fileName = "attachment";
+        if(null!=fileMetaBean){
+            fileName = URLEncoder.encode(fileMetaBean.getFileName(), "UTF-8");
+            fileName = "attachment-"+ new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()) +fileName.substring(fileName.lastIndexOf("."),fileName.length());
+//            if (fileName.length() > 150) {
+//                fileName = new String(fileMetaBean.getFileName().getBytes("UTF-8"), "ISO8859-1");
+//            }
+        }
+        httpResponse.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+        InputStream inputStream =  fileDao.downloadFile(fileId);
+        ServletOutputStream output = httpResponse.getOutputStream();
+        httpResponse.setStatus(HttpServletResponse.SC_OK);
+        byte[] buffer = new byte[10240];
+        for (int length = 0; (length = inputStream.read(buffer)) > 0;) {
+            output.write(buffer, 0, length);
+        }
+        return  true;
     }
 }

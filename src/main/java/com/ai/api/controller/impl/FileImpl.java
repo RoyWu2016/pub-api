@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -78,23 +79,7 @@ public class FileImpl implements File {
     public void downloadFile(@PathVariable("userId") String userId, @PathVariable("fileId") String fileId,
                              HttpServletResponse httpResponse) {
         try {
-            InputStream instream = fileService.downloadFile(userId,fileId);
-//            httpResponse.getOutputStream().write(s);
-//            httpResponse.setStatus(HttpServletResponse.SC_OK);
-
-//            String url = "http://192.168.0.31:8092/file-service/getFile?id=4ebef3ba-4398-4321-8caa-02c9a192a2c5";
-//            HttpClient httpclient = new DefaultHttpClient();
-//            HttpGet httpget = new HttpGet(url);
-//            HttpResponse response = httpclient.execute(httpget);
-//            HttpEntity entity = response.getEntity();
-//            InputStream instream = entity.getContent();
-
-            httpResponse.setHeader("Pragma", "No-cache");
-            httpResponse.setHeader("Cache-Control", "no-cache");
-            httpResponse.setDateHeader("Expires", 0);
-            httpResponse.setContentType("image/jpeg");
-            BufferedImage image = ImageIO.read(instream);
-            ImageIO.write(image, "jpg", httpResponse.getOutputStream());
+            boolean b = fileService.downloadFile(userId,fileId,httpResponse);
             logger.info("success!");
         }catch (Exception e){
             logger.error("ERROR! from[downloadFile]:",e);
