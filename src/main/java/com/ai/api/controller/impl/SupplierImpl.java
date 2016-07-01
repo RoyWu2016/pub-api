@@ -1,12 +1,14 @@
 package com.ai.api.controller.impl;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.ai.api.bean.SupplierDetailBean;
 import com.ai.api.bean.legacy.FactorySearchBean;
-import com.ai.api.controller.Factory;
+import com.ai.api.controller.Supplier;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.FactoryService;
 import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ServiceCallResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.util.List;
-
 /**
  * Created by Administrator on 2016/6/29 0029.
  */
 @RestController
-public class FactoryImpl implements Factory {
+public class SupplierImpl implements Supplier {
 
     @Autowired
     FactoryService factoryService;
@@ -55,7 +54,7 @@ public class FactoryImpl implements Factory {
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
         }else{
-            return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
