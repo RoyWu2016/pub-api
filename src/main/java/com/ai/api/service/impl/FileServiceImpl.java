@@ -1,10 +1,12 @@
 package com.ai.api.service.impl;
 
 import com.ai.api.bean.FileDetailBean;
+import com.ai.api.bean.consts.BucketMap;
 import com.ai.api.dao.FileDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.FileService;
 import com.ai.commons.beans.fileservice.FileMetaBean;
+import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,43 +86,32 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<FileDetailBean> uploadFile(String userId, String docType, String sourceId,HttpServletRequest request, HttpServletResponse response) throws IOException, AIException {
-        Map<String,String> bucketMap = new HashMap<>();
-        bucketMap.put("access-map","ACCESS_MAP");
-        bucketMap.put("supplier-certs","BUS_LIC, EXPORT_LIC, ROHS_CERT, TAX_CERT, ISO_CERT, OTHER_DOC");
-        bucketMap.put("dm-general-instruction","GI_COORDINATION, GI_SAMPLE_REF, GI_SAMPLE_PROD, GI_PROTOCAL, GI_INSP_RPT, GI_LAB_TEST");
-        bucketMap.put("order-attachments","ORDER_ATT");
 
-        logger.info("uploadFile-userId:"+userId);
-        logger.info("uploadFile-docType:"+docType);
-        logger.info("uploadFile-sourceId:"+sourceId);
         List<MultipartFile> uploadFiles = new ArrayList<>();
         Map<String, String> requestMap = new HashMap<>();
-        String bucket = "";
-        String createBy = "";
-
-        for (Map.Entry<String,String> entry:bucketMap.entrySet()){
-            if (entry.getValue().indexOf(docType.toUpperCase())<0){
-                bucket = entry.getKey();
-                break;
-            }
-        }
-        logger.info("uploadFile-bucket:"+bucket);
-        requestMap.put("srcId", sourceId);
-        requestMap.put("fileType", docType);
-        requestMap.put("bucket", bucket);
-        requestMap.put("createBy", createBy);
         MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
         Iterator<String> fileNames = multipartHttpServletRequest.getFileNames();
+        int a = BucketMap.bucketMap.size();
+        logger.info(a+"------------------------------");
+        String bucket = BucketMap.bucketMap.get(docType.toUpperCase());
+        String createBy = "";//Get info by userId...............................
         if (fileNames == null) {
             throw new IllegalArgumentException("No upload file!");
         }
-
         while (fileNames.hasNext()){
             String fileName = fileNames.next();
-            logger.info("upload file !fileName:"+fileName);
             MultipartFile file = multipartHttpServletRequest.getFile(fileName);
             uploadFiles.add(file);
         }
+        if (uploadFiles.size()>1){
+            requestMap.put("srcIds", sourceId);
+        }else {
+            requestMap.put("srcId", sourceId);
+        }
+        requestMap.put("fileType", docType);
+        requestMap.put("bucket", bucket);
+        requestMap.put("createBy", createBy);
+        logger.info("uploadFile requestMap:"+ JSON.toJSONString(requestMap));
         List<FileMetaBean> fileMetaBeans = fileDao.uploadFile(requestMap,uploadFiles);
         List<FileDetailBean> fileDetailBeans = new ArrayList<>();
         for(FileMetaBean fileMetaBean:fileMetaBeans){
@@ -135,5 +126,21 @@ public class FileServiceImpl implements FileService {
         return fileDetailBeans;
     }
 
-
+//    public final static Map<String,String> bucketMap = new HashMap() {{
+//
+//        bucketMap.put("ACCESS_MAP","access-map");
+//        bucketMap.put("BUS_LIC","supplier-certs");
+//        bucketMap.put("EXPORT_LIC","supplier-certs");
+//        bucketMap.put("ROHS_CERT","supplier-certs");
+//        bucketMap.put("TAX_CERT","supplier-certs");
+//        bucketMap.put("ISO_CERT","supplier-certs");
+//        bucketMap.put("OTHER_DOC","supplier-certs");
+//        bucketMap.put("GI_COORDINATION","dm-general-instruction");
+//        bucketMap.put("GI_SAMPLE_REF","dm-general-instruction");
+//        bucketMap.put("GI_SAMPLE_PROD","dm-general-instruction");
+//        bucketMap.put("GI_PROTOCAL","dm-general-instruction");
+//        bucketMap.put("GI_INSP_RPT","dm-general-instruction");
+//        bucketMap.put("GI_LAB_TEST","dm-general-instruction");
+//        bucketMap.put("ORDER_ATT","order-attachments");
+//    }};
 }

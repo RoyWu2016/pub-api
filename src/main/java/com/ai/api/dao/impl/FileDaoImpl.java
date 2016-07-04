@@ -13,7 +13,6 @@ import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.alibaba.fastjson.JSON;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -71,7 +70,7 @@ public class FileDaoImpl implements FileDao {
             fileMetaBean = JsonUtil.mapToObject(result.getResponseString(), FileMetaBean.class);
             return fileMetaBean;
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error("ERROR from-Dao[getFileDetailInfo]", e);
         }
         return null;
     }
@@ -87,7 +86,7 @@ public class FileDaoImpl implements FileDao {
             HttpEntity entity = response.getEntity();
             inputStream = entity.getContent();
         } catch (Exception e) {
-            logger.error("", e);
+            logger.error("ERROR from-Dao[downloadFile]", e);
         }
         return inputStream;
     }
@@ -100,8 +99,7 @@ public class FileDaoImpl implements FileDao {
             url = config.getFileServiceUrl() + "/createFiles";
         }
 
-        String responseJson = "";
-//        FileMetaBean fileMetaBean = null;
+        String responseJson;
         try {
             CloseableHttpClient httpClient = HttpClients.createDefault();
             HttpPost httpPost = new HttpPost(url);
@@ -121,11 +119,12 @@ public class FileDaoImpl implements FileDao {
 
             if (files != null && files.size() > 0) {
                 for (MultipartFile file : files) {
-                    multipartEntity.addBinaryBody(file.getName(), file.getInputStream(), ContentType.create(file.getContentType()), file.getOriginalFilename());
+                    multipartEntity.addBinaryBody(file.getOriginalFilename(), file.getInputStream(), ContentType.create(file.getContentType()), file.getOriginalFilename());
                 }
             }
             httpPost.setEntity(multipartEntity.build());
             httpPost.setConfig(requestConfig);
+            logger.info("uploadFile POST-url:["+url+"] POST-paramMap:"+JSON.toJSONString(paramMap));
             HttpEntity entity = httpClient.execute(httpPost).getEntity();
             responseJson = EntityUtils.toString(entity);
             EntityUtils.consume(entity);
@@ -133,14 +132,13 @@ public class FileDaoImpl implements FileDao {
             if(files.size()>1){
                 fileMetaBeanList = JSON.parseArray(responseJson,FileMetaBean.class);
             }else{
-                FileMetaBean fileMetaBean = null;
-                fileMetaBean = JSON.parseObject(responseJson,FileMetaBean.class);
+                FileMetaBean fileMetaBean = JSON.parseObject(responseJson,FileMetaBean.class);
                 fileMetaBeanList.add(fileMetaBean);
             }
 
             return fileMetaBeanList;
         } catch (Exception e) {
-            logger.error("", e);
+            logger.error("ERROR from-Dao[uploadFile]", e);
         }
         return null;
     }

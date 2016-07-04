@@ -68,6 +68,7 @@ public class FileImpl implements File {
 	}
 
 	@Override
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/file/{fileId}", method = RequestMethod.GET)
 	public void getFile(@PathVariable("userId") String userId, @PathVariable("fileId") String fileId,
 	                         HttpServletResponse httpResponse) {
@@ -80,7 +81,7 @@ public class FileImpl implements File {
 	}
 
 	@Override
-//	@TokenSecured
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/docType/{docType}/source/{sourceId}/file", method = RequestMethod.POST)
 	public ResponseEntity<List<FileDetailBean>> uploadFile(@PathVariable("userId") String userId,
 									 @PathVariable("docType") String docType,
