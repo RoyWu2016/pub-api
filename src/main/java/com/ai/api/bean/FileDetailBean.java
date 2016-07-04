@@ -26,6 +26,11 @@ public class FileDetailBean {
 
     public FileDetailBean(){}
 
+    @Override
+    public String toString() {
+        return "[id:"+id+"docType:"+docType+"fileName:"+fileName+"fileSize:"+fileSize+"url:"+url +"]";
+    }
+
     public String getId() {
         return id;
     }

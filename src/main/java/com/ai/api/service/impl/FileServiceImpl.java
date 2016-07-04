@@ -5,19 +5,21 @@ import com.ai.api.dao.FileDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.FileService;
 import com.ai.commons.beans.fileservice.FileMetaBean;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 /***************************************************************************
  * <PRE>
@@ -79,4 +81,59 @@ public class FileServiceImpl implements FileService {
         }
         return  true;
     }
+
+    @Override
+    public List<FileDetailBean> uploadFile(String userId, String docType, String sourceId,HttpServletRequest request, HttpServletResponse response) throws IOException, AIException {
+        Map<String,String> bucketMap = new HashMap<>();
+        bucketMap.put("access-map","ACCESS_MAP");
+        bucketMap.put("supplier-certs","BUS_LIC, EXPORT_LIC, ROHS_CERT, TAX_CERT, ISO_CERT, OTHER_DOC");
+        bucketMap.put("dm-general-instruction","GI_COORDINATION, GI_SAMPLE_REF, GI_SAMPLE_PROD, GI_PROTOCAL, GI_INSP_RPT, GI_LAB_TEST");
+        bucketMap.put("order-attachments","ORDER_ATT");
+
+        logger.info("uploadFile-userId:"+userId);
+        logger.info("uploadFile-docType:"+docType);
+        logger.info("uploadFile-sourceId:"+sourceId);
+        List<MultipartFile> uploadFiles = new ArrayList<>();
+        Map<String, String> requestMap = new HashMap<>();
+        String bucket = "";
+        String createBy = "";
+
+        for (Map.Entry<String,String> entry:bucketMap.entrySet()){
+            if (entry.getValue().indexOf(docType.toUpperCase())<0){
+                bucket = entry.getKey();
+                break;
+            }
+        }
+        logger.info("uploadFile-bucket:"+bucket);
+        requestMap.put("srcId", sourceId);
+        requestMap.put("fileType", docType);
+        requestMap.put("bucket", bucket);
+        requestMap.put("createBy", createBy);
+        MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
+        Iterator<String> fileNames = multipartHttpServletRequest.getFileNames();
+        if (fileNames == null) {
+            throw new IllegalArgumentException("No upload file!");
+        }
+
+        while (fileNames.hasNext()){
+            String fileName = fileNames.next();
+            logger.info("upload file !fileName:"+fileName);
+            MultipartFile file = multipartHttpServletRequest.getFile(fileName);
+            uploadFiles.add(file);
+        }
+        List<FileMetaBean> fileMetaBeans = fileDao.uploadFile(requestMap,uploadFiles);
+        List<FileDetailBean> fileDetailBeans = new ArrayList<>();
+        for(FileMetaBean fileMetaBean:fileMetaBeans){
+            FileDetailBean fileDetailBean = new FileDetailBean();
+            fileDetailBean.setId(fileMetaBean.getId());
+            fileDetailBean.setDocType(fileMetaBean.getFileType());
+            fileDetailBean.setFileName(fileMetaBean.getFileName());
+            fileDetailBean.setFileSize(fileMetaBean.getFileSize());
+            fileDetailBean.setUrl("/api/user/"+userId+"/file/"+fileMetaBean.getId());
+            fileDetailBeans.add(fileDetailBean);
+        }
+        return fileDetailBeans;
+    }
+
+
 }
