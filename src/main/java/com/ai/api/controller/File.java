@@ -1,7 +1,9 @@
 package com.ai.api.controller;
 
 import java.io.IOException;
+import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.bean.FileDetailBean;
@@ -27,7 +29,10 @@ import org.springframework.http.ResponseEntity;
  ***************************************************************************/
 
 public interface File {
+
     ResponseEntity<FileDetailBean> getFileDetailInfo(String userId,String fileId) throws IOException, AIException;
 
     void getFile(String userId,String fileId,HttpServletResponse httpResponse);
+
+    ResponseEntity<List<FileDetailBean>> uploadFile(String userId, String docType, String sourceId, HttpServletRequest request, HttpServletResponse response);
 }

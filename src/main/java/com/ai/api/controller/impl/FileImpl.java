@@ -1,7 +1,9 @@
 package com.ai.api.controller.impl;
 
 import java.io.IOException;
+import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.bean.FileDetailBean;
@@ -66,6 +68,7 @@ public class FileImpl implements File {
 	}
 
 	@Override
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/file/{fileId}", method = RequestMethod.GET)
 	public void getFile(@PathVariable("userId") String userId, @PathVariable("fileId") String fileId,
 	                         HttpServletResponse httpResponse) {
@@ -75,5 +78,25 @@ public class FileImpl implements File {
 		} catch (Exception e) {
 			logger.error("ERROR! from[downloadFile]:", e);
 		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/docType/{docType}/source/{sourceId}/file", method = RequestMethod.POST)
+	public ResponseEntity<List<FileDetailBean>> uploadFile(@PathVariable("userId") String userId,
+									 @PathVariable("docType") String docType,
+									 @PathVariable("sourceId") String sourceId,
+									 HttpServletRequest request, HttpServletResponse response) {
+		List<FileDetailBean> fileDetailBeans = null;
+		try {
+			fileDetailBeans = fileService.uploadFile(userId,docType,sourceId,request,response);
+		}catch (Exception e){
+			logger.error("ERROR! from[uploadFile]",e);
+		}
+		if (null == fileDetailBeans||fileDetailBeans.size()==0) {
+			logger.info("Null result!from[uploadFile]");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(fileDetailBeans, HttpStatus.OK);
 	}
 }
