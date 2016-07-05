@@ -70,7 +70,7 @@ public class FactoryServiceImplTest {
         String supplierId = env.getProperty("supplierId");
 
         supplierDetailBean.setId(supplierId);
-        supplierDetailBean.setEntityName(env.getProperty("suplierEntityNameNew"));
+        supplierDetailBean.setEntityName(env.getProperty("suplierEntityName"));
         supplierDetailBean.setCity(env.getProperty("supplierCity"));
         supplierDetailBean.setCountry(env.getProperty("supplierCountry"));
         supplierDetailBean.setAddress(env.getProperty("supplierAddress"));
@@ -101,6 +101,14 @@ public class FactoryServiceImplTest {
         busLicBean.setFileSize(Long.parseLong(env.getProperty("fileBusLicDocFileSize")));
         busLicBean.setUrl(env.getProperty("fileBusLicDocUrl"));
         docList.add(busLicBean);
+
+        FileDetailBean taxCertBean = new FileDetailBean();
+        taxCertBean.setDocType(env.getProperty("fileTaxCertDocType"));
+        taxCertBean.setId(env.getProperty("fileTaxCertDocId"));
+        taxCertBean.setFileName(env.getProperty("fileTaxCertDocFileName"));
+        taxCertBean.setFileSize(Long.parseLong(env.getProperty("fileTaxCertDocFileSize")));
+        taxCertBean.setUrl(env.getProperty("fileTaxCertDocUrl"));
+        docList.add(taxCertBean);
 
         FileDetailBean isoCertBean = new FileDetailBean();
         isoCertBean.setDocType(env.getProperty("fileIsoCertDocType"));
@@ -151,11 +159,18 @@ public class FactoryServiceImplTest {
                 .andExpect(status().isOk());
 
         SupplierDetailBean detailBean = factoryDao.getUserSupplierDetailInfoById(userID, supplierId);
+
         Assert.assertEquals(detailBean.getEntityName(),supplierDetailBean.getEntityName());
-
-        supplierDetailBean.setEntityName(env.getProperty("suplierEntityNameCurrent"));
-        Assert.assertEquals(true,factoryDao.updateSupplierDetailInfo(supplierDetailBean));
-
+        Assert.assertEquals(detailBean.getCity(),supplierDetailBean.getCity());
+        Assert.assertEquals(detailBean.getPostcode(),supplierDetailBean.getPostcode());
+        Assert.assertEquals(detailBean.getCountry(),supplierDetailBean.getCountry());
+        Assert.assertEquals(detailBean.getContactInfo().getMain().getName(),supplierDetailBean.getContactInfo().getMain().getName());
+        Assert.assertEquals(detailBean.getContactInfo().getMain().getPhone(),supplierDetailBean.getContactInfo().getMain().getPhone());
+        Assert.assertEquals(detailBean.getQualityDocs().get(0).getId(),supplierDetailBean.getQualityDocs().get(0).getId());
+        Assert.assertEquals(detailBean.getQualityDocs().get(1).getFileName(),supplierDetailBean.getQualityDocs().get(1).getFileName());
+        Assert.assertEquals(detailBean.getQualityDocs().get(2).getFileSize(),supplierDetailBean.getQualityDocs().get(2).getFileSize());
+        Assert.assertEquals(detailBean.getQualityDocs().get(3).getUrl(),supplierDetailBean.getQualityDocs().get(3).getUrl());
+        Assert.assertEquals(detailBean.getQualityDocs().get(4).getDocType(),supplierDetailBean.getQualityDocs().get(4).getDocType());
     }
 
 }
