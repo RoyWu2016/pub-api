@@ -105,7 +105,7 @@ public class FactoryDaoImpl implements FactoryDao {
                     accessMapBean.setId(fileId);
                     accessMapBean.setDocType(fileMetaBean.getFileType());
                     accessMapBean.setFileName(fileMetaBean.getFileName());
-                    accessMapBean.setFilesize(fileMetaBean.getFileSize());
+                    accessMapBean.setFileSize(fileMetaBean.getFileSize());
                     accessMapBean.setUrl("/user/"+userId+"/file/"+fileId);
                     accessMapList.add(accessMapBean);
                 }
@@ -257,7 +257,7 @@ public class FactoryDaoImpl implements FactoryDao {
                 //bean.setDocType(fileMetaBean.getFileType());
                 bean.setId(fileId);
                 bean.setFileName(fileMetaBean.getFileName());
-                bean.setFilesize(fileMetaBean.getFileSize());
+                bean.setFileSize(fileMetaBean.getFileSize());
                 //bean.setUrl(config.getFileServiceUrl() + "/getFile?id=" + id);
                 bean.setUrl("/user/" + userId + "/file/" + fileId);
             }
