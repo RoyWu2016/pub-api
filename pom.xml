@@ -150,12 +150,19 @@
             <version>2.5.0</version>
         </dependency>
 
-        <!--
+        <!-- config redis data and client jar-->
         <dependency>
-            <groupId>org.webjars.bower</groupId>
-            <artifactId>swagger-ui</artifactId>
-            <version>2.1.8-M1</version>
-        </dependency>-->
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>1.7.2.RELEASE</version>
+        </dependency>
+  <!--
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+-->
 
     </dependencies>
 
@@ -163,8 +170,8 @@
         <repository>
             <id>ai-nexus</id>
             <name>AsiaInspection Nexus</name>
-            <url>http://192.168.0.31:8081/nexus/content/groups/public</url>
-            <!--<url>http://202.66.128.138:8081/nexus/content/groups/public</url>-->
+            <!--<url>http://192.168.0.31:8081/nexus/content/groups/public</url>-->
+            <url>http://202.66.128.138:8081/nexus/content/groups/public</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -177,7 +184,8 @@
         <pluginRepository>
             <id>ai-nexus</id>
             <name>AsiaInspection Nexus</name>
-            <url>http://192.168.0.31:8081/nexus/content/groups/public</url>
+            <!--<url>http://192.168.0.31:8081/nexus/content/groups/public</url>-->
+            <url>http://202.66.128.138:8081/nexus/content/groups/public</url>
             <releases>
                 <enabled>true</enabled>
             </releases>

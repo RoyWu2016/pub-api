@@ -7,7 +7,7 @@
     <bean id="customerDao" class="com.ai.api.dao.impl.db.UserDaoImpl">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-
+    
     <bean id="dataSource"
           class="com.mchange.v2.c3p0.ComboPooledDataSource"
           destroy-method="close"
@@ -20,6 +20,7 @@
           p:initialPoolSize="2"
           p:idleConnectionTestPeriod="18000"
           p:maxIdleTime="25000" />
+
 
     <!-- Transactions with JdbcTemplate -->
     <bean id="jdbcTransactionManager"

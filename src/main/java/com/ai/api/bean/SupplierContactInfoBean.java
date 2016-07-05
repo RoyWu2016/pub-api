@@ -10,7 +10,10 @@ public class SupplierContactInfoBean {
     private ContactBean main;
     private ContactBean alternate;
 
-    public SupplierContactInfoBean(){}
+    public SupplierContactInfoBean(){
+        this.main = new ContactBean();
+        this.alternate = new ContactBean();
+    }
 
     public ContactBean getMain() {
         return main;

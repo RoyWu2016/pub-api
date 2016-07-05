@@ -12,10 +12,7 @@ import com.ai.commons.annotation.TokenSecured;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by Administrator on 2016/6/29 0029.
@@ -54,6 +51,35 @@ public class SupplierImpl implements Supplier {
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
         }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/supplier/{supplierId}", method = RequestMethod.PUT)
+    public ResponseEntity<Boolean> updateUserSupplierDetailInfo(@PathVariable("userId") String userId,
+                                                            @PathVariable("supplierId") String supplierId,
+                                                            @RequestBody SupplierDetailBean supplierDetailBean)
+            throws IOException, AIException {
+        System.out.println("updating supplier detail info for user: " + userId);
+        if (factoryService.updateSupplierDetailInfo(supplierDetailBean)) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/supplier/{supplierId}", method = RequestMethod.DELETE)
+    public ResponseEntity<Boolean> deleteSupplier(@PathVariable("userId") String userId,
+                                                                @PathVariable("supplierId") String supplierId)
+            throws IOException, AIException {
+        System.out.println("deleting supplier for user: " + userId);
+        if (factoryService.deleteSupplier(supplierId)) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
