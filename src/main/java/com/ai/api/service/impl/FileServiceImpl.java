@@ -54,7 +54,7 @@ public class FileServiceImpl implements FileService {
         fileDetailBean.setDocType(fileMetaBean.getFileType());
         fileDetailBean.setFileName(fileMetaBean.getFileName());
         fileDetailBean.setFileSize(fileMetaBean.getFileSize());
-        fileDetailBean.setUrl("/api/user/"+userId+"/file/"+fileId);
+        fileDetailBean.setUrl("/user/"+userId+"/file/"+fileId);
         return fileDetailBean;
     }
 
