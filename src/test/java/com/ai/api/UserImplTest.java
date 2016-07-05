@@ -53,7 +53,7 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration({"classpath:testDataSource.xml", "classpath:api-config.xml",
 		"classpath:spring-controller.xml", "classpath:testConfig.xml"})
 @WebAppConfiguration
-public class UserServiceImplTest {
+public class UserImplTest {
 	@Autowired
 	private WebApplicationContext context;
 

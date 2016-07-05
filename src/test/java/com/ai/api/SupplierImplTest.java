@@ -1,5 +1,11 @@
 package com.ai.api;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ai.api.bean.FileDetailBean;
 import com.ai.api.bean.SupplierContactInfoBean;
 import com.ai.api.bean.SupplierDetailBean;
@@ -21,13 +27,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 /**
  * Created by Administrator on 2016/7/4 0004.
  */
@@ -37,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration({"classpath:testDataSource.xml", "classpath:api-config.xml",
         "classpath:spring-controller.xml", "classpath:testConfig.xml"})
 @WebAppConfiguration
-public class FactoryServiceImplTest {
+public class SupplierImplTest {
     @Autowired
     private WebApplicationContext context;
 
