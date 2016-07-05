@@ -78,6 +78,14 @@ public class ServiceConfig {
 		this.ssoUserServiceUrl = ssoUserServiceUrl;
 	}
 
+    public String getFileServiceUrl() {
+        return fileServiceUrl;
+    }
+
+    public void setFileServiceUrl(String fileServiceUrl) {
+        this.fileServiceUrl = fileServiceUrl;
+    }
+
     public String getFactoryServiceUrl() {
         return factoryServiceUrl;
     }
@@ -86,11 +94,4 @@ public class ServiceConfig {
         this.factoryServiceUrl = factoryServiceUrl;
     }
 
-    public String getFileServiceUrl() {
-        return fileServiceUrl;
-    }
-
-    public void setFileServiceUrl(String fileServiceUrl) {
-        this.fileServiceUrl = fileServiceUrl;
-    }
 }

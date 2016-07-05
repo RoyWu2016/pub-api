@@ -8,11 +8,26 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <!--
     <bean id="dataSource"
           class="com.mchange.v2.c3p0.ComboPooledDataSource"
           destroy-method="close"
           p:driverClass="oracle.jdbc.driver.OracleDriver"
           p:jdbcUrl="jdbc:oracle:thin:@192.168.0.6:1521:aidev"
+          p:user="aidatauser"
+          p:password="tiger"
+          p:minPoolSize="2"
+          p:maxPoolSize="16"
+          p:initialPoolSize="2"
+          p:idleConnectionTestPeriod="18000"
+          p:maxIdleTime="25000" />
+    -->
+
+    <bean id="dataSource"
+          class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close"
+          p:driverClass="oracle.jdbc.driver.OracleDriver"
+          p:jdbcUrl="jdbc:oracle:thin:@localhost:1521:xe"
           p:user="aidatauser"
           p:password="tiger"
           p:minPoolSize="2"

@@ -1,13 +1,27 @@
 package com.ai.api.bean;
 
-/**
- * Created by Administrator on 2016/6/27 0027.
- */
+/***************************************************************************
+ * <PRE>
+ * Project Name    : api
+ * <p>
+ * Package Name    : com.ai.api.bean
+ * <p>
+ * Creation Date   : 2016/6/30 12:11
+ * <p>
+ * Author          : Jianxiong Cai
+ * <p>
+ * Purpose         : TODO
+ * <p>
+ * <p>
+ * History         : TODO
+ * <p>
+ * </PRE>
+ ***************************************************************************/
 public class FileDetailBean {
     private String id;
     private String docType;
     private String fileName;
-    private long filesize;
+    private long fileSize;
     private String url;
 
     public FileDetailBean(){}
@@ -36,12 +50,12 @@ public class FileDetailBean {
         this.fileName = fileName;
     }
 
-    public long getFilesize() {
-        return filesize;
+    public long getFileSize() {
+        return fileSize;
     }
 
-    public void setFilesize(long filesize) {
-        this.filesize = filesize;
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
     }
 
     public String getUrl() {
