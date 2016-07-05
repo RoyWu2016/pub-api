@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -105,7 +106,7 @@ public class FactoryDaoImpl implements FactoryDao {
                     accessMapBean.setDocType(fileMetaBean.getFileType());
                     accessMapBean.setFileName(fileMetaBean.getFileName());
                     accessMapBean.setFilesize(fileMetaBean.getFileSize());
-                    accessMapBean.setUrl(config.getFileServiceUrl() + "/getFile?id="+fileId);
+                    accessMapBean.setUrl("/user/"+userId+"/file/"+fileId);
                     accessMapList.add(accessMapBean);
                 }
             }
@@ -113,12 +114,13 @@ public class FactoryDaoImpl implements FactoryDao {
 
             List<FileDetailBean> qualityDocList = new ArrayList<FileDetailBean>();
 
-            addQualityDocList(qualityDocList,clientFactoryBean.getBusLicDocBean());
-            addQualityDocList(qualityDocList,clientFactoryBean.getIsoCertDocBean());
-            addQualityDocList(qualityDocList,clientFactoryBean.getExportLicDocBean());
-            addQualityDocList(qualityDocList,clientFactoryBean.getRohsCertDocBean());
-            addQualityDocList(qualityDocList,clientFactoryBean.getTestReportDocBean());
-            addQualityDocList(qualityDocList,clientFactoryBean.getOtherDocBean());
+            addQualityDocList(userId, clientFactoryBean.getBusLicDocBean(), qualityDocList);
+            addQualityDocList(userId, clientFactoryBean.getTaxCertDocBean(), qualityDocList);
+            addQualityDocList(userId, clientFactoryBean.getIsoCertDocBean(), qualityDocList);
+            addQualityDocList(userId, clientFactoryBean.getExportLicDocBean(), qualityDocList);
+            addQualityDocList(userId, clientFactoryBean.getRohsCertDocBean(), qualityDocList);
+            addQualityDocList(userId, clientFactoryBean.getTestReportDocBean(), qualityDocList);
+            addQualityDocList(userId, clientFactoryBean.getOtherDocBean(), qualityDocList);
 
             supplierDetailBean.setQualityDocs(qualityDocList);
 
@@ -133,25 +135,131 @@ public class FactoryDaoImpl implements FactoryDao {
         return supplierDetailBean;
     }
 
-    private void addQualityDocList(List<FileDetailBean> qualityDocList,AttachmentDocBean attachmentDocBean){
+    @Override
+    public boolean updateSupplierDetailInfo(SupplierDetailBean supplierDetailBean) throws IOException, AIException{
+        //String url = config.getFactoryServiceUrl() + "/saveSupplier";
+        String url = config.getFactoryServiceUrl() + "/saveSupplierOnly";
+
+        try {
+            ClientFactoryBean clientFactoryBean = convertToClientFactoryBean(supplierDetailBean);
+            ServiceCallResult result = HttpUtil.issuePostRequest(url, null, clientFactoryBean);
+            if (result.getStatusCode() == HttpStatus.OK.value() &&
+                    result.getReasonPhase().equalsIgnoreCase("OK")) {
+
+                return true;
+            }
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteSupplier(String supplierId) throws IOException, AIException {
+        String url = config.getFactoryServiceUrl() + "/deleteSupplier/"+supplierId;
+        try {
+            ServiceCallResult result = HttpUtil.issueDeleteRequest(url, null);
+            if (result.getStatusCode() == HttpStatus.OK.value() &&
+                    result.getReasonPhase().equalsIgnoreCase("OK")) {
+
+                return true;
+            }
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
+        }
+        return false;
+    }
+
+
+    private ClientFactoryBean convertToClientFactoryBean(SupplierDetailBean supplierDetailBean){
+        if(supplierDetailBean!=null){
+            ClientFactoryBean clientFactoryBean = new ClientFactoryBean();
+            clientFactoryBean.setSupplierId(supplierDetailBean.getId());
+            clientFactoryBean.setSupplierAddress(supplierDetailBean.getAddress());
+            clientFactoryBean.setSupplierAiOffice(supplierDetailBean.getNearestOffice());
+            clientFactoryBean.setSupplierCity(supplierDetailBean.getCity());
+            clientFactoryBean.setSupplierCountry(supplierDetailBean.getCountry());
+            clientFactoryBean.setSupplierPostcode(supplierDetailBean.getPostcode());
+            clientFactoryBean.setSupplierNameEn(supplierDetailBean.getEntityName());
+            clientFactoryBean.setSupplierNameCn(supplierDetailBean.getChineseName());
+
+            clientFactoryBean.setSupplierWebsite(supplierDetailBean.getWebsite());
+            clientFactoryBean.setSupplierSalesTurnover(supplierDetailBean.getSalesTurnover());
+            clientFactoryBean.setSupplierNbEmployees(supplierDetailBean.getNoOfEmployees());
+
+            clientFactoryBean.setCustId(supplierDetailBean.getUserId());
+            if(supplierDetailBean.getContactInfo()!=null) {
+                clientFactoryBean.setSupplierQualityManager(supplierDetailBean.getContactInfo().getAlternate());
+                clientFactoryBean.setSupplierManager(supplierDetailBean.getContactInfo().getMain());
+            }
+            clientFactoryBean.setSupplierProducts(supplierDetailBean.getMainProductLines());
+
+            List<FileDetailBean> accessMapList = supplierDetailBean.getAccessMaps();
+            if(accessMapList!=null) {
+                List<AttachmentDocBean> attachmentDocList = new ArrayList<AttachmentDocBean>();
+                for (FileDetailBean fileDetailBean : accessMapList) {
+                    AttachmentDocBean attachmentDocBean = createAttachmentDocBeanFromFileDetailBean(fileDetailBean);
+                    attachmentDocList.add(attachmentDocBean);
+                }
+                clientFactoryBean.setAccessMap(attachmentDocList);
+            }
+            List<FileDetailBean> qualityDocList = supplierDetailBean.getQualityDocs();
+            if(qualityDocList!=null){
+                for(FileDetailBean fileDetailBean:qualityDocList) {
+                    if (fileDetailBean != null) {
+                        AttachmentDocBean docBean = createAttachmentDocBeanFromFileDetailBean(fileDetailBean);
+                        if (fileDetailBean.getDocType().equalsIgnoreCase("BUS_LIC")) {
+                            clientFactoryBean.setBusLicDocBean(docBean);
+                        } else if (fileDetailBean.getDocType().equalsIgnoreCase("ISO_CERT")) {
+                            clientFactoryBean.setIsoCertDocBean(docBean);
+                        } else if (fileDetailBean.getDocType().equalsIgnoreCase("EXPORT_LIC")) {
+                            clientFactoryBean.setExportLicDocBean(docBean);
+                        } else if (fileDetailBean.getDocType().equalsIgnoreCase("ROHS_CERT")) {
+                            clientFactoryBean.setRohsCertDocBean(docBean);
+                        } else if (fileDetailBean.getDocType().equalsIgnoreCase("OTHER_DOC")) {
+                            clientFactoryBean.setOtherDocBean(docBean);
+                        } else if (fileDetailBean.getDocType().equalsIgnoreCase("TAX_CERT")) {
+                            clientFactoryBean.setTaxCertDocBean(docBean);
+                        }
+                    }
+                }
+            }
+            return clientFactoryBean;
+        }
+        return null;
+    }
+
+    private AttachmentDocBean createAttachmentDocBeanFromFileDetailBean(FileDetailBean fileDetailBean){
+        AttachmentDocBean attachmentDocBean = new AttachmentDocBean();
+        if(fileDetailBean!=null) {
+            attachmentDocBean.setDocType(fileDetailBean.getDocType());
+            attachmentDocBean.setFileName(fileDetailBean.getFileName());
+            attachmentDocBean.setId(fileDetailBean.getId());
+        }
+        return attachmentDocBean;
+    }
+
+
+    private void addQualityDocList(String userId, AttachmentDocBean attachmentDocBean, List<FileDetailBean> qualityDocList){
         FileDetailBean fileDetailBean = new FileDetailBean();
         fileDetailBean.setDocType(attachmentDocBean.getDocType());
-        setFileInfo(fileDetailBean, attachmentDocBean.getId());
+        setFileInfo(userId,attachmentDocBean.getId(),fileDetailBean);
         qualityDocList.add(fileDetailBean);
     }
 
-    private void setFileInfo(FileDetailBean bean, String id){
+    private void setFileInfo(String userId, String fileId, FileDetailBean bean){
         try{
-            if(id!=null && id!="") {
-                String fileUrl = config.getFileServiceUrl() + "/getFileInfoById?id=" + id;
+            if(fileId!=null && fileId!="") {
+                String fileUrl = config.getFileServiceUrl() + "/getFileInfoById?id=" + fileId;
                 GetRequest fileRequest = GetRequest.newInstance().setUrl(fileUrl);
                 ServiceCallResult fileResult = HttpUtil.issueGetRequest(fileRequest);
                 FileMetaBean fileMetaBean = JsonUtil.mapToObject(fileResult.getResponseString(), FileMetaBean.class);
                 //bean.setDocType(fileMetaBean.getFileType());
-                bean.setId(id);
+                bean.setId(fileId);
                 bean.setFileName(fileMetaBean.getFileName());
                 bean.setFilesize(fileMetaBean.getFileSize());
-                bean.setUrl(config.getFileServiceUrl() + "/getFile?id=" + id);
+                //bean.setUrl(config.getFileServiceUrl() + "/getFile?id=" + id);
+                bean.setUrl("/user/" + userId + "/file/" + fileId);
             }
         }catch(Exception e){
             LOGGER.error(ExceptionUtils.getStackTrace(e));

@@ -41,4 +41,16 @@ public class FactoryServiceImpl implements FactoryService {
     public SupplierDetailBean getUserSupplierDetailInfoById(String userId, String supplierId) throws IOException, AIException{
         return factoryDao.getUserSupplierDetailInfoById(userId, supplierId);
     }
+
+    @Override
+    public boolean updateSupplierDetailInfo(SupplierDetailBean supplierDetailBean) throws IOException, AIException{
+        return factoryDao.updateSupplierDetailInfo(supplierDetailBean);
+    }
+
+    @Override
+    public boolean deleteSupplier(String supplierId) throws IOException, AIException {
+        return factoryDao.deleteSupplier(supplierId);
+    }
+
+
 }

@@ -13,6 +13,9 @@ import org.springframework.http.ResponseEntity;
  */
 public interface Supplier {
     ResponseEntity<List<FactorySearchBean>> getUserSupplierById(String userId) throws IOException, AIException;
-
     ResponseEntity<SupplierDetailBean> getUserSupplierDetailInfoById(String userId, String supplierId) throws IOException, AIException;
+    ResponseEntity<Boolean> updateUserSupplierDetailInfo(String userId, String supplierId, SupplierDetailBean supplierDetailBean)
+            throws IOException, AIException;
+    ResponseEntity<Boolean> deleteSupplier(String userId,String supplierId)
+            throws IOException, AIException;
 }

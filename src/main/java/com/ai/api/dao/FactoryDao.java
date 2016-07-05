@@ -16,4 +16,7 @@ public interface FactoryDao {
     List<FactorySearchBean> getSuppliersByUserId(String userId) throws IOException, AIException;
 
     SupplierDetailBean getUserSupplierDetailInfoById(String userId, String supplierId) throws IOException, AIException;
+
+    boolean updateSupplierDetailInfo(SupplierDetailBean supplierDetailBean) throws IOException, AIException;
+    boolean deleteSupplier(String supplierId) throws IOException, AIException;
 }

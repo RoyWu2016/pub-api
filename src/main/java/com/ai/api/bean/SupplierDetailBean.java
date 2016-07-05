@@ -1,5 +1,6 @@
 package com.ai.api.bean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +26,24 @@ public class SupplierDetailBean {
     private List<FileDetailBean> accessMaps;
     private List<FileDetailBean> qualityDocs;
 
-    public SupplierDetailBean(){}
+    public SupplierDetailBean(){
+        this.id = "";
+        this.entityName = "";
+        this.chineseName = "";
+        this.city = "";
+        this.country = "";
+        this.address = "";
+        this.postcode = "";
+        this.nearestOffice = "";
+        this.website = "";
+        this.salesTurnover = "";
+        this.noOfEmployees = "";
+        this.userId = "";
+        this.mainProductLines = new ArrayList<String>();
+        this.contactInfo = new SupplierContactInfoBean();
+        this.accessMaps = new ArrayList<FileDetailBean>();
+        this.qualityDocs = new ArrayList<FileDetailBean>();
+    }
 
     public String getId() {
         return id;
