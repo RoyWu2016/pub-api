@@ -65,68 +65,81 @@ public class FactoryServiceImplTest {
 
     @Test
     public void updateSupplierDetailInfo() throws Exception {
-        String supplierId = "05BE534DC73C8B5848257B73002015BB";
+
         SupplierDetailBean supplierDetailBean = new SupplierDetailBean();
+        String supplierId = env.getProperty("supplierId");
+
         supplierDetailBean.setId(supplierId);
-        supplierDetailBean.setEntityName("UnitTestEntityName");
-        //supplierDetailBean.setChineseName();
-        supplierDetailBean.setCity("mumbai");
-        supplierDetailBean.setCountry("India");
-        supplierDetailBean.setAddress("Unit no.702,Tower no.1 seepz++ Andheri(E) Mumbai- 400096");
-        supplierDetailBean.setPostcode("400096");
-        supplierDetailBean.setNearestOffice("India Office");
-        supplierDetailBean.setWebsite("www.patdiam.com");
-        supplierDetailBean.setSalesTurnover("5-25 M$");
-        supplierDetailBean.setNoOfEmployees("50 - 250");
+        supplierDetailBean.setEntityName(env.getProperty("suplierEntityNameNew"));
+        supplierDetailBean.setCity(env.getProperty("supplierCity"));
+        supplierDetailBean.setCountry(env.getProperty("supplierCountry"));
+        supplierDetailBean.setAddress(env.getProperty("supplierAddress"));
+        supplierDetailBean.setPostcode(env.getProperty("supplierPostCode"));
+        supplierDetailBean.setNearestOffice(env.getProperty("supplierNearestOffice"));
+        supplierDetailBean.setWebsite(env.getProperty("supplierWebsite"));
+        supplierDetailBean.setSalesTurnover(env.getProperty("supplierSalesTurnover"));
+        supplierDetailBean.setNoOfEmployees(env.getProperty("supplierNoOfEmployees"));
         supplierDetailBean.setUserId(userID);
         List<String> mainProductLines = new ArrayList<String>();
-        mainProductLines.add("bigCat3_s4");
+        mainProductLines.add(env.getProperty("favFamily2"));
         supplierDetailBean.setMainProductLines(mainProductLines);
 
         SupplierContactInfoBean supplierContactInfoBean = new SupplierContactInfoBean();
         ContactBean main = new ContactBean();
-        main.setName("Pradip Bane");
-        main.setPhone("+ 91 22 28293455/56");
-        main.setMobile("+ 91 9821715164");
-        main.setEmail("mktg@patdiam.com");
+        main.setName(env.getProperty("supplierContactInfoName"));
+        main.setPhone(env.getProperty("supplierContactInfoPhone"));
+        main.setMobile(env.getProperty("supplierContactInfoMobile"));
+        main.setEmail(env.getProperty("supplierContactInfoEmail"));
         supplierContactInfoBean.setMain(main);
         supplierDetailBean.setContactInfo(supplierContactInfoBean);
 
         List<FileDetailBean> docList = new ArrayList<FileDetailBean>();
         FileDetailBean busLicBean = new FileDetailBean();
-        busLicBean.setDocType("BUS_LIC");
-        busLicBean.setId("15df6547-cb8d-4085-8e32-b832c2f11a92");
-        busLicBean.setFileName("Bussiness Licence.jpg");
-        busLicBean.setFilesize(1042745);
-        busLicBean.setUrl("http://202.66.128.138:8092/file-service/getFile?id=15df6547-cb8d-4085-8e32-b832c2f11a92");
+        busLicBean.setDocType(env.getProperty("fileBusLicDocType"));
+        busLicBean.setId(env.getProperty("fileBusLicDocId"));
+        busLicBean.setFileName(env.getProperty("fileBusLicDocFileName"));
+        busLicBean.setFileSize(Long.parseLong(env.getProperty("fileBusLicDocFileSize")));
+        busLicBean.setUrl(env.getProperty("fileBusLicDocUrl"));
         docList.add(busLicBean);
 
         FileDetailBean isoCertBean = new FileDetailBean();
-        isoCertBean.setDocType("ISO_CERT");
+        isoCertBean.setDocType(env.getProperty("fileIsoCertDocType"));
+        isoCertBean.setId(env.getProperty("fileIsoCertDocId"));
+        isoCertBean.setFileName(env.getProperty("fileIsoCertDocFileName"));
+        isoCertBean.setFileSize(Long.parseLong(env.getProperty("fileIsoCertDocFileSize")));
+        isoCertBean.setUrl(env.getProperty("fileIsoCertDocUrl"));
         docList.add(isoCertBean);
 
         FileDetailBean exportLicBean = new FileDetailBean();
-        exportLicBean.setDocType("EXPORT_LIC");
-        exportLicBean.setId("560233c8-815a-432a-85c0-c367354189a3");
-        exportLicBean.setFileName("EXPORT LICENCE.jpg");
-        exportLicBean.setFilesize(326370);
-        exportLicBean.setUrl("http://202.66.128.138:8092/file-service/getFile?id=560233c8-815a-432a-85c0-c367354189a3");
+        exportLicBean.setDocType(env.getProperty("fileExportLicDocType"));
+        exportLicBean.setId(env.getProperty("fileExportLicDocId"));
+        exportLicBean.setFileName(env.getProperty("fileExportLicDocFileName"));
+        exportLicBean.setFileSize(Long.parseLong(env.getProperty("fileExportLicDocFileSize")));
+        exportLicBean.setUrl(env.getProperty("fileExportLicDocUrl"));
         docList.add(exportLicBean);
 
         FileDetailBean rohsCertBean = new FileDetailBean();
-        rohsCertBean.setDocType("ROHS_CERT");
+        rohsCertBean.setDocType(env.getProperty("fileRohsCertDocType"));
+        rohsCertBean.setId(env.getProperty("fileRohsCertDocId"));
+        rohsCertBean.setFileName(env.getProperty("fileRohsCertDocFileName"));
+        rohsCertBean.setFileSize(Long.parseLong(env.getProperty("fileRohsCertDocFileSize")));
+        rohsCertBean.setUrl(env.getProperty("fileRohsCertDocUrl"));
         docList.add(rohsCertBean);
 
         FileDetailBean testReportBean = new FileDetailBean();
-        testReportBean.setDocType("TEST_REPORT");
+        testReportBean.setDocType(env.getProperty("fileTestReportDocType"));
+        testReportBean.setId(env.getProperty("fileTestReportDocId"));
+        testReportBean.setFileName(env.getProperty("fileTestReportDocFileName"));
+        testReportBean.setFileSize(Long.parseLong(env.getProperty("fileTestReportDocFileSize")));
+        testReportBean.setUrl(env.getProperty("fileTestReportDocUrl"));
         docList.add(testReportBean);
 
         FileDetailBean otherDocBean = new FileDetailBean();
-        otherDocBean.setDocType("OTHER_DOC");
-        otherDocBean.setId("635e94c1-5178-44a9-9777-eefa4fa82dfe");
-        otherDocBean.setFileName("PJ VAT2.jpg");
-        otherDocBean.setFilesize(350729);
-        otherDocBean.setUrl("http://202.66.128.138:8092/file-service/getFile?id=635e94c1-5178-44a9-9777-eefa4fa82dfe");
+        otherDocBean.setDocType(env.getProperty("fileOtherDocDocType"));
+        otherDocBean.setId(env.getProperty("fileOtherDocDocId"));
+        otherDocBean.setFileName(env.getProperty("fileOtherDocDocFileName"));
+        otherDocBean.setFileSize(Long.parseLong(env.getProperty("fileOtherDocDocFileSize")));
+        otherDocBean.setUrl(env.getProperty("fileOtherDocDocUrl"));
         docList.add(otherDocBean);
         supplierDetailBean.setQualityDocs(docList);
 
@@ -137,7 +150,10 @@ public class FactoryServiceImplTest {
                 .content(new ObjectMapper().writeValueAsString(supplierDetailBean)))
                 .andExpect(status().isOk());
 
-        supplierDetailBean.setEntityName("Supplier's Initial Name");
+        SupplierDetailBean detailBean = factoryDao.getUserSupplierDetailInfoById(userID, supplierId);
+        Assert.assertEquals(detailBean.getEntityName(),supplierDetailBean.getEntityName());
+
+        supplierDetailBean.setEntityName(env.getProperty("suplierEntityNameCurrent"));
         Assert.assertEquals(true,factoryDao.updateSupplierDetailInfo(supplierDetailBean));
 
     }
