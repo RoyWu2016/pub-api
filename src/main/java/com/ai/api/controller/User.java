@@ -17,6 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /***************************************************************************
  * <PRE>
  * Project Name    : api
@@ -55,4 +58,7 @@ public interface User {
 
 	ResponseEntity<ServiceCallResult> updateUserPassword(String USER_ID, HashMap<String, String> pwdMap) throws IOException, AIException;
 
+	ResponseEntity<String> getCompanyLogo(String userId, String companyId,HttpServletResponse httpResponse);
+
+    ResponseEntity<String> updateCompanyLogo(String userId, String companyId,HttpServletRequest request);
 }

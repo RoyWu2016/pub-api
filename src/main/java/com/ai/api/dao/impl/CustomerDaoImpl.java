@@ -7,32 +7,35 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.ai.api.bean.SupplierContactInfoBean;
-import com.ai.api.bean.SupplierContactInfoMainAlternateBean;
-import com.ai.api.bean.FileDetailBean;
-import com.ai.api.bean.SupplierDetailBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.CustomerDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
-import com.ai.commons.StringUtils;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
-import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.EntityBuilder;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.web.multipart.MultipartFile;
 
 /***************************************************************************
  * <PRE>
@@ -130,4 +133,72 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 		}
 
 	}
+
+    @Override
+    public InputStream getCompanyLogo(String companyId) {
+        String url = config.getCustomerServiceUrl()+"/customer/"+companyId+"/logo";
+        InputStream inputStream = null;
+        try {
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpGet httpGet = new HttpGet(url);
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setConnectionRequestTimeout(60000)
+                    .setSocketTimeout(60000)
+                    .setConnectTimeout(60000).build();
+            httpGet.setConfig(requestConfig);
+            CloseableHttpResponse response = httpClient.execute(httpGet);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                HttpEntity entity = response.getEntity();
+                inputStream = entity.getContent();
+//                EntityUtils.consume(entity);
+            }
+        } catch (Exception e) {
+            logger.error("ERROR from-Dao[getCompanyLogo]", e);
+        }
+        return inputStream;
+    }
+
+    @Override
+    public boolean updateCompanyLogo(String companyId, MultipartFile file) {
+        String url = config.getCustomerServiceUrl()+"/customer/"+companyId+"/logo-stream/file-name/"+file.getOriginalFilename()+"/file-size/"+file.getSize();
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        boolean b = false;
+        try {
+            HttpPost httpPost = new HttpPost(url);
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setConnectionRequestTimeout(60000)
+                    .setConnectTimeout(60000)
+                    .setSocketTimeout(60000).build();
+            EntityBuilder entity = EntityBuilder.create();
+            entity.setStream(file.getInputStream());
+
+            httpPost.setEntity(entity.build());
+            httpPost.setConfig(requestConfig);
+            logger.info("update company logo doPost————————url:["+url+"]");
+            response = httpClient.execute(httpPost);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                b = true;
+                logger.info("Update success!");
+            }
+            String responseJson = EntityUtils.toString(response.getEntity(), "UTF-8");
+            logger.info("update logo responseJson:"+responseJson);
+        }catch (Exception e){
+            logger.error("ERROR",e);
+        }finally {
+            try {
+                if (response != null) {
+                    response.close();
+                }
+                if (httpClient != null) {
+                    httpClient.close();
+                }
+            }catch (Exception e){
+
+            }
+        }
+        return b;
+    }
+
+
 }
