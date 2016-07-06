@@ -108,6 +108,7 @@ public class UserImplTest {
 		newComp.setAddress(env.getProperty("compAddress"));
 		newComp.setCity(env.getProperty("compCity"));
 		newComp.setPostcode(env.getProperty("compPostCode"));
+		newComp.setWebsite(env.getProperty("compWebsite"));
 
 		String updateCompUrl = "/user/" + userID + "/profile/company";
 		//update
@@ -122,7 +123,7 @@ public class UserImplTest {
 		Assert.assertEquals(comp.getAddress1(), newComp.getAddress());
 		Assert.assertEquals(comp.getCity(), newComp.getCity());
 		Assert.assertEquals(comp.getCountryRegion(), newComp.getCountry());
-
+		Assert.assertEquals(comp.getWebsite(), newComp.getWebsite());
 	}
 
 	@Test

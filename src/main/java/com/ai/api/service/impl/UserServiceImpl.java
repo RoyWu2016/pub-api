@@ -117,6 +117,10 @@ public class UserServiceImpl implements UserService {
 		comp.setAddress(generalUserBean.getCompany().getAddress1());
 		comp.setCity(generalUserBean.getCompany().getCity());
 		comp.setPostcode(generalUserBean.getCompany().getPostCode());
+
+		comp.setWebsite(generalUserBean.getCompany().getWebsite());
+		comp.setLogo(generalUserBean.getCompany().getLogoPath());
+
 		user.setCompany(comp);
 
 		// ------------Set ContactInfoBean Properties ----------------
@@ -297,6 +301,8 @@ public class UserServiceImpl implements UserService {
 	    company.setCity(newComp.getCity());
 	    company.setPostCode(newComp.getPostcode());
 	    company.setCountryRegion(newComp.getCountry());
+
+		company.setWebsite(newComp.getWebsite());
 
 	    //update
 	    return companyDao.updateCrmCompany(company);

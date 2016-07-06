@@ -20,6 +20,10 @@ public class CompanyBean {
 
 	private String country;
 
+    private String website;
+
+    private String logo;
+
 	public String getName() {
         return name;
     }
@@ -84,4 +88,19 @@ public class CompanyBean {
 		this.id = id;
 	}
 
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
 }
