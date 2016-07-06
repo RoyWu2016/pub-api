@@ -35,4 +35,7 @@ public interface File {
     void getFile(String userId,String fileId,HttpServletResponse httpResponse);
 
     ResponseEntity<List<FileDetailBean>> uploadFile(String userId, String docType, String sourceId, HttpServletRequest request, HttpServletResponse response);
+
+    ResponseEntity<String> deleteFile(String userId,String fileId);
+
 }

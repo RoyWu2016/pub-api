@@ -99,4 +99,22 @@ public class FileImpl implements File {
 		}
 		return new ResponseEntity<>(fileDetailBeans, HttpStatus.OK);
 	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/file/{fileId}", method = RequestMethod.DELETE)
+	public ResponseEntity<String> deleteFile(@PathVariable("userId") String userId, @PathVariable("fileId") String fileId) {
+        logger.info("delete file----userId["+userId+"]fileId["+fileId+"]");
+        boolean b = false;
+        try {
+            b = fileService.deleteFile(userId,fileId);
+        }catch (Exception e){
+            logger.error("",e);
+        }
+        if (b){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+	}
 }

@@ -17,6 +17,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -141,5 +143,32 @@ public class FileDaoImpl implements FileDao {
             logger.error("ERROR from-Dao[uploadFile]", e);
         }
         return null;
+    }
+
+    @Override
+    public boolean deleteFile(String fileId,String userName) {
+        String url = config.getFileServiceUrl() + "/deleteFile?id="+fileId;
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        boolean b = false;
+        try {
+            HttpDelete httpDelete = new HttpDelete(url);
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setConnectionRequestTimeout(60000)
+                    .setSocketTimeout(60000)
+                    .setConnectTimeout(60000).build();
+            logger.info("delete file doDelete----url:["+url+"]");
+            httpDelete.setConfig(requestConfig);
+            response = httpClient.execute(httpDelete);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                b = true;
+            }
+            String responseJson = EntityUtils.toString(response.getEntity(), "UTF-8");
+            logger.info("delete logo responseJson:"+responseJson);
+
+        }catch (Exception e){
+            logger.error("ERROR",e);
+        }
+        return b;
     }
 }

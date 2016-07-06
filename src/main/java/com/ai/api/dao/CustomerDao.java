@@ -25,4 +25,6 @@ public interface CustomerDao {
 
 	boolean updateCompanyLogo(String companyId, MultipartFile file);
 
+	boolean deleteCompanyLogo(String companyId);
+
 }

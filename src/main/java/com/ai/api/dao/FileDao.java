@@ -31,4 +31,6 @@ public interface FileDao {
     InputStream downloadFile(String fileId);
 
     List<FileMetaBean> uploadFile(Map<String, String> paramMap, List<MultipartFile> files);
+
+    boolean deleteFile(String fileId,String userName);
 }

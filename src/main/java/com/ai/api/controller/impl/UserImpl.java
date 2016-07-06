@@ -161,6 +161,7 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.GET)
 	public ResponseEntity<String> getCompanyLogo(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId, HttpServletResponse httpResponse) {
+		logger.info("get companyLogo----userId["+userId+"]companyId["+companyId+"]");
 		boolean b = false;
 		try {
 			b = userService.getCompanyLogo(userId,companyId,httpResponse);
@@ -178,7 +179,7 @@ public class UserImpl implements User {
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.POST)
     public ResponseEntity<String> updateCompanyLogo(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId, HttpServletRequest request) {
-        logger.info(userId+"--------------"+companyId);
+		logger.info("update companyLogo----userId["+userId+"]companyId["+companyId+"]");
 		boolean b = false;
         try {
             b = userService.updateCompanyLogo(userId,companyId,request);
@@ -191,5 +192,23 @@ public class UserImpl implements User {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.DELETE)
+	public ResponseEntity<String> deleteCompanyLogo(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId) {
+		logger.info("delete companyLogo----userId["+userId+"]companyId["+companyId+"]");
+		boolean b = false;
+		try {
+			b = userService.deleteCompanyLogo(userId,companyId);
+		}catch (Exception e){
+			logger.error("",e);
+		}
+		if (b){
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 
 }

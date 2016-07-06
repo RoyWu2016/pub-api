@@ -54,4 +54,6 @@ public interface UserService {
     boolean getCompanyLogo(String userId,String companyId,HttpServletResponse httpResponse);
 
     boolean updateCompanyLogo(String userId,String companyId,HttpServletRequest request);
+
+    boolean deleteCompanyLogo(String userId,String companyId);
 }

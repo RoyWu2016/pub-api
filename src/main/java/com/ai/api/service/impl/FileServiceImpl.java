@@ -126,6 +126,15 @@ public class FileServiceImpl implements FileService {
         return fileDetailBeans;
     }
 
+    @Override
+    public boolean deleteFile(String userId, String fileId) throws IOException, AIException {
+//        Map<String, String> requestMap = new HashMap<>();
+//        requestMap.put("id",userId);
+//        requestMap.put("userName",userName);
+        String userName = "";//Get info by userId...............................
+        return fileDao.deleteFile(fileId,userName);
+    }
+
 //    public final static Map<String,String> bucketMap = new HashMap() {{
 //
 //        bucketMap.put("ACCESS_MAP","access-map");

@@ -25,6 +25,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -137,24 +138,40 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
     @Override
     public InputStream getCompanyLogo(String companyId) {
         String url = config.getCustomerServiceUrl()+"/customer/"+companyId+"/logo";
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
         InputStream inputStream = null;
         try {
-            CloseableHttpClient httpClient = HttpClients.createDefault();
             HttpGet httpGet = new HttpGet(url);
             RequestConfig requestConfig = RequestConfig.custom()
                     .setConnectionRequestTimeout(60000)
                     .setSocketTimeout(60000)
                     .setConnectTimeout(60000).build();
             httpGet.setConfig(requestConfig);
-            CloseableHttpResponse response = httpClient.execute(httpGet);
+			logger.info("get companyLogo doGet----url:["+url+"]");
+            response = httpClient.execute(httpGet);
+            if (null==response)return null;
             if (response.getStatusLine().getStatusCode() == 200) {
                 HttpEntity entity = response.getEntity();
                 inputStream = entity.getContent();
 //                EntityUtils.consume(entity);
             }
+//			String responseJson = EntityUtils.toString(response.getEntity(), "UTF-8");
+//			logger.info("get logo responseJson:"+responseJson);
         } catch (Exception e) {
             logger.error("ERROR from-Dao[getCompanyLogo]", e);
-        }
+        }/*finally {
+            try {
+                if (response != null) {
+                    response.close();
+                }
+                if (httpClient != null) {
+                    httpClient.close();
+                }
+            }catch (Exception e){
+
+            }
+        }*/
         return inputStream;
     }
 
@@ -175,17 +192,16 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 
             httpPost.setEntity(entity.build());
             httpPost.setConfig(requestConfig);
-            logger.info("update company logo doPost————————url:["+url+"]");
+            logger.info("update companyLogo doPost----url:["+url+"]");
             response = httpClient.execute(httpPost);
             if (response.getStatusLine().getStatusCode() == 200) {
                 b = true;
-                logger.info("Update success!");
             }
             String responseJson = EntityUtils.toString(response.getEntity(), "UTF-8");
             logger.info("update logo responseJson:"+responseJson);
         }catch (Exception e){
             logger.error("ERROR",e);
-        }finally {
+        }/*finally {
             try {
                 if (response != null) {
                     response.close();
@@ -196,9 +212,47 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
             }catch (Exception e){
 
             }
-        }
+        }*/
         return b;
     }
+
+	@Override
+	public boolean deleteCompanyLogo(String companyId) {
+		String url = config.getCustomerServiceUrl()+"/customer/"+companyId+"/logo";
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		CloseableHttpResponse response = null;
+		boolean b = false;
+		try {
+			HttpDelete httpDelete = new HttpDelete(url);
+			RequestConfig requestConfig = RequestConfig.custom()
+					.setConnectionRequestTimeout(60000)
+					.setSocketTimeout(60000)
+					.setConnectTimeout(60000).build();
+			httpDelete.setConfig(requestConfig);
+			logger.info("delete companyLogo doDelete----url:["+url+"]");
+			response = httpClient.execute(httpDelete);
+			if (response.getStatusLine().getStatusCode() == 200) {
+				b = true;
+			}
+			String responseJson = EntityUtils.toString(response.getEntity(), "UTF-8");
+			logger.info("delete logo responseJson:"+responseJson);
+
+		}catch (Exception e){
+			logger.error("ERROR",e);
+		}/*finally {
+			try {
+				if (response != null) {
+					response.close();
+				}
+				if (httpClient != null) {
+					httpClient.close();
+				}
+			}catch (Exception e){
+
+			}
+		}*/
+		return b;
+	}
 
 
 }

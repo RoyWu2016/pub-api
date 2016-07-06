@@ -61,4 +61,7 @@ public interface User {
 	ResponseEntity<String> getCompanyLogo(String userId, String companyId,HttpServletResponse httpResponse);
 
     ResponseEntity<String> updateCompanyLogo(String userId, String companyId,HttpServletRequest request);
+
+	ResponseEntity<String> deleteCompanyLogo(String userId, String companyId);
+
 }
