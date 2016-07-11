@@ -49,5 +49,5 @@
     <!--<bean id="versionBean" class="version.Version"/>-->
 
     <!-- 引入同文件夹下的redis属性配置文件 -->
-    <!--<import resource="redis-context.xml"/> -->
+    <import resource="redis-context.xml"/>
 </beans>

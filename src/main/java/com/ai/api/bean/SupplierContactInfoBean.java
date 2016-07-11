@@ -2,10 +2,12 @@ package com.ai.api.bean;
 
 import com.ai.api.bean.legacy.ContactBean;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2016/6/27 0027.
  */
-public class SupplierContactInfoBean {
+public class SupplierContactInfoBean implements Serializable {
 
     private ContactBean main;
     private ContactBean alternate;

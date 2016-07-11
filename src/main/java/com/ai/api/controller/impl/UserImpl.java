@@ -92,8 +92,8 @@ public class UserImpl implements User {
 	                                                        @RequestBody ContactInfoBean newContact)
 			throws IOException, AIException {
 		System.out.println("updating User contact " + userId);
-		if (userService.updateContact(newContact, userId)) {
-			UserBean cust = userService.getCustById(userId);
+		UserBean cust = userService.updateContact(newContact, userId);
+		if (cust!=null) {
 			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

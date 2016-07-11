@@ -1,9 +1,11 @@
 package com.ai.api.bean;
 
+import java.io.Serializable;
+
 /**
  *
  */
-public class UserBean {
+public class UserBean implements Serializable {
 
     private String id;
 

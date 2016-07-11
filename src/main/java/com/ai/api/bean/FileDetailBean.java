@@ -1,5 +1,7 @@
 package com.ai.api.bean;
 
+import java.io.Serializable;
+
 /***************************************************************************
  * <PRE>
  * Project Name    : api
@@ -17,7 +19,7 @@ package com.ai.api.bean;
  * <p>
  * </PRE>
  ***************************************************************************/
-public class FileDetailBean {
+public class FileDetailBean implements Serializable {
     private String id;
     private String docType;
     private String fileName;
