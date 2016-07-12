@@ -58,12 +58,12 @@ public class TokenJWTDaoImpl {
     private static final String ISSUER_NAME = "http://asiainspection.com";
     private static final Integer TOKEN_EXPIRATION_TIME = 120;
     private static final String TOKEN_SUBJECT = "AI API token";
-//    private static final String AES_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-token.aes";
-//    private static final String ECC_PRIV_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc";
-//    private static final String ECC_PUB_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc.pub";
-    private static final String AES_KEY_PATH = "D:/AllProjects/AI-Projects/server-token.aes";
-    private static final String ECC_PRIV_KEY_PATH = "D:/AllProjects/AI-Projects/server-sig.ecc";
-    private static final String ECC_PUB_KEY_PATH = "D:/AllProjects/AI-Projects/server-sig.ecc.pub";
+    private static final String AES_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-token.aes";
+    private static final String ECC_PRIV_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc";
+    private static final String ECC_PUB_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc.pub";
+//    private static final String AES_KEY_PATH = "D:/AllProjects/AI-Projects/server-token.aes";
+//    private static final String ECC_PRIV_KEY_PATH = "D:/AllProjects/AI-Projects/server-sig.ecc";
+//    private static final String ECC_PUB_KEY_PATH = "D:/AllProjects/AI-Projects/server-sig.ecc.pub";
 
     private final String seperator = "~~~";
     private ObjectMapper mapper = new ObjectMapper();
