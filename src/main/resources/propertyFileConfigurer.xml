@@ -28,6 +28,7 @@
         class="org.apache.commons.configuration.DatabaseConfiguration">
         <constructor-arg name="datasource" ref="dataSource" />
         <constructor-arg name="table" value="PARM_GLOBAL_APP_CONFIG_ALLEN" />
+        <!--<constructor-arg name="table" value="PARM_GLOBAL_APP_CONFIG_TOKEN" />-->
         <constructor-arg name="keyColumn" value="PROP_KEY" />
         <constructor-arg name="valueColumn" value="PROP_VALUE" />
     </bean>
