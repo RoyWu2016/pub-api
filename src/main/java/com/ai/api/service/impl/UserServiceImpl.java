@@ -38,6 +38,8 @@ import com.ai.commons.beans.user.GeneralUserBean;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -67,7 +69,7 @@ import javax.servlet.http.HttpServletResponse;
  * </PRE>
  ***************************************************************************/
 
-@Service("userService")
+@Service
 public class UserServiceImpl implements UserService {
     protected Logger logger = Logger.getLogger(UserServiceImpl.class);
 
@@ -88,6 +90,7 @@ public class UserServiceImpl implements UserService {
 	private CompanyDao companyDao;
 
 
+	@Cacheable("userBeanCache")
     @Override
     public UserBean getCustById(String userId) throws IOException, AIException {
 
@@ -318,10 +321,11 @@ public class UserServiceImpl implements UserService {
 	    return companyDao.updateCrmCompany(company);
     }
 
+	@CachePut(value = "userBeanCache", key = "#userId")
 	@Override
-    public boolean updateContact(ContactInfoBean newContact, String userID) throws IOException, AIException {
+    public UserBean updateContact(ContactInfoBean newContact, String userId) throws IOException, AIException {
 	    //get general user bean
-	    GeneralUserBean user = customerDao.getGeneralUser(userID);
+	    GeneralUserBean user = customerDao.getGeneralUser(userId);
 	    user.setFollowName(newContact.getMain().getSalutation());
 	    user.setFirstName(newContact.getMain().getGivenName());
 	    user.setLastName(newContact.getMain().getFamilyName());
@@ -330,7 +334,7 @@ public class UserServiceImpl implements UserService {
 	    user.setMobile(newContact.getMain().getMobileNumber());
 
 	    //get comp id
-	    GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userID);
+	    GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
 	    String compId = generalUserBean.getCompany().getCompanyId();
 
 	    //get contact bean
@@ -349,7 +353,10 @@ public class UserServiceImpl implements UserService {
 	    }
 
 	    //update general user and company contact
-	    return customerDao.updateGeneralUser(user) && companyDao.updateCompanyContact(compId, contact);
+	    //return customerDao.updateGeneralUser(user) && companyDao.updateCompanyContact(compId, contact);
+		if(customerDao.updateGeneralUser(user)&&companyDao.updateCompanyContact(compId, contact))
+			return this.getCustById(userId);
+		return null;
     }
 
 	@Override

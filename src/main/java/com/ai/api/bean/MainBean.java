@@ -1,9 +1,11 @@
 package com.ai.api.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by KK on 4/25/2016.
  */
-public class MainBean {
+public class MainBean implements Serializable {
     private String salutation;
 
     private String familyName;

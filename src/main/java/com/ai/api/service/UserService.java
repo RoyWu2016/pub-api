@@ -43,7 +43,7 @@ public interface UserService {
 
     boolean updateCompany(CompanyBean crmCompanyBean, String userId) throws IOException, AIException;
 
-    boolean updateContact(ContactInfoBean newContact, String userId) throws IOException, AIException;
+    UserBean updateContact(ContactInfoBean newContact, String userId) throws IOException, AIException;
 
 	boolean updateBookingPreference(BookingPreferenceBean newBookingPref, String user_id) throws IOException, AIException;
 

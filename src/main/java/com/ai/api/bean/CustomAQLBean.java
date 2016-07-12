@@ -1,9 +1,11 @@
 package com.ai.api.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by KK on 4/25/2016.
  */
-public class CustomAQLBean {
+public class CustomAQLBean implements Serializable {
 
     private String criticalDefects;
 

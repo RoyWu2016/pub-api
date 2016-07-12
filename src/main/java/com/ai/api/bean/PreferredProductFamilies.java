@@ -1,9 +1,11 @@
 package com.ai.api.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by KK on 5/12/2016..
  */
-public class PreferredProductFamilies {
+public class PreferredProductFamilies implements Serializable {
 
     private String productCategoryId;
 

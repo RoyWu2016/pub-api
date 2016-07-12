@@ -1,12 +1,13 @@
 package com.ai.api.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by KK on 5/10/2016.
  */
 
-public class QualityManual {
+public class QualityManual implements Serializable {
 
     private String docType;
 

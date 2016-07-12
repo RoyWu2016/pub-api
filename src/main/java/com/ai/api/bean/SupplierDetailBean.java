@@ -1,12 +1,13 @@
 package com.ai.api.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Administrator on 2016/6/27 0027.
  */
-public class SupplierDetailBean {
+public class SupplierDetailBean implements Serializable {
 
     private String id;
     private String entityName;
