@@ -264,8 +264,8 @@ public class UserImplTest {
 		String newPwd =env.getProperty("newPwd");
 
 		Map<String, String> pwdMap = new HashMap<String,String>();
-		pwdMap.put("current", currentPwd);
-		pwdMap.put("new",newPwd);
+		pwdMap.put("current", MD5.toMD5(currentPwd));
+		pwdMap.put("new",MD5.toMD5(newPwd));
 
 		String updateUserPasswordUrl = "/user/" + userID + "/profile/password";
 
@@ -282,8 +282,8 @@ public class UserImplTest {
 
 		//change password back
 		HashMap<String, String> secPwdMap = new HashMap<String,String>();
-		secPwdMap.put("current", newPwd);
-		secPwdMap.put("new",currentPwd);
+		secPwdMap.put("current", MD5.toMD5(newPwd));
+		secPwdMap.put("new", MD5.toMD5(currentPwd));
 
 		customerDao.updateGeneralUserPassword(userID,secPwdMap);
 	}
