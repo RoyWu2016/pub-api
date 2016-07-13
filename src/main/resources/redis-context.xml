@@ -14,6 +14,7 @@
           p:port="6379"
           p:password="aiitteam"
           p:usePool="true" />
+    
     <!-- Redis Template -->
     <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
           p:connectionFactory-ref="jedisConnFactory">
