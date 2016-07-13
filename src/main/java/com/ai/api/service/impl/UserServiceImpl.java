@@ -6,9 +6,12 @@
  ***************************************************************************/
 package com.ai.api.service.impl;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import com.ai.api.bean.*;
@@ -38,6 +41,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /***************************************************************************
  * <PRE>
@@ -447,6 +457,51 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ServiceCallResult updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException {
 		return customerDao.updateGeneralUserPassword(userId, pwdMap);
+	}
+
+	@Override
+	public boolean getCompanyLogo(String userId, String companyId,HttpServletResponse httpResponse) {
+        try {
+            InputStream inputStream = customerDao.getCompanyLogo(companyId);
+            ServletOutputStream output = httpResponse.getOutputStream();
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            byte[] buffer = new byte[10240];
+            if(null == inputStream)return false;
+            for (int length = 0; (length = inputStream.read(buffer)) > 0;) {
+                output.write(buffer, 0, length);
+            }
+            return true;
+        }catch (Exception e){
+            logger.error("ERROR! from service[getCompanyLogo]",e);
+        }
+		return false;
+	}
+
+    @Override
+    public boolean updateCompanyLogo(String userId, String companyId, HttpServletRequest request) {
+        try{
+            MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
+            Iterator<String> fileNames = multipartHttpServletRequest.getFileNames();
+            if (fileNames == null) {
+                logger.error("missing upload file!");
+            }
+			String fileName = fileNames.next();
+            MultipartFile file = multipartHttpServletRequest.getFile(fileName);
+            return customerDao.updateCompanyLogo(companyId,file);
+        }catch (Exception e){
+            logger.error("ERROR!",e);
+        }
+        return false;
+    }
+
+	@Override
+	public boolean deleteCompanyLogo(String userId, String companyId) {
+		try {
+			return customerDao.deleteCompanyLogo(companyId);
+		}catch (Exception e){
+			logger.error("ERROR!",e);
+		}
+		return false;
 	}
 
 }

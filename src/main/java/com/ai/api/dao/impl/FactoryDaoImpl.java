@@ -11,6 +11,7 @@ import com.ai.api.bean.legacy.FactorySearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.FactoryDao;
 import com.ai.api.exception.AIException;
+import com.ai.api.util.AIUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.StringUtils;
@@ -50,8 +51,14 @@ public class FactoryDaoImpl implements FactoryDao {
         ServiceCallResult result = new ServiceCallResult();
         try {
             result = HttpUtil.issueGetRequest(request);
-            return JsonUtil.mapToObject(result.getResponseString(), new TypeReference<List<FactorySearchBean>>() {});
-
+            List<FactorySearchBean> factorySearchBeanList = JsonUtil.mapToObject(result.getResponseString(), new TypeReference<List<FactorySearchBean>>() {});
+            for(FactorySearchBean bean: factorySearchBeanList){
+                String createDate = bean.getCreatedDate();
+                String updateDate = bean.getUpdateDate();
+                bean.setCreatedDate(AIUtil.convertDateFormat(createDate));
+                bean.setUpdateDate(AIUtil.convertDateFormat(updateDate));
+            }
+            return factorySearchBeanList;
         } catch (IOException e) {
             LOGGER.error(ExceptionUtils.getStackTrace(e));
             result.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

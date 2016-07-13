@@ -41,6 +41,7 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <bean id="tokenJWTDao" class="com.ai.api.dao.impl.TokenJWTDaoImpl"/>
     <bean id="paramDao" class="com.ai.api.dao.impl.ParameterDaoImpl"/>
     <bean id="companyDao" class="com.ai.api.dao.impl.CompanyDaoImpl"/>
     <bean id="ssoUserServiceDao" class="com.ai.api.dao.impl.SSOUserServiceDaoImpl" />

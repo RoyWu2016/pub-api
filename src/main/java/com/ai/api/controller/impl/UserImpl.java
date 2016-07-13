@@ -16,6 +16,8 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ServiceCallResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /***************************************************************************
  * <PRE>
@@ -47,6 +52,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserImpl implements User {
+	private static final Logger logger = LoggerFactory.getLogger(UserImpl.class);
 
 	@Autowired
 	UserService userService;  //Service which will do all data retrieval/manipulation work
@@ -149,6 +155,60 @@ public class UserImpl implements User {
 			return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
 		}
 
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.GET)
+	public ResponseEntity<String> getCompanyLogo(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId, HttpServletResponse httpResponse) {
+		logger.info("get companyLogo----userId["+userId+"]companyId["+companyId+"]");
+		boolean b = false;
+		try {
+			b = userService.getCompanyLogo(userId,companyId,httpResponse);
+		}catch (Exception e){
+			logger.error("",e);
+		}
+		if (b){
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.POST)
+    public ResponseEntity<String> updateCompanyLogo(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId, HttpServletRequest request) {
+		logger.info("update companyLogo----userId["+userId+"]companyId["+companyId+"]");
+		boolean b = false;
+        try {
+            b = userService.updateCompanyLogo(userId,companyId,request);
+        }catch (Exception e){
+            logger.error("",e);
+        }
+        if (b){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.DELETE)
+	public ResponseEntity<String> deleteCompanyLogo(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId) {
+		logger.info("delete companyLogo----userId["+userId+"]companyId["+companyId+"]");
+		boolean b = false;
+		try {
+			b = userService.deleteCompanyLogo(userId,companyId);
+		}catch (Exception e){
+			logger.error("",e);
+		}
+		if (b){
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 	}
 
 }

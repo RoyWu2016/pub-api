@@ -19,6 +19,8 @@ import com.ai.commons.beans.ServiceCallResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,6 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthenticationImpl implements Authentication {
+	private static final Logger logger = LoggerFactory.getLogger(AuthenticationImpl.class);
 
 	public static final Set<String> userTypes = Sets.newHashSet("client", "employee");
 
@@ -65,7 +68,9 @@ public class AuthenticationImpl implements Authentication {
 		String username = credentials.get("username");
 		String password = credentials.get("password");
 		String userType = credentials.get("userType");
-
+        logger.info("username:"+username);
+        logger.info("password:"+password);
+        logger.info("userType:"+userType);
 		ServiceCallResult result = new ServiceCallResult();
 		ObjectMapper mapper = new ObjectMapper();
 
@@ -85,6 +90,7 @@ public class AuthenticationImpl implements Authentication {
 
 		//check api access token
 		boolean validateResult = HttpUtil.validatePublicAPICallToken(request);
+        logger.info("need to validate token :"+validateResult);
 		if (!validateResult) {
 			result.setStatusCode(HttpServletResponse.SC_FORBIDDEN);
 			result.setResponseString("");
@@ -104,6 +110,7 @@ public class AuthenticationImpl implements Authentication {
 	                              HttpServletRequest request, HttpServletResponse response)
 			throws JsonProcessingException {
 
+		logger.info("refresh token ...........");
 		ObjectMapper mapper = new ObjectMapper();
 		ServiceCallResult result = ssoUserServiceDao.refreshAPIToken(data, request, response);
 		return mapper.writeValueAsString(result);
@@ -115,6 +122,7 @@ public class AuthenticationImpl implements Authentication {
 	public String removeAPIToken(HttpServletRequest request, HttpServletResponse response)
 			throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
+        logger.info("remove token ...........");
 		ServiceCallResult result = ssoUserServiceDao.removeAPIToken(request, response);
 		return mapper.writeValueAsString(result);
 	}

@@ -2,11 +2,11 @@ package com.ai.api.service;
 
 import com.ai.api.bean.FileDetailBean;
 import com.ai.api.exception.AIException;
-import org.apache.http.client.methods.CloseableHttpResponse;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.List;
 
 /***************************************************************************
  * <PRE>
@@ -30,4 +30,9 @@ public interface FileService {
     FileDetailBean getFileDetailInfo(String userId,String fileId) throws IOException, AIException;
 
     boolean downloadFile(String userId, String fileId,HttpServletResponse httpResponse) throws IOException, AIException;
+
+    List<FileDetailBean> uploadFile(String userId, String docType, String sourceId, HttpServletRequest request, HttpServletResponse response) throws IOException, AIException;
+
+    boolean deleteFile(String userId, String fileId)throws IOException, AIException;
+
 }

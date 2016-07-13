@@ -9,6 +9,11 @@ package com.ai.api.util;
 import com.ai.commons.beans.customer.ExtraBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /***************************************************************************
  *<PRE>
  *  Project Name    : api
@@ -41,5 +46,17 @@ public class AIUtil {
 			return "AI";
 		}
 
+	}
+
+	public static String convertDateFormat(String input){
+		try{
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Date inputDate = sdf.parse(input);
+			DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
+			return dateFormat.format(inputDate);
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

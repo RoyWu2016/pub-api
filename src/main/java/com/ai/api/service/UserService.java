@@ -14,6 +14,9 @@ import com.ai.api.bean.*;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ServiceCallResult;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /***************************************************************************
  * <PRE>
  * Project Name    : api
@@ -48,4 +51,9 @@ public interface UserService {
 
     ServiceCallResult updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException;
 
+    boolean getCompanyLogo(String userId,String companyId,HttpServletResponse httpResponse);
+
+    boolean updateCompanyLogo(String userId,String companyId,HttpServletRequest request);
+
+    boolean deleteCompanyLogo(String userId,String companyId);
 }
