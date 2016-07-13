@@ -38,13 +38,13 @@ public interface UserService {
 
     UserBean getCustById(String userId) throws IOException, AIException;
 
-    boolean updateCompany(CompanyBean crmCompanyBean, String userId) throws IOException, AIException;
+    UserBean updateCompany(CompanyBean crmCompanyBean, String userId) throws IOException, AIException;
 
     UserBean updateContact(ContactInfoBean newContact, String userId) throws IOException, AIException;
 
-	boolean updateBookingPreference(BookingPreferenceBean newBookingPref, String user_id) throws IOException, AIException;
+	UserBean updateBookingPreference(BookingPreferenceBean newBookingPref, String user_id) throws IOException, AIException;
 
-	boolean updateBookingPreferredProductFamily(List<String> newPreferred, String user_id);
+	UserBean updateBookingPreferredProductFamily(List<String> newPreferred, String user_id) throws IOException, AIException;
 
     ServiceCallResult updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException;
 

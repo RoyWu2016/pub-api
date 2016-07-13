@@ -290,10 +290,11 @@ public class UserServiceImpl implements UserService {
 		return user;
     }
 
+	@CachePut(value = "userBeanCache", key = "#userId")
 	@Override
-    public boolean updateCompany(CompanyBean newComp, String userID) throws IOException, AIException {
+    public UserBean updateCompany(CompanyBean newComp, String userId) throws IOException, AIException {
 	    //call customer service to get latest crmCompanyBean first
-	    GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userID);
+	    GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
 	    String compId = generalUserBean.getCompany().getCompanyId();
 
 	    CrmCompanyBean company = companyDao.getCrmCompany(compId);
@@ -308,7 +309,12 @@ public class UserServiceImpl implements UserService {
 		company.setWebsite(newComp.getWebsite());
 
 	    //update
-	    return companyDao.updateCrmCompany(company);
+		//return companyDao.updateCrmCompany(company);
+
+		if(companyDao.updateCrmCompany(company)){
+			return this.getCustById(userId);
+		}
+	    return null;
     }
 
 	@CachePut(value = "userBeanCache", key = "#userId")
@@ -349,13 +355,14 @@ public class UserServiceImpl implements UserService {
 		return null;
     }
 
+	@CachePut(value = "userBeanCache", key = "#userId")
 	@Override
-    public boolean updateBookingPreference(BookingPreferenceBean newBookingPref, String userId) throws IOException, AIException {
+    public UserBean updateBookingPreference(BookingPreferenceBean newBookingPref, String userId) throws IOException, AIException {
         System.out.println("-----orderBookingBean-----" + newBookingPref + "---" + userId);
 
 		//get comp id
 		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
-		if (generalUserBean == null) return false;
+		if (generalUserBean == null) return null;
 
 		String compId = generalUserBean.getCompany().getCompanyId();
 
@@ -389,11 +396,16 @@ public class UserServiceImpl implements UserService {
 		extra.setIsDetailedBookingForm(StringUtils.getYesNo(newBookingPref.getUseQuickFormByDefault()));
 
 		//update order booking and extra
-		return companyDao.updateCompanyExtra(compId, extra) && companyDao.updateCompanyOrderBooking(compId, booking);
+		//return companyDao.updateCompanyExtra(compId, extra) && companyDao.updateCompanyOrderBooking(compId, booking);
+		if(companyDao.updateCompanyExtra(compId, extra) && companyDao.updateCompanyOrderBooking(compId, booking)){
+			return this.getCustById(userId);
+		}
+		return null;
     }
 
+	@CachePut(value = "userBeanCache", key = "#userId")
 	@Override
-	public boolean updateBookingPreferredProductFamily(List<String> newPreferred, String userId) {
+	public UserBean updateBookingPreferredProductFamily(List<String> newPreferred, String userId) throws IOException, AIException {
 		//get comp id
 		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
 		String compId = generalUserBean.getCompany().getCompanyId();
@@ -425,7 +437,11 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		family.setRelevantCategoryInfo(infos);
-		return companyDao.updateCompanyProductFamily(compId, family);
+		//return companyDao.updateCompanyProductFamily(compId, family);
+		if(companyDao.updateCompanyProductFamily(compId, family)){
+			return this.getCustById(userId);
+		}
+		return null;
 	}
 
 	@Override

@@ -77,8 +77,8 @@ public class UserImpl implements User {
 	                                                        @RequestBody CompanyBean newComp)
 			throws IOException, AIException {
 		System.out.println("updating company for user: " + userId);
-		if (userService.updateCompany(newComp, userId)) {
-			UserBean cust = userService.getCustById(userId);
+		UserBean cust = userService.updateCompany(newComp, userId);
+		if (cust!=null) {
 			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -109,8 +109,8 @@ public class UserImpl implements User {
 			throws IOException, AIException {
 		System.out.println("Updating User booking preference: " + userId);
 
-		if (userService.updateBookingPreference(newBookingPref, userId)) {
-			UserBean cust = userService.getCustById(userId);
+		UserBean cust = userService.updateBookingPreference(newBookingPref, userId);
+		if (cust!=null) {
 			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -125,8 +125,8 @@ public class UserImpl implements User {
 			throws IOException, AIException {
 		System.out.println("Updating User preferred product family: " + userId);
 
-		if (userService.updateBookingPreferredProductFamily(newPreferred, userId)) {
-			UserBean cust = userService.getCustById(userId);
+		UserBean cust = userService.updateBookingPreferredProductFamily(newPreferred, userId);
+		if (cust != null) {
 			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
