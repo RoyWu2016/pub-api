@@ -42,4 +42,6 @@ public interface SSOUserServiceDao {
 	ServiceCallResult refreshAPIToken(Map<String, String> data, HttpServletRequest request, HttpServletResponse response);
 
 	ServiceCallResult removeAPIToken(HttpServletRequest request, HttpServletResponse response);
+
+	ServiceCallResult verifyAPIToken(HttpServletRequest request, HttpServletResponse response);
 }

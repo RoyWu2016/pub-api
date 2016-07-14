@@ -1,14 +1,7 @@
 package com.ai.api.dao.impl;
 
-import com.ai.api.config.ServiceConfig;
-import com.ai.commons.HttpUtil;
 import com.ai.commons.IDGenerator;
-import com.ai.commons.beans.user.GeneralUserBean;
 import com.ai.commons.beans.user.TokenSession;
-import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jose4j.jwe.ContentEncryptionAlgorithmIdentifiers;
 import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
@@ -20,15 +13,14 @@ import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jose4j.jwt.JwtClaims;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.security.Key;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +42,7 @@ import java.util.Map;
  * </PRE>
  ***************************************************************************/
 
-@Service
+@Component
 public class TokenJWTDaoImpl {
 
     private static final Logger logger = LoggerFactory.getLogger(TokenJWTDaoImpl.class);
@@ -58,170 +50,104 @@ public class TokenJWTDaoImpl {
     private static final String ISSUER_NAME = "http://asiainspection.com";
     private static final Integer TOKEN_EXPIRATION_TIME = 120;
     private static final String TOKEN_SUBJECT = "AI API token";
-    private static final String AES_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-token.aes";
-    private static final String ECC_PRIV_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc";
-    private static final String ECC_PUB_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc.pub";
-//    private static final String AES_KEY_PATH = "D:/AllProjects/AI-Projects/server-token.aes";
-//    private static final String ECC_PRIV_KEY_PATH = "D:/AllProjects/AI-Projects/server-sig.ecc";
-//    private static final String ECC_PUB_KEY_PATH = "D:/AllProjects/AI-Projects/server-sig.ecc.pub";
+//    private static final String AES_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-token.aes";
+//    private static final String ECC_PRIV_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc";
+//    private static final String ECC_PUB_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc.pub";
+    private static final String AES_KEY_PATH = "D:/AllProjects/AI-Projects/server-token.aes";
+    private static final String ECC_PRIV_KEY_PATH = "D:/AllProjects/AI-Projects/server-sig.ecc";
+    private static final String ECC_PUB_KEY_PATH = "D:/AllProjects/AI-Projects/server-sig.ecc.pub";
 
     private final String seperator = "~~~";
-    private ObjectMapper mapper = new ObjectMapper();
     private Map<String, Key> keys = new HashMap<String, Key>();
 
-    @Autowired
-    @Qualifier("serviceConfig")
-    private ServiceConfig config;
 
 
-    //token for client account(general user)
-    public String generatePublicAPIToken(final String login, final String userId, String sessionId) {
-        String jwt = null;
-        try {
-            logger.info("Start token generation...");
-            Map<String, String> obj = new HashMap<>();
-            TokenSession tokenSession = new TokenSession();
-            if (sessionId.isEmpty()) {
-                tokenSession.setId(IDGenerator.uuid());
-                obj.put("curl", "insert");
-            } else {
-                tokenSession.setId(sessionId);
-                obj.put("curl", "update");
-            }
-            tokenSession.setUserId(userId);
+	@CachePut(value = "publicAPIToken",key = "#sessionId")//create or update-----function will run every called
+	public TokenSession generateToken(final String login, final String userId, String sessionId){
+		TokenSession tokenSession = new TokenSession();
+		String jwt = null;
+		try {
+			if (sessionId.isEmpty()) {
+				tokenSession.setId(IDGenerator.uuid());
+			} else {
+				tokenSession.setId(sessionId);
+			}
+			tokenSession.setUserId(userId);
+			String[] temp = this.innerEncryption(login, userId, tokenSession).split(seperator);
+			String innerJwt = temp[0];
+			jwt = this.outerEncryption(innerJwt);
+			tokenSession.setToken(jwt);
+			tokenSession.setValidBefore(temp[1]);
+		}catch (Exception e){
+			logger.error("error generateToken",e);
+		}
+		return tokenSession;
+	}
 
-            String [] temp = this.innerEncryption(login, userId, tokenSession).split(seperator);
-            String innerJwt = temp[0];
-            jwt = this.outerEncryption(innerJwt);
-            tokenSession.setToken(jwt);
-            tokenSession.setValidBefore(temp[1]);
+	public String getTokenId(final String jwt){
+		Key key = this.retrieveKey(AES_KEY_PATH);
+		logger.info("get tokenId from jwt......");
+		JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder()
+				.setSkipAllValidators()
+				.setDecryptionKey(key)
+				.setDisableRequireSignature()
+				.setSkipSignatureVerification()
+				.build();
+		TokenSession session = new TokenSession();
+		JwtContext jwtContext = null;
+		try {
+			jwtContext = firstPassJwtConsumer.process(jwt);
+			JwtClaims tmpClaim = jwtContext.getJwtClaims();
+			String userId = (String) tmpClaim.getClaimValue("userId");
+			String sessionId = (String) tmpClaim.getClaimValue("sessId");
+			logger.info("getTokenByJWT userId:"+userId);
+			logger.info("getTokenByJWT sessionId:"+sessionId);
+			logger.info("getTokenByJWT jwt:"+jwt);
+			session.setId(sessionId);
+			session.setUserId(userId);
+		}catch (Exception e){
+			logger.error("",e);
+		}
+		return session.getId();
+	}
 
-//            obj.put("sessionId", sessionId);
-//            obj.put("jwt", jwt);
-            //store to database  -------------------------------------------
-            String tokenUrl = config.getSsoUserServiceUrl()+"/user/updateToken";
-            logger.info("ready post to url:"+tokenUrl);
-            String updateStr = HttpUtil.issuePostRequest(tokenUrl,obj,tokenSession).getResponseString();
-            logger.info("New token '" + jwt + "' generated for client login: " + login);
-            logger.info("Update response:"+updateStr);
-            HashMap<String, String> result = new HashMap<>();
-            result.put("userId", userId);
-            result.put("token", jwt);
-            result.put("validBefore", tokenSession.getValidBefore());
-            return mapper.writeValueAsString(result);
+	@Cacheable(value = "publicAPIToken",key = "#sessionId")//get data from redis and the function will not run
+	public TokenSession getTokenSessionFromRedis(String sessionId){
+		logger.error("this message is not supposed to be saw!  id:"+sessionId);
+		return null;
+	}
 
-        } catch (JoseException e) {
-            logger.error("Problem during client account token generation " +
-                    Arrays.asList(e.getStackTrace()));
-        } catch (JsonProcessingException e) {
-            logger.error("Problem during write user id/token into json " +
-                    Arrays.asList(e.getStackTrace()));
-        }catch (IOException e){
-            logger.error("error",e);
-        }
-        return "";
-    }
-    public String refreshPublicAPIToken(String jwt, final String login) {
-        TokenSession sess = getTokenSession(jwt, false);
-        if (sess == null) {
-            return "";
-        } else {
-            logger.info("Start refresh token.");
-            GeneralUserBean client = new GeneralUserBean();
-            client.setUserId(sess.getUserId());
-            return generatePublicAPIToken(login, sess.getUserId(), sess.getId());
-        }
-    }
+	@CacheEvict(value = "publicAPIToken",key = "#sessionId")
+	public String removePublicAPIToken(String sessionId) {
+		logger.info("remove tokenSession sessionId:" +sessionId);
+		return null;
+	}
 
-    public TokenSession getTokenSession(final String jwt, final boolean checkIfExpired) {
+    public boolean checkIfExpired(final String jwt) {
         Key key = this.retrieveKey(AES_KEY_PATH);
-        logger.info("Verify client account token validity...");
-
+        logger.info("check token expired......");
         JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder()
                 .setSkipAllValidators()
                 .setDecryptionKey(key)
                 .setDisableRequireSignature()
                 .setSkipSignatureVerification()
                 .build();
-
-        //The first JwtConsumer is basically just used to parse the JWT into a JwtContext object.
-        JwtContext jwtContext = null;
         try {
-            jwtContext = firstPassJwtConsumer.process(jwt);
-
-            logger.info("Token has he right decryption key...");
-
-            // From the JwtContext we can get the issuer, or whatever else we might need,
-            // to lookup or figure out the kind of validation policy to apply
-            JwtClaims tmpClaim = jwtContext.getJwtClaims();
-            String userId = (String) tmpClaim.getClaimValue("userId");
-            String sessId = (String) tmpClaim.getClaimValue("sessId");
-
-            TokenSession sess = new TokenSession();
-            sess.setId(sessId);
-            sess.setUserId(userId);
-            //get userById + verify username == audience then get user keys
-            String tokenUrl = config.getSsoUserServiceUrl()+"/user/getPublicAPIToken";
-            String tokenStr = HttpUtil.issuePostRequest(tokenUrl,null,sess).getResponseString();
-            TokenSession foundSess = JSON.parseObject(tokenStr,TokenSession.class);
-            if (foundSess == null) {
-                logger.error("Login or token doesn't match with database!");
-                return null;
-            }
-            //compare login and token with database
-            if (!jwt.equals(foundSess.getToken())) {
-                logger.error("Token doesn't match with database!");
-                return null;
+	        JwtContext jwtContext = firstPassJwtConsumer.process(jwt);
+            NumericDateValidator validator = new NumericDateValidator();
+            if (validator.validate(jwtContext) != null) {
+                logger.info("Token expired now.");
+                return false;
             } else {
-                if (checkIfExpired) {
-                    NumericDateValidator validator = new NumericDateValidator();
-                    if (validator.validate(jwtContext) != null) {
-                        logger.info("Token expired now.");
-                        return null;
-                    } else {
-                        //still valid, return session
-                        sess.setToken(jwt);
-                        return sess;
-                    }
-                } else {
-                    //no need to check if expired, just return session
-                    sess.setToken(jwt);
-                    return sess;
-                }
-            }
-        }catch (InvalidJwtException e) {
-            logger.error("Parsing client account token error: " + ExceptionUtils.getStackTrace(e));
-        } catch (MalformedClaimException e) {
-            logger.error("JWT claim is malformed" + ExceptionUtils.getStackTrace(e));
-        }catch (IOException e){
-            logger.error("error! IOException",e);
-        }
-        return null;
-    }
-
-    public String removePublicAPIToken(String jwt) {
-        TokenSession sess = getTokenSession(jwt, false);
-        String result = "";
-        try {
-
-            if (sess == null) {
-                return "";
-            } else {
-                logger.info("Removing token.");
-                String tokenUrl = config.getSsoUserServiceUrl() + "/user/removePublicAPIToken";
-                String tokenStr = HttpUtil.issuePostRequest(tokenUrl, null, sess).getResponseString();
-                int deleteRow = JSON.parseObject(tokenStr,Integer.TYPE);
-                if(deleteRow==1){
-                    result = "DELETED";
-                }else {
-                    result = "DELETE_FAILED";
-                }
+                return true;
             }
         }catch (Exception e){
-            logger.error("",e);
+            logger.error("error!",e);
         }
-        return result;
+        return false;
     }
+
+
 
 
     private String innerEncryption(final String login, final String userId, TokenSession sess) throws JoseException {

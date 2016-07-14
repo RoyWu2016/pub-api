@@ -90,14 +90,13 @@ public class AuthenticationImpl implements Authentication {
 
 		//check api access token
 		boolean validateResult = HttpUtil.validatePublicAPICallToken(request);
-        logger.info("need to validate token :"+validateResult);
+        logger.info("validate token pass :"+validateResult);
 		if (!validateResult) {
 			result.setStatusCode(HttpServletResponse.SC_FORBIDDEN);
 			result.setResponseString("");
 			result.setReasonPhase("AI API call token not present or invalid for login.");
 			return mapper.writeValueAsString(result);
 		}
-
 		result = ssoUserServiceDao.userLogin(username, password, userType, HttpUtil.getPublicAPICallToken(request));
 		return mapper.writeValueAsString(result);
 	}
@@ -124,6 +123,15 @@ public class AuthenticationImpl implements Authentication {
 		ObjectMapper mapper = new ObjectMapper();
         logger.info("remove token ...........");
 		ServiceCallResult result = ssoUserServiceDao.removeAPIToken(request, response);
+		return mapper.writeValueAsString(result);
+	}
+	@RequestMapping(method = RequestMethod.GET, value = "/verify-public-api-token")
+	@ResponseBody
+	public String verifyPublicAPIToken(HttpServletRequest request, HttpServletResponse response)
+		throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		logger.info("verify token ...........");
+		ServiceCallResult result = ssoUserServiceDao.verifyAPIToken(request, response);
 		return mapper.writeValueAsString(result);
 	}
 
