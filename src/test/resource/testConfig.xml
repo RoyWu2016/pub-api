@@ -6,8 +6,8 @@
 
     <bean id="serviceConfig" class="com.ai.api.config.ServiceConfig"
           p:baseURL="${user.service.url}"
-          p:customerServiceUrl="http://192.168.0.31:8093/customer-service"
-          p:paramServiceUrl="http://192.168.0.31:8090/param-service"
+          p:customerServiceUrl="http://202.66.128.138:8093/customer-service"
+          p:paramServiceUrl="http://202.66.128.138:8090/param-service"
           p:factoryServiceUrl="http://202.66.128.138:8090/factory-service"
           p:fileServiceUrl="http://202.66.128.138:8092/file-service"/>
 
