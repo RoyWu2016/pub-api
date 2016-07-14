@@ -125,7 +125,7 @@ public class AuthenticationImpl implements Authentication {
 		ServiceCallResult result = ssoUserServiceDao.removeAPIToken(request, response);
 		return mapper.writeValueAsString(result);
 	}
-	@RequestMapping(method = RequestMethod.GET, value = "/verify-public-api-token")
+	@RequestMapping(method = RequestMethod.GET, value = "/auth/verify-public-api-token")
 	@ResponseBody
 	public String verifyPublicAPIToken(HttpServletRequest request, HttpServletResponse response)
 		throws JsonProcessingException {
