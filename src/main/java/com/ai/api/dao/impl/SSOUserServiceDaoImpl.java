@@ -88,7 +88,8 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
                 GeneralUserBean client = JSON.parseObject(clientStr,GeneralUserBean.class);
                 if (client != null && client.getUserId() != null && pwdMd5.equals(client.getPassword())) {
                     //Generate the token based on the User
-                    String token = tokenJWTDao.generateToken(client.getLogin(),client.getUserId(), IDGenerator.uuid()).getToken();
+	                TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(),client.getUserId(), IDGenerator.uuid());
+                    String token = JSON.toJSONString(tokenSession);
                     if (token != null && !token.isEmpty()) {
                         result.setResponseString(token);
                         result.setStatusCode(HttpServletResponse.SC_OK);
@@ -110,7 +111,8 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
                 boolean checkPasswordUsername = (null!=user);
                 if (checkPasswordUsername){
                     //Generate the token based on the User
-                    String token = tokenJWTDao.generateToken(user.getLogin(),user.getUserId(),IDGenerator.uuid()).getToken();
+	                TokenSession tokenSession = tokenJWTDao.generateToken(user.getLogin(),user.getUserId(),IDGenerator.uuid());
+	                String token = JSON.toJSONString(tokenSession);
                     if (token != null) {
                         result.setResponseString(token);
                         result.setStatusCode(HttpServletResponse.SC_OK);
@@ -174,7 +176,8 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 
             if (jwt != null) {
 	            TokenSession oldToken = tokenJWTDao.getTokenSessionFromRedis(tokenJWTDao.getTokenId(jwt));
-                String resultJWT = tokenJWTDao.generateToken(username,oldToken.getUserId(),oldToken.getId()).getToken();
+	            TokenSession tokenSession = tokenJWTDao.generateToken(username,oldToken.getUserId(),oldToken.getId());
+                String resultJWT = JSON.toJSONString(tokenSession);
                 if (resultJWT.isEmpty()) {
                     //not valid
                     result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
