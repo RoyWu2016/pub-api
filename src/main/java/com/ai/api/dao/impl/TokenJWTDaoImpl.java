@@ -80,6 +80,7 @@ public class TokenJWTDaoImpl {
 			tokenSession.setValidBefore(temp[1]);
 		}catch (Exception e){
 			logger.error("error generateToken",e);
+			tokenSession = null;
 		}
 		return tokenSession;
 	}
@@ -139,6 +140,7 @@ public class TokenJWTDaoImpl {
                 logger.info("Token expired now.");
                 return false;
             } else {
+	            logger.info("token alive");
                 return true;
             }
         }catch (Exception e){

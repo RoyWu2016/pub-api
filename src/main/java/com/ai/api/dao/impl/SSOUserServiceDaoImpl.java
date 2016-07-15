@@ -82,15 +82,20 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
             }
             //Hash the password, then check if it's the same value in the DB
             if (userType.toLowerCase().equals("client")) {
-                String pwdMd5 = DigestUtils.shaHex(MD5.toMD5(password));
-                String clientStr = HttpUtil.issueGetRequest(clientUrl,obj).getResponseString();
+	            LOGGER.info("http Get URL: "+clientUrl);
+	            ServiceCallResult callResult = HttpUtil.issueGetRequest(clientUrl,obj);
+	            String clientStr = "{}";
+	            if (callResult.getStatusCode()==200){
+		            clientStr = callResult.getResponseString();
+	            }
                 LOGGER.info("getClientAccountByUserName responseStr "+clientStr);
                 GeneralUserBean client = JSON.parseObject(clientStr,GeneralUserBean.class);
+	            String pwdMd5 = DigestUtils.shaHex(MD5.toMD5(password));
                 if (client != null && client.getUserId() != null && pwdMd5.equals(client.getPassword())) {
                     //Generate the token based on the User
 	                TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(),client.getUserId(), IDGenerator.uuid());
-                    String token = JSON.toJSONString(tokenSession);
-                    if (token != null && !token.isEmpty()) {
+                    if (tokenSession != null) {
+	                    String token = JSON.toJSONString(tokenSession);
                         result.setResponseString(token);
                         result.setStatusCode(HttpServletResponse.SC_OK);
                         result.setReasonPhase("User credential verified and token generated.");
@@ -100,21 +105,25 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
                         result.setReasonPhase("Error occurred while generating token.");
                     }
                 } else {
-                    result.setResponseString("");
+                    result.setResponseString("The username and password doesn't match OR user not exist");
                     result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                    result.setReasonPhase("The username and password doesn't match.");
+                    result.setReasonPhase("The username and password doesn't match OR user not exist.");
                 }
             } else if (userType.toLowerCase().equals("employee")) {
-                String userStr = HttpUtil.issueGetRequest(userUrl,obj).getResponseString();
+	            LOGGER.info("http Get URL: "+userUrl);
+	            ServiceCallResult callResult = HttpUtil.issueGetRequest(userUrl,obj);
+                String userStr = "{}";
+	            if (callResult.getStatusCode()==200){
+		            userStr = callResult.getResponseString();
+	            }
                 LOGGER.info("getUserByUserName responseStr "+userStr);
                 UserForToken user = JSON.parseObject(userStr,UserForToken.class);
-                boolean checkPasswordUsername = (null!=user);
-                if (checkPasswordUsername){
+	            String pwdMd5 = MD5.toMD5(password);
+                if (null!=user && null!=user.getUserId() && pwdMd5.equals(user.getPassword())){
                     //Generate the token based on the User
 	                TokenSession tokenSession = tokenJWTDao.generateToken(user.getLogin(),user.getUserId(),IDGenerator.uuid());
-	                String token = JSON.toJSONString(tokenSession);
-                    if (token != null) {
-                        result.setResponseString(token);
+                    if (tokenSession != null) {
+                        result.setResponseString(JSON.toJSONString(tokenSession));
                         result.setStatusCode(HttpServletResponse.SC_OK);
                         result.setReasonPhase("User credential verified and token generated.");
                     } else {
@@ -123,9 +132,9 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
                         result.setReasonPhase("Error occurred while generating token.");
                     }
                 } else {
-                    result.setResponseString("");
+                    result.setResponseString("The username and password doesn't match OR user not exist");
                     result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                    result.setReasonPhase("The username and password doesn't match.");
+                    result.setReasonPhase("The username and password doesn't match OR user not exist.");
                 }
             }else {
                 LOGGER.fatal("wrong user type got: " + userType);
@@ -177,14 +186,14 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
             if (jwt != null) {
 	            TokenSession oldToken = tokenJWTDao.getTokenSessionFromRedis(tokenJWTDao.getTokenId(jwt));
 	            TokenSession tokenSession = tokenJWTDao.generateToken(username,oldToken.getUserId(),oldToken.getId());
-                String resultJWT = JSON.toJSONString(tokenSession);
-                if (resultJWT.isEmpty()) {
+                if (null==tokenSession) {
                     //not valid
                     result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
                     result.setReasonPhase("Bad token to refresh");
                     result.setResponseString("Bad token to refresh");
                 } else {
                     //valid
+	                String resultJWT = JSON.toJSONString(tokenSession);
                     result.setStatusCode(HttpServletResponse.SC_OK);
                     result.setReasonPhase("Token refreshed");
                     result.setResponseString(resultJWT);
@@ -258,7 +267,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 			String token = this.getToken(authorization, response);
 			if (token != null) {
 				TokenSession oldToken = tokenJWTDao.getTokenSessionFromRedis(tokenJWTDao.getTokenId(token));//.getTokenSession(token,true);
-				if (null==oldToken){
+				if (null==oldToken||!token.equals(oldToken.getToken())){
 					//not valid
 					result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
 					result.setReasonPhase("Bad token");
@@ -267,12 +276,11 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 				}
 
 				boolean stillActive= tokenJWTDao.checkIfExpired(token);
-				String resultToken = "";
 				if (stillActive) {
 					//valid
 					result.setStatusCode(HttpServletResponse.SC_OK);
 					result.setReasonPhase("Token verified");
-					result.setResponseString(resultToken);
+					result.setResponseString("Token verified");
 				} else  {
 					//expired, please renew with refresh key
 					result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);

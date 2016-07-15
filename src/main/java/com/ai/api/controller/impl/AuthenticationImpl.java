@@ -63,7 +63,7 @@ public class AuthenticationImpl implements Authentication {
 	public String userLogin( @RequestBody HashMap<String, String> credentials,
 							 HttpServletRequest request, HttpServletResponse response)
 			throws JsonProcessingException {
-
+		logger.info("user login ......");
 		//user can be client or employee
 		String username = credentials.get("username");
 		String password = credentials.get("password");
@@ -98,6 +98,7 @@ public class AuthenticationImpl implements Authentication {
 			return mapper.writeValueAsString(result);
 		}
 		result = ssoUserServiceDao.userLogin(username, password, userType, HttpUtil.getPublicAPICallToken(request));
+		logger.info("user login result: "+result.getResponseString());
 		return mapper.writeValueAsString(result);
 	}
 
@@ -112,6 +113,7 @@ public class AuthenticationImpl implements Authentication {
 		logger.info("refresh token ...........");
 		ObjectMapper mapper = new ObjectMapper();
 		ServiceCallResult result = ssoUserServiceDao.refreshAPIToken(data, request, response);
+		logger.info("refresh token result: "+result.getResponseString());
 		return mapper.writeValueAsString(result);
 	}
 
@@ -123,6 +125,7 @@ public class AuthenticationImpl implements Authentication {
 		ObjectMapper mapper = new ObjectMapper();
         logger.info("remove token ...........");
 		ServiceCallResult result = ssoUserServiceDao.removeAPIToken(request, response);
+		logger.info("remove token result: "+result.getResponseString());
 		return mapper.writeValueAsString(result);
 	}
 	@RequestMapping(method = RequestMethod.GET, value = "/auth/verify-public-api-token")
@@ -132,6 +135,7 @@ public class AuthenticationImpl implements Authentication {
 		ObjectMapper mapper = new ObjectMapper();
 		logger.info("verify token ...........");
 		ServiceCallResult result = ssoUserServiceDao.verifyAPIToken(request, response);
+		logger.info("verify token result: "+result.getResponseString());
 		return mapper.writeValueAsString(result);
 	}
 
