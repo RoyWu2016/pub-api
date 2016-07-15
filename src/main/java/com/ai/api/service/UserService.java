@@ -13,6 +13,7 @@ import java.util.List;
 import com.ai.api.bean.*;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,4 +57,6 @@ public interface UserService {
     boolean updateCompanyLogo(String userId,String companyId,HttpServletRequest request);
 
     boolean deleteCompanyLogo(String userId,String companyId);
+
+    boolean createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
 }

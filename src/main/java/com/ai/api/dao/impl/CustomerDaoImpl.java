@@ -15,11 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.CustomerDao;
 import com.ai.commons.HttpUtil;
+import com.ai.commons.JsonStringUtils;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
+import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.user.GeneralUserBean;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -252,6 +255,24 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			}
 		}*/
 		return b;
+	}
+
+	@Override
+	public boolean createNewAccount(ClientInfoBean clientInfoBean) {
+		String url = config.getCustomerServiceUrl() + "/customer-legacy/create-new-client-account?clientType=AFI";
+		try {
+			//String jsonStr = JsonUtil.mapToJson(clientInfoBean);
+			//url = url + "?clientInfo="+jsonStr;
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, clientInfoBean);
+			//ServiceCallResult result = HttpUtil.issuePostRequest(url, null, jsonStr);
+			if (result.getStatusCode() == HttpStatus.OK.value() &&
+					result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return true;
+			}
+		} catch (IOException e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return false;
 	}
 
 

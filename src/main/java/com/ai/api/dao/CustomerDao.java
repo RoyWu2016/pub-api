@@ -6,6 +6,7 @@ import java.util.HashMap;
 import com.ai.api.bean.SupplierDetailBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
+import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,5 +27,7 @@ public interface CustomerDao {
 	boolean updateCompanyLogo(String companyId, MultipartFile file);
 
 	boolean deleteCompanyLogo(String companyId);
+
+	boolean createNewAccount(ClientInfoBean clientInfoBean);
 
 }
