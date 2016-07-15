@@ -19,14 +19,17 @@ import com.ai.api.dao.SSOUserServiceDao;
 import com.ai.api.config.ServiceConfig;
 import com.ai.commons.Consts;
 import com.ai.commons.HttpUtil;
+import com.ai.commons.IDGenerator;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.user.GeneralUserBean;
+import com.ai.commons.beans.user.TokenSession;
 import com.ai.userservice.common.util.MD5;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
+import org.jose4j.jwt.JwtClaims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -60,15 +63,13 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 	private ServiceConfig config;
 
     @Autowired
-    @Qualifier("tokenJWTDao")
+//    @Qualifier("tokenJWTDao")
     private TokenJWTDaoImpl tokenJWTDao;
 
 	@Override
 	public ServiceCallResult userLogin(final String username, final String password,
 	                                   final String userType, final String accessToken){
-
-//		String ssoUserServiceUrl = config.getSsoUserServiceUrl() + "/auth/public-api-token";
-		String clientUrl = config.getSsoUserServiceUrl()+"/user/client/"+username;
+		String clientUrl = config.getSsoUserServiceUrl()+"/user/"+username+"/client";
         String userUrl = config.getSsoUserServiceUrl()+"/user/"+username+"/user";
 		Map<String, String> obj = new HashMap<>();
 		obj.put("username", username);
@@ -76,22 +77,26 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 		obj.put("userType", userType);
 		obj.put(Consts.Http.PUBLIC_API_ACCESS_TOKEN_HEADER, accessToken);
 		try {
-//			ServiceCallResult result = HttpUtil.issuePostRequest(ssoUserServiceUrl, null, obj);
-//			return mapper.readValue(result.getResponseString(), ServiceCallResult.class);
             ServiceCallResult result = this.checkAccessHeader(accessToken);
             if (result.getStatusCode() != HttpServletResponse.SC_OK) {
 			    return result;
             }
             //Hash the password, then check if it's the same value in the DB
             if (userType.toLowerCase().equals("client")) {
-                String pwdMd5 = DigestUtils.shaHex(MD5.toMD5(password));
-                String clientStr = HttpUtil.issueGetRequest(clientUrl,obj).getResponseString();
+	            LOGGER.info("http Get URL: "+clientUrl);
+	            ServiceCallResult callResult = HttpUtil.issueGetRequest(clientUrl,obj);
+	            String clientStr = "{}";
+	            if (callResult.getStatusCode()==200){
+		            clientStr = callResult.getResponseString();
+	            }
                 LOGGER.info("getClientAccountByUserName responseStr "+clientStr);
                 GeneralUserBean client = JSON.parseObject(clientStr,GeneralUserBean.class);
+	            String pwdMd5 = DigestUtils.shaHex(MD5.toMD5(password));
                 if (client != null && client.getUserId() != null && pwdMd5.equals(client.getPassword())) {
                     //Generate the token based on the User
-                    String token = tokenJWTDao.generatePublicAPIToken(client.getLogin(),client.getUserId(),"");
-                    if (token != null && !token.isEmpty()) {
+	                TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(),client.getUserId(), IDGenerator.uuid());
+                    if (tokenSession != null) {
+	                    String token = JSON.toJSONString(tokenSession);
                         result.setResponseString(token);
                         result.setStatusCode(HttpServletResponse.SC_OK);
                         result.setReasonPhase("User credential verified and token generated.");
@@ -101,21 +106,25 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
                         result.setReasonPhase("Error occurred while generating token.");
                     }
                 } else {
-                    result.setResponseString("");
+                    result.setResponseString("The username and password doesn't match OR user not exist");
                     result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                    result.setReasonPhase("The username and password doesn't match.");
+                    result.setReasonPhase("The username and password doesn't match OR user not exist.");
                 }
             } else if (userType.toLowerCase().equals("employee")) {
-//                String pwdMd5 = TokenUtil.genMD5(password);
-                String userStr = HttpUtil.issueGetRequest(userUrl,obj).getResponseString();
+	            LOGGER.info("http Get URL: "+userUrl);
+	            ServiceCallResult callResult = HttpUtil.issueGetRequest(userUrl,obj);
+                String userStr = "{}";
+	            if (callResult.getStatusCode()==200){
+		            userStr = callResult.getResponseString();
+	            }
                 LOGGER.info("getUserByUserName responseStr "+userStr);
                 UserForToken user = JSON.parseObject(userStr,UserForToken.class);
-                boolean checkPasswordUsername = (null!=user);
-                if (checkPasswordUsername){
+	            String pwdMd5 = MD5.toMD5(password);
+                if (null!=user && null!=user.getUserId() && pwdMd5.equals(user.getPassword())){
                     //Generate the token based on the User
-                    String token = tokenJWTDao.generatePublicAPIToken(user.getLogin(),user.getUserId(),"");
-                    if (token != null) {
-                        result.setResponseString(token);
+	                TokenSession tokenSession = tokenJWTDao.generateToken(user.getLogin(),user.getUserId(),IDGenerator.uuid());
+                    if (tokenSession != null) {
+                        result.setResponseString(JSON.toJSONString(tokenSession));
                         result.setStatusCode(HttpServletResponse.SC_OK);
                         result.setReasonPhase("User credential verified and token generated.");
                     } else {
@@ -124,9 +133,9 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
                         result.setReasonPhase("Error occurred while generating token.");
                     }
                 } else {
-                    result.setResponseString("");
+                    result.setResponseString("The username and password doesn't match OR user not exist");
                     result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                    result.setReasonPhase("The username and password doesn't match.");
+                    result.setReasonPhase("The username and password doesn't match OR user not exist.");
                 }
             }else {
                 LOGGER.fatal("wrong user type got: " + userType);
@@ -134,8 +143,6 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
                 result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
                 result.setReasonPhase("wrong user type!");
             }
-            String responseStr = result.getResponseString();
-//            return mapper.readValue(responseStr, ServiceCallResult.class);
             return result;
 
 		} catch (IOException e) {
@@ -148,7 +155,6 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 	@Override
 	public ServiceCallResult refreshAPIToken(Map<String, String> data, HttpServletRequest request,
 	                                         HttpServletResponse response) {
-//		String ssoUserServiceUrl = config.getSsoUserServiceUrl() + "/auth/refresh-public-api-token";
 		Map<String, String> headers = new HashMap<>();
         String accessToken = request.getHeader("ai-api-access-token");
         String authorization = request.getHeader("authorization");
@@ -161,35 +167,43 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
             if (result.getStatusCode() != HttpServletResponse.SC_OK) {
                 return result;
             }
-            String username = data.get("username");
-            if (username == null || username.isEmpty()) {
-                result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                result.setReasonPhase("User name is empty.");
-                result.setResponseString("Please send username filed in the reqeust.");
-                return result;
-            }
+//            String username = data.get("username");
+//            if (username == null || username.isEmpty()) {
+//                result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+//                result.setReasonPhase("User name is empty.");
+//                result.setResponseString("Please send username filed in the reqeust.");
+//                return result;
+//            }else{
+//	            //verify user ....
+//            }
+			if (!HttpUtil.validateRefreshTokenKey(request)) {
 
-            if (!HttpUtil.validateRefreshTokenKey(request)) {
-                result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                result.setReasonPhase("Refresh key invalid.");
-                result.setResponseString("Please check your token refresh key.");
-                return result;
-            }
+				result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+				result.setReasonPhase("Refresh key invalid.");
+				result.setResponseString("Please check your token refresh key.");
+				return result;
+			}
 
-            String token = this.getToken(authorization, response);
+            String jwt = this.getToken(authorization, response);
 
-            if (token != null) {
-                String resultToken = tokenJWTDao.refreshPublicAPIToken(token,username);
-                if (resultToken.isEmpty()) {
+            if (jwt != null) {
+	            JwtClaims claims = tokenJWTDao.getClaimsByJWT(jwt);
+	            TokenSession oldToken = tokenJWTDao.getTokenSessionFromRedis((String)claims.getClaimValue("sessId"));
+	            TokenSession tokenSession = null;
+	            if (null!=oldToken){
+		            tokenSession = tokenJWTDao.generateToken("refresh",oldToken.getUserId(),oldToken.getId());
+	            }
+                if (null==tokenSession) {
                     //not valid
                     result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
                     result.setReasonPhase("Bad token to refresh");
                     result.setResponseString("Bad token to refresh");
                 } else {
                     //valid
+	                String resultJWT = JSON.toJSONString(tokenSession);
                     result.setStatusCode(HttpServletResponse.SC_OK);
                     result.setReasonPhase("Token refreshed");
-                    result.setResponseString(resultToken);
+                    result.setResponseString(resultJWT);
                 }
             } else {
                 result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
@@ -197,9 +211,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
                 result.setResponseString("");
             }
             return result;
-//			ServiceCallResult result = HttpUtil.issuePostRequest(ssoUserServiceUrl, headers, data);
-//			return mapper.readValue(result.getResponseString(), ServiceCallResult.class);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
@@ -207,56 +219,90 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 
 	@Override
 	public ServiceCallResult removeAPIToken(HttpServletRequest request, HttpServletResponse response) {
-//		String ssoUserServiceUrl = config.getSsoUserServiceUrl() + "/auth/remove-public-api-token";
 		Map<String, String> headers = new HashMap<>();
-        String authorization = request.getHeader("authorization");
-        String apiAccessToken = request.getHeader("ai-api-access-token");
+		String authorization = request.getHeader("authorization");
+		String apiAccessToken = request.getHeader("ai-api-access-token");
 		headers.put("authorization", authorization);
 		headers.put("ai-api-access-token", apiAccessToken);
 		headers.put("ai-api-refresh-key", request.getHeader("ai-api-refresh-key"));
 		try {
-            //check api access token in header
-            ServiceCallResult result = checkAccessHeader(apiAccessToken);
-            if (result.getStatusCode() != HttpServletResponse.SC_OK) {
-                return result;
-            }
+			//check api access token in header
+			ServiceCallResult result = checkAccessHeader(apiAccessToken);
+			if (result.getStatusCode() != HttpServletResponse.SC_OK) {
+				return result;
+			}
 
-            if (!HttpUtil.validateRefreshTokenKey(request)) {
-                result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                result.setReasonPhase("Refresh key invalid.");
-                result.setResponseString("Please check your token refresh key.");
-                return result;
-            }
-            String token = this.getToken(authorization, response);
+			if (!HttpUtil.validateRefreshTokenKey(request)) {
+				result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+				result.setReasonPhase("Refresh key invalid.");
+				result.setResponseString("Please check your token refresh key.");
+				return result;
+			}
+			String token = this.getToken(authorization, response);
 
-            if (token != null) {
-                String resultToken = tokenJWTDao.removePublicAPIToken(token);//this.tokenJWTMgr.removePublicAPIToken(token);
-                if (resultToken.isEmpty()) {
-                    result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                    result.setReasonPhase("Can't find session so remove token failed.");
-                    result.setResponseString("Can't find session so remove token failed.");
-                } else if (resultToken.equals("DELETE_FAILED")) {
-                    result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                    result.setReasonPhase("Deleting failed.");
-                    result.setResponseString("Deleting failed.");
-                } else if (resultToken.equals("DELETED")) {
-                    result.setStatusCode(HttpServletResponse.SC_OK);
-                    result.setReasonPhase("Token removed.");
-                    result.setResponseString(resultToken);
-                } else {
-                    result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                    result.setReasonPhase("Other error.");
-                    result.setResponseString("Other error.");
-                }
-            } else {
-                result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                result.setReasonPhase("Bad token.");
-                result.setResponseString("Bad token.");
-            }
-            return result;
-//			ServiceCallResult result = HttpUtil.issuePostRequest(ssoUserServiceUrl, headers, "");
-//			return mapper.readValue(result.getResponseString(), ServiceCallResult.class);
+			if (token != null) {
+				JwtClaims claims = tokenJWTDao.getClaimsByJWT(token);
+				tokenJWTDao.removePublicAPIToken((String)claims.getClaimValue("sessId"));
+					result.setStatusCode(HttpServletResponse.SC_OK);
+					result.setReasonPhase("Token removed.");
+					result.setResponseString("Token removed");
+			} else {
+				result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+				result.setReasonPhase("Bad token.");
+				result.setResponseString("Bad token.");
+			}
+			return result;
 		} catch (IOException e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
+
+	@Override
+	public ServiceCallResult verifyAPIToken(HttpServletRequest request, HttpServletResponse response) {
+		Map<String, String> headers = new HashMap<>();
+		String authorization = request.getHeader("authorization");
+		String apiAccessToken = request.getHeader("ai-api-access-token");
+		headers.put("authorization", authorization);
+		headers.put("ai-api-access-token", apiAccessToken);
+		headers.put("ai-api-refresh-key", request.getHeader("ai-api-refresh-key"));
+		try {
+			//check api access token in header
+			ServiceCallResult result = checkAccessHeader(apiAccessToken);
+			if (result.getStatusCode() != HttpServletResponse.SC_OK) {
+				return result;
+			}
+			String token = this.getToken(authorization, response);
+			if (token != null) {
+				JwtClaims claims = tokenJWTDao.getClaimsByJWT(token);
+				TokenSession oldToken = tokenJWTDao.getTokenSessionFromRedis((String)claims.getClaimValue("sessId"));//.getTokenSession(token,true);
+				if (null==oldToken||!token.equals(oldToken.getToken())){
+					//not valid
+					result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+					result.setReasonPhase("Bad token");
+					result.setResponseString("Bad token");
+					return result;
+				}
+
+				boolean stillActive= tokenJWTDao.checkIfExpired(token);
+				if (stillActive) {
+					//valid
+					result.setStatusCode(HttpServletResponse.SC_OK);
+					result.setReasonPhase("Token verified");
+					result.setResponseString("Token verified");
+				} else  {
+					//expired, please renew with refresh key
+					result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+					result.setReasonPhase("Expired token");
+					result.setResponseString("Please renew your token using refresh key.");
+				}
+			} else {
+				result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+				result.setReasonPhase("No token found");
+				result.setResponseString("");
+			}
+			return result;
+		} catch (Exception e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
