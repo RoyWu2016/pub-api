@@ -16,6 +16,7 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -207,6 +208,17 @@ public class UserImpl implements User {
 		if (b){
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	@RequestMapping(value = "/user", method = RequestMethod.PUT)
+	public ResponseEntity<Boolean> createNewAccount(@RequestBody ClientInfoBean clientInfoBean) throws IOException, AIException {
+		System.out.println("creating a new account");
+		if (userService.createNewAccount(clientInfoBean)) {
+			return new ResponseEntity<>(true, HttpStatus.OK);
+		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}

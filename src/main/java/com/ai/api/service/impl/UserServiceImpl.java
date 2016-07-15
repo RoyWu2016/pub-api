@@ -34,6 +34,7 @@ import com.ai.commons.beans.customer.OverviewBean;
 import com.ai.commons.beans.customer.ProductFamilyBean;
 import com.ai.commons.beans.customer.QualityManualBean;
 import com.ai.commons.beans.customer.RelevantCategoryInfoBean;
+import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -502,6 +503,11 @@ public class UserServiceImpl implements UserService {
 			logger.error("ERROR!",e);
 		}
 		return false;
+	}
+
+	@Override
+	public boolean createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException {
+		return customerDao.createNewAccount(clientInfoBean);
 	}
 
 }

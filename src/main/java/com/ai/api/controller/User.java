@@ -13,6 +13,7 @@ import java.util.List;
 import com.ai.api.bean.*;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,22 +47,24 @@ public interface User {
 
 	ResponseEntity<UserBean> updateUserProfileCompany(String userId, CompanyBean newComp) throws IOException, AIException;
 
-	ResponseEntity<UserBean> updateUserProfileContact(String USER_ID,
+	ResponseEntity<UserBean> updateUserProfileContact(String userId,
 	                                                 ContactInfoBean newContact) throws IOException, AIException;
 
-	ResponseEntity<UserBean> updateUserBookingPreference(String USER_ID,
+	ResponseEntity<UserBean> updateUserBookingPreference(String userId,
 	                                                    BookingPreferenceBean newBookingPref) throws IOException, AIException;
 
-	ResponseEntity<UserBean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String USER_ID,
+	ResponseEntity<UserBean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String userId,
 	                                                                @RequestBody List<String> newPreferred)
 			throws IOException, AIException;
 
-	ResponseEntity<ServiceCallResult> updateUserPassword(String USER_ID, HashMap<String, String> pwdMap) throws IOException, AIException;
+	ResponseEntity<ServiceCallResult> updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException;
 
 	ResponseEntity<String> getCompanyLogo(String userId, String companyId,HttpServletResponse httpResponse);
 
     ResponseEntity<String> updateCompanyLogo(String userId, String companyId,HttpServletRequest request);
 
 	ResponseEntity<String> deleteCompanyLogo(String userId, String companyId);
+
+	ResponseEntity<Boolean> createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
 
 }
