@@ -85,7 +85,7 @@ public class TokenJWTDaoImpl {
 		return tokenSession;
 	}
 
-	public String getTokenId(final String jwt){
+	public JwtClaims getClaimsByJWT(final String jwt){
 		Key key = this.retrieveKey(AES_KEY_PATH);
 		logger.info("get tokenId from jwt......");
 		JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder()
@@ -95,10 +95,11 @@ public class TokenJWTDaoImpl {
 				.setSkipSignatureVerification()
 				.build();
 		TokenSession session = new TokenSession();
-		JwtContext jwtContext = null;
+//		JwtContext jwtContext = null;
+		JwtClaims tmpClaim = null;
 		try {
-			jwtContext = firstPassJwtConsumer.process(jwt);
-			JwtClaims tmpClaim = jwtContext.getJwtClaims();
+			JwtContext jwtContext = firstPassJwtConsumer.process(jwt);
+			tmpClaim = jwtContext.getJwtClaims();
 			String userId = (String) tmpClaim.getClaimValue("userId");
 			String sessionId = (String) tmpClaim.getClaimValue("sessId");
 			logger.info("getTokenByJWT userId:"+userId);
@@ -109,7 +110,7 @@ public class TokenJWTDaoImpl {
 		}catch (Exception e){
 			logger.error("",e);
 		}
-		return session.getId();
+		return tmpClaim;
 	}
 
 	@Cacheable(value = "publicAPIToken",key = "#sessionId")//get data from redis and the function will not run

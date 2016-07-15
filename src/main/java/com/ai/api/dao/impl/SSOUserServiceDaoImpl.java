@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
+import org.jose4j.jwt.JwtClaims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -68,7 +69,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 	@Override
 	public ServiceCallResult userLogin(final String username, final String password,
 	                                   final String userType, final String accessToken){
-		String clientUrl = config.getSsoUserServiceUrl()+"/user/client/"+username;
+		String clientUrl = config.getSsoUserServiceUrl()+"/user/"+username+"/client";
         String userUrl = config.getSsoUserServiceUrl()+"/user/"+username+"/user";
 		Map<String, String> obj = new HashMap<>();
 		obj.put("username", username);
@@ -166,13 +167,15 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
             if (result.getStatusCode() != HttpServletResponse.SC_OK) {
                 return result;
             }
-            String username = data.get("username");
-            if (username == null || username.isEmpty()) {
-                result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                result.setReasonPhase("User name is empty.");
-                result.setResponseString("Please send username filed in the reqeust.");
-                return result;
-            }
+//            String username = data.get("username");
+//            if (username == null || username.isEmpty()) {
+//                result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+//                result.setReasonPhase("User name is empty.");
+//                result.setResponseString("Please send username filed in the reqeust.");
+//                return result;
+//            }else{
+//	            //verify user ....
+//            }
 			if (!HttpUtil.validateRefreshTokenKey(request)) {
 
 				result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
@@ -184,8 +187,12 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
             String jwt = this.getToken(authorization, response);
 
             if (jwt != null) {
-	            TokenSession oldToken = tokenJWTDao.getTokenSessionFromRedis(tokenJWTDao.getTokenId(jwt));
-	            TokenSession tokenSession = tokenJWTDao.generateToken(username,oldToken.getUserId(),oldToken.getId());
+	            JwtClaims claims = tokenJWTDao.getClaimsByJWT(jwt);
+	            TokenSession oldToken = tokenJWTDao.getTokenSessionFromRedis((String)claims.getClaimValue("sessId"));
+	            TokenSession tokenSession = null;
+	            if (null!=oldToken){
+		            tokenSession = tokenJWTDao.generateToken("refresh",oldToken.getUserId(),oldToken.getId());
+	            }
                 if (null==tokenSession) {
                     //not valid
                     result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
@@ -204,7 +211,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
                 result.setResponseString("");
             }
             return result;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
@@ -234,7 +241,8 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 			String token = this.getToken(authorization, response);
 
 			if (token != null) {
-				tokenJWTDao.removePublicAPIToken(tokenJWTDao.getTokenId(token));
+				JwtClaims claims = tokenJWTDao.getClaimsByJWT(token);
+				tokenJWTDao.removePublicAPIToken((String)claims.getClaimValue("sessId"));
 					result.setStatusCode(HttpServletResponse.SC_OK);
 					result.setReasonPhase("Token removed.");
 					result.setResponseString("Token removed");
@@ -266,7 +274,8 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 			}
 			String token = this.getToken(authorization, response);
 			if (token != null) {
-				TokenSession oldToken = tokenJWTDao.getTokenSessionFromRedis(tokenJWTDao.getTokenId(token));//.getTokenSession(token,true);
+				JwtClaims claims = tokenJWTDao.getClaimsByJWT(token);
+				TokenSession oldToken = tokenJWTDao.getTokenSessionFromRedis((String)claims.getClaimValue("sessId"));//.getTokenSession(token,true);
 				if (null==oldToken||!token.equals(oldToken.getToken())){
 					//not valid
 					result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
