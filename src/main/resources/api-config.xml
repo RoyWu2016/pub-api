@@ -30,11 +30,13 @@
     <bean id="serviceConfig" class="com.ai.api.config.ServiceConfig"
           p:baseURL="${user.service.url}" p:customerServiceUrl="${customer.service.url}"
           p:paramServiceUrl="${parameter.service.url}" p:ssoUserServiceUrl="${user.service.url}"
-            p:factoryServiceUrl="${factory.service.url}" p:fileServiceUrl="${file.service.url}"/>
+          p:factoryServiceUrl="${factory.service.url}" p:fileServiceUrl="${file.service.url}"
+          p:mwServiceUrl="${middleware.booking-1.service.url}" />
 
     <bean id="app" class="com.ai.api.App"/>
     <bean id="userService" class="com.ai.api.service.impl.UserServiceImpl" />
     <bean id="parameterService" class="com.ai.api.service.impl.ParameterServiceImpl" />
+    <bean id="orderService" class="com.ai.api.service.impl.OrderServiceImpl" />
 
 
     <bean id="customerDao" class="com.ai.api.dao.impl.CustomerDaoImpl">
@@ -46,6 +48,7 @@
     <bean id="companyDao" class="com.ai.api.dao.impl.CompanyDaoImpl"/>
     <bean id="ssoUserServiceDao" class="com.ai.api.dao.impl.SSOUserServiceDaoImpl" />
     <bean id="factoryDao" class="com.ai.api.dao.impl.FactoryDaoImpl"/>
+    <bean id="orderDao" class="com.ai.api.dao.impl.OrderDaoImpl"/>
 
     <!-- Version bean for application information -->
     <!--<bean id="versionBean" class="version.Version"/>-->

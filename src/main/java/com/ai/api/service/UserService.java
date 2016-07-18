@@ -10,13 +10,16 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-import com.ai.api.bean.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.ai.api.bean.BookingPreferenceBean;
+import com.ai.api.bean.CompanyBean;
+import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /***************************************************************************
  * <PRE>

@@ -8,19 +8,20 @@ package com.ai.api.dao.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
-import com.ai.api.dao.ParameterDao;
 import com.ai.api.config.ServiceConfig;
+import com.ai.api.dao.ParameterDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -45,7 +46,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  ***************************************************************************/
 
 public class ParameterDaoImpl implements ParameterDao {
-	private static final Logger LOGGER = Logger.getLogger(ParameterDaoImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ParameterDaoImpl.class);
 
 	@Autowired
 	@Qualifier("serviceConfig")
@@ -57,7 +58,7 @@ public class ParameterDaoImpl implements ParameterDao {
 		String SysProductCategoryURL = config.getParamServiceUrl() + "/p/list-product-category";
 		GetRequest request7 = GetRequest.newInstance().setUrl(SysProductCategoryURL);
 
-		List<ProductCategoryDtoBean> prodcutCategoryList = new ArrayList<>();
+		List<ProductCategoryDtoBean> produttCategoryList = new ArrayList<>();
 
 		try{
 			ServiceCallResult result = HttpUtil.issueGetRequest(request7);
@@ -65,13 +66,13 @@ public class ParameterDaoImpl implements ParameterDao {
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject obj = jsonArray.getJSONObject(i);
 				ProductCategoryDtoBean productCategory = new ProductCategoryDtoBean(obj);
-				prodcutCategoryList.add(productCategory);
+				produttCategoryList.add(productCategory);
 			}
 
 		}catch(IOException e){
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
-		return prodcutCategoryList;
+		return produttCategoryList;
 	}
 
 	@Override
@@ -92,7 +93,7 @@ public class ParameterDaoImpl implements ParameterDao {
 			}
 
 		}catch(IOException e){
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return productFamilyList;
 	}

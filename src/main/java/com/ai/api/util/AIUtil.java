@@ -6,13 +6,16 @@
  ***************************************************************************/
 package com.ai.api.util;
 
-import com.ai.commons.beans.customer.ExtraBean;
-import com.ai.commons.beans.customer.GeneralUserViewBean;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import com.ai.commons.beans.customer.ExtraBean;
+import com.ai.commons.beans.customer.GeneralUserViewBean;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /***************************************************************************
  *<PRE>
@@ -35,6 +38,10 @@ import java.util.Locale;
  ***************************************************************************/
 
 public class AIUtil {
+
+	protected static Logger logger = LoggerFactory.getLogger(AIUtil.class);
+
+
 	public static String getUserBusinessUnit(GeneralUserViewBean user, ExtraBean extra) {
 		if (extra.getIsChb().equalsIgnoreCase("Yes")) {
 			return "CHB";
@@ -55,7 +62,7 @@ public class AIUtil {
 			DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
 			return dateFormat.format(inputDate);
 		} catch(Exception e){
-			e.printStackTrace();
+			logger.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
