@@ -1,0 +1,105 @@
+package com.ai.api.util;
+
+import redis.clients.jedis.Jedis;
+
+/***************************************************************************
+ * <PRE>
+ * Project Name    : Public-API
+ * <p>
+ * Package Name    : com.ai.api.util
+ * <p>
+ * Creation Date   : 2016/7/18 16:33
+ * <p>
+ * Author          : Jianxiong Cai
+ * <p>
+ * Purpose         : TODO
+ * <p>
+ * <p>
+ * History         : TODO
+ * <p>
+ * </PRE>
+ ***************************************************************************/
+
+
+public class RedisUtil {
+
+
+	private static RedisUtil instance ;
+	private static Jedis jedis;
+
+	public RedisUtil(){
+		try{
+			jedis = new Jedis("202.66.128.138", 6379);
+			jedis.auth("aiitteam");
+			jedis.get("testKey");
+
+		}catch(Exception e){
+
+		}
+	}
+
+	public static synchronized RedisUtil getInstance() {
+		if(instance == null){
+			instance = new RedisUtil();
+		}
+		return instance;
+	}
+
+	public boolean exists(String key){
+		return jedis.exists(key.trim());
+	}
+	/**
+	 * Set the string value as value of the key. The string can't be longer than 1073741824 bytes (1GB).
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public String set( String key,  String value){
+		return jedis.set(key.trim(), value.trim());
+	}
+	/**
+	 * Get the value of the specified key. If the key does not exist null is returned. If the value
+	 * stored at key is not a string an error is returned because GET can only handle string values.
+	 * @param key
+	 * @return
+	 */
+	public String get(String key){
+		return String.valueOf((jedis.get(key.trim())));
+	}
+
+	/**
+	 *
+	 * Set the specified hash field to the specified value.
+	 * If key does not exist, a new key holding a hash is created.
+	 * @param key
+	 * @param fieId
+	 * @param value
+	 * @return
+	 */
+	public Long hset(String key,String fieId,String value){
+			return jedis.hset(key.trim(),fieId.trim(),value.trim());
+	}
+
+	/**
+	 * If key holds a hash, retrieve the value associated to the specified field.
+	 * If the field is not found or the key does not exist, a special 'nil' value is returned.
+	 * @param key
+	 * @param fieId
+	 * @return
+	 */
+	public String hget(String key,String fieId){
+		return jedis.hget(key.trim(),fieId.trim());
+	}
+
+
+
+
+
+
+
+	public static void main(String[] args) {
+		RedisUtil ru = RedisUtil.getInstance();
+		ru.set("testKey", "helloWord!");
+		System.out.println(ru.get("testKey"));
+	}
+}

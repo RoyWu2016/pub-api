@@ -132,7 +132,7 @@ public class AuthenticationImpl implements Authentication {
 		logger.info("remove token result: "+result.getResponseString());
 		return mapper.writeValueAsString(result);
 	}
-	@RequestMapping(method = RequestMethod.GET, value = "/auth/verify-public-api-token")
+	@RequestMapping(method = RequestMethod.GET, value = "/auth/verifyToken")
 	@ResponseBody
 	public String verifyPublicAPIToken(HttpServletRequest request, HttpServletResponse response)
 		throws JsonProcessingException {
