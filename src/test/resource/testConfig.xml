@@ -9,7 +9,7 @@
           p:customerServiceUrl="http://202.66.128.138:8093/customer-service"
           p:paramServiceUrl="http://202.66.128.138:8090/param-service"
           p:factoryServiceUrl="http://202.66.128.138:8090/factory-service"
-          p:fileServiceUrl="http://202.66.128.138:8092/file-service"/>
+          p:fileServiceUrl="http://202.66.128.138:8092/file-service"
           p:mwServiceUrl="http://192.168.0.21:8081/AINPMW" />
 
 </beans>
