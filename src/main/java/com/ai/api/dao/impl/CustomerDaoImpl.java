@@ -8,21 +8,19 @@ package com.ai.api.dao.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.CustomerDao;
 import com.ai.commons.HttpUtil;
-import com.ai.commons.JsonStringUtils;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.user.GeneralUserBean;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -34,7 +32,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -63,7 +62,7 @@ import org.springframework.web.multipart.MultipartFile;
  ***************************************************************************/
 
 public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
-	private static final Logger LOGGER = Logger.getLogger(CustomerDaoImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerDaoImpl.class);
 
 	@Autowired
 	@Qualifier("serviceConfig")
@@ -257,6 +256,7 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 		return b;
 	}
 
+
 	@Override
 	public boolean createNewAccount(ClientInfoBean clientInfoBean) {
 		String url = config.getCustomerServiceUrl() + "/customer-legacy/create-new-client-account?clientType=AFI";
@@ -274,6 +274,5 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 		}
 		return false;
 	}
-
 
 }

@@ -6,7 +6,6 @@
  ***************************************************************************/
 package com.ai.api.service.impl;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -14,13 +13,29 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import com.ai.api.bean.*;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.ai.api.bean.AqlAndSamplingSizeBean;
+import com.ai.api.bean.BillingBean;
+import com.ai.api.bean.BookingPreferenceBean;
+import com.ai.api.bean.CompanyBean;
+import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.CustomAQLBean;
+import com.ai.api.bean.MainBean;
+import com.ai.api.bean.MinQuantityToBeReadyBean;
+import com.ai.api.bean.PreferencesBean;
+import com.ai.api.bean.PreferredProductFamilies;
+import com.ai.api.bean.ProductCategoryDtoBean;
+import com.ai.api.bean.ProductFamilyDtoBean;
+import com.ai.api.bean.QualityManual;
+import com.ai.api.bean.UserBean;
+import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.CompanyDao;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.exception.AIException;
-import com.ai.api.bean.UserBean;
-import com.ai.api.config.ServiceConfig;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.commons.StringUtils;
@@ -36,7 +51,8 @@ import com.ai.commons.beans.customer.QualityManualBean;
 import com.ai.commons.beans.customer.RelevantCategoryInfoBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.user.GeneralUserBean;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CachePut;
@@ -44,11 +60,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import javax.imageio.ImageIO;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /***************************************************************************
  * <PRE>
@@ -72,7 +83,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class UserServiceImpl implements UserService {
-    protected Logger logger = Logger.getLogger(UserServiceImpl.class);
+    protected Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     @Qualifier("serviceConfig")

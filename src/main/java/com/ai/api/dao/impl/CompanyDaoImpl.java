@@ -7,10 +7,9 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
-import java.util.Arrays;
 
-import com.ai.api.dao.CompanyDao;
 import com.ai.api.config.ServiceConfig;
+import com.ai.api.dao.CompanyDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
@@ -22,7 +21,9 @@ import com.ai.commons.beans.customer.OrderBookingBean;
 import com.ai.commons.beans.customer.OverviewBean;
 import com.ai.commons.beans.customer.ProductFamilyBean;
 import com.ai.commons.beans.customer.QualityManualBean;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -52,7 +53,7 @@ public class CompanyDaoImpl implements CompanyDao {
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
 
-	private static final Logger LOGGER = Logger.getLogger(CustomerDaoImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerDaoImpl.class);
 
 	@Override
 	public CrmCompanyBean getCrmCompany(String compId) {
@@ -65,7 +66,7 @@ public class CompanyDaoImpl implements CompanyDao {
 			company = JsonUtil.mapToObject(result.getResponseString(), CrmCompanyBean.class);
 			return company;
 		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
@@ -80,7 +81,7 @@ public class CompanyDaoImpl implements CompanyDao {
 				return true;
 			}
 		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return false;
 	}
@@ -96,7 +97,7 @@ public class CompanyDaoImpl implements CompanyDao {
 			overviewBean = JsonUtil.mapToObject(result.getResponseString(), OverviewBean.class);
 			return overviewBean;
 		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
@@ -113,7 +114,7 @@ public class CompanyDaoImpl implements CompanyDao {
 			contactBean = JsonUtil.mapToObject(result.getResponseString(), ContactBean.class);
 			return contactBean;
 		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
@@ -127,7 +128,7 @@ public class CompanyDaoImpl implements CompanyDao {
 				return true;
 			}
 		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return false;
 	}
@@ -143,7 +144,7 @@ public class CompanyDaoImpl implements CompanyDao {
 			orderBookingBean = JsonUtil.mapToObject(result.getResponseString(), OrderBookingBean.class);
 			return orderBookingBean;
 		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
@@ -159,7 +160,7 @@ public class CompanyDaoImpl implements CompanyDao {
 			extraBean = JsonUtil.mapToObject(result.getResponseString(), ExtraBean.class);
 			return extraBean;
 		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 
 		return null;
@@ -176,7 +177,7 @@ public class CompanyDaoImpl implements CompanyDao {
 			qualityManualBean = JsonUtil.mapToObject(result.getResponseString(), QualityManualBean.class);
 			return qualityManualBean;
 		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
@@ -191,7 +192,7 @@ public class CompanyDaoImpl implements CompanyDao {
 				return true;
 			}
 		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return false;
 	}
@@ -205,7 +206,7 @@ public class CompanyDaoImpl implements CompanyDao {
 				return true;
 			}
 		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return false;
 	}
@@ -221,7 +222,7 @@ public class CompanyDaoImpl implements CompanyDao {
 			productFamilyBean = JsonUtil.mapToObject(result.getResponseString(), ProductFamilyBean.class);
 			return productFamilyBean;
 		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
@@ -235,7 +236,7 @@ public class CompanyDaoImpl implements CompanyDao {
 				return true;
 			}
 		} catch (IOException e) {
-			LOGGER.error(Arrays.asList(e.getStackTrace()));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return false;
 	}

@@ -1,19 +1,18 @@
 package com.ai.api.service.impl;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.ai.api.bean.SupplierDetailBean;
 import com.ai.api.bean.legacy.FactorySearchBean;
-import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.FactoryDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.FactoryService;
-import com.ai.commons.beans.ServiceCallResult;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by Administrator on 2016/6/29 0029.
@@ -22,11 +21,7 @@ import java.util.List;
 @Service("factoryService")
 public class FactoryServiceImpl implements FactoryService {
 
-    protected Logger logger = Logger.getLogger(FactoryServiceImpl.class);
-
-    @Autowired
-    @Qualifier("serviceConfig")
-    private ServiceConfig config;
+    protected Logger logger = LoggerFactory.getLogger(FactoryServiceImpl.class);
 
     @Autowired
     @Qualifier("factoryDao")

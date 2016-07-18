@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.controller.Authentication;
 import com.ai.api.dao.SSOUserServiceDao;
+import com.ai.api.service.UserService;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.beans.ServiceCallResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -56,6 +57,9 @@ public class AuthenticationImpl implements Authentication {
 
 	@Autowired
 	SSOUserServiceDao ssoUserServiceDao;  //Service which will do all data retrieval/manipulation work
+
+	@Autowired
+	UserService userService;
 
 	@Override
 	@RequestMapping(method = RequestMethod.POST, value = "/auth/token")

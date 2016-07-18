@@ -40,6 +40,8 @@ public class ServiceConfig {
 
     private String fileServiceUrl;
 
+	private String mwServiceUrl;
+
     /**
      * @return the baseURL
      */
@@ -94,4 +96,11 @@ public class ServiceConfig {
         this.factoryServiceUrl = factoryServiceUrl;
     }
 
+	public String getMwServiceUrl() {
+		return mwServiceUrl;
+	}
+
+	public void setMwServiceUrl(String mwServiceUrl) {
+		this.mwServiceUrl = mwServiceUrl;
+	}
 }

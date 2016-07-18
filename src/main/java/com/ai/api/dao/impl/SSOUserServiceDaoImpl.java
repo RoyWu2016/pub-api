@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.bean.UserForToken;
-import com.ai.api.dao.SSOUserServiceDao;
 import com.ai.api.config.ServiceConfig;
+import com.ai.api.dao.SSOUserServiceDao;
 import com.ai.commons.Consts;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.IDGenerator;
@@ -28,8 +28,9 @@ import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.log4j.Logger;
 import org.jose4j.jwt.JwtClaims;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -55,7 +56,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 
-	private static final Logger LOGGER = Logger.getLogger(SSOUserServiceDaoImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SSOUserServiceDaoImpl.class);
 	private final ObjectMapper mapper = new ObjectMapper();
 
 	@Autowired
@@ -77,6 +78,8 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 		obj.put("userType", userType);
 		obj.put(Consts.Http.PUBLIC_API_ACCESS_TOKEN_HEADER, accessToken);
 		try {
+//			ServiceCallResult result = HttpUtil.issuePostRequest(ssoUserServiceUrl, null, obj);
+//			return mapper.readValue(result.getResponseString(), ServiceCallResult.class);
             ServiceCallResult result = this.checkAccessHeader(accessToken);
             if (result.getStatusCode() != HttpServletResponse.SC_OK) {
 			    return result;
@@ -84,7 +87,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
             //Hash the password, then check if it's the same value in the DB
             if (userType.toLowerCase().equals("client")) {
 	            LOGGER.info("http Get URL: "+clientUrl);
-	            ServiceCallResult callResult = HttpUtil.issueGetRequest(clientUrl,obj);
+	            ServiceCallResult callResult = HttpUtil.issueGetRequest(clientUrl, obj);
 	            String clientStr = "{}";
 	            if (callResult.getStatusCode()==200){
 		            clientStr = callResult.getResponseString();
@@ -94,7 +97,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 	            String pwdMd5 = DigestUtils.shaHex(MD5.toMD5(password));
                 if (client != null && client.getUserId() != null && pwdMd5.equals(client.getPassword())) {
                     //Generate the token based on the User
-	                TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(),client.getUserId(), IDGenerator.uuid());
+	                TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(), client.getUserId(), IDGenerator.uuid());
                     if (tokenSession != null) {
 	                    String token = JSON.toJSONString(tokenSession);
                         result.setResponseString(token);
@@ -122,7 +125,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 	            String pwdMd5 = MD5.toMD5(password);
                 if (null!=user && null!=user.getUserId() && pwdMd5.equals(user.getPassword())){
                     //Generate the token based on the User
-	                TokenSession tokenSession = tokenJWTDao.generateToken(user.getLogin(),user.getUserId(),IDGenerator.uuid());
+	                TokenSession tokenSession = tokenJWTDao.generateToken(user.getLogin(), user.getUserId(), IDGenerator.uuid());
                     if (tokenSession != null) {
                         result.setResponseString(JSON.toJSONString(tokenSession));
                         result.setStatusCode(HttpServletResponse.SC_OK);
@@ -138,7 +141,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
                     result.setReasonPhase("The username and password doesn't match OR user not exist.");
                 }
             }else {
-                LOGGER.fatal("wrong user type got: " + userType);
+                LOGGER.error("wrong user type got: " + userType);
                 result.setResponseString("wrong user type!");
                 result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
                 result.setReasonPhase("wrong user type!");
@@ -325,6 +328,8 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 		}
 		return result;
 	}
+
+
     private String getToken(String authorizationHeader, HttpServletResponse response) throws IOException {
         String token = null;
         if (authorizationHeader == null) {

@@ -3,7 +3,6 @@ package com.ai.api.dao;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import com.ai.api.bean.SupplierDetailBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;

@@ -1,12 +1,10 @@
 package com.ai.api.service.impl;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.dao.ParameterDao;
-import com.ai.api.exception.AIException;
 import com.ai.api.service.ParameterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,13 +24,13 @@ public class ParameterServiceImpl implements ParameterService {
 
     @Cacheable(value="productCategoryListCache", key="#root.methodName")
     @Override
-    public List<ProductCategoryDtoBean> getProductCategoryList() throws IOException, AIException{
+    public List<ProductCategoryDtoBean> getProductCategoryList(){
         return paramDao.getProductCategoryList();
     }
 
     @Cacheable(value="productFamilyListCache", key="#root.methodName")
     @Override
-    public List<ProductFamilyDtoBean>  getProductFamilyList() throws IOException, AIException{
+    public List<ProductFamilyDtoBean>  getProductFamilyList(){
         return paramDao.getProductFamilyList();
     }
 }
