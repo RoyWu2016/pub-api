@@ -20,7 +20,6 @@ import redis.clients.jedis.Jedis;
  * </PRE>
  ***************************************************************************/
 
-
 public class RedisUtil {
 
 
@@ -68,6 +67,15 @@ public class RedisUtil {
 	}
 
 	/**
+	 * Remove the specified keys. If a given key does not exist no operation is performed for this
+	 * key. The command returns the number of keys removed.
+	 * @param key
+	 */
+	public Long del(String key){
+		return jedis.del(key.trim());
+	}
+
+	/**
 	 *
 	 * Set the specified hash field to the specified value.
 	 * If key does not exist, a new key holding a hash is created.
@@ -91,6 +99,19 @@ public class RedisUtil {
 		return jedis.hget(key.trim(),fieId.trim());
 	}
 
+	/**
+	 * Remove the specified field from an hash stored at key.
+	 * If the field was present in the hash it is deleted and 1 is returned,
+	 * otherwise 0 is returned and no operation is performed.
+	 * @param key
+	 */
+	public Long hdel(String key,String fieId){
+		return jedis.hdel(key.trim(),fieId.trim());
+	}
+
+	private void flushAll(){
+		jedis.flushAll();
+	}
 
 
 
@@ -100,6 +121,7 @@ public class RedisUtil {
 	public static void main(String[] args) {
 		RedisUtil ru = RedisUtil.getInstance();
 		ru.set("testKey", "helloWord!");
+//		ru.flushAll();
 		System.out.println(ru.get("testKey"));
 	}
 }
