@@ -63,6 +63,7 @@ public class RedisUtil {
 	 * @return
 	 */
 	public String get(String key){
+		if (!this.exists(key.trim())) return null;
 		return String.valueOf((jedis.get(key.trim())));
 	}
 
@@ -96,6 +97,7 @@ public class RedisUtil {
 	 * @return
 	 */
 	public String hget(String key,String fieId){
+		if (!this.exists(key.trim())) return null;
 		return jedis.hget(key.trim(),fieId.trim());
 	}
 

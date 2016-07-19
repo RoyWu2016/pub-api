@@ -2,6 +2,7 @@ package com.ai.api.dao.impl;
 
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.IDGenerator;
+import com.ai.commons.StringUtils;
 import com.ai.commons.beans.user.TokenSession;
 import com.alibaba.fastjson.JSON;
 import org.jose4j.jwe.ContentEncryptionAlgorithmIdentifiers;
@@ -119,6 +120,7 @@ public class TokenJWTDaoImpl {
 //		logger.error("this message is not supposed to be saw!  id:"+sessionId);
 		RedisUtil redisUtil = RedisUtil.getInstance();
 		String resultStr = redisUtil.hget(TOKENKEY,sessionId);
+		if (StringUtils.isBlank(resultStr))return null;
 		return JSON.parseObject(resultStr).toJavaObject(TokenSession.class);
 	}
 
