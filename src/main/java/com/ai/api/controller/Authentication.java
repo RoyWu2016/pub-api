@@ -11,6 +11,7 @@ import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.api.bean.LoginBean;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 /***************************************************************************
@@ -35,8 +36,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface Authentication {
 
-	String userLogin(HashMap<String, String> credentials,  HttpServletRequest request,
-	                          HttpServletResponse response) throws JsonProcessingException;
+	String userLogin(LoginBean loginBean, HttpServletRequest request,
+	                 HttpServletResponse response) throws JsonProcessingException;
 
 	String refreshAPIToken(HashMap<String, String> credentials, HttpServletRequest request,
 	                       HttpServletResponse response)

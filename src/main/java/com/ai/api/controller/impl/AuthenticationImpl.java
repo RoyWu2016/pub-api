@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.api.bean.LoginBean;
 import com.ai.api.controller.Authentication;
 import com.ai.api.dao.SSOUserServiceDao;
 import com.ai.api.service.UserService;
@@ -64,21 +65,20 @@ public class AuthenticationImpl implements Authentication {
 	@Override
 	@RequestMapping(method = RequestMethod.POST, value = "/auth/token")
 	@ResponseBody
-	public String userLogin( @RequestBody HashMap<String, String> credentials,
-							 HttpServletRequest request, HttpServletResponse response)
+	public String userLogin( @RequestBody LoginBean loginBean,HttpServletRequest request, HttpServletResponse response)
 			throws JsonProcessingException {
 		logger.info("user login ......");
 		//user can be client or employee
-		String username = credentials.get("username");
-		String password = credentials.get("password");
-		String userType = credentials.get("userType");
-        logger.info("username:"+username);
+		String account = loginBean.getAccount();
+		String password = loginBean.getPassword();
+		String userType = loginBean.getUserType();
+        logger.info("account:"+account);
         logger.info("password:"+password);
         logger.info("userType:"+userType);
 		ServiceCallResult result = new ServiceCallResult();
 		ObjectMapper mapper = new ObjectMapper();
 
-		if ((username != null && username.isEmpty() ) || (password != null && password.isEmpty())) {
+		if ((account != null && account.isEmpty() ) || (password != null && password.isEmpty())) {
 			result.setStatusCode(HttpServletResponse.SC_FORBIDDEN);
 			result.setResponseString("");
 			result.setReasonPhase("username/password empty.");
@@ -101,7 +101,7 @@ public class AuthenticationImpl implements Authentication {
 			result.setReasonPhase("AI API call token not present or invalid for login.");
 			return mapper.writeValueAsString(result);
 		}
-		result = ssoUserServiceDao.userLogin(username, password, userType, HttpUtil.getPublicAPICallToken(request));
+		result = ssoUserServiceDao.userLogin(account, password, userType, HttpUtil.getPublicAPICallToken(request));
 		logger.info("user login result: "+result.getResponseString());
 		return mapper.writeValueAsString(result);
 	}
