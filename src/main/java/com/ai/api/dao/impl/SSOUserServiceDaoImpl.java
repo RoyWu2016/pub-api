@@ -109,9 +109,9 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
                         result.setReasonPhase("Error occurred while generating token.");
                     }
                 } else {
-                    result.setResponseString("The username and password doesn't match OR user not exist");
+                    result.setResponseString("The username/email and password doesn't match OR user not exist");
                     result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                    result.setReasonPhase("The username and password doesn't match OR user not exist.");
+                    result.setReasonPhase("The username/email and password doesn't match OR user not exist.");
                 }
             } else if (userType.toLowerCase().equals("employee")) {
 	            LOGGER.info("http Get URL: "+userUrl);
