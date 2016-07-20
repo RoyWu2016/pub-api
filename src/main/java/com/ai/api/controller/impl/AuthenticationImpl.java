@@ -110,13 +110,12 @@ public class AuthenticationImpl implements Authentication {
 	@Override
 	@RequestMapping(method = RequestMethod.PUT, value = "/auth/refreshToken")
 	@ResponseBody
-	public String refreshAPIToken(@RequestBody HashMap<String, String> data,
-	                              HttpServletRequest request, HttpServletResponse response)
+	public String refreshAPIToken(HttpServletRequest request, HttpServletResponse response)
 			throws JsonProcessingException {
 
 		logger.info("refresh token ...........");
 		ObjectMapper mapper = new ObjectMapper();
-		ServiceCallResult result = ssoUserServiceDao.refreshAPIToken(data, request, response);
+		ServiceCallResult result = ssoUserServiceDao.refreshAPIToken(request, response);
 		logger.info("refresh token result: "+result.getResponseString());
 		return mapper.writeValueAsString(result);
 	}

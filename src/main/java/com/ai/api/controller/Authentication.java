@@ -39,8 +39,7 @@ public interface Authentication {
 	String userLogin(LoginBean loginBean, HttpServletRequest request,
 	                 HttpServletResponse response) throws JsonProcessingException;
 
-	String refreshAPIToken(HashMap<String, String> credentials, HttpServletRequest request,
-	                       HttpServletResponse response)
+	String refreshAPIToken(HttpServletRequest request, HttpServletResponse response)
 			throws JsonProcessingException;
 
 	String removeAPIToken(HttpServletRequest request, HttpServletResponse response)

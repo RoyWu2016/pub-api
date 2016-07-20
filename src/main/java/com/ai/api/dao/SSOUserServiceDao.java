@@ -37,7 +37,7 @@ public interface SSOUserServiceDao {
 
 	ServiceCallResult userLogin(String account, String password, String userType, String accessToken);
 
-	ServiceCallResult refreshAPIToken(Map<String, String> data, HttpServletRequest request, HttpServletResponse response);
+	ServiceCallResult refreshAPIToken(HttpServletRequest request, HttpServletResponse response);
 
 	ServiceCallResult removeAPIToken(HttpServletRequest request, HttpServletResponse response);
 

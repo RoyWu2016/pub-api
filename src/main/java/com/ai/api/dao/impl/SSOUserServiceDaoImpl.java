@@ -151,8 +151,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 	}
 
 	@Override
-	public ServiceCallResult refreshAPIToken(Map<String, String> data, HttpServletRequest request,
-	                                         HttpServletResponse response) {
+	public ServiceCallResult refreshAPIToken(HttpServletRequest request,HttpServletResponse response) {
 		Map<String, String> headers = new HashMap<>();
         String accessToken = request.getHeader("ai-api-access-token");
         String authorization = request.getHeader("authorization");
