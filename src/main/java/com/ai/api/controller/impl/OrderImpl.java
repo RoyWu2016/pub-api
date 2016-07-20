@@ -6,12 +6,14 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import javax.ws.rs.PathParam;
 
 import com.ai.api.controller.Order;
 import com.ai.api.service.OrderService;
+import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.OrderSearchResultBean;
 import org.slf4j.Logger;
@@ -19,10 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /***************************************************************************
  *<PRE>
@@ -55,14 +54,53 @@ public class OrderImpl implements Order {
 	@Override
 	@RequestMapping(value = "/user/{userId}/orders", method = RequestMethod.GET)
 	public ResponseEntity<List<OrderSearchResultBean>> getOrderListByUserId(@PathVariable("userId") String userId,
-	                                                                        @PathParam("page") int pageNumber,
-	                                                                        @PathParam("types") String orderTypeArray,
-	                                                                        @PathParam("status") String orderStatus,
-	                                                                        @PathParam("start") String starts,
-	                                                                        @PathParam("end") String ends,
-	                                                                        @PathParam("keyword") String keyword) {
+	                                                                        @RequestParam("page") int pageNumber,
+																			@RequestParam("types") String orderTypeArray,
+																			@RequestParam("status") String orderStatus,
+																			@RequestParam("start") String starts,
+																			@RequestParam("end") String ends,
+																			@RequestParam("keyword") String keywords) {
 
 		OrderSearchCriteriaBean criteriaBean = new OrderSearchCriteriaBean();
+
+		criteriaBean.setPageNumber(pageNumber);
+		criteriaBean.setKeywords(keywords);
+		if(starts.equals("") && ends.equals("")){
+			Date current = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+			ends = sdf.format(current);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(current);
+			calendar.add(Calendar.MONTH, -1);
+			starts = sdf.format(calendar.getTime());
+		}
+		criteriaBean.setStartDate(starts);
+		criteriaBean.setEndDate(ends);
+		criteriaBean.setUserID(userId);
+
+		ArrayList<String> typeList = new ArrayList<String>();
+		if (!orderTypeArray.equals("")) {
+			String[] types = orderTypeArray.split(",");
+			Collections.addAll(typeList, types);
+		}
+		criteriaBean.setServiceTypes(typeList);
+
+		short status = -1;
+		switch(orderStatus){
+			case "all":
+				status = 0;
+				break;
+			case "outstanding":
+				status = 1;
+				break;
+			case "paid":
+				status = 2;
+				break;
+			case "draft":
+				status = 3;
+				break;
+		}
+		criteriaBean.setOrderStatus(status);
 
 		//fill criteria to criteriaBean
 		List<OrderSearchResultBean> result = orderService.getOrdersByUserId(criteriaBean);
