@@ -9,16 +9,16 @@ import java.util.List;
 public class PreferredProductFamilies implements Serializable {
 
 
-	private boolean customizedProductType;
+	private boolean useCustomizedProductType;
 	private List<PublicProductType> publicProductTypeList;
 	private List<CustomizedProductType> customizedProductTypeList;
 
-	public boolean isCustomizedProductType() {
-		return customizedProductType;
+	public boolean isUseCustomizedProductType() {
+		return useCustomizedProductType;
 	}
 
-	public void setCustomizedProductType(boolean customizedProductType) {
-		this.customizedProductType = customizedProductType;
+	public void setUseCustomizedProductType(boolean useCustomizedProductType) {
+		this.useCustomizedProductType = useCustomizedProductType;
 	}
 
 	public List<PublicProductType> getPublicProductTypeList() {

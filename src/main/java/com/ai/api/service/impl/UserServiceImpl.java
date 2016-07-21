@@ -271,9 +271,9 @@ public class UserServiceImpl implements UserService {
 		PreferredProductFamilies preferredProductFamilies = new PreferredProductFamilies();
 		//"no" - Use Client Customized Product Type
 		if ("no".toUpperCase().equals(productFamilyBean.getHowToChooseProType().toUpperCase())) {
-			preferredProductFamilies.setCustomizedProductType(true);
+			preferredProductFamilies.setUseCustomizedProductType(true);
 		}else {
-			preferredProductFamilies.setCustomizedProductType(false);
+			preferredProductFamilies.setUseCustomizedProductType(false);
 		}
 
 		int a = productFamilyBean.getRelevantCategoryInfo().size();
