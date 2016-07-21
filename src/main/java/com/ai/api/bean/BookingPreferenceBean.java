@@ -10,9 +10,9 @@ public class BookingPreferenceBean implements Serializable {
 
 	private String useQuickFormByDefault;
 
-	//private String shouldSendRefSampleToFactory;
+	private String shouldSendRefSampleToFactory;
 
-	//private String isPoMandatory;
+	private String isPoMandatory;
 
 	private boolean showProductDivision;
 
@@ -57,7 +57,7 @@ public class BookingPreferenceBean implements Serializable {
 	public void setUseQuickFormByDefault(String useQuickFormByDefault) {
 		this.useQuickFormByDefault = useQuickFormByDefault;
 	}
-/*
+
 	public String getShouldSendRefSampleToFactory() {
 		return shouldSendRefSampleToFactory;
 	}
@@ -73,7 +73,7 @@ public class BookingPreferenceBean implements Serializable {
 	public void setIsPoMandatory(String isPoMandatory) {
 		this.isPoMandatory = isPoMandatory;
 	}
-*/
+
 	public MinQuantityToBeReadyBean[] getMinQuantityToBeReady() {
 		return minQuantityToBeReady;
 	}
