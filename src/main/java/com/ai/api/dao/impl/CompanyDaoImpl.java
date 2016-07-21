@@ -14,13 +14,7 @@ import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.customer.ContactBean;
-import com.ai.commons.beans.customer.CrmCompanyBean;
-import com.ai.commons.beans.customer.ExtraBean;
-import com.ai.commons.beans.customer.OrderBookingBean;
-import com.ai.commons.beans.customer.OverviewBean;
-import com.ai.commons.beans.customer.ProductFamilyBean;
-import com.ai.commons.beans.customer.QualityManualBean;
+import com.ai.commons.beans.customer.*;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,6 +125,20 @@ public class CompanyDaoImpl implements CompanyDao {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return false;
+	}
+
+	@Override
+	public MultiRefBookingBean getCompanyMultiRefBooking(String compId) {
+		String orderBBeanURL = config.getCustomerServiceUrl() + "/customer/" + compId + "/multi-ref-booking";
+		GetRequest request = GetRequest.newInstance().setUrl(orderBBeanURL);
+		try {
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			MultiRefBookingBean multiRefBookingBean = JsonUtil.mapToObject(result.getResponseString(), MultiRefBookingBean.class);
+			return multiRefBookingBean;
+		} catch (IOException e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
 	}
 
 	@Override

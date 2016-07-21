@@ -17,38 +17,19 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ai.api.bean.AqlAndSamplingSizeBean;
-import com.ai.api.bean.BillingBean;
-import com.ai.api.bean.BookingPreferenceBean;
-import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.ContactInfoBean;
-import com.ai.api.bean.CustomAQLBean;
-import com.ai.api.bean.MainBean;
-import com.ai.api.bean.MinQuantityToBeReadyBean;
-import com.ai.api.bean.PreferencesBean;
-import com.ai.api.bean.PreferredProductFamilies;
-import com.ai.api.bean.ProductCategoryDtoBean;
-import com.ai.api.bean.ProductFamilyDtoBean;
-import com.ai.api.bean.QualityManual;
+import com.ai.api.bean.*;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.CompanyDao;
 import com.ai.api.dao.CustomerDao;
+import com.ai.api.dao.FeatureDao;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.customer.ContactBean;
-import com.ai.commons.beans.customer.CrmCompanyBean;
-import com.ai.commons.beans.customer.ExtraBean;
-import com.ai.commons.beans.customer.GeneralUserViewBean;
-import com.ai.commons.beans.customer.OrderBookingBean;
-import com.ai.commons.beans.customer.OverviewBean;
-import com.ai.commons.beans.customer.ProductFamilyBean;
-import com.ai.commons.beans.customer.QualityManualBean;
-import com.ai.commons.beans.customer.RelevantCategoryInfoBean;
+import com.ai.commons.beans.customer.*;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import org.slf4j.Logger;
@@ -101,6 +82,9 @@ public class UserServiceImpl implements UserService {
 	@Qualifier("companyDao")
 	private CompanyDao companyDao;
 
+	@Autowired
+	@Qualifier("featureDao")
+	private FeatureDao featureDao;
 
 	@Cacheable("userBeanCache")
     @Override
@@ -124,6 +108,10 @@ public class UserServiceImpl implements UserService {
 		List<ProductCategoryDtoBean> productCategoryDtoBeanList = paramDao.getProductCategoryList();
 
 		List<ProductFamilyDtoBean> productFamilyDtoBeanList = paramDao.getProductFamilyList();
+
+		MultiRefBookingBean multiRefBookingBean = companyDao.getCompanyMultiRefBooking(compId);
+
+		CustomerFeatureBean customerFeatureBean = featureDao.getCustomerFeatureBean(compId,"BookOrderWithMultipleFactories");
 
 	    //1st level fields
 	    user.setId(generalUserBean.getUser().getUserId());
@@ -195,9 +183,103 @@ public class UserServiceImpl implements UserService {
 		BookingPreferenceBean bookingbean = new BookingPreferenceBean();
 
 		bookingbean.setUseQuickFormByDefault(extrabean.getIsDetailedBookingForm());
-		bookingbean.setShouldSendRefSampleToFactory(orderBookingBean.getSendSampleToFactory());
-		bookingbean.setIsPoMandatory(orderBookingBean.getPoCompulsory());
+		//bookingbean.setShouldSendRefSampleToFactory(orderBookingBean.getSendSampleToFactory());
+		//bookingbean.setIsPoMandatory(orderBookingBean.getPoCompulsory());
 
+		bookingbean.setProductDivisions(orderBookingBean.getAvailableDivisions());
+
+		String featureValue = customerFeatureBean.getFeatureValue();
+		if(featureValue!=null && featureValue.equalsIgnoreCase("Yes")){
+			bookingbean.setBookOrdersWithMultipleFactories(true);
+		} else {
+			bookingbean.setBookOrdersWithMultipleFactories(false);
+		}
+
+		String sendModificationMail = orderBookingBean.getSendModificationMail();
+		if(sendModificationMail!=null && sendModificationMail.equalsIgnoreCase("Yes")){
+			bookingbean.setSendEmailAfterModification(true);
+		} else {
+			bookingbean.setSendEmailAfterModification(false);
+		}
+
+		String sendSampleToFactory = orderBookingBean.getSendSampleToFactory();
+		if(sendSampleToFactory!=null && sendSampleToFactory.equalsIgnoreCase("yes")){
+			bookingbean.setSendReferenceSampleAlways(true);
+		} else {
+			bookingbean.setSendReferenceSampleAlways(false);
+		}
+
+		String poCompulsory = orderBookingBean.getPoCompulsory();
+		if(poCompulsory!=null && poCompulsory.equalsIgnoreCase("Yes")){
+			bookingbean.setFieldPoCompulsory(true);
+		} else {
+			bookingbean.setFieldPoCompulsory(false);
+		}
+
+		String showProdDivision = orderBookingBean.getShowProdDivision();
+		if(showProdDivision!=null && showProdDivision.equalsIgnoreCase("Yes")){
+			bookingbean.setShowProductDivision(true);
+		} else {
+			bookingbean.setShowProductDivision(false);
+		}
+
+		String showFactoryDetails = orderBookingBean.getShowFactoryDetails();
+		if(showFactoryDetails!=null && showFactoryDetails.equalsIgnoreCase("Yes")){
+			bookingbean.setShowFactoryDetailsToMaster(true);
+		} else {
+			bookingbean.setShowFactoryDetailsToMaster(false);
+		}
+
+		String requireDropTesting = orderBookingBean.getRequireDropTesting();
+		if(requireDropTesting!=null && requireDropTesting.equalsIgnoreCase("Yes")){
+			bookingbean.setRequireDropTesting(true);
+		} else {
+			bookingbean.setRequireDropTesting(false);
+		}
+
+		String allowPostpone = orderBookingBean.getAllowPostpone();
+		if(allowPostpone!=null && allowPostpone.equalsIgnoreCase("Yes")){
+			bookingbean.setAllowPostponementBySuppliers(true);
+		} else {
+			bookingbean.setAllowPostponementBySuppliers(false);
+		}
+
+		String notifyClient = orderBookingBean.getNotifyClient();
+		if(notifyClient!=null && notifyClient.equalsIgnoreCase("Yes")){
+			bookingbean.setSendSupplierConfirmationEmailToClientAlways(true);
+		} else {
+			bookingbean.setSendSupplierConfirmationEmailToClientAlways(false);
+		}
+
+		String sharePerferredTests = orderBookingBean.getSharePerferredTests();
+		if(sharePerferredTests!=null && sharePerferredTests.equalsIgnoreCase("Yes")){
+			bookingbean.setShareFavoriteLabTestsWithSubAccounts(true);
+		} else {
+			bookingbean.setShareFavoriteLabTestsWithSubAccounts(false);
+		}
+
+		String shareChecklist = orderBookingBean.getShareChecklist();
+		if(shareChecklist!=null && shareChecklist.equalsIgnoreCase("Yes")){
+			bookingbean.setShareChecklistWithSubAccounts(true);
+		} else {
+			bookingbean.setShareChecklistWithSubAccounts(false);
+		}
+
+		String turnOffAIAccess = orderBookingBean.getTurnOffAIAccess();
+		if(turnOffAIAccess!=null && turnOffAIAccess.equalsIgnoreCase("Yes")){
+			bookingbean.setTurnOffAiWebsiteDirectAccess(true);
+		} else {
+			bookingbean.setTurnOffAiWebsiteDirectAccess(false);
+		}
+
+		MultiReferenceBean multiReferenceBean = new MultiReferenceBean();
+		String approveReferences = multiRefBookingBean.getApproveReferences();
+		if(approveReferences!=null && approveReferences.equalsIgnoreCase("Yes")){
+			multiReferenceBean.setClientCanApproveRejectIndividualProductReferences(true);
+		} else {
+			multiReferenceBean.setClientCanApproveRejectIndividualProductReferences(false);
+		}
+		bookingbean.setMultiReference(multiReferenceBean);
 
 		MinQuantityToBeReadyBean[] minQuantityToBeReadyBean = new MinQuantityToBeReadyBean[5];
 		MinQuantityToBeReadyBean minQuantityToBeReadyBean1 = new MinQuantityToBeReadyBean();
@@ -390,8 +472,11 @@ public class UserServiceImpl implements UserService {
 
 		//get booking preference first
 		OrderBookingBean booking = companyDao.getCompanyOrderBooking(compId);
-		booking.setSendSampleToFactory(StringUtils.getYesNo(newBookingPref.getShouldSendRefSampleToFactory()));
-		booking.setPoCompulsory(StringUtils.getYesNo(newBookingPref.getIsPoMandatory()));
+		//booking.setSendSampleToFactory(StringUtils.getYesNo(newBookingPref.getShouldSendRefSampleToFactory()));
+		//booking.setPoCompulsory(StringUtils.getYesNo(newBookingPref.getIsPoMandatory()));
+		booking.setSendSampleToFactory(StringUtils.getYesNo(Boolean.toString(newBookingPref.isSendReferenceSampleAlways())));
+		booking.setPoCompulsory(StringUtils.getYesNo(Boolean.toString(newBookingPref.isFieldPoCompulsory())));
+
 		booking.setPsiPercentage(newBookingPref.getMinQuantityToBeReady()[0].getMinQty());
 		booking.setDuproPercentage(newBookingPref.getMinQuantityToBeReady()[1].getMinQty());
 		booking.setIpcPercentage(newBookingPref.getMinQuantityToBeReady()[2].getMinQty());
