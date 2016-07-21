@@ -16,9 +16,9 @@ public class BookingPreferenceBean implements Serializable {
 
 	private MinQuantityToBeReadyBean[] minQuantityToBeReady;
 
-	private AqlAndSamplingSizeBean aqlAndSamplingSize;
+	private PreferredProductFamilies preferredProductFamilies;
 
-	private PreferredProductFamilies[] preferredProductFamilies;
+	private AqlAndSamplingSizeBean aqlAndSamplingSize;
 
 	private QualityManual qualityManual;
 
@@ -54,6 +54,14 @@ public class BookingPreferenceBean implements Serializable {
 		this.minQuantityToBeReady = minQuantityToBeReady;
 	}
 
+	public PreferredProductFamilies getPreferredProductFamilies() {
+		return preferredProductFamilies;
+	}
+
+	public void setPreferredProductFamilies(PreferredProductFamilies preferredProductFamilies) {
+		this.preferredProductFamilies = preferredProductFamilies;
+	}
+
 	public AqlAndSamplingSizeBean getAqlAndSamplingSize() {
 		return aqlAndSamplingSize;
 	}
@@ -62,13 +70,6 @@ public class BookingPreferenceBean implements Serializable {
 		this.aqlAndSamplingSize = aqlAndSamplingSize;
 	}
 
-	public PreferredProductFamilies[] getPreferredProductFamilies() {
-		return preferredProductFamilies;
-	}
-
-	public void setPreferredProductFamilies(PreferredProductFamilies[] preferredProductFamilies) {
-		this.preferredProductFamilies = preferredProductFamilies;
-	}
 
 	public QualityManual getQualityManual() {
 		return qualityManual;

@@ -23,12 +23,14 @@ import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.bean.CustomAQLBean;
+import com.ai.api.bean.CustomizedProductType;
 import com.ai.api.bean.MainBean;
 import com.ai.api.bean.MinQuantityToBeReadyBean;
 import com.ai.api.bean.PreferencesBean;
 import com.ai.api.bean.PreferredProductFamilies;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
+import com.ai.api.bean.PublicProductType;
 import com.ai.api.bean.QualityManual;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
@@ -47,12 +49,14 @@ import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.customer.OrderBookingBean;
 import com.ai.commons.beans.customer.OverviewBean;
 import com.ai.commons.beans.customer.ProductFamilyBean;
+import com.ai.commons.beans.customer.ProductFamilyInfoBean;
 import com.ai.commons.beans.customer.QualityManualBean;
 import com.ai.commons.beans.customer.RelevantCategoryInfoBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CachePut;
@@ -264,38 +268,47 @@ public class UserServiceImpl implements UserService {
 
 		// ------------Set PreferredProductFamilies Properties ----------------
 
-
-		int a = productFamilyBean.getRelevantCategoryInfo().size();
-		PreferredProductFamilies[] preferredProductFamiliesarray = new PreferredProductFamilies[a];
-
-		System.out.println("Product Family Data Size : " + a);
-
-		for (int i = 0; i < a; i++) {
-			PreferredProductFamilies preferredProductFamilies = new PreferredProductFamilies();
-
-			preferredProductFamilies.setProductCategoryId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavCategory());
-			preferredProductFamilies.setProductFamilyId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavFamily());
-
-			//set product category name
-			for (ProductCategoryDtoBean productCategoryDto : productCategoryDtoBeanList) {
-				if (preferredProductFamilies.getProductCategoryId().equals(productCategoryDto.getId())) {
-					preferredProductFamilies.setProductCategoryName(productCategoryDto.getName());
-					break;
-				}
-			}
-
-			//set product family name
-			for (ProductFamilyDtoBean productFamilyDtoBean : productFamilyDtoBeanList) {
-				if (preferredProductFamilies.getProductFamilyId().equals(productFamilyDtoBean.getId())) {
-					preferredProductFamilies.setProductFamilyName(productFamilyDtoBean.getName());
-					break;
-				}
-			}
-
-			preferredProductFamiliesarray[i] = preferredProductFamilies;
+		PreferredProductFamilies preferredProductFamilies = new PreferredProductFamilies();
+		//"no" - Use Client Customized Product Type
+		if ("no".toUpperCase().equals(productFamilyBean.getHowToChooseProType().toUpperCase())) {
+			preferredProductFamilies.setCustomizedProductType(true);
+		}else {
+			preferredProductFamilies.setCustomizedProductType(false);
 		}
 
-		bookingbean.setPreferredProductFamilies(preferredProductFamiliesarray);
+		int a = productFamilyBean.getRelevantCategoryInfo().size();
+		int b = productFamilyBean.getProductFamilyInfo().size();
+		List<PublicProductType> publicProductTypeList = new ArrayList<>();
+		List<CustomizedProductType> customizedProductTypeList = new ArrayList<>();
+
+		for (int i = 0; i < a; i++) {
+			PublicProductType publicProductType = new PublicProductType();
+			publicProductType.setProductCategoryId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavCategory());
+			publicProductType.setProductFamilyId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavFamily());
+			//set product category name
+			for (ProductCategoryDtoBean productCategoryDto : productCategoryDtoBeanList) {
+				if (publicProductType.getProductCategoryId().equals(productCategoryDto.getId())) {
+					publicProductType.setProductCategoryName(productCategoryDto.getName());
+					break;
+				}
+			}
+			//set product family name
+			for (ProductFamilyDtoBean productFamilyDtoBean : productFamilyDtoBeanList) {
+				if (publicProductType.getProductFamilyId().equals(productFamilyDtoBean.getId())) {
+					publicProductType.setProductFamilyName(productFamilyDtoBean.getName());
+					break;
+				}
+			}
+			publicProductTypeList.add(publicProductType);
+		}
+		for (int i=0;i<b;i++){
+			CustomizedProductType customizedProductType = new CustomizedProductType();
+			BeanUtils.copyProperties(productFamilyBean.getProductFamilyInfo().get(i),customizedProductType);
+			customizedProductTypeList.add(customizedProductType);
+		}
+		preferredProductFamilies.setPublicProductTypeList(publicProductTypeList);
+		preferredProductFamilies.setCustomizedProductTypeList(customizedProductTypeList);
+		bookingbean.setPreferredProductFamilies(preferredProductFamilies);
 
 		// ------------Set QualityManual Properties ----------------
 
