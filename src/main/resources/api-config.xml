@@ -49,6 +49,7 @@
     <bean id="ssoUserServiceDao" class="com.ai.api.dao.impl.SSOUserServiceDaoImpl" />
     <bean id="factoryDao" class="com.ai.api.dao.impl.FactoryDaoImpl"/>
     <bean id="orderDao" class="com.ai.api.dao.impl.OrderDaoImpl"/>
+    <bean id="featureDao" class="com.ai.api.dao.impl.FeatureDaoImpl"/>
 
     <!-- Version bean for application information -->
     <!--<bean id="versionBean" class="version.Version"/>-->

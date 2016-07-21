@@ -195,8 +195,8 @@ public class UserImplTest {
 	public void updateProfileBookingPreference() throws Exception {
 		BookingPreferenceBean newPref = new BookingPreferenceBean();
 		newPref.setUseQuickFormByDefault(env.getProperty("strFalse"));
-		newPref.setShouldSendRefSampleToFactory(env.getProperty("strTrue"));
-		newPref.setIsPoMandatory(env.getProperty("strTrue"));
+		//newPref.setShouldSendRefSampleToFactory(env.getProperty("strTrue"));
+		//newPref.setIsPoMandatory(env.getProperty("strTrue"));
 
 		MinQuantityToBeReadyBean[] minQuantityToBeReadyBean = new MinQuantityToBeReadyBean[5];
 		MinQuantityToBeReadyBean minQuantityToBeReadyBean1 = new MinQuantityToBeReadyBean();
