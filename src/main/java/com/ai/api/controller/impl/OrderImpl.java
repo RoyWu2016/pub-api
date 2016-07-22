@@ -67,7 +67,7 @@ public class OrderImpl implements Order {
 		criteriaBean.setKeywords(keywords);
 		if(starts.equals("") && ends.equals("")){
 			Date current = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			ends = sdf.format(current);
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(current);
@@ -85,24 +85,25 @@ public class OrderImpl implements Order {
 		}
 		criteriaBean.setServiceTypes(typeList);
 
-		short status = -1;
-		switch(orderStatus){
-			case "all":
-				status = 0;
-				break;
-			case "outstanding":
-				status = 1;
-				break;
-			case "paid":
-				status = 2;
-				break;
-			case "draft":
-				status = 3;
-				break;
+		if(orderStatus.equals("open")) {
+			criteriaBean.setOrderStatus((short) 1);
+			List<OrderSearchResultBean> result = orderService.getOrdersByUserId(criteriaBean);
+			if(result!=null){
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			}
+		} else if(orderStatus.equals("completed")){
+			criteriaBean.setOrderStatus((short) 2);
+			List<OrderSearchResultBean> result = orderService.getOrdersByUserId(criteriaBean);
+			if(result!=null){
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			}
+		} else if(orderStatus.equals("draft")){
+
 		}
-		criteriaBean.setOrderStatus(status);
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
 		//fill criteria to criteriaBean
+		/**
 		List<OrderSearchResultBean> result = orderService.getOrdersByUserId(criteriaBean);
 
 		if(result!=null){
@@ -110,5 +111,6 @@ public class OrderImpl implements Order {
 		}else{
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
+		*/
 	}
 }
