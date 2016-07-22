@@ -60,4 +60,13 @@ public class OrderServiceImpl implements OrderService {
 		}
 		return orderDao.getOrdersByUserId(criteria);
 	}
+
+	@Override
+	public List<OrderSearchResultBean> getDraftsByUserId(OrderSearchCriteriaBean criteria) {
+		if(criteria.getLogin()==null){
+			String login = customerDao.getGeneralUser(criteria.getUserID()).getLogin();
+			criteria.setLogin(login);
+		}
+		return orderDao.getDraftsByUserId(criteria);
+	}
 }

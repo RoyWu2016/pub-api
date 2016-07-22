@@ -57,9 +57,6 @@ public class OrderDaoImpl implements OrderDao {
 	@Override
 	public List<OrderSearchResultBean> getOrdersByUserId(OrderSearchCriteriaBean criteria) {
 		String url = config.getMwServiceUrl() + "/service/order/search";
-
-		//check if mw token exist in redis
-
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
@@ -77,6 +74,28 @@ public class OrderDaoImpl implements OrderDao {
 			logger.error(ExceptionUtils.getStackTrace(e));
 		}
 
+		return null;
+	}
+
+	@Override
+	public List<OrderSearchResultBean> getDraftsByUserId(OrderSearchCriteriaBean criteria) {
+		String url = config.getMwServiceUrl() + "/service/draft/search";
+		try {
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+
+				return JsonUtil.mapToObject(result.getResponseString(),
+						new TypeReference<List<OrderSearchResultBean>>() {
+						});
+
+			} else {
+				logger.error("get drafts from middleware error: " + result.getStatusCode() +
+						", " + result.getResponseString());
+			}
+
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
 		return null;
 	}
 

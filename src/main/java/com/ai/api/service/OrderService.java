@@ -34,4 +34,5 @@ import com.ai.commons.beans.order.OrderSearchResultBean;
 public interface OrderService {
 
 	List<OrderSearchResultBean> getOrdersByUserId(OrderSearchCriteriaBean criteria);
+	List<OrderSearchResultBean> getDraftsByUserId(OrderSearchCriteriaBean criteria);
 }

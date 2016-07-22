@@ -85,32 +85,22 @@ public class OrderImpl implements Order {
 		}
 		criteriaBean.setServiceTypes(typeList);
 
+		List<OrderSearchResultBean> result = null;
 		if(orderStatus.equals("open")) {
 			criteriaBean.setOrderStatus((short) 1);
-			List<OrderSearchResultBean> result = orderService.getOrdersByUserId(criteriaBean);
-			if(result!=null){
-				return new ResponseEntity<>(result, HttpStatus.OK);
-			}
+			result = orderService.getOrdersByUserId(criteriaBean);
 		} else if(orderStatus.equals("completed")){
 			criteriaBean.setOrderStatus((short) 2);
-			List<OrderSearchResultBean> result = orderService.getOrdersByUserId(criteriaBean);
-			if(result!=null){
-				return new ResponseEntity<>(result, HttpStatus.OK);
-			}
+			result = orderService.getOrdersByUserId(criteriaBean);
 		} else if(orderStatus.equals("draft")){
-
+			criteriaBean.setOrderStatus((short) 3);
+			result = orderService.getDraftsByUserId(criteriaBean);
 		}
-		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-		//fill criteria to criteriaBean
-		/**
-		List<OrderSearchResultBean> result = orderService.getOrdersByUserId(criteriaBean);
-
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
-		}else{
+		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		*/
+
 	}
 }
