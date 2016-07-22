@@ -25,8 +25,6 @@ import com.ai.commons.beans.user.GeneralUserBean;
 import com.ai.commons.beans.user.TokenSession;
 import com.ai.userservice.common.util.MD5;
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jose4j.jwt.JwtClaims;
 import org.slf4j.Logger;
@@ -57,7 +55,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SSOUserServiceDaoImpl.class);
-	private final ObjectMapper mapper = new ObjectMapper();
+//	private final ObjectMapper mapper = new ObjectMapper();
 
 	@Autowired
 	@Qualifier("serviceConfig")
@@ -68,18 +66,16 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
     private TokenJWTDaoImpl tokenJWTDao;
 
 	@Override
-	public ServiceCallResult userLogin(final String username, final String password,
+	public ServiceCallResult userLogin(final String account, final String password,
 	                                   final String userType, final String accessToken){
-		String clientUrl = config.getSsoUserServiceUrl()+"/user/"+username+"/client";
-        String userUrl = config.getSsoUserServiceUrl()+"/user/"+username+"/user";
+		String clientUrl = config.getSsoUserServiceUrl()+"/user/"+account+"/client";
+        String userUrl = config.getSsoUserServiceUrl()+"/user/"+account+"/user";
 		Map<String, String> obj = new HashMap<>();
-		obj.put("username", username);
+		obj.put("account", account);
 		obj.put("password", password);
 		obj.put("userType", userType);
 		obj.put(Consts.Http.PUBLIC_API_ACCESS_TOKEN_HEADER, accessToken);
 		try {
-//			ServiceCallResult result = HttpUtil.issuePostRequest(ssoUserServiceUrl, null, obj);
-//			return mapper.readValue(result.getResponseString(), ServiceCallResult.class);
             ServiceCallResult result = this.checkAccessHeader(accessToken);
             if (result.getStatusCode() != HttpServletResponse.SC_OK) {
 			    return result;
@@ -94,8 +90,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 	            }
                 LOGGER.info("getClientAccountByUserName responseStr "+clientStr);
                 GeneralUserBean client = JSON.parseObject(clientStr,GeneralUserBean.class);
-	            String pwdMd5 = DigestUtils.shaHex(MD5.toMD5(password));
-                if (client != null && client.getUserId() != null && pwdMd5.equals(client.getPassword())) {
+                if (client != null && client.getUserId() != null) {
                     //Generate the token based on the User
 	                TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(), client.getUserId(), IDGenerator.uuid());
                     if (tokenSession != null) {
@@ -109,9 +104,9 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
                         result.setReasonPhase("Error occurred while generating token.");
                     }
                 } else {
-                    result.setResponseString("The username and password doesn't match OR user not exist");
+                    result.setResponseString("The username/email and password doesn't match OR user not exist");
                     result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                    result.setReasonPhase("The username and password doesn't match OR user not exist.");
+                    result.setReasonPhase("The username/email and password doesn't match OR user not exist.");
                 }
             } else if (userType.toLowerCase().equals("employee")) {
 	            LOGGER.info("http Get URL: "+userUrl);
@@ -156,8 +151,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 	}
 
 	@Override
-	public ServiceCallResult refreshAPIToken(Map<String, String> data, HttpServletRequest request,
-	                                         HttpServletResponse response) {
+	public ServiceCallResult refreshAPIToken(HttpServletRequest request,HttpServletResponse response) {
 		Map<String, String> headers = new HashMap<>();
         String accessToken = request.getHeader("ai-api-access-token");
         String authorization = request.getHeader("authorization");
@@ -170,15 +164,6 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
             if (result.getStatusCode() != HttpServletResponse.SC_OK) {
                 return result;
             }
-//            String username = data.get("username");
-//            if (username == null || username.isEmpty()) {
-//                result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-//                result.setReasonPhase("User name is empty.");
-//                result.setResponseString("Please send username filed in the reqeust.");
-//                return result;
-//            }else{
-//	            //verify user ....
-//            }
 			if (!HttpUtil.validateRefreshTokenKey(request)) {
 
 				result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
@@ -353,22 +338,5 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 
         return token;
     }
-
-//
-//	@Override
-//	public ServiceCallResult employeeAccountLogin(final String username, final String password,
-//	                                              final String tokenCategory) {
-//		String ssoUserServiceUrl = config.getSsoUserServiceUrl() + "/auth/employee-account-token";
-//		Map<String, String> obj = new HashMap<>();
-//		obj.put("username", username);
-//		obj.put("password", password);
-//		try {
-//			ServiceCallResult result = HttpUtil.issuePostRequest(ssoUserServiceUrl, null, obj);
-//			return mapper.readValue(result.getResponseString(), ServiceCallResult.class);
-//		} catch (IOException e) {
-//			LOGGER.error(Arrays.asList(e.getStackTrace()));
-//		}
-//		return null;
-//	}
 
 }

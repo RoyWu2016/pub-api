@@ -1,7 +1,10 @@
 package com.ai.api.dao.impl;
 
+import com.ai.api.util.RedisUtil;
 import com.ai.commons.IDGenerator;
+import com.ai.commons.StringUtils;
 import com.ai.commons.beans.user.TokenSession;
+import com.alibaba.fastjson.JSON;
 import org.jose4j.jwe.ContentEncryptionAlgorithmIdentifiers;
 import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
@@ -13,9 +16,6 @@ import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jose4j.jwt.JwtClaims;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
@@ -59,10 +59,10 @@ public class TokenJWTDaoImpl {
 
     private final String seperator = "~~~";
     private Map<String, Key> keys = new HashMap<String, Key>();
+	private String TOKENKEY = "publicAPIToken";
 
 
-
-	@CachePut(value = "publicAPIToken",key = "#sessionId")//create or update-----function will run every called
+//	@CachePut(value = "publicAPIToken",key = "#sessionId")//create or update-----function will run every called
 	public TokenSession generateToken(final String login, final String userId, String sessionId){
 		TokenSession tokenSession = new TokenSession();
 		String jwt = null;
@@ -78,6 +78,8 @@ public class TokenJWTDaoImpl {
 			jwt = this.outerEncryption(innerJwt);
 			tokenSession.setToken(jwt);
 			tokenSession.setValidBefore(temp[1]);
+			RedisUtil redisUtil = RedisUtil.getInstance();
+			redisUtil.hset(TOKENKEY,sessionId,JSON.toJSONString(tokenSession));
 		}catch (Exception e){
 			logger.error("error generateToken",e);
 			tokenSession = null;
@@ -113,16 +115,27 @@ public class TokenJWTDaoImpl {
 		return tmpClaim;
 	}
 
-	@Cacheable(value = "publicAPIToken",key = "#sessionId")//get data from redis and the function will not run
+//	@Cacheable(value = "publicAPIToken",key = "#sessionId")//get data from redis and the function will not run
 	public TokenSession getTokenSessionFromRedis(String sessionId){
-		logger.error("this message is not supposed to be saw!  id:"+sessionId);
-		return null;
+//		logger.error("this message is not supposed to be saw!  id:"+sessionId);
+		RedisUtil redisUtil = RedisUtil.getInstance();
+		String resultStr = redisUtil.hget(TOKENKEY,sessionId);
+		if (StringUtils.isBlank(resultStr))return null;
+		return JSON.parseObject(resultStr).toJavaObject(TokenSession.class);
 	}
 
-	@CacheEvict(value = "publicAPIToken",key = "#sessionId")
-	public String removePublicAPIToken(String sessionId) {
+//	@CacheEvict(value = "publicAPIToken",key = "#sessionId")
+	public boolean removePublicAPIToken(String sessionId) {
 		logger.info("remove tokenSession sessionId:" +sessionId);
-		return null;
+		RedisUtil redisUtil = RedisUtil.getInstance();
+		Long count = redisUtil.hdel(TOKENKEY,sessionId);
+		if (count==1) {
+			logger.info("success remove tokenSession sessionId[" + sessionId + "]");
+			return true;
+		}else {
+			logger.info("fail to remove tokenSession sessionId["+sessionId+"]");
+			return false;
+		}
 	}
 
     public boolean checkIfExpired(final String jwt) {

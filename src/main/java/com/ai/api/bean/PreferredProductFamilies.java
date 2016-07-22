@@ -1,51 +1,39 @@
 package com.ai.api.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by KK on 5/12/2016..
  */
 public class PreferredProductFamilies implements Serializable {
 
-    private String productCategoryId;
 
-    private String productCategoryName;
+	private boolean useCustomizedProductType;
+	private List<PublicProductType> publicProductTypeList;
+	private List<CustomizedProductType> customizedProductTypeList;
 
-    private String productFamilyId;
+	public boolean isUseCustomizedProductType() {
+		return useCustomizedProductType;
+	}
 
-    private String productFamilyName;
+	public void setUseCustomizedProductType(boolean useCustomizedProductType) {
+		this.useCustomizedProductType = useCustomizedProductType;
+	}
 
-    public String getProductCategoryId() {
-        return productCategoryId;
-    }
+	public List<PublicProductType> getPublicProductTypeList() {
+		return publicProductTypeList;
+	}
 
-    public void setProductCategoryId(String productCategoryId) {
-        this.productCategoryId = productCategoryId;
-    }
+	public void setPublicProductTypeList(List<PublicProductType> publicProductTypeList) {
+		this.publicProductTypeList = publicProductTypeList;
+	}
 
-    public String getProductCategoryName() {
-        return productCategoryName;
-    }
+	public List<CustomizedProductType> getCustomizedProductTypeList() {
+		return customizedProductTypeList;
+	}
 
-    public void setProductCategoryName(String productCategoryName) {
-        this.productCategoryName = productCategoryName;
-    }
-
-    public String getProductFamilyId() {
-        return productFamilyId;
-    }
-
-    public void setProductFamilyId(String productFamilyId) {
-        this.productFamilyId = productFamilyId;
-    }
-
-    public String getProductFamilyName() {
-        return productFamilyName;
-    }
-
-    public void setProductFamilyName(String productFamilyName) {
-        this.productFamilyName = productFamilyName;
-    }
-
-
+	public void setCustomizedProductTypeList(List<CustomizedProductType> customizedProductTypeList) {
+		this.customizedProductTypeList = customizedProductTypeList;
+	}
 }
