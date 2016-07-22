@@ -184,8 +184,20 @@ public class UserServiceImpl implements UserService {
 		BookingPreferenceBean bookingbean = new BookingPreferenceBean();
 
 		bookingbean.setUseQuickFormByDefault(extrabean.getIsDetailedBookingForm());
-		bookingbean.setShouldSendRefSampleToFactory(orderBookingBean.getSendSampleToFactory());
-		bookingbean.setIsPoMandatory(orderBookingBean.getPoCompulsory());
+
+		String sendSampleToFactory = orderBookingBean.getSendSampleToFactory();
+		if(sendSampleToFactory!=null && sendSampleToFactory.equalsIgnoreCase("Yes")) {
+			bookingbean.setShouldSendRefSampleToFactory(true);
+		} else {
+			bookingbean.setShouldSendRefSampleToFactory(false);
+		}
+
+		String poCompulsory = orderBookingBean.getPoCompulsory();
+		if(poCompulsory!=null && poCompulsory.equalsIgnoreCase("Yes")){
+			bookingbean.setIsPoMandatory(true);
+		} else {
+			bookingbean.setIsPoMandatory(false);
+		}
 
 		bookingbean.setProductDivisions(orderBookingBean.getAvailableDivisions());
 
@@ -201,20 +213,6 @@ public class UserServiceImpl implements UserService {
 			bookingbean.setSendEmailAfterModification(true);
 		} else {
 			bookingbean.setSendEmailAfterModification(false);
-		}
-
-		String sendSampleToFactory = orderBookingBean.getSendSampleToFactory();
-		if(sendSampleToFactory!=null && sendSampleToFactory.equalsIgnoreCase("yes")){
-			bookingbean.setSendReferenceSampleAlways(true);
-		} else {
-			bookingbean.setSendReferenceSampleAlways(false);
-		}
-
-		String poCompulsory = orderBookingBean.getPoCompulsory();
-		if(poCompulsory!=null && poCompulsory.equalsIgnoreCase("Yes")){
-			bookingbean.setFieldPoCompulsory(true);
-		} else {
-			bookingbean.setFieldPoCompulsory(false);
 		}
 
 		String showProdDivision = orderBookingBean.getShowProdDivision();
@@ -483,8 +481,8 @@ public class UserServiceImpl implements UserService {
 
 		//get booking preference first
 		OrderBookingBean booking = companyDao.getCompanyOrderBooking(compId);
-		booking.setSendSampleToFactory(StringUtils.getYesNo(newBookingPref.getShouldSendRefSampleToFactory()));
-		booking.setPoCompulsory(StringUtils.getYesNo(newBookingPref.getIsPoMandatory()));
+		booking.setSendSampleToFactory(StringUtils.getYesNo(Boolean.toString(newBookingPref.isShouldSendRefSampleToFactory())));
+		booking.setPoCompulsory(StringUtils.getYesNo(Boolean.toString(newBookingPref.getIsPoMandatory())));
 		booking.setPsiPercentage(newBookingPref.getMinQuantityToBeReady()[0].getMinQty());
 		booking.setDuproPercentage(newBookingPref.getMinQuantityToBeReady()[1].getMinQty());
 		booking.setIpcPercentage(newBookingPref.getMinQuantityToBeReady()[2].getMinQty());

@@ -10,17 +10,17 @@ public class BookingPreferenceBean implements Serializable {
 
 	private String useQuickFormByDefault;
 
-	private String shouldSendRefSampleToFactory;
+	private boolean shouldSendRefSampleToFactory;
 
-	private String isPoMandatory;
+	private boolean isPoMandatory;
 
 	private boolean showProductDivision;
 
 	private boolean sendEmailAfterModification;
 
-	private boolean sendReferenceSampleAlways;
+	//private boolean sendReferenceSampleAlways;
 
-	private boolean isFieldPoCompulsory;
+	//private boolean isFieldPoCompulsory;
 
 	private boolean showFactoryDetailsToMaster;
 
@@ -56,22 +56,6 @@ public class BookingPreferenceBean implements Serializable {
 
 	public void setUseQuickFormByDefault(String useQuickFormByDefault) {
 		this.useQuickFormByDefault = useQuickFormByDefault;
-	}
-
-	public String getShouldSendRefSampleToFactory() {
-		return shouldSendRefSampleToFactory;
-	}
-
-	public void setShouldSendRefSampleToFactory(String shouldSendRefSampleToFactory) {
-		this.shouldSendRefSampleToFactory = shouldSendRefSampleToFactory;
-	}
-
-	public String getIsPoMandatory() {
-		return isPoMandatory;
-	}
-
-	public void setIsPoMandatory(String isPoMandatory) {
-		this.isPoMandatory = isPoMandatory;
 	}
 
 	public MinQuantityToBeReadyBean[] getMinQuantityToBeReady() {
@@ -121,22 +105,6 @@ public class BookingPreferenceBean implements Serializable {
 
 	public void setSendEmailAfterModification(boolean sendEmailAfterModification) {
 		this.sendEmailAfterModification = sendEmailAfterModification;
-	}
-
-	public boolean isSendReferenceSampleAlways() {
-		return sendReferenceSampleAlways;
-	}
-
-	public void setSendReferenceSampleAlways(boolean sendReferenceSampleAlways) {
-		this.sendReferenceSampleAlways = sendReferenceSampleAlways;
-	}
-
-	public boolean isFieldPoCompulsory() {
-		return isFieldPoCompulsory;
-	}
-
-	public void setFieldPoCompulsory(boolean fieldPoCompulsory) {
-		isFieldPoCompulsory = fieldPoCompulsory;
 	}
 
 	public boolean isShowFactoryDetailsToMaster() {
@@ -203,6 +171,22 @@ public class BookingPreferenceBean implements Serializable {
 		this.bookOrdersWithMultipleFactories = bookOrdersWithMultipleFactories;
 	}
 
+	public boolean isShouldSendRefSampleToFactory() {
+		return shouldSendRefSampleToFactory;
+	}
+
+	public void setShouldSendRefSampleToFactory(boolean shouldSendRefSampleToFactory) {
+		this.shouldSendRefSampleToFactory = shouldSendRefSampleToFactory;
+	}
+
+	public boolean getIsPoMandatory() {
+		return isPoMandatory;
+	}
+
+	public void setIsPoMandatory(boolean poMandatory) {
+		isPoMandatory = poMandatory;
+	}
+
 	public String getProductDivisions() {
 		return productDivisions;
 	}
@@ -218,4 +202,6 @@ public class BookingPreferenceBean implements Serializable {
 	public void setMultiReference(MultiReferenceBean multiReference) {
 		this.multiReference = multiReference;
 	}
+
+
 }
