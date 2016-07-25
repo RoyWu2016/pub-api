@@ -34,7 +34,7 @@ import org.springframework.http.ResponseEntity;
 public interface Order {
 
 	ResponseEntity<List<OrderSearchResultBean>> getOrderListByUserId(String userId,
-	                                                                 int pageNumber,
+	                                                                 Integer pageNumber,
 	                                                                 String orderTypeArray,
 	                                                                 String orderStatus,
 	                                                                 String starts,
