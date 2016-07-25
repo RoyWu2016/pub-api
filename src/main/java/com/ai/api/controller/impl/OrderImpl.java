@@ -54,61 +54,87 @@ public class OrderImpl implements Order {
 	@Override
 	@RequestMapping(value = "/user/{userId}/orders", method = RequestMethod.GET)
 	public ResponseEntity<List<OrderSearchResultBean>> getOrderListByUserId(@PathVariable("userId") String userId,
-	                                                                        @RequestParam("page") int pageNumber,
-																			@RequestParam("types") String orderTypeArray,
-																			@RequestParam("status") String orderStatus,
-																			@RequestParam("start") String starts,
-																			@RequestParam("end") String ends,
-																			@RequestParam("keyword") String keywords) {
+	                                                                        @RequestParam(value = "page",required = false) Integer pageNumber,
+																			@RequestParam(value = "types",required = false) String orderTypeArray,
+																			@RequestParam(value = "status",required = false) String orderStatus,
+																			@RequestParam(value = "start",required = false) String starts,
+																			@RequestParam(value = "end",required = false) String ends,
+																			@RequestParam(value = "keyword",required = false) String keywords) {
 
 		OrderSearchCriteriaBean criteriaBean = new OrderSearchCriteriaBean();
 
+		if(pageNumber==null){
+			pageNumber = 1;
+		}
 		criteriaBean.setPageNumber(pageNumber);
 		criteriaBean.setKeywords(keywords);
-		if(starts.equals("") && ends.equals("")){
-			Date current = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
-			ends = sdf.format(current);
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(current);
-			calendar.add(Calendar.MONTH, -1);
-			starts = sdf.format(calendar.getTime());
+		try {
+			if ((starts == null && ends == null) || (starts.equals("") && ends.equals(""))) {
+				Date current = new Date();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				ends = sdf.format(current);
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(current);
+				calendar.add(Calendar.MONTH, -3);
+				starts = sdf.format(calendar.getTime());
+			}
+			if (starts == null && ends != null) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(sdf.parse(ends));
+				calendar.add(Calendar.MONTH, -3);
+				starts = sdf.format(calendar.getTime());
+			}
+			if (starts != null && ends == null) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(sdf.parse(starts));
+				calendar.add(Calendar.MONTH, +3);
+				Date current = new Date();
+				if(calendar.getTime().getTime()>current.getTime()){
+					ends = sdf.format(current);
+				}else {
+					ends = sdf.format(calendar.getTime());
+				}
+			}
+			criteriaBean.setStartDate(starts);
+			criteriaBean.setEndDate(ends);
+		}catch (Exception e){
+			e.printStackTrace();
 		}
-		criteriaBean.setStartDate(starts);
-		criteriaBean.setEndDate(ends);
 		criteriaBean.setUserID(userId);
 
 		ArrayList<String> typeList = new ArrayList<String>();
-		if (!orderTypeArray.equals("")) {
+		if(orderTypeArray==null || orderTypeArray.equals("")){
+			typeList.add("PSI");
+		}else{
 			String[] types = orderTypeArray.split(",");
 			Collections.addAll(typeList, types);
 		}
 		criteriaBean.setServiceTypes(typeList);
 
-		short status = -1;
-		switch(orderStatus){
-			case "all":
-				status = 0;
-				break;
-			case "outstanding":
-				status = 1;
-				break;
-			case "paid":
-				status = 2;
-				break;
-			case "draft":
-				status = 3;
-				break;
+		List<OrderSearchResultBean> result = null;
+		if(orderStatus==null){
+			criteriaBean.setOrderStatus((short) 1);
+			result = orderService.getOrdersByUserId(criteriaBean);
+		}else {
+			if (orderStatus.equals("open")) {
+				criteriaBean.setOrderStatus((short) 1);
+				result = orderService.getOrdersByUserId(criteriaBean);
+			} else if (orderStatus.equals("completed")) {
+				criteriaBean.setOrderStatus((short) 2);
+				result = orderService.getOrdersByUserId(criteriaBean);
+			} else if (orderStatus.equals("draft")) {
+				criteriaBean.setOrderStatus((short) 3);
+				result = orderService.getDraftsByUserId(criteriaBean);
+			}
 		}
-		criteriaBean.setOrderStatus(status);
-
-		//fill criteria to criteriaBean
-		List<OrderSearchResultBean> result = orderService.getOrdersByUserId(criteriaBean);
 
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
-		}else{
+		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
+
 	}
 }
