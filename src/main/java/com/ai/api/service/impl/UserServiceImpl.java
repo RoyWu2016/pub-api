@@ -201,11 +201,13 @@ public class UserServiceImpl implements UserService {
 
 		bookingbean.setProductDivisions(orderBookingBean.getAvailableDivisions());
 
-		String featureValue = customerFeatureBean.getFeatureValue();
-		if(featureValue!=null && featureValue.equalsIgnoreCase("Yes")){
-			bookingbean.setBookOrdersWithMultipleFactories(true);
-		} else {
-			bookingbean.setBookOrdersWithMultipleFactories(false);
+		if(customerFeatureBean!=null) {
+			String featureValue = customerFeatureBean.getFeatureValue();
+			if (featureValue != null && featureValue.equalsIgnoreCase("Yes")) {
+				bookingbean.setBookOrdersWithMultipleFactories(true);
+			} else {
+				bookingbean.setBookOrdersWithMultipleFactories(false);
+			}
 		}
 
 		String sendModificationMail = orderBookingBean.getSendModificationMail();
