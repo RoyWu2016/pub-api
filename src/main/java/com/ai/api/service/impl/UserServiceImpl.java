@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
 	@Cacheable("userBeanCache")
     @Override
     public UserBean getCustById(String userId) throws IOException, AIException {
-
+		logger.info("...........start getting UserBean from user service...........");
 	    UserBean user = new UserBean();
 
 	    //get all needed beans
@@ -402,6 +402,7 @@ public class UserServiceImpl implements UserService {
 		preferencesBean.setBooking(bookingbean);
 		user.setPreferencesBean(preferencesBean);
 
+		logger.info("...........return UserBean from user service...........");
 		return user;
     }
 

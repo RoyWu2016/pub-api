@@ -37,7 +37,7 @@
     <bean id="userService" class="com.ai.api.service.impl.UserServiceImpl" />
     <bean id="parameterService" class="com.ai.api.service.impl.ParameterServiceImpl" />
     <bean id="orderService" class="com.ai.api.service.impl.OrderServiceImpl" />
-
+    <bean id="reportService" class="com.ai.api.service.impl.ReportServiceImpl" />
 
     <bean id="customerDao" class="com.ai.api.dao.impl.CustomerDaoImpl">
         <property name="dataSource" ref="dataSource"/>
@@ -50,6 +50,7 @@
     <bean id="factoryDao" class="com.ai.api.dao.impl.FactoryDaoImpl"/>
     <bean id="orderDao" class="com.ai.api.dao.impl.OrderDaoImpl"/>
     <bean id="featureDao" class="com.ai.api.dao.impl.FeatureDaoImpl"/>
+    <bean id="reportDao" class="com.ai.api.dao.impl.ReportDaoImpl"/>
 
     <!-- Version bean for application information -->
     <!--<bean id="versionBean" class="version.Version"/>-->

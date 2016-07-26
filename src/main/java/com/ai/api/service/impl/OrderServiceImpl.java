@@ -42,7 +42,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-	protected Logger logger = LoggerFactory.getLogger(FactoryServiceImpl.class);
+	protected Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
 	@Autowired
 	@Qualifier("orderDao")

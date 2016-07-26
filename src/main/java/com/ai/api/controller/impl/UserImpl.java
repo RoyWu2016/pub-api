@@ -63,6 +63,7 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}/profile", method = RequestMethod.GET)
 	public ResponseEntity<UserBean> getUserProfileByLogin(@PathVariable("userId") String userId)
 			throws IOException, AIException {
+		logger.info("......start getting user profile.......");
 		UserBean cust = null;
 
 		try {
@@ -74,6 +75,8 @@ public class UserImpl implements User {
 			System.out.println("User with id " + userId + " not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+
+		logger.info("......finish getting user profile.......");
 		return new ResponseEntity<>(cust, HttpStatus.OK);
 	}
 
