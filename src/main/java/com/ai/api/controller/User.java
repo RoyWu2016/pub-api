@@ -64,9 +64,4 @@ public interface User {
 	ResponseEntity<String> deleteCompanyLogo(String userId, String companyId);
 
 	ResponseEntity<Boolean> createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
-
-	ResponseEntity<List<PaymentSearchResultBean>> getPaymentList(String userId, String archived,
-	                                                             String start, String end,
-	                                                             String keywords, Integer page) throws IOException, AIException;
-
 }
