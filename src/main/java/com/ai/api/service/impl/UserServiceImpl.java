@@ -31,6 +31,8 @@ import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.*;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -614,5 +616,15 @@ public class UserServiceImpl implements UserService {
 	public boolean createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException {
 		return customerDao.createNewAccount(clientInfoBean);
 	}
+
+	@Override
+	public List<PaymentSearchResultBean> searchPaymentList(PaymentSearchCriteriaBean criteria) throws IOException, AIException {
+		if(criteria.getLogin()==null){
+			String login = customerDao.getGeneralUser(criteria.getUserID()).getLogin();
+			criteria.setLogin(login);
+		}
+		return customerDao.searchPaymentList(criteria);
+	}
+
 
 }

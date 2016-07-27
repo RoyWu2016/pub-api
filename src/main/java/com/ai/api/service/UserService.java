@@ -20,6 +20,8 @@ import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
 
 /***************************************************************************
  * <PRE>
@@ -62,4 +64,6 @@ public interface UserService {
     boolean deleteCompanyLogo(String userId,String companyId);
 
     boolean createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
+
+	List<PaymentSearchResultBean> searchPaymentList(PaymentSearchCriteriaBean criteria) throws IOException, AIException;
 }

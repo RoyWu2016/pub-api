@@ -14,9 +14,8 @@ import com.ai.api.bean.*;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,8 +52,7 @@ public interface User {
 	ResponseEntity<UserBean> updateUserBookingPreference(String userId,
 	                                                    BookingPreferenceBean newBookingPref) throws IOException, AIException;
 
-	ResponseEntity<UserBean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String userId,
-	                                                                @RequestBody List<String> newPreferred)
+	ResponseEntity<UserBean> updateUserBookingPreferredProductFamily(String userId,List<String> newPreferred)
 			throws IOException, AIException;
 
 	ResponseEntity<ServiceCallResult> updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException;
@@ -66,5 +64,9 @@ public interface User {
 	ResponseEntity<String> deleteCompanyLogo(String userId, String companyId);
 
 	ResponseEntity<Boolean> createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
+
+	ResponseEntity<List<PaymentSearchResultBean>> getPaymentList(String userId, String archived,
+	                                                             String start, String end,
+	                                                             String keywords, Integer page) throws IOException, AIException;
 
 }

@@ -7,6 +7,9 @@
 package com.ai.api.controller.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,9 +17,13 @@ import com.ai.api.bean.*;
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
+import com.ai.commons.DateUtils;
+import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +33,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -218,10 +226,72 @@ public class UserImpl implements User {
 	@Override
 	@RequestMapping(value = "/user", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> createNewAccount(@RequestBody ClientInfoBean clientInfoBean) throws IOException, AIException {
-		System.out.println("creating a new account");
+		logger.info("creating a new account . . . . . ");
 		if (userService.createNewAccount(clientInfoBean)) {
 			return new ResponseEntity<>(true, HttpStatus.OK);
 		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/payments", method = RequestMethod.GET)
+	public ResponseEntity<List<PaymentSearchResultBean>> getPaymentList(@PathVariable("userId") String userId,
+	                                                                    @RequestParam(value = "paid",required = false) String paid,
+	                                                                    @RequestParam(value = "start",required = false) String start,
+	                                                                    @RequestParam(value = "end",required = false) String end,
+	                                                                    @RequestParam(value = "keyword",required = false) String keywords,
+	                                                                    @RequestParam(value = "page",required = false) Integer page) {
+		logger.info("get PaymentList----userId["+userId+"] | paid["+paid+"] | start["+start+"] | end["+end+"] | keyword["+keywords+"] | page["+page+"]");
+		List<PaymentSearchResultBean> resultList = new ArrayList<>();
+		boolean b = false;
+		try {
+			PaymentSearchCriteriaBean criteriaBean = new PaymentSearchCriteriaBean();
+			criteriaBean.setPaid(false);
+			try {
+				Calendar calendar = Calendar.getInstance();
+				if (paid.equals("true")) {
+					criteriaBean.setPaid(true);
+				}
+
+				if (StringUtils.isBlank(start)) {
+					if (StringUtils.isBlank(end)) {
+						calendar.setTime(new Date());
+						end = DateUtils.date2String(calendar.getTime(), DateUtils.Format.AI_DATE_FORMAT_JSON.getValue());
+					} else {
+						calendar.setTime(DateUtils.toDate(end, DateUtils.Format.AI_DATE_FORMAT_JSON.getValue()));
+					}
+					calendar.add(calendar.MONTH, -3);
+					start = DateUtils.date2String(calendar.getTime(), DateUtils.Format.AI_DATE_FORMAT_JSON.getValue());
+				} else {
+					if (StringUtils.isBlank(end)) {
+						calendar.setTime(DateUtils.toDate(start, DateUtils.Format.AI_DATE_FORMAT_JSON.getValue()));
+						calendar.add(calendar.MONTH, +3);
+						end = DateUtils.date2String(calendar.getTime(), DateUtils.Format.AI_DATE_FORMAT_JSON.getValue());
+					}
+				}
+
+				if (page == null) {
+					page = 1;
+				}
+				criteriaBean.setPageNumber(page);
+				criteriaBean.setKeywords(keywords);
+				criteriaBean.setStartDate(start);
+				criteriaBean.setEndDate(end);
+				criteriaBean.setUserID(userId);
+
+			} catch (Exception e) {
+				logger.error("", e);
+			}
+			resultList = userService.searchPaymentList(criteriaBean);
+			b=true;
+		}catch (Exception e){
+			logger.error("", e);
+		}
+		if (b){
+			return new ResponseEntity<>(resultList,HttpStatus.OK);
+		}else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
