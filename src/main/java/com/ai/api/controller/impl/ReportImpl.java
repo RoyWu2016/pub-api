@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class ReportImpl implements Report {
     @Override
     @RequestMapping(value = "/user/{userId}/reports", method = RequestMethod.GET)
     public ResponseEntity<List<ReportSearchResultBean>> getUserReportsByCriteria(@PathVariable("userId") String userId,
+                                                                                 @RequestParam(value = "types",required = false) String orderTypeArray,
                                                                                  @RequestParam(value = "page",required = false) Integer pageNumber,
                                                                                  @RequestParam(value = "archived",required = false) String archived,
                                                                                  @RequestParam(value = "start",required = false) String starts,
@@ -48,6 +51,15 @@ public class ReportImpl implements Report {
         } else {
             criteriaBean.setArchived(Boolean.valueOf(archived));
         }
+
+	    ArrayList<String> typeList = new ArrayList<String>();
+	    if(orderTypeArray==null || orderTypeArray.equals("")){
+		    typeList.add("PSI");
+	    }else{
+		    String[] types = orderTypeArray.split(",");
+		    Collections.addAll(typeList, types);
+	    }
+	    criteriaBean.setServiceTypes(typeList);
 
         try {
             if ((starts == null && ends == null) || (starts.equals("") && ends.equals(""))) {

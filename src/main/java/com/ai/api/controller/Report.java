@@ -9,5 +9,5 @@ import java.util.List;
  * Created by yan on 2016/7/25.
  */
 public interface Report {
-    ResponseEntity<List<ReportSearchResultBean>> getUserReportsByCriteria(String userId,Integer pageNumber,String archived,String starts,String ends,String keywords);
+    ResponseEntity<List<ReportSearchResultBean>> getUserReportsByCriteria(String userId,String orderTypeArray,Integer pageNumber,String archived,String starts,String ends,String keywords);
 }
