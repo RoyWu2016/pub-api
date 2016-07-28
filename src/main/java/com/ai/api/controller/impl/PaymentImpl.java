@@ -66,7 +66,7 @@ public class PaymentImpl implements Payment {
 			criteriaBean.setPaid(false);
 			try {
 				Calendar calendar = Calendar.getInstance();
-				if (paid.equals("true")) {
+				if (!StringUtils.isBlank(paid) && paid.equals("true")) {
 					criteriaBean.setPaid(true);
 				}
 
