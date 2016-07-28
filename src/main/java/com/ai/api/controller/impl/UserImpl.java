@@ -7,6 +7,9 @@
 package com.ai.api.controller.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,9 +17,13 @@ import com.ai.api.bean.*;
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
+import com.ai.commons.DateUtils;
+import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +33,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -218,7 +226,7 @@ public class UserImpl implements User {
 	@Override
 	@RequestMapping(value = "/user", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> createNewAccount(@RequestBody ClientInfoBean clientInfoBean) throws IOException, AIException {
-		System.out.println("creating a new account");
+		logger.info("creating a new account . . . . . ");
 		if (userService.createNewAccount(clientInfoBean)) {
 			return new ResponseEntity<>(true, HttpStatus.OK);
 		} else {

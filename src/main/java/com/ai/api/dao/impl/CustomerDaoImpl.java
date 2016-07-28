@@ -9,6 +9,7 @@ package com.ai.api.dao.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,7 +21,10 @@ import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.user.GeneralUserBean;
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -273,6 +277,24 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return false;
+	}
+
+	@Override
+	public List<PaymentSearchResultBean> searchPaymentList(PaymentSearchCriteriaBean criteria) {
+		try {
+			String url = config.getMwServiceUrl() + "/service/payment/search";
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return JSON.parseArray(result.getResponseString(),PaymentSearchResultBean.class);
+
+			} else {
+				logger.error("searchPaymentList from middleware error: " + result.getStatusCode() + ", " + result.getResponseString());
+			}
+		}catch (Exception e){
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+
+		return null;
 	}
 
 }
