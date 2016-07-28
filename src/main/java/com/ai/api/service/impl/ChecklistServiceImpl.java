@@ -6,9 +6,11 @@ import java.util.List;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.dao.ChecklistDao;
+import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.service.ChecklistService;
 import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
+import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -42,9 +44,19 @@ public class ChecklistServiceImpl implements ChecklistService {
 	@Qualifier("paramDao")
 	private ParameterDao paramDao;
 
+	@Autowired
+	@Qualifier("customerDao")
+	private CustomerDao customerDao;
+
 	@Override
 	public List<ChecklistSearchResultBean> searchChecklist(String userID, String keyword) {
-		List<ChecklistSearchResultBean> list = checklistDao.searchChecklist(userID,keyword);
+		ReportSearchCriteriaBean criteria = new ReportSearchCriteriaBean();
+		criteria.setUserID(userID);
+		criteria.setKeywords(keyword);
+		criteria.setLogin(customerDao.getGeneralUser(userID).getLogin());
+
+		List<ChecklistSearchResultBean> list = checklistDao.searchChecklist(criteria);
+
 		List<ProductCategoryDtoBean> categoryList = paramDao.getProductCategoryList();
 		List<ProductFamilyDtoBean> familyList = paramDao.getProductFamilyList();
 		for (ChecklistSearchResultBean bean:list){

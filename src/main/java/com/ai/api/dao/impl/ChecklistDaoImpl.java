@@ -11,6 +11,7 @@ import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
 import com.ai.commons.beans.order.OrderSearchResultBean;
+import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -50,13 +51,10 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	private ServiceConfig config;
 
 	@Override
-	public List<ChecklistSearchResultBean> searchChecklist(String userID, String keyword) {
-		String url = config.getMwServiceUrl() + "/service/checklist?userID="+userID;
-		if (!StringUtils.isBlank(keyword)){
-			url = url+"&keyword="+keyword;
-		}
+	public List<ChecklistSearchResultBean> searchChecklist(ReportSearchCriteriaBean criteria) {
+		String url = config.getMwServiceUrl() + "/service/checklist/private";
 		try {
-			ServiceCallResult result = HttpUtil.issueGetRequest(url,null);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 
 				return JSON.parseArray(result.getResponseString(),ChecklistSearchResultBean.class);
