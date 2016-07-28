@@ -22,13 +22,11 @@ public class ParameterServiceImpl implements ParameterService {
     @Qualifier("paramDao")
     private ParameterDao paramDao;
 
-    @Cacheable(value="productCategoryListCache", key="#root.methodName")
     @Override
     public List<ProductCategoryDtoBean> getProductCategoryList(){
         return paramDao.getProductCategoryList();
     }
 
-    @Cacheable(value="productFamilyListCache", key="#root.methodName")
     @Override
     public List<ProductFamilyDtoBean>  getProductFamilyList(){
         return paramDao.getProductFamilyList();
