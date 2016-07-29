@@ -54,7 +54,8 @@ public class ReportImpl implements Report {
 
 	    ArrayList<String> typeList = new ArrayList<String>();
 	    if(orderTypeArray==null || orderTypeArray.equals("")){
-		    typeList.add("PSI");
+            String[] allTypes = {"PSI","LT","IPC","DUPRO","CLC","MA","PM","EA","StrA","CTPAT"};
+            Collections.addAll(typeList, allTypes);
 	    }else{
 		    String[] types = orderTypeArray.split(",");
 		    Collections.addAll(typeList, types);
