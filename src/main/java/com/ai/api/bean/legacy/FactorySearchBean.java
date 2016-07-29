@@ -10,8 +10,8 @@ public class FactorySearchBean implements Serializable {
 
     private static final long serialVersionUID = -7779390029319826687L;
 
-    private String id;
-    private String name;
+    private String supplierId;
+    private String supplierName;
     private String city;
     private String country;
     private String contact;
@@ -20,20 +20,20 @@ public class FactorySearchBean implements Serializable {
     private String createdDate;
     private String updateDate;
 
-    public String getId() {
-        return id;
+    public String getSupplierId() {
+        return supplierId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setSupplierId(String supplierId) {
+        this.supplierId = supplierId;
     }
 
-    public String getName() {
-        return name;
+    public String getSupplierName() {
+        return supplierName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
     }
 
     public String getCity() {
@@ -97,7 +97,7 @@ public class FactorySearchBean implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result
-                + ((id == null) ? 0 : id.hashCode());
+                + ((supplierId == null) ? 0 : supplierId.hashCode());
         return result;
     }
 
@@ -113,11 +113,11 @@ public class FactorySearchBean implements Serializable {
             return false;
         }
         FactorySearchBean other = (FactorySearchBean) obj;
-        if (id == null) {
-            if (other.id != null) {
+        if (supplierId == null) {
+            if (other.supplierId != null) {
                 return false;
             }
-        } else if (!id.equals(other.id)) {
+        } else if (!supplierId.equals(other.supplierId)) {
             return false;
         }
         return true;
@@ -125,8 +125,8 @@ public class FactorySearchBean implements Serializable {
 
     @Override
     public String toString() {
-        return "FactorySearchBean [id=" + id
-                + ", name=" + name + ", city=" + city
+        return "FactorySearchBean [supplierId=" + supplierId
+                + ", supplierName=" + supplierName + ", city=" + city
                 + ", country=" + country + ", contact=" + contact
                 + ", telephone=" + telephone + ", email=" + email
                 + ", createdDate=" + createdDate + ", updateDate=" + updateDate
