@@ -84,7 +84,7 @@ public class ChecklistServiceImpl implements ChecklistService {
 		criteria.setUserID(userId);
 		criteria.setKeywords(keyword);
 		criteria.setLogin(customerDao.getGeneralUser(userId).getLogin());
-		List<ChecklistSearchResultBean> list = checklistDao.searchChecklist(criteria);
+		List<ChecklistSearchResultBean> list = checklistDao.searchPublicChecklist(criteria);
 		return list;
 	}
 }
