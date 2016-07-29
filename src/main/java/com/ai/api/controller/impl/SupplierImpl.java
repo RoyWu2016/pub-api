@@ -1,7 +1,11 @@
 package com.ai.api.controller.impl;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import com.ai.api.bean.SupplierDetailBean;
 import com.ai.api.bean.legacy.FactorySearchBean;
@@ -9,6 +13,9 @@ import com.ai.api.controller.Supplier;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.FactoryService;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.supplier.SupplierSearchResultBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 public class SupplierImpl implements Supplier {
+    private static final Logger logger = LoggerFactory.getLogger(SupplierImpl.class);
 
     @Autowired
     FactoryService factoryService;
@@ -26,17 +34,41 @@ public class SupplierImpl implements Supplier {
     @Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/suppliers", method = RequestMethod.GET)
-    public ResponseEntity<List<FactorySearchBean>> getUserSupplierById(@PathVariable("userId") String userId)
+    public ResponseEntity<List<SupplierSearchResultBean>> getUserSupplierById(@PathVariable("userId") String userId)
             throws IOException, AIException {
         System.out.println("get user's suppliers by userId: " + userId);
 
-        List<FactorySearchBean> result = factoryService.getSuppliersByUserId(userId);
+        List<FactorySearchBean> factorySearchBeenList = factoryService.getSuppliersByUserId(userId);
 
-        if(result!=null){
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(factorySearchBeenList!=null){
+            try {
+                List<SupplierSearchResultBean> result = new ArrayList<SupplierSearchResultBean>();
+                for (FactorySearchBean factorySearchBean : factorySearchBeenList) {
+                    SupplierSearchResultBean supplierSearchResultBean = new SupplierSearchResultBean();
+                    supplierSearchResultBean.setId(factorySearchBean.getSupplierId());
+                    supplierSearchResultBean.setName(factorySearchBean.getSupplierName());
+                    supplierSearchResultBean.setCity(factorySearchBean.getCity());
+                    supplierSearchResultBean.setCountry(factorySearchBean.getCountry());
+                    supplierSearchResultBean.setContact(factorySearchBean.getContact());
+                    supplierSearchResultBean.setEmail(factorySearchBean.getEmail());
+                    supplierSearchResultBean.setTelephone(factorySearchBean.getTelephone());
+                    String createdDate = factorySearchBean.getCreatedDate();
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
+                    Date cdate = sdf.parse(createdDate);
+                    supplierSearchResultBean.setCreatedDate(createdDate);
+                    supplierSearchResultBean.setCreatedDateUnixTimestamp(cdate.getTime());
+                    String updateDate = factorySearchBean.getUpdateDate();
+                    Date udate = sdf.parse(updateDate);
+                    supplierSearchResultBean.setUpdateDate(updateDate);
+                    supplierSearchResultBean.setUpdateDateUnixTimestamp(udate.getTime());
+                    result.add(supplierSearchResultBean);
+                }
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }catch (Exception e) {
+                logger.error("", e);
+            }
         }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @Override
