@@ -62,14 +62,18 @@ public class ChecklistServiceImpl implements ChecklistService {
 		List<ProductCategoryDtoBean> categoryList = paramDao.getProductCategoryList();
 		List<ProductFamilyDtoBean> familyList = paramDao.getProductFamilyList();
 		for (ChecklistSearchResultBean bean:list){
+			String mwCategory = bean.getProductCategory();
+			String mwFamily = bean.getProductFamily();
+			bean.setProductCategory(mwFamily);
+			bean.setProductFamily(mwCategory);
 			for (ProductCategoryDtoBean category:categoryList){
-				if (category.getName().equals(bean.getProductCategory())){
+				if (category.getName().equals(mwFamily)){
 					bean.setProductCategoryId(category.getId());
 					break;
 				}
 			}
 			for (ProductFamilyDtoBean family:familyList){
-				if (family.getName().equals(bean.getProductFamily())){
+				if (family.getName().equals(mwCategory)){
 					bean.setProductFamilyId(family.getId());
 					break;
 				}
