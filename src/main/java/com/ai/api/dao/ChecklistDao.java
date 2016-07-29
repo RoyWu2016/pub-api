@@ -2,6 +2,7 @@ package com.ai.api.dao;
 
 import java.util.List;
 
+import com.ai.commons.beans.checklist.ChecklistSearchCriteriaBean;
 import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 
@@ -25,5 +26,6 @@ import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 
 
 public interface ChecklistDao {
-	List<ChecklistSearchResultBean> searchChecklist(ReportSearchCriteriaBean criteria);
+	List<ChecklistSearchResultBean> searchChecklist(ChecklistSearchCriteriaBean criteria);
+	List<ChecklistSearchResultBean> searchPublicChecklist(ChecklistSearchCriteriaBean criteria);
 }

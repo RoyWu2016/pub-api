@@ -25,5 +25,6 @@ import org.springframework.http.ResponseEntity;
 
 
 public interface Checklist {
-	ResponseEntity<List<ChecklistSearchResultBean>> searchChecklist(String userID,String keyword);
+	ResponseEntity<List<ChecklistSearchResultBean>> searchChecklist(String userId,String keyword);
+	ResponseEntity<List<ChecklistSearchResultBean>> searchPublicChecklist(String userId, String keyword);
 }

@@ -9,6 +9,7 @@ import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.checklist.ChecklistSearchCriteriaBean;
 import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
 import com.ai.commons.beans.order.OrderSearchResultBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
@@ -51,7 +52,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	private ServiceConfig config;
 
 	@Override
-	public List<ChecklistSearchResultBean> searchChecklist(ReportSearchCriteriaBean criteria) {
+	public List<ChecklistSearchResultBean> searchChecklist(ChecklistSearchCriteriaBean criteria) {
 		String url = config.getMwServiceUrl() + "/service/checklist/private";
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
@@ -61,6 +62,26 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
 			} else {
 				logger.error("searchChecklist from middleware error: " + result.getStatusCode() +
+						", " + result.getResponseString());
+			}
+
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
+
+	@Override
+	public List<ChecklistSearchResultBean> searchPublicChecklist(ChecklistSearchCriteriaBean criteria) {
+		String url = config.getMwServiceUrl() + "/service/checklist/public";
+		try {
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+
+				return JSON.parseArray(result.getResponseString(),ChecklistSearchResultBean.class);
+
+			} else {
+				logger.error("searchPublicChecklist from middleware error: " + result.getStatusCode() +
 						", " + result.getResponseString());
 			}
 

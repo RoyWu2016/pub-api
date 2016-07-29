@@ -50,4 +50,17 @@ public class ChecklistImpl implements Checklist {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
+
+	@Override
+	@RequestMapping(value = "/user/{userId}/publicChecklist", method = RequestMethod.GET)
+	public ResponseEntity<List<ChecklistSearchResultBean>> searchPublicChecklist(@PathVariable("userId") String userId,
+																				 @RequestParam(value = "keyword",required = false) String keyword) {
+
+		List<ChecklistSearchResultBean> result = checklistService.searchPublicChecklist(userId, keyword);
+		if(result!=null){
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 }
