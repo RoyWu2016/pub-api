@@ -31,4 +31,10 @@ public class ParameterServiceImpl implements ParameterService {
     public List<ProductFamilyDtoBean>  getProductFamilyList(){
         return paramDao.getProductFamilyList();
     }
+
+	@Override
+	public List<String>  getCountryList(){
+		return paramDao.getCountryList();
+	}
+
 }

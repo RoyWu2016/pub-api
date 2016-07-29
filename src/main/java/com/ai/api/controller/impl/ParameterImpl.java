@@ -55,4 +55,18 @@ public class ParameterImpl implements Parameter {
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/countries", method = RequestMethod.GET)
+	public ResponseEntity<List<String>> getCountryList() {
+
+		List<String> result = parameterService.getCountryList();
+
+		if(result==null){
+			logger.error("country list not found");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 }
