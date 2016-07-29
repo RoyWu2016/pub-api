@@ -9,6 +9,7 @@ import com.ai.api.dao.ChecklistDao;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.service.ChecklistService;
+import com.ai.commons.beans.checklist.ChecklistSearchCriteriaBean;
 import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,8 @@ public class ChecklistServiceImpl implements ChecklistService {
 
 	@Override
 	public List<ChecklistSearchResultBean> searchChecklist(String userID, String keyword) {
-		ReportSearchCriteriaBean criteria = new ReportSearchCriteriaBean();
+		//ReportSearchCriteriaBean criteria = new ReportSearchCriteriaBean();
+		ChecklistSearchCriteriaBean criteria = new ChecklistSearchCriteriaBean();
 		criteria.setUserID(userID);
 		criteria.setKeywords(keyword);
 		criteria.setLogin(customerDao.getGeneralUser(userID).getLogin());
@@ -73,6 +75,16 @@ public class ChecklistServiceImpl implements ChecklistService {
 				}
 			}
 		}
+		return list;
+	}
+
+	@Override
+	public List<ChecklistSearchResultBean> searchPublicChecklist(String userId, String keyword){
+		ChecklistSearchCriteriaBean criteria = new ChecklistSearchCriteriaBean();
+		criteria.setUserID(userId);
+		criteria.setKeywords(keyword);
+		criteria.setLogin(customerDao.getGeneralUser(userId).getLogin());
+		List<ChecklistSearchResultBean> list = checklistDao.searchChecklist(criteria);
 		return list;
 	}
 }
