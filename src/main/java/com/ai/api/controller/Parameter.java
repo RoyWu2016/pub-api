@@ -14,4 +14,6 @@ public interface Parameter {
     ResponseEntity<List<ProductCategoryDtoBean>> getProductCategoryList() ;
 
     ResponseEntity<List<ProductFamilyDtoBean>> getProductFamilyList();
+
+	ResponseEntity<List<String>> getCountryList();
 }

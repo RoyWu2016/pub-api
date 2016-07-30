@@ -13,4 +13,6 @@ public interface ParameterService {
     List<ProductCategoryDtoBean> getProductCategoryList();
 
     List<ProductFamilyDtoBean> getProductFamilyList();
+
+	List<String> getCountryList();
 }

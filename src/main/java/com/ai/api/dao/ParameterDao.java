@@ -36,4 +36,6 @@ public interface ParameterDao {
 	List<ProductCategoryDtoBean> getProductCategoryList();
 
 	List<ProductFamilyDtoBean> getProductFamilyList();
+
+	List<String> getCountryList();
 }

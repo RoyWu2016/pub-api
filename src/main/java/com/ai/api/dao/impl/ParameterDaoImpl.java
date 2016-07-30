@@ -17,6 +17,7 @@ import com.ai.api.dao.ParameterDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -99,6 +100,22 @@ public class ParameterDaoImpl implements ParameterDao {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return productFamilyList;
+	}
+
+	@Override
+//	@Cacheable(value="countryListCache", key="#root.methodName")
+	public List<String> getCountryList(){
+		String SysProductFamilyBeanURL = config.getParamServiceUrl() +"/p/list-country";
+		GetRequest request = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
+		List<String> countryList = new ArrayList<>();
+		try{
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			countryList = JSON.parseArray(result.getResponseString(),String.class);
+
+		}catch(IOException e){
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return countryList;
 	}
 
 }
