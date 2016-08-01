@@ -8,6 +8,7 @@ package com.ai.api.controller;
 
 import java.util.List;
 
+import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.order.OrderSearchResultBean;
 import org.springframework.http.ResponseEntity;
 
@@ -40,4 +41,5 @@ public interface Order {
 	                                                                 String starts,
 	                                                                 String ends,
 	                                                                 String keyword);
+	ResponseEntity<Boolean> cancelOrder(String userId, String orderId, OrderCancelBean orderCancelBean);
 }

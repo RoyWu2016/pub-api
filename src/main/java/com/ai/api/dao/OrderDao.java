@@ -8,6 +8,7 @@ package com.ai.api.dao;
 
 import java.util.List;
 
+import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.OrderSearchResultBean;
 
@@ -35,4 +36,5 @@ public interface OrderDao {
 
 	List<OrderSearchResultBean> getOrdersByUserId(OrderSearchCriteriaBean criteria);
 	List<OrderSearchResultBean> getDraftsByUserId(OrderSearchCriteriaBean criteria);
+	Boolean cancelOrder(OrderCancelBean orderCancelBean);
 }

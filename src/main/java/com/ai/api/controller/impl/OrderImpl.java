@@ -6,14 +6,18 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.ws.rs.PathParam;
 
+import com.ai.api.bean.UserBean;
 import com.ai.api.controller.Order;
 import com.ai.api.service.OrderService;
+import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.OrderSearchResultBean;
 import org.slf4j.Logger;
@@ -47,6 +51,9 @@ import org.springframework.web.bind.annotation.*;
 public class OrderImpl implements Order {
 
 	protected Logger logger = LoggerFactory.getLogger(OrderImpl.class);
+
+	@Autowired
+	UserService userService;
 
 	@Autowired
 	OrderService orderService;
@@ -138,4 +145,29 @@ public class OrderImpl implements Order {
 		}
 
 	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/order/{orderId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Boolean> cancelOrder(@PathVariable("userId") String userId,
+											   @PathVariable("orderId") String orderId, OrderCancelBean orderCancelBean){
+
+		try {
+			UserBean user = userService.getCustById(userId);
+			if(orderCancelBean!=null){
+				orderCancelBean.setLogin(user.getLogin());
+				orderCancelBean.setOrderId(orderId);
+				orderCancelBean.setUserId(userId);
+				Boolean result = orderService.cancelOrder(orderCancelBean);
+				if(result!=null){
+					return new ResponseEntity<>(result, HttpStatus.OK);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	}
+
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.OrderDao;
 import com.ai.api.service.OrderService;
+import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.OrderSearchResultBean;
 import org.slf4j.Logger;
@@ -69,4 +70,10 @@ public class OrderServiceImpl implements OrderService {
 		}
 		return orderDao.getDraftsByUserId(criteria);
 	}
+
+	@Override
+	public Boolean cancelOrder(OrderCancelBean orderCancelBean){
+		return orderDao.cancelOrder(orderCancelBean);
+	}
+
 }
