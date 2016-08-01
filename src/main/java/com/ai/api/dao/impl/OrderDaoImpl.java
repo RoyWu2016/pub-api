@@ -14,6 +14,7 @@ import com.ai.api.dao.OrderDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.OrderSearchResultBean;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -94,6 +95,23 @@ public class OrderDaoImpl implements OrderDao {
 			}
 
 		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
+
+	@Override
+	public Boolean cancelOrder(OrderCancelBean orderCancelBean) {
+		String url = config.getMwServiceUrl() + "/service/order/cancel";
+		try {
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, orderCancelBean);
+			if (result.getResponseString().equalsIgnoreCase("true")) {
+				return true;
+			}else {
+				logger.error("cancel order from middleware error: " + result.getStatusCode() +
+						", " + result.getResponseString());
+			}
+		}catch (Exception e){
 			logger.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
