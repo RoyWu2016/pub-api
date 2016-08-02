@@ -19,9 +19,9 @@ public class UserBean implements Serializable {
 
     private CompanyBean company;
 
-    private ContactInfoBean contactInfo;
+    private ContactInfoBean contacts;
 
-    private PreferencesBean preferencesBean;
+    private PreferencesBean preferences;
 
     public String getId() {
         return id;
@@ -71,19 +71,19 @@ public class UserBean implements Serializable {
         this.company = company;
     }
 
-    public ContactInfoBean getContactInfo() {
-        return contactInfo;
+    public ContactInfoBean getContacts() {
+        return contacts;
     }
 
-    public void setContactInfo(ContactInfoBean contactInfo) {
-        this.contactInfo = contactInfo;
+    public void setContacts(ContactInfoBean contacts) {
+        this.contacts = contacts;
     }
 
-    public PreferencesBean getPreferencesBean() {
-        return preferencesBean;
+    public PreferencesBean getPreferences() {
+        return preferences;
     }
 
-    public void setPreferencesBean(PreferencesBean preferencesBean) {
-        this.preferencesBean = preferencesBean;
+    public void setPreferences(PreferencesBean preferences) {
+        this.preferences = preferences;
     }
 }

@@ -55,4 +55,6 @@ public interface CompanyDao {
 	boolean updateCompanyProductFamily(String compId, ProductFamilyBean prodFamily);
 
 	MultiRefBookingBean getCompanyMultiRefBooking(String compId);
+
+	ReportCertificateBean getCompanyReportCertificateInfo(String companyId);
 }

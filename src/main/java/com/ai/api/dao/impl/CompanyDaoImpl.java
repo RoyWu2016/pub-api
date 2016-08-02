@@ -249,4 +249,17 @@ public class CompanyDaoImpl implements CompanyDao {
 		return false;
 	}
 
+	@Override
+	public ReportCertificateBean getCompanyReportCertificateInfo(String companyId){
+		try{
+			String url = config.getCustomerServiceUrl()+"/customer/"+companyId+"/report-certificate";
+			GetRequest request = GetRequest.newInstance().setUrl(url);
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			return JsonUtil.mapToObject(result.getResponseString(),ReportCertificateBean.class);
+		}catch (Exception e){
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
+
 }
