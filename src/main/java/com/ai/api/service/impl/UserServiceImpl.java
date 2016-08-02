@@ -317,9 +317,7 @@ public class UserServiceImpl implements UserService {
 
 		AqlAndSamplingSizeBean aqlAndSamplingSizeBean = new AqlAndSamplingSizeBean();
 
-		String allowaql = orderBookingBean.getAllowChangeAql();
-
-		if (allowaql.equals("1")) {
+		if (orderBookingBean.getAllowChangeAql() != null && orderBookingBean.getAllowChangeAql().equals("1")) {
 			aqlAndSamplingSizeBean.setCanModify("true");
 		} else {
 			aqlAndSamplingSizeBean.setCanModify("false");
@@ -328,9 +326,7 @@ public class UserServiceImpl implements UserService {
 		aqlAndSamplingSizeBean.setCustomDefaultSampleLevel(orderBookingBean.getCustomizedSampleLevel());
 		CustomAQLBean customAQLBean = new CustomAQLBean();
 
-		String usecustomeaql = orderBookingBean.getCustAqlLevel();
-
-		if (usecustomeaql.equals("yes")) {
+		if (orderBookingBean.getCustAqlLevel() != null && orderBookingBean.getCustAqlLevel().equals("yes")) {
 			aqlAndSamplingSizeBean.setUseCustomAQL("true");
 			customAQLBean.setCriticalDefects(orderBookingBean.getCriticalDefects());
 			customAQLBean.setMajorDefects(orderBookingBean.getMajorDefects());
@@ -351,14 +347,15 @@ public class UserServiceImpl implements UserService {
 
 		PreferredProductFamilies preferredProductFamilies = new PreferredProductFamilies();
 		//"no" - Use Client Customized Product Type
-		if ("no".toUpperCase().equals(productFamilyBean.getHowToChooseProType().toUpperCase())) {
+		if (productFamilyBean.getHowToChooseProType() != null &&
+				"NO".equals(productFamilyBean.getHowToChooseProType().toUpperCase())) {
 			preferredProductFamilies.setUseCustomizedProductType(true);
 		}else {
 			preferredProductFamilies.setUseCustomizedProductType(false);
 		}
 
-		int a = productFamilyBean.getRelevantCategoryInfo().size();
-		int b = productFamilyBean.getProductFamilyInfo().size();
+		int a = productFamilyBean.getRelevantCategoryInfo() != null ? productFamilyBean.getRelevantCategoryInfo().size():0;
+		int b = productFamilyBean.getProductFamilyInfo() != null ? productFamilyBean.getProductFamilyInfo().size():0;
 		List<PublicProductType> publicProductTypeList = new ArrayList<>();
 		List<CustomizedProductType> customizedProductTypeList = new ArrayList<>();
 
@@ -368,7 +365,8 @@ public class UserServiceImpl implements UserService {
 			publicProductType.setProductFamilyId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavFamily());
 			//set product category name
 			for (ProductCategoryDtoBean productCategoryDto : productCategoryDtoBeanList) {
-				if (publicProductType.getProductCategoryId().equals(productCategoryDto.getId())) {
+				if (publicProductType.getProductCategoryId() != null
+						&& publicProductType.getProductCategoryId().equals(productCategoryDto.getId())) {
 					publicProductType.setProductCategoryName(productCategoryDto.getName());
 					break;
 				}
