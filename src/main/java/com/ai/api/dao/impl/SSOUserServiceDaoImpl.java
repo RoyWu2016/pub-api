@@ -215,7 +215,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 		headers.put("ai-api-refresh-key", request.getHeader("ai-api-refresh-key"));
 		try {
 			//check api access token in header
-			ServiceCallResult result = checkAccessHeader(apiAccessToken);
+			ServiceCallResult result = this.checkAccessHeader(apiAccessToken);
 			if (result.getStatusCode() != HttpServletResponse.SC_OK) {
 				return result;
 			}
@@ -231,16 +231,16 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 			if (token != null) {
 				JwtClaims claims = tokenJWTDao.getClaimsByJWT(token);
 				tokenJWTDao.removePublicAPIToken((String)claims.getClaimValue("sessId"));
-					result.setStatusCode(HttpServletResponse.SC_OK);
-					result.setReasonPhase("Token removed.");
-					result.setResponseString("Token removed");
+				result.setStatusCode(HttpServletResponse.SC_OK);
+				result.setReasonPhase("Token removed.");
+				result.setResponseString("Token removed");
 			} else {
 				result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
 				result.setReasonPhase("Bad token.");
 				result.setResponseString("Bad token.");
 			}
 			return result;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
@@ -296,7 +296,8 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 		return null;
 	}
 
-	private ServiceCallResult checkAccessHeader(final String headerValue) {
+	@Override
+	public ServiceCallResult checkAccessHeader(final String headerValue) {
 		ServiceCallResult result = new ServiceCallResult();
 		if (headerValue == null || headerValue.isEmpty()) {
 			result.setStatusCode(HttpServletResponse.SC_FORBIDDEN);
@@ -315,7 +316,8 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 	}
 
 
-    private String getToken(String authorizationHeader, HttpServletResponse response) throws IOException {
+	@Override
+    public String getToken(String authorizationHeader, HttpServletResponse response) throws IOException {
         String token = null;
         if (authorizationHeader == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST,

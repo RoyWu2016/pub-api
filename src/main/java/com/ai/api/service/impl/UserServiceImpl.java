@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -88,6 +89,13 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	@Qualifier("featureDao")
 	private FeatureDao featureDao;
+
+	@Override
+	@CacheEvict(value = "userBeanCache", key = "#userId")
+	public void  removeUserProfileCache(String userId) throws IOException, AIException{
+		System.out.println("remove user profile ...");
+		System.out.println("userId : "+userId);
+	}
 
 	@Cacheable("userBeanCache")
     @Override

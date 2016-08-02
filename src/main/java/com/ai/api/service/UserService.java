@@ -45,6 +45,8 @@ import com.ai.commons.beans.payment.PaymentSearchResultBean;
 
 public interface UserService {
 
+	void  removeUserProfileCache(String userId) throws IOException, AIException;
+
     UserBean getCustById(String userId) throws IOException, AIException;
 
     UserBean updateCompany(CompanyBean crmCompanyBean, String userId) throws IOException, AIException;
