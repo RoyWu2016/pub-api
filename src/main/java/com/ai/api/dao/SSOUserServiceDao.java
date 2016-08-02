@@ -6,6 +6,7 @@
  ***************************************************************************/
 package com.ai.api.dao;
 
+import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,4 +43,8 @@ public interface SSOUserServiceDao {
 	ServiceCallResult removeAPIToken(HttpServletRequest request, HttpServletResponse response);
 
 	ServiceCallResult verifyAPIToken(HttpServletRequest request, HttpServletResponse response);
+
+	ServiceCallResult checkAccessHeader(String headerValue);
+
+	String getToken(String authorizationHeader, HttpServletResponse response) throws IOException;
 }

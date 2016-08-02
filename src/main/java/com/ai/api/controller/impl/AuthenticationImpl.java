@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ai.api.bean.LoginBean;
 import com.ai.api.controller.Authentication;
 import com.ai.api.dao.SSOUserServiceDao;
+import com.ai.api.service.SSOUserService;
 import com.ai.api.service.UserService;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.beans.ServiceCallResult;
@@ -56,6 +57,8 @@ public class AuthenticationImpl implements Authentication {
 
 	public static final Set<String> userTypes = Sets.newHashSet("client", "employee");
 
+	@Autowired
+	SSOUserService ssoUserService;
 	@Autowired
 	SSOUserServiceDao ssoUserServiceDao;  //Service which will do all data retrieval/manipulation work
 
@@ -127,7 +130,7 @@ public class AuthenticationImpl implements Authentication {
 			throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
         logger.info("remove token ...........");
-		ServiceCallResult result = ssoUserServiceDao.removeAPIToken(request, response);
+		ServiceCallResult result = ssoUserService.removeAPIToken(request, response);
 		logger.info("remove token result: "+result.getResponseString());
 		return mapper.writeValueAsString(result);
 	}
