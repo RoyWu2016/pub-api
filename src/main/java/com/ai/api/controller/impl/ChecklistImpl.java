@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ai.api.controller.Checklist;
 import com.ai.api.service.ChecklistService;
+import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,7 @@ public class ChecklistImpl implements Checklist {
 	private ChecklistService checklistService;
 
 	@Override
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist", method = RequestMethod.GET)
 	public ResponseEntity<List<ChecklistSearchResultBean>> searchChecklist(@PathVariable("userId") String userID,
 	                                                                       @RequestParam(value = "keyword",required = false) String keyword) {
@@ -52,6 +54,7 @@ public class ChecklistImpl implements Checklist {
 	}
 
 	@Override
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/publicChecklist", method = RequestMethod.GET)
 	public ResponseEntity<List<ChecklistSearchResultBean>> searchPublicChecklist(@PathVariable("userId") String userId,
 																				 @RequestParam(value = "keyword",required = false) String keyword) {
