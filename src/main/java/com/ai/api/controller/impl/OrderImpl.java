@@ -150,7 +150,7 @@ public class OrderImpl implements Order {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/order/{orderId}", method = RequestMethod.DELETE)
 	public ResponseEntity<Boolean> cancelOrder(@PathVariable("userId") String userId,
-											   @PathVariable("orderId") String orderId, OrderCancelBean orderCancelBean){
+											   @PathVariable("orderId") String orderId, @RequestBody OrderCancelBean orderCancelBean){
 
 		try {
 			UserBean user = userService.getCustById(userId);
