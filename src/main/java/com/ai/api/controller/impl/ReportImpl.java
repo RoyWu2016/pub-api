@@ -1,7 +1,15 @@
 package com.ai.api.controller.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 import com.ai.api.controller.Report;
 import com.ai.api.service.ReportService;
+import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import org.slf4j.Logger;
@@ -9,14 +17,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by yan on 2016/7/25.
@@ -29,6 +34,7 @@ public class ReportImpl implements Report {
     ReportService reportService;
 
     @Override
+    @TokenSecured
     @RequestMapping(value = "/user/{userId}/reports", method = RequestMethod.GET)
     public ResponseEntity<List<ReportSearchResultBean>> getUserReportsByCriteria(@PathVariable("userId") String userId,
                                                                                  @RequestParam(value = "types",required = false) String orderTypeArray,

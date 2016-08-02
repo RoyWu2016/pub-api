@@ -2,6 +2,7 @@ package com.ai.api.controller.impl;
 
 import com.ai.api.controller.Draft;
 import com.ai.api.service.DraftService;
+import com.ai.commons.annotation.TokenSecured;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ public class DraftImpl implements Draft {
 	private DraftService draftService;
 
 	@Override
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/draft/{draftIds}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteDraft(@PathVariable("userId")String userId,@PathVariable("draftIds") String draftIds) {
 		boolean b = false;

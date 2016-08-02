@@ -43,11 +43,12 @@ public class AIUtil {
 
 
 	public static String getUserBusinessUnit(GeneralUserViewBean user, ExtraBean extra) {
-		if (extra.getIsChb().equalsIgnoreCase("Yes")) {
+		if (extra.getIsChb() != null && extra.getIsChb().equalsIgnoreCase("Yes")) {
 			return "CHB";
-		} else if (extra.getIsFI().equalsIgnoreCase("Yes")) {
+		} else if (extra.getIsFI() != null && extra.getIsFI().equalsIgnoreCase("Yes")) {
 			return "AFI";
-		} else if (user.getSettingBean().getBusinessUnitText().equals("AG")) {
+		} else if (user.getSettingBean().getBusinessUnitText() != null &&
+				user.getSettingBean().getBusinessUnitText().equals("AG")) {
 			return "AG";
 		} else {
 			return "AI";

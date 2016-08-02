@@ -6,11 +6,12 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.ws.rs.PathParam;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import com.ai.api.bean.UserBean;
 import com.ai.api.controller.Order;
@@ -25,26 +26,31 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /***************************************************************************
- *<PRE>
- *  Project Name    : api
- *
- *  Package Name    : com.ai.api.controller.impl
- *
- *  File Name       : OrderImpl.java
- *
- *  Creation Date   : Jul 13, 2016
- *
- *  Author          : Allen Zhang
- *
- *  Purpose         : TODO
- *
- *
- *  History         : TODO
- *
- *</PRE>
+ * <PRE>
+ * Project Name    : api
+ * <p>
+ * Package Name    : com.ai.api.controller.impl
+ * <p>
+ * File Name       : OrderImpl.java
+ * <p>
+ * Creation Date   : Jul 13, 2016
+ * <p>
+ * Author          : Allen Zhang
+ * <p>
+ * Purpose         : TODO
+ * <p>
+ * <p>
+ * History         : TODO
+ * <p>
+ * </PRE>
  ***************************************************************************/
 
 @RestController
@@ -59,18 +65,19 @@ public class OrderImpl implements Order {
 	OrderService orderService;
 
 	@Override
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/orders", method = RequestMethod.GET)
 	public ResponseEntity<List<OrderSearchResultBean>> getOrderListByUserId(@PathVariable("userId") String userId,
-	                                                                        @RequestParam(value = "page",required = false) Integer pageNumber,
-																			@RequestParam(value = "types",required = false) String orderTypeArray,
-																			@RequestParam(value = "status",required = false) String orderStatus,
-																			@RequestParam(value = "start",required = false) String starts,
-																			@RequestParam(value = "end",required = false) String ends,
-																			@RequestParam(value = "keyword",required = false) String keywords) {
+	                                                                        @RequestParam(value = "page", required = false) Integer pageNumber,
+	                                                                        @RequestParam(value = "types", required = false) String orderTypeArray,
+	                                                                        @RequestParam(value = "status", required = false) String orderStatus,
+	                                                                        @RequestParam(value = "start", required = false) String starts,
+	                                                                        @RequestParam(value = "end", required = false) String ends,
+	                                                                        @RequestParam(value = "keyword", required = false) String keywords) {
 
 		OrderSearchCriteriaBean criteriaBean = new OrderSearchCriteriaBean();
 
-		if(pageNumber==null){
+		if (pageNumber == null) {
 			pageNumber = 1;
 		}
 		criteriaBean.setPageNumber(pageNumber);
@@ -98,34 +105,34 @@ public class OrderImpl implements Order {
 				calendar.setTime(sdf.parse(starts));
 				calendar.add(Calendar.MONTH, +3);
 				Date current = new Date();
-				if(calendar.getTime().getTime()>current.getTime()){
+				if (calendar.getTime().getTime() > current.getTime()) {
 					ends = sdf.format(current);
-				}else {
+				} else {
 					ends = sdf.format(calendar.getTime());
 				}
 			}
 			criteriaBean.setStartDate(starts);
 			criteriaBean.setEndDate(ends);
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		criteriaBean.setUserID(userId);
 
 		ArrayList<String> typeList = new ArrayList<String>();
-		if(orderTypeArray==null || orderTypeArray.equals("")){
-			String[] allTypes = {"PSI","LT","IPC","DUPRO","CLC","MA","PM","EA","StrA","CTPAT"};
+		if (orderTypeArray == null || orderTypeArray.equals("")) {
+			String[] allTypes = {"PSI", "LT", "IPC", "DUPRO", "CLC", "MA", "PM", "EA", "StrA", "CTPAT"};
 			Collections.addAll(typeList, allTypes);
-		}else{
+		} else {
 			String[] types = orderTypeArray.split(",");
 			Collections.addAll(typeList, types);
 		}
 		criteriaBean.setServiceTypes(typeList);
 
 		List<OrderSearchResultBean> result = null;
-		if(orderStatus==null){
+		if (orderStatus == null) {
 			criteriaBean.setOrderStatus((short) 1);
 			result = orderService.getOrdersByUserId(criteriaBean);
-		}else {
+		} else {
 			if (orderStatus.equals("open")) {
 				criteriaBean.setOrderStatus((short) 1);
 				result = orderService.getOrdersByUserId(criteriaBean);
@@ -138,7 +145,7 @@ public class OrderImpl implements Order {
 			}
 		}
 
-		if(result!=null){
+		if (result != null) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -150,16 +157,16 @@ public class OrderImpl implements Order {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/order/{orderId}", method = RequestMethod.DELETE)
 	public ResponseEntity<Boolean> cancelOrder(@PathVariable("userId") String userId,
-											   @PathVariable("orderId") String orderId, @RequestBody OrderCancelBean orderCancelBean){
+	                                           @PathVariable("orderId") String orderId, @RequestBody OrderCancelBean orderCancelBean) {
 
 		try {
 			UserBean user = userService.getCustById(userId);
-			if(orderCancelBean!=null){
+			if (orderCancelBean != null) {
 				orderCancelBean.setLogin(user.getLogin());
 				orderCancelBean.setOrderId(orderId);
 				orderCancelBean.setUserId(userId);
 				Boolean result = orderService.cancelOrder(orderCancelBean);
-				if(result!=null){
+				if (result != null) {
 					return new ResponseEntity<>(result, HttpStatus.OK);
 				}
 			}
