@@ -49,7 +49,7 @@ public class DraftDaoImpl implements DraftDao {
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, params);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-
+				return true;
 
 			} else {
 				logger.error("delete drafts from middleware error: " + result.getStatusCode() +
