@@ -8,6 +8,8 @@ import java.io.Serializable;
 public class PreferencesBean implements Serializable {
     private BookingPreferenceBean booking;
 
+    private ReportPreferenceBean report;
+
     public BookingPreferenceBean getBooking() {
         return booking;
     }
@@ -16,4 +18,11 @@ public class PreferencesBean implements Serializable {
         this.booking = booking;
     }
 
+    public ReportPreferenceBean getReport() {
+        return report;
+    }
+
+    public void setReport(ReportPreferenceBean report) {
+        this.report = report;
+    }
 }

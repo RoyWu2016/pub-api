@@ -31,6 +31,7 @@ import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.*;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.legacy.customer.RejectionReasonCategory;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.user.GeneralUserBean;
@@ -124,6 +125,8 @@ public class UserServiceImpl implements UserService {
 
 		CustomerFeatureBean customerFeatureBean = featureDao.getCustomerFeatureBean(compId,"BookOrderWithMultipleFactories");
 
+		ReportCertificateBean reportCertificateBean = companyDao.getCompanyReportCertificateInfo(compId);
+
 	    //1st level fields
 	    user.setId(generalUserBean.getUser().getUserId());
 		user.setSic(overviewBean.getSic());
@@ -186,7 +189,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		contactInfoBean.setBilling(billingBean);
-		user.setContactInfo(contactInfoBean);
+		user.setContacts(contactInfoBean);
 
 		// ------------Set PreferencesBean Properties ----------------
 
@@ -408,8 +411,65 @@ public class UserServiceImpl implements UserService {
 
 		bookingbean.setQualityManual(qualityManual);
 		preferencesBean.setBooking(bookingbean);
-		user.setPreferencesBean(preferencesBean);
 
+		ReportPreferenceBean reportPreferenceBean = new ReportPreferenceBean();
+		if(reportCertificateBean!=null){
+			reportPreferenceBean.setAttType(reportCertificateBean.getAttType());
+			reportPreferenceBean.setAllowReportApprover(reportCertificateBean.getAllowReportApprover());
+			reportPreferenceBean.setDisApproverName(reportCertificateBean.getDisApproverName());
+			reportPreferenceBean.setMaxReportSize(reportCertificateBean.getMaxReportSize());
+			reportPreferenceBean.setRejectReasonOther(reportCertificateBean.getRejectReasonOther());
+			reportPreferenceBean.setRejectReasonSortBy(reportCertificateBean.getRejectReasonSortBy());
+			reportPreferenceBean.setReportContactName(reportCertificateBean.getReportContactName());
+			reportPreferenceBean.setWithAttachment(reportCertificateBean.getWithAttachment());
+			reportPreferenceBean.setSendMailToSupplier(reportCertificateBean.getSendMailToSupplier());
+			reportPreferenceBean.setSameDayReport(reportCertificateBean.getSameDayReport());
+			reportPreferenceBean.setReportTemplate(reportCertificateBean.getReportTemplate());
+			List<ApproverBean> approverBeenList = reportCertificateBean.getApprovers();
+			if(approverBeenList!=null){
+				List<ReportApproverBean> reportApproverBeenList = new ArrayList<ReportApproverBean>();
+				for(ApproverBean approverBean: approverBeenList){
+					ReportApproverBean reportApproverBean = new ReportApproverBean();
+					reportApproverBean.setApproverName(approverBean.getApproverName());
+					reportApproverBean.setApproverPwd(approverBean.getApproverPwd());
+					reportApproverBean.setApproverSeq(approverBean.getApproverSeq());
+					reportApproverBean.setCreateTime(approverBean.getCreateTime());
+					reportApproverBean.setUpdateTime(approverBean.getUpdateTime());
+					reportApproverBeenList.add(reportApproverBean);
+				}
+				reportPreferenceBean.setApprovers(reportApproverBeenList);
+			}
+
+			List<RejectCategoryBean> rejectCategoryBeanList = reportCertificateBean.getRejectCategories();
+			if(rejectCategoryBeanList!=null) {
+				List<ReportRejectCategoryBean> reportRejectCategoryBeanList = new ArrayList<ReportRejectCategoryBean>();
+				for(RejectCategoryBean rejectCategoryBean: rejectCategoryBeanList){
+					ReportRejectCategoryBean reportRejectCategoryBean = new ReportRejectCategoryBean();
+					reportRejectCategoryBean.setUpdateTime(rejectCategoryBean.getUpdateTime());
+					reportRejectCategoryBean.setCreateTime(rejectCategoryBean.getCreateTime());
+					reportRejectCategoryBean.setRejectCategory(rejectCategoryBean.getRejectCategory());
+					reportRejectCategoryBean.setRejectCategorySeq(rejectCategoryBean.getRejectCategorySeq());
+					List<RejectCategoryReasonBean> rejectCategoryReasonBeenList = rejectCategoryBean.getRejectCategoryReasons();
+					if(rejectCategoryReasonBeenList!=null){
+						List<ReportRejectCategoryReasonBean> reportRejectReasonList = new ArrayList<ReportRejectCategoryReasonBean>();
+						for(RejectCategoryReasonBean rejectReason: rejectCategoryReasonBeenList){
+							ReportRejectCategoryReasonBean reportRejectReason = new ReportRejectCategoryReasonBean();
+							reportRejectReason.setRejectCategorySeq(rejectReason.getRejectCategorySeq());
+							reportRejectReason.setCreateTime(rejectReason.getCreateTime());
+							reportRejectReason.setUpdateTime(rejectReason.getUpdateTime());
+							reportRejectReason.setRejectReason(rejectReason.getRejectReason());
+							reportRejectReason.setRejectReasonSeq(rejectReason.getRejectReasonSeq());
+							reportRejectReasonList.add(reportRejectReason);
+						}
+						reportRejectCategoryBean.setRejectCategoryReasons(reportRejectReasonList);
+					}
+				}
+				reportPreferenceBean.setRejectCategories(reportRejectCategoryBeanList);
+			}
+		}
+		preferencesBean.setReport(reportPreferenceBean);
+
+		user.setPreferences(preferencesBean);
 		logger.info("...........return UserBean from user service...........");
 		return user;
     }
