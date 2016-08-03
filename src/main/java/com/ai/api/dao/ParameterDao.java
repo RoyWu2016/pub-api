@@ -7,9 +7,11 @@
 package com.ai.api.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
+import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 
 /***************************************************************************
  *<PRE>
@@ -38,4 +40,6 @@ public interface ParameterDao {
 	List<ProductFamilyDtoBean> getProductFamilyList();
 
 	List<String> getCountryList();
+
+	Map<String,List<ChecklistTestSampleSizeBean>> getTestSampleSizeList();
 }

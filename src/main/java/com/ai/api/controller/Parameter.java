@@ -1,9 +1,11 @@
 package com.ai.api.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
+import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -16,4 +18,6 @@ public interface Parameter {
     ResponseEntity<List<ProductFamilyDtoBean>> getProductFamilyList();
 
 	ResponseEntity<List<String>> getCountryList();
+
+	ResponseEntity<Map<String,List<ChecklistTestSampleSizeBean>>> getTestSampleSizeList();
 }

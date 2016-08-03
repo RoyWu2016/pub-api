@@ -1,12 +1,14 @@
 package com.ai.api.controller.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.controller.Parameter;
 import com.ai.api.service.ParameterService;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,20 @@ public class ParameterImpl implements Parameter {
 
 		if(result==null){
 			logger.error("country list not found");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/checklistTestSampleSizeList", method = RequestMethod.GET)
+	public ResponseEntity<Map<String,List<ChecklistTestSampleSizeBean>>> getTestSampleSizeList() {
+
+		Map<String,List<ChecklistTestSampleSizeBean>> result = parameterService.getTestSampleSizeList();
+
+		if(result==null){
+			logger.error("TestSampleSizeList not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(result, HttpStatus.OK);
