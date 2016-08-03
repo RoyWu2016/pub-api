@@ -1,11 +1,13 @@
 package com.ai.api.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.service.ParameterService;
+import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
@@ -35,6 +37,11 @@ public class ParameterServiceImpl implements ParameterService {
 	@Override
 	public List<String>  getCountryList(){
 		return paramDao.getCountryList();
+	}
+
+	@Override
+	public Map<String,List<ChecklistTestSampleSizeBean>> getTestSampleSizeList(){
+		return paramDao.getTestSampleSizeList();
 	}
 
 }
