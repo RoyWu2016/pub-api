@@ -57,4 +57,6 @@ public interface CompanyDao {
 	MultiRefBookingBean getCompanyMultiRefBooking(String compId);
 
 	ReportCertificateBean getCompanyReportCertificateInfo(String companyId);
+
+	CompanyEntireBean getCompanyEntireInfo(String userId);
 }

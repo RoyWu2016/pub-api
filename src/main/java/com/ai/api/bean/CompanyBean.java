@@ -8,6 +8,12 @@ import java.io.Serializable;
 public class CompanyBean implements Serializable {
 	private String id;
 
+    private String type;
+
+    private String parentCompanyId;
+
+    private String parentCompanyName;
+
     private String name;
 
     private String nameCN;
@@ -104,5 +110,29 @@ public class CompanyBean implements Serializable {
 
     public void setLogo(String logo) {
         this.logo = logo;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getParentCompanyId() {
+        return parentCompanyId;
+    }
+
+    public void setParentCompanyId(String parentCompanyId) {
+        this.parentCompanyId = parentCompanyId;
+    }
+
+    public String getParentCompanyName() {
+        return parentCompanyName;
+    }
+
+    public void setParentCompanyName(String parentCompanyName) {
+        this.parentCompanyName = parentCompanyName;
     }
 }

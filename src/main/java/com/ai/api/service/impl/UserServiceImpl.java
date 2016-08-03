@@ -127,16 +127,35 @@ public class UserServiceImpl implements UserService {
 
 		ReportCertificateBean reportCertificateBean = companyDao.getCompanyReportCertificateInfo(compId);
 
+		CompanyEntireBean companyEntireBean = companyDao.getCompanyEntireInfo(userId);
+
 	    //1st level fields
 	    user.setId(generalUserBean.getUser().getUserId());
-		user.setSic(overviewBean.getSic());
+		//user.setSic(overviewBean.getSic());
 	    user.setLogin(generalUserBean.getUser().getLogin());
 	    user.setStatus(generalUserBean.getUser().getStatusText());
 	    user.setBusinessUnit(AIUtil.getUserBusinessUnit(generalUserBean, extrabean));
 
+		List<CrmSaleInChargeBean> sales = companyEntireBean.getSales();
+		if(sales!=null && sales.size()>0){
+			for(CrmSaleInChargeBean saleBean: sales){
+				if(saleBean.getSicTypeKey()!=null && saleBean.getSicTypeKey().equals("SIC")){
+					user.setSic(saleBean.getFirstName()+ " " + saleBean.getLastName());
+					break;
+				}
+			}
+		}
+
 		// ------------Set CompanyBean Properties ----------------
 		CompanyBean comp = new CompanyBean();
 	    comp.setId(generalUserBean.getCompany().getCompanyId());
+
+		comp.setType(companyEntireBean.getCompanyProfile().getCompanyTypeKey());
+		if(companyEntireBean.getDirectParents()!=null && companyEntireBean.getDirectParents().size()>0) {
+			comp.setParentCompanyId(companyEntireBean.getDirectParents().get(0).getCompanyId());
+			comp.setParentCompanyName(companyEntireBean.getDirectParents().get(0).getCompanyName());
+		}
+
 		comp.setName(generalUserBean.getCompany().getCompanyName());
 		comp.setNameCN(generalUserBean.getCompany().getCompanyNameCN());
 		comp.setIndustry(generalUserBean.getCompany().getIndustry());

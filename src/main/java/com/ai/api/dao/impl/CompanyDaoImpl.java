@@ -262,4 +262,17 @@ public class CompanyDaoImpl implements CompanyDao {
 		return null;
 	}
 
+	@Override
+	public CompanyEntireBean getCompanyEntireInfo(String userId){
+		try{
+			String url = config.getCustomerServiceUrl()+"/customer/get-companyentire-by-user/"+userId;
+			GetRequest request = GetRequest.newInstance().setUrl(url);
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			return JsonUtil.mapToObject(result.getResponseString(),CompanyEntireBean.class);
+		}catch (Exception e){
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
+
 }
