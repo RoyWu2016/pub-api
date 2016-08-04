@@ -104,37 +104,43 @@ public class UserServiceImpl implements UserService {
 		logger.info("...........start getting UserBean from user service...........");
 	    UserBean user = new UserBean();
 
-	    //get all needed beans
-	    GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
-	    if (generalUserBean == null) return null;
+		CompanyEntireBean companyEntireBean = companyDao.getCompanyEntireInfo(userId);
+		if (companyEntireBean == null) return null;
 
-	    String compId = generalUserBean.getCompany().getCompanyId();
-		OverviewBean overviewBean = companyDao.getCompanyOverview(compId);
-		ContactBean contactBean = companyDao.getCompanyContact(compId);
-		OrderBookingBean orderBookingBean = companyDao.getCompanyOrderBooking(compId);
-		ExtraBean extrabean = companyDao.getCompanyExtra(compId);
+		GeneralUserBean userBean = null;
+		List<GeneralUserBean> generalUserBeenList = companyEntireBean.getUsers();
+		if(generalUserBeenList!=null && generalUserBeenList.size()>0){
+			for(GeneralUserBean bean: generalUserBeenList){
+				if(bean.getUserId().equals(userId)){
+					userBean = bean;
+					break;
+				}
+			}
+		}
 
-		ProductFamilyBean productFamilyBean = companyDao.getCompanyProductFamily(compId);
-		QualityManualBean qualityManualBean = companyDao.getCompanyQualityManual(compId);
+		if (userBean == null) return null;
+
+		String compId = companyEntireBean.getCompanyId();
+
+		ContactBean contactBean = companyEntireBean.getContact();
+		OrderBookingBean orderBookingBean = companyEntireBean.getOrderBooking();
+		ExtraBean extrabean = companyEntireBean.getExtra();
+		ProductFamilyBean productFamilyBean = companyEntireBean.getProductFamily();
+		QualityManualBean qualityManualBean = companyEntireBean.getQualityManual();
 
 		List<ProductCategoryDtoBean> productCategoryDtoBeanList = paramDao.getProductCategoryList();
-
 		List<ProductFamilyDtoBean> productFamilyDtoBeanList = paramDao.getProductFamilyList();
 
-		MultiRefBookingBean multiRefBookingBean = companyDao.getCompanyMultiRefBooking(compId);
+		MultiRefBookingBean multiRefBookingBean = companyEntireBean.getMultiRefBooking();
 
 		CustomerFeatureBean customerFeatureBean = featureDao.getCustomerFeatureBean(compId,"BookOrderWithMultipleFactories");
 
-		ReportCertificateBean reportCertificateBean = companyDao.getCompanyReportCertificateInfo(compId);
+		ReportCertificateBean reportCertificateBean = companyEntireBean.getReportCertificate();
 
-		CompanyEntireBean companyEntireBean = companyDao.getCompanyEntireInfo(userId);
-
-	    //1st level fields
-	    user.setId(generalUserBean.getUser().getUserId());
-		//user.setSic(overviewBean.getSic());
-	    user.setLogin(generalUserBean.getUser().getLogin());
-	    user.setStatus(generalUserBean.getUser().getStatusText());
-	    user.setBusinessUnit(AIUtil.getUserBusinessUnit(generalUserBean, extrabean));
+		user.setId(userBean.getUserId());
+		user.setLogin(userBean.getLogin());
+		user.setStatus(userBean.getStatusText());
+		user.setBusinessUnit(AIUtil.getCompanyBusinessUnit(companyEntireBean, extrabean));
 
 		List<CrmSaleInChargeBean> sales = companyEntireBean.getSales();
 		if(sales!=null && sales.size()>0){
@@ -148,7 +154,7 @@ public class UserServiceImpl implements UserService {
 
 		// ------------Set CompanyBean Properties ----------------
 		CompanyBean comp = new CompanyBean();
-	    comp.setId(generalUserBean.getCompany().getCompanyId());
+		comp.setId(companyEntireBean.getCompanyId());
 
 		comp.setType(companyEntireBean.getCompanyProfile().getCompanyTypeKey());
 		if(companyEntireBean.getDirectParents()!=null && companyEntireBean.getDirectParents().size()>0) {
@@ -156,16 +162,16 @@ public class UserServiceImpl implements UserService {
 			comp.setParentCompanyName(companyEntireBean.getDirectParents().get(0).getCompanyName());
 		}
 
-		comp.setName(generalUserBean.getCompany().getCompanyName());
-		comp.setNameCN(generalUserBean.getCompany().getCompanyNameCN());
-		comp.setIndustry(generalUserBean.getCompany().getIndustry());
-	    comp.setCountry(generalUserBean.getCompany().getCountryRegion());
-		comp.setAddress(generalUserBean.getCompany().getAddress1());
-		comp.setCity(generalUserBean.getCompany().getCity());
-		comp.setPostcode(generalUserBean.getCompany().getPostCode());
+		comp.setName(companyEntireBean.getCompanyProfile().getCompanyName());
+		comp.setNameCN(companyEntireBean.getCompanyProfile().getCompanyNameCN());
+		comp.setIndustry(companyEntireBean.getCompanyProfile().getIndustry());
+	    comp.setCountry(companyEntireBean.getCompanyProfile().getCountryRegion());
+		comp.setAddress(companyEntireBean.getCompanyProfile().getAddress1());
+		comp.setCity(companyEntireBean.getCompanyProfile().getCity());
+		comp.setPostcode(companyEntireBean.getCompanyProfile().getPostCode());
 
-		comp.setWebsite(generalUserBean.getCompany().getWebsite());
-		comp.setLogo(generalUserBean.getCompany().getLogoPath());
+		comp.setWebsite(companyEntireBean.getCompanyProfile().getWebsite());
+		comp.setLogo(companyEntireBean.getCompanyProfile().getLogoPath());
 
 		user.setCompany(comp);
 
@@ -173,13 +179,13 @@ public class UserServiceImpl implements UserService {
 		ContactInfoBean contactInfoBean = new ContactInfoBean();
 
 		MainBean main = new MainBean();
-		main.setSalutation(generalUserBean.getUser().getFollowName());
-		main.setFamilyName(generalUserBean.getUser().getLastName());
-		main.setGivenName(generalUserBean.getUser().getFirstName());
+		main.setSalutation(userBean.getFollowName());
+		main.setFamilyName(userBean.getLastName());
+		main.setGivenName(userBean.getFirstName());
 		main.setPosition(contactBean.getMainPosition());
-		main.setEmail(generalUserBean.getUser().getPersonalEmail());
-		main.setPhoneNumber(generalUserBean.getUser().getLandline());
-		main.setMobileNumber(generalUserBean.getUser().getMobile());
+		main.setEmail(userBean.getPersonalEmail());
+		main.setPhoneNumber(userBean.getLandline());
+		main.setMobileNumber(userBean.getMobile());
 
 		contactInfoBean.setMain(main);
 
@@ -482,6 +488,7 @@ public class UserServiceImpl implements UserService {
 						}
 						reportRejectCategoryBean.setRejectCategoryReasons(reportRejectReasonList);
 					}
+					reportRejectCategoryBeanList.add(reportRejectCategoryBean);
 				}
 				reportPreferenceBean.setRejectCategories(reportRejectCategoryBeanList);
 			}
