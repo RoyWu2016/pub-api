@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import com.ai.commons.beans.customer.CompanyEntireBean;
 import com.ai.commons.beans.customer.ExtraBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -49,6 +50,20 @@ public class AIUtil {
 			return "AFI";
 		} else if (user.getSettingBean().getBusinessUnitText() != null &&
 				user.getSettingBean().getBusinessUnitText().equals("AG")) {
+			return "AG";
+		} else {
+			return "AI";
+		}
+
+	}
+
+	public static String getCompanyBusinessUnit(CompanyEntireBean companyEntire, ExtraBean extra) {
+		if (extra.getIsChb() != null && extra.getIsChb().equalsIgnoreCase("Yes")) {
+			return "CHB";
+		} else if (extra.getIsFI() != null && extra.getIsFI().equalsIgnoreCase("Yes")) {
+			return "AFI";
+		} else if (companyEntire.getOverview().getBusinessUnitText() != null &&
+				companyEntire.getOverview().getBusinessUnitText().equals("AG")) {
 			return "AG";
 		} else {
 			return "AI";
