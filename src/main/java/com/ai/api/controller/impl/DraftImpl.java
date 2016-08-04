@@ -50,7 +50,7 @@ public class DraftImpl implements Draft {
 			e.printStackTrace();
 		}
 		if(b){
-			return new ResponseEntity<>("delete success", HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
