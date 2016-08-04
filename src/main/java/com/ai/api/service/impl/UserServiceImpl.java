@@ -488,6 +488,7 @@ public class UserServiceImpl implements UserService {
 						}
 						reportRejectCategoryBean.setRejectCategoryReasons(reportRejectReasonList);
 					}
+					reportRejectCategoryBeanList.add(reportRejectCategoryBean);
 				}
 				reportPreferenceBean.setRejectCategories(reportRejectCategoryBeanList);
 			}
