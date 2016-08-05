@@ -110,7 +110,7 @@ public class SupplierImpl implements Supplier {
             throws IOException, AIException {
         System.out.println("deleting supplier for user: " + userId);
         if (factoryService.deleteSuppliers(supplierIds)) {
-            return new ResponseEntity<>(true, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
