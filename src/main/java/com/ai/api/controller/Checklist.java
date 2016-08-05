@@ -29,7 +29,7 @@ public interface Checklist {
 	ResponseEntity<List<ChecklistSearchResultBean>> searchChecklist(String userId,String keyword);
 	ResponseEntity<List<ChecklistSearchResultBean>> searchPublicChecklist(String userId, String keyword);
 	ResponseEntity<String> createChecklist(String userId, ChecklistDetailBean checklistDetailBean);
-	ResponseEntity<String> updateChecklist(String userId, ChecklistDetailBean checklistDetailBean);
+	ResponseEntity<String> updateChecklist(String userId,String checklistId, ChecklistDetailBean checklistDetailBean);
 	ResponseEntity<ChecklistDetailBean> getChecklist(String userId,String checklistId);
 	ResponseEntity deleteChecklist(String userId,String checklistIds);
 }
