@@ -2,6 +2,7 @@ package com.ai.api.service;
 
 import java.util.List;
 
+import com.ai.commons.beans.checklist.ChecklistDetailBean;
 import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
 
 /***************************************************************************
@@ -26,4 +27,8 @@ import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
 public interface ChecklistService {
 	List<ChecklistSearchResultBean> searchChecklist(String userID,String keyword);
 	List<ChecklistSearchResultBean> searchPublicChecklist(String userId, String keyword);
+	String createChecklist(String userId,ChecklistDetailBean checklistDetailBean);
+	String updateChecklist(String userId,ChecklistDetailBean checklistDetailBean);
+	ChecklistDetailBean getChecklist(String userId,String checklistId);
+	boolean deleteChecklist(String userId,String ids);
 }

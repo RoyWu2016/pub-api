@@ -2,9 +2,9 @@ package com.ai.api.dao;
 
 import java.util.List;
 
+import com.ai.commons.beans.checklist.ChecklistDetailBean;
 import com.ai.commons.beans.checklist.ChecklistSearchCriteriaBean;
 import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
-import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 
 /***************************************************************************
  * <PRE>
@@ -28,4 +28,8 @@ import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 public interface ChecklistDao {
 	List<ChecklistSearchResultBean> searchChecklist(ChecklistSearchCriteriaBean criteria);
 	List<ChecklistSearchResultBean> searchPublicChecklist(ChecklistSearchCriteriaBean criteria);
+	String createChecklist(String login,ChecklistDetailBean checklistDetailBean);
+	String updateChecklist(String login,ChecklistDetailBean checklistDetailBean);
+	ChecklistDetailBean getChecklist(String login,String checklistId);
+	boolean deleteChecklist(String login,String ids);
 }

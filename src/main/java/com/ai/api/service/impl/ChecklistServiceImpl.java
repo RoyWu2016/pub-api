@@ -9,9 +9,9 @@ import com.ai.api.dao.ChecklistDao;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.service.ChecklistService;
+import com.ai.commons.beans.checklist.ChecklistDetailBean;
 import com.ai.commons.beans.checklist.ChecklistSearchCriteriaBean;
 import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
-import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -90,5 +90,29 @@ public class ChecklistServiceImpl implements ChecklistService {
 		criteria.setLogin(customerDao.getGeneralUser(userId).getLogin());
 		List<ChecklistSearchResultBean> list = checklistDao.searchPublicChecklist(criteria);
 		return list;
+	}
+
+	@Override
+	public String createChecklist(String userId,ChecklistDetailBean checklistDetailBean){
+		String login = customerDao.getGeneralUser(userId).getLogin();
+		return checklistDao.createChecklist(login,checklistDetailBean);
+	}
+
+	@Override
+	public String updateChecklist(String userId,ChecklistDetailBean checklistDetailBean){
+		String login = customerDao.getGeneralUser(userId).getLogin();
+		return checklistDao.updateChecklist(login,checklistDetailBean);
+	}
+
+	@Override
+	public ChecklistDetailBean getChecklist(String userId,String checklistId){
+		String login = customerDao.getGeneralUser(userId).getLogin();
+		return checklistDao.getChecklist(login,checklistId);
+	}
+
+	@Override
+	public  boolean deleteChecklist(String userId,String ids){
+		String login = customerDao.getGeneralUser(userId).getLogin();
+		return checklistDao.deleteChecklist(login,ids);
 	}
 }
