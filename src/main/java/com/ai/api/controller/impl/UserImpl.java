@@ -7,23 +7,22 @@
 package com.ai.api.controller.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import com.ai.api.bean.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.ai.api.bean.BookingPreferenceBean;
+import com.ai.api.bean.CompanyBean;
+import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.UserBean;
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
-import com.ai.commons.DateUtils;
-import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
-import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +32,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /***************************************************************************
  * <PRE>
@@ -68,7 +63,7 @@ public class UserImpl implements User {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/profile", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
 	public ResponseEntity<UserBean> getUserProfileByLogin(@PathVariable("userId") String userId)
 			throws IOException, AIException {
 		logger.info("......start getting user profile.......");
@@ -90,7 +85,7 @@ public class UserImpl implements User {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/profile/company", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/company", method = RequestMethod.PUT)
 	public ResponseEntity<UserBean> updateUserProfileCompany(@PathVariable("userId") String userId,
 	                                                        @RequestBody CompanyBean newComp)
 			throws IOException, AIException {
@@ -105,7 +100,7 @@ public class UserImpl implements User {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/profile/contactInfo", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/contactInfo", method = RequestMethod.PUT)
 	public ResponseEntity<UserBean> updateUserProfileContact(@PathVariable("userId") String userId,
 	                                                        @RequestBody ContactInfoBean newContact)
 			throws IOException, AIException {
@@ -121,7 +116,7 @@ public class UserImpl implements User {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/profile/preference/booking", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/preference/booking", method = RequestMethod.PUT)
 	public ResponseEntity<UserBean> updateUserBookingPreference(@PathVariable("userId") String userId,
 	                                                           @RequestBody BookingPreferenceBean newBookingPref)
 			throws IOException, AIException {
@@ -137,7 +132,7 @@ public class UserImpl implements User {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/profile/preference/booking/preferredProductFamilies", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/preference/booking/preferredProductFamilies", method = RequestMethod.PUT)
 	public ResponseEntity<UserBean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String userId,
 	                                                           @RequestBody List<String> newPreferred)
 			throws IOException, AIException {
@@ -153,7 +148,7 @@ public class UserImpl implements User {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/profile/password", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/password", method = RequestMethod.PUT)
 	public ResponseEntity<ServiceCallResult> updateUserPassword(@PathVariable("userId") String userId,
 													  @RequestBody HashMap<String, String> pwdMap)
 			throws IOException, AIException {
