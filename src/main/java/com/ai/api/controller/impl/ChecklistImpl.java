@@ -105,7 +105,7 @@ public class ChecklistImpl implements Checklist {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/checklist/{checklistIds}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/user/{userId}/checklists/{checklistIds}", method = RequestMethod.DELETE)
 	public ResponseEntity deleteChecklist(@PathVariable("userId") String userId,@PathVariable("checklistIds") String checklistIds){
 
 		 boolean b = checklistService.deleteChecklist(userId,checklistIds);
