@@ -65,26 +65,8 @@ public class PaymentImpl implements Payment {
 			PaymentSearchCriteriaBean criteriaBean = new PaymentSearchCriteriaBean();
 			criteriaBean.setPaid(false);
 			try {
-				Calendar calendar = Calendar.getInstance();
 				if (!StringUtils.isBlank(paid) && paid.equals("true")) {
 					criteriaBean.setPaid(true);
-				}
-
-				if (StringUtils.isBlank(start)) {
-					if (StringUtils.isBlank(end)) {
-						calendar.setTime(new Date());
-						end = DateUtils.date2String(calendar.getTime(), DateUtils.Format.AI_DATE_FORMAT_JSON.getValue());
-					} else {
-						calendar.setTime(DateUtils.toDate(end, DateUtils.Format.AI_DATE_FORMAT_JSON.getValue()));
-					}
-					calendar.add(calendar.MONTH, -3);
-					start = DateUtils.date2String(calendar.getTime(), DateUtils.Format.AI_DATE_FORMAT_JSON.getValue());
-				} else {
-					if (StringUtils.isBlank(end)) {
-						calendar.setTime(DateUtils.toDate(start, DateUtils.Format.AI_DATE_FORMAT_JSON.getValue()));
-						calendar.add(calendar.MONTH, +3);
-						end = DateUtils.date2String(calendar.getTime(), DateUtils.Format.AI_DATE_FORMAT_JSON.getValue());
-					}
 				}
 
 				if (page == null) {
