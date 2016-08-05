@@ -89,7 +89,7 @@ public class UserImplTest {
 	@Test
 	public void getUserProfile() throws Exception {
 
-		mockMvc.perform(get("/user/" + userID + "/profile"))
+		mockMvc.perform(get("/user/" + userID))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json;charset=UTF-8"));
 
@@ -110,7 +110,7 @@ public class UserImplTest {
 		newComp.setPostcode(env.getProperty("compPostCode"));
 		newComp.setWebsite(env.getProperty("compWebsite"));
 
-		String updateCompUrl = "/user/" + userID + "/profile/company";
+		String updateCompUrl = "/user/" + userID + "/company";
 		//update
 		mockMvc.perform(put(updateCompUrl)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -144,7 +144,7 @@ public class UserImplTest {
 		newContact.setMain(main);
 		newContact.setBilling(billing);
 
-		String updateCompUrl = "/user/" + userID + "/profile/contactInfo";
+		String updateCompUrl = "/user/" + userID + "/contactInfo";
 		//update
 		mockMvc.perform(put(updateCompUrl)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -176,7 +176,7 @@ public class UserImplTest {
 		newFamililes.add(env.getProperty("favFamily2"));
 		newFamililes.add(env.getProperty("favFamily3"));
 
-		String updateCompUrl = "/user/" + userID + "/profile/preference/booking/preferredProductFamilies";
+		String updateCompUrl = "/user/" + userID + "/preference/booking/preferredProductFamilies";
 		//update
 		mockMvc.perform(put(updateCompUrl)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -239,7 +239,7 @@ public class UserImplTest {
 		aql.setMaxMeasurementDefects("3");
 		newPref.getAqlAndSamplingSize().setCustomAQL(aql);
 
-		String updateCompUrl = "/user/" + userID + "/profile/preference/booking";
+		String updateCompUrl = "/user/" + userID + "/preference/booking";
 		//update
 		mockMvc.perform(put(updateCompUrl)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -267,7 +267,7 @@ public class UserImplTest {
 		pwdMap.put("current", MD5.toMD5(currentPwd));
 		pwdMap.put("new",MD5.toMD5(newPwd));
 
-		String updateUserPasswordUrl = "/user/" + userID + "/profile/password";
+		String updateUserPasswordUrl = "/user/" + userID + "/password";
 
 
 		//update
