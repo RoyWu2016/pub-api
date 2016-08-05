@@ -43,8 +43,8 @@ public class FactoryServiceImpl implements FactoryService {
     }
 
     @Override
-    public boolean deleteSupplier(String supplierId) throws IOException, AIException {
-        return factoryDao.deleteSupplier(supplierId);
+    public boolean deleteSuppliers(String supplierIds) throws IOException, AIException {
+        return factoryDao.deleteSuppliers(supplierIds);
     }
 
 

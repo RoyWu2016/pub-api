@@ -18,5 +18,5 @@ public interface FactoryService {
     SupplierDetailBean getUserSupplierDetailInfoById(String userId, String supplierId) throws IOException, AIException;
 
     boolean updateSupplierDetailInfo(SupplierDetailBean supplierDetailBean) throws IOException, AIException;
-    boolean deleteSupplier(String supplierId) throws IOException, AIException;
+    boolean deleteSuppliers(String supplierIds) throws IOException, AIException;
 }

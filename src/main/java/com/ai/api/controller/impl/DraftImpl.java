@@ -41,7 +41,7 @@ public class DraftImpl implements Draft {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/draft/{draftIds}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/user/{userId}/drafts/{draftIds}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteDraft(@PathVariable("userId")String userId,@PathVariable("draftIds") String draftIds) {
 		boolean b = false;
 		try {

@@ -159,8 +159,8 @@ public class FactoryDaoImpl implements FactoryDao {
 	}
 
 	@Override
-	public boolean deleteSupplier(String supplierId) throws IOException, AIException {
-		String url = config.getFactoryServiceUrl() + "/deleteSupplier/" + supplierId;
+	public boolean deleteSuppliers(String supplierIds) throws IOException, AIException {
+		String url = config.getFactoryServiceUrl() + "/deleteSupplier/" + supplierIds;
 		try {
 			ServiceCallResult result = HttpUtil.issueDeleteRequest(url, null);
 			if (result.getStatusCode() == HttpStatus.OK.value() &&
