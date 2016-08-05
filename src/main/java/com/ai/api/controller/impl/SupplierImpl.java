@@ -104,12 +104,12 @@ public class SupplierImpl implements Supplier {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/supplier/{supplierId}", method = RequestMethod.DELETE)
-    public ResponseEntity<Boolean> deleteSupplier(@PathVariable("userId") String userId,
-                                                                @PathVariable("supplierId") String supplierId)
+    @RequestMapping(value = "/user/{userId}/suppliers/{supplierIds}", method = RequestMethod.DELETE)
+    public ResponseEntity<Boolean> deleteSuppliers(@PathVariable("userId") String userId,
+                                                                @PathVariable("supplierIds") String supplierIds)
             throws IOException, AIException {
         System.out.println("deleting supplier for user: " + userId);
-        if (factoryService.deleteSupplier(supplierId)) {
+        if (factoryService.deleteSuppliers(supplierIds)) {
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -17,6 +17,6 @@ public interface Supplier {
     ResponseEntity<SupplierDetailBean> getUserSupplierDetailInfoById(String userId, String supplierId) throws IOException, AIException;
     ResponseEntity<Boolean> updateUserSupplierDetailInfo(String userId, String supplierId, SupplierDetailBean supplierDetailBean)
             throws IOException, AIException;
-    ResponseEntity<Boolean> deleteSupplier(String userId,String supplierId)
+    ResponseEntity<Boolean> deleteSuppliers(String userId,String supplierIds)
             throws IOException, AIException;
 }
