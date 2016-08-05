@@ -142,8 +142,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 			logger.debug("get!!! Url:"+url+" login:"+login+" checklistId:"+checklistId);
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-
-				return (ChecklistDetailBean)JSON.parse(result.getResponseString());
+				return  JSON.parseObject(result.getResponseString(),ChecklistDetailBean.class);
 
 			} else {
 				logger.error("GET Checklist from middleware error: " + result.getStatusCode() +
