@@ -43,10 +43,12 @@ public class ChecklistImpl implements Checklist {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/checklist", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/checklists", method = RequestMethod.GET)
 	public ResponseEntity<List<ChecklistSearchResultBean>> searchChecklist(@PathVariable("userId") String userID,
-	                                                                       @RequestParam(value = "keyword",required = false) String keyword) {
-		List<ChecklistSearchResultBean> result = checklistService.searchChecklist(userID,keyword);
+	                                                                       @RequestParam(value = "keyword",required = false) String keyword,
+																		   @RequestParam(value = "pageNumber",required = false) Integer pageNumber) {
+
+		List<ChecklistSearchResultBean> result = checklistService.searchChecklist(userID,keyword,pageNumber);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
@@ -56,7 +58,7 @@ public class ChecklistImpl implements Checklist {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/publicChecklist", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/publicChecklists", method = RequestMethod.GET)
 	public ResponseEntity<List<ChecklistSearchResultBean>> searchPublicChecklist(@PathVariable("userId") String userId,
 	                                                                             @RequestParam(value = "keyword",required = false) String keyword) {
 		List<ChecklistSearchResultBean> result = checklistService.searchPublicChecklist(userId, keyword);

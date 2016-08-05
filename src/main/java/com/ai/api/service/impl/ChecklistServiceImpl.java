@@ -50,11 +50,14 @@ public class ChecklistServiceImpl implements ChecklistService {
 	private CustomerDao customerDao;
 
 	@Override
-	public List<ChecklistSearchResultBean> searchChecklist(String userID, String keyword) {
+	public List<ChecklistSearchResultBean> searchChecklist(String userID, String keyword, Integer pageNumber) {
 		//ReportSearchCriteriaBean criteria = new ReportSearchCriteriaBean();
 		ChecklistSearchCriteriaBean criteria = new ChecklistSearchCriteriaBean();
 		criteria.setUserID(userID);
 		criteria.setKeywords(keyword);
+		if(pageNumber==null)
+			pageNumber = 1;
+		criteria.setPageNumber(pageNumber);
 		criteria.setLogin(customerDao.getGeneralUser(userID).getLogin());
 
 		List<ChecklistSearchResultBean> list = checklistDao.searchChecklist(criteria);

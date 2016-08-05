@@ -68,40 +68,8 @@ public class ReportImpl implements Report {
 	    }
 	    criteriaBean.setServiceTypes(typeList);
 
-        try {
-            if ((starts == null && ends == null) || (starts.equals("") && ends.equals(""))) {
-                Date current = new Date();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                ends = sdf.format(current);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(current);
-                calendar.add(Calendar.MONTH, -3);
-                starts = sdf.format(calendar.getTime());
-            }
-            if (starts == null && ends != null) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(sdf.parse(ends));
-                calendar.add(Calendar.MONTH, -3);
-                starts = sdf.format(calendar.getTime());
-            }
-            if (starts != null && ends == null) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(sdf.parse(starts));
-                calendar.add(Calendar.MONTH, +3);
-                Date current = new Date();
-                if(calendar.getTime().getTime()>current.getTime()){
-                    ends = sdf.format(current);
-                }else {
-                    ends = sdf.format(calendar.getTime());
-                }
-            }
-            criteriaBean.setStartDate(starts);
-            criteriaBean.setEndDate(ends);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        criteriaBean.setStartDate(starts);
+        criteriaBean.setEndDate(ends);
 
         List<ReportSearchResultBean> result = reportService.getUserReportsByCriteria(criteriaBean);
         if(result!=null){
