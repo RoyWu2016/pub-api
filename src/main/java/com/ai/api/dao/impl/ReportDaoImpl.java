@@ -52,4 +52,26 @@ public class ReportDaoImpl implements ReportDao {
         }
         return null;
     }
+
+	@Override
+	public String exportReports(ReportSearchCriteriaBean criteria){
+		String url = config.getMwServiceUrl() + "/service/report/export";
+		try {
+			logger.info("post url:"+url);
+			logger.info(criteria.toString());
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+
+				return result.getResponseString();
+
+			} else {
+				logger.error("get reports from middleware error: " + result.getStatusCode() +
+						", " + result.getResponseString());
+			}
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+
+	}
 }

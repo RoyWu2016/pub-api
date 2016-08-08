@@ -36,4 +36,13 @@ public class ReportServiceImpl implements ReportService {
         }
         return reportDao.getUserReportsByCriteria(criteria);
     }
+
+	@Override
+	public String exportReports(ReportSearchCriteriaBean criteria){
+		if(criteria.getLogin()==null){
+			String login = customerDao.getGeneralUser(criteria.getUserID()).getLogin();
+			criteria.setLogin(login);
+		}
+		return reportDao.exportReports(criteria);
+	}
 }

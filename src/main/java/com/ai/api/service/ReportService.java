@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface ReportService {
     List<ReportSearchResultBean> getUserReportsByCriteria(ReportSearchCriteriaBean criteria);
+	String exportReports(ReportSearchCriteriaBean criteria);
 }
