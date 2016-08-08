@@ -81,7 +81,7 @@ public class ReportImpl implements Report {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/reports", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/reports", method = RequestMethod.POST)
 	public ResponseEntity<String> exportReports(@PathVariable("userId") String userId,
 	                                            @RequestParam(value = "start",required = false) String start,
 	                                            @RequestParam(value = "end",required = false) String end) {

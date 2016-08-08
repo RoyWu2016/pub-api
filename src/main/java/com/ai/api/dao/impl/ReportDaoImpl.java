@@ -55,7 +55,8 @@ public class ReportDaoImpl implements ReportDao {
 
 	@Override
 	public String exportReports(ReportSearchCriteriaBean criteria){
-		String url = config.getMwServiceUrl() + "/service/report/export";
+//		String url = config.getMwServiceUrl() + "/service/report/export";
+		String url = "http://127.0.0.1:8888/service/report/export";
 		try {
 			logger.info("post url:"+url);
 			logger.info(criteria.toString());
