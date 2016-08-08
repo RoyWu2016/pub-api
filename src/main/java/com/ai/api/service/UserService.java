@@ -68,4 +68,6 @@ public interface UserService {
     boolean createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
 
 	List<PaymentSearchResultBean> searchPaymentList(PaymentSearchCriteriaBean criteria) throws IOException, AIException;
+
+    String getBase64CompanyLogo(String companyId);
 }

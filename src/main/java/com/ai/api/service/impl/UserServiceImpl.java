@@ -6,6 +6,7 @@
  ***************************************************************************/
 package com.ai.api.service.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sun.misc.BASE64Encoder;
 
 /***************************************************************************
  * <PRE>
@@ -675,6 +677,25 @@ public class UserServiceImpl implements UserService {
             logger.error("ERROR! from service[getCompanyLogo]",e);
         }
 		return false;
+	}
+
+	@Override
+	public String getBase64CompanyLogo(String companyId){
+		try{
+			InputStream inputStream = customerDao.getCompanyLogo(companyId);
+			byte[] buff = new byte[8000];
+			int bytesRead = 0;
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			while((bytesRead = inputStream.read(buff)) != -1) {
+				bos.write(buff, 0, bytesRead);
+			}
+			byte[] data = bos.toByteArray();
+			BASE64Encoder encoder = new BASE64Encoder();
+			return "data:image/jpg;base64," + encoder.encode(data);
+		}catch (Exception e){
+			logger.error("ERROR! from service[getBase64CompanyLogo]",e);
+		}
+		return null;
 	}
 
     @Override
