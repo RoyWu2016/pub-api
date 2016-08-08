@@ -169,17 +169,15 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.GET)
 	public ResponseEntity<String> getCompanyLogo(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId, HttpServletResponse httpResponse) {
 		logger.info("get companyLogo----userId["+userId+"]companyId["+companyId+"]");
-		boolean b = false;
-		try {
-			b = userService.getCompanyLogo(userId,companyId,httpResponse);
+
+		try{
+			String result = userService.getBase64CompanyLogo(companyId);
+			if(result != null)
+				return new ResponseEntity<>(result, HttpStatus.OK);
 		}catch (Exception e){
 			logger.error("",e);
 		}
-		if (b){
-			return new ResponseEntity<>(HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 
     @Override
