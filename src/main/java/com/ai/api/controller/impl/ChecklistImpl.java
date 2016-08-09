@@ -85,7 +85,7 @@ public class ChecklistImpl implements Checklist {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}", method = RequestMethod.PUT)
 	public ResponseEntity<String> updateChecklist(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId,ChecklistDetailBean checklistDetailBean){
-		checklistDetailBean.setChecklistId(checklistId);
+		checklistDetailBean.setId(checklistId);
 		String result = checklistService.updateChecklist(userId,checklistDetailBean);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
