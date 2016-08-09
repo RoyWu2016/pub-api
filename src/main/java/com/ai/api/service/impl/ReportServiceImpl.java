@@ -5,6 +5,7 @@ import com.ai.api.dao.ReportDao;
 import com.ai.api.service.ReportService;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
+import com.ai.commons.beans.report.ReportsForwardingBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,14 @@ public class ReportServiceImpl implements ReportService {
             criteria.setLogin(login);
         }
         return reportDao.getUserReportsByCriteria(criteria);
+    }
+
+    @Override
+    public boolean forwardReports(ReportsForwardingBean reportsForwardingBean){
+        if(reportsForwardingBean.getLogin()==null){
+            String login = customerDao.getGeneralUser(reportsForwardingBean.getUserId()).getLogin();
+            reportsForwardingBean.setLogin(login);
+        }
+        return reportDao.forwardReports(reportsForwardingBean);
     }
 }

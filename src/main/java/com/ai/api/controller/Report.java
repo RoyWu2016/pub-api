@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface Report {
     ResponseEntity<List<ReportSearchResultBean>> getUserReportsByCriteria(String userId,String orderTypeArray,Integer pageNumber,String archived,String starts,String ends,String keywords);
+    ResponseEntity<String> forwardReports(String userId,String ids,String to,String from,String cc,String bcc,String message);
 }

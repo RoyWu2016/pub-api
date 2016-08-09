@@ -1,10 +1,7 @@
 package com.ai.api.controller.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import com.ai.api.controller.Report;
@@ -12,6 +9,7 @@ import com.ai.api.service.ReportService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
+import com.ai.commons.beans.report.ReportsForwardingBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +72,33 @@ public class ReportImpl implements Report {
         List<ReportSearchResultBean> result = reportService.getUserReportsByCriteria(criteriaBean);
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/reports/{ids}/forwarded", method = RequestMethod.POST)
+    public ResponseEntity<String> forwardReports(@PathVariable("userId") String userId,@PathVariable("ids") String ids,
+                                                 @RequestParam(value = "to") String to,
+                                                 @RequestParam(value = "from",required = false) String from,
+                                                 @RequestParam(value = "cc",required = false) String cc,
+                                                 @RequestParam(value = "bcc",required = false) String bcc,
+                                                 @RequestParam(value = "message",required = false) String message) {
+
+        ReportsForwardingBean reportsForwardingBean = new ReportsForwardingBean();
+        reportsForwardingBean.setIds(ids);
+        reportsForwardingBean.setUserId(userId);
+        reportsForwardingBean.setTo(to);
+        reportsForwardingBean.setFrom(from);
+        reportsForwardingBean.setBcc(bcc);
+        reportsForwardingBean.setCc(cc);
+        reportsForwardingBean.setMessage(message);
+
+        boolean b = reportService.forwardReports(reportsForwardingBean);
+        if(b){
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
