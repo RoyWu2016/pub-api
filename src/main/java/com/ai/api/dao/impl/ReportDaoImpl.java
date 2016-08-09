@@ -7,6 +7,7 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
+import com.ai.commons.beans.report.ReportsForwardingBean;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -51,5 +52,23 @@ public class ReportDaoImpl implements ReportDao {
             logger.error(ExceptionUtils.getStackTrace(e));
         }
         return null;
+    }
+
+    @Override
+    public boolean forwardReports(ReportsForwardingBean reportsForwardingBean){
+        String url = config.getMwServiceUrl() + "/service/report/forward";
+        try {
+            ServiceCallResult result = HttpUtil.issuePostRequest(url, null, reportsForwardingBean);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                return true;
+            } else {
+                logger.error("forward reports from middleware error: " + result.getStatusCode() +
+                        ", " + result.getResponseString());
+                return false;
+            }
+        }catch (Exception e){
+            logger.error(ExceptionUtils.getStackTrace(e));
+            return false;
+        }
     }
 }

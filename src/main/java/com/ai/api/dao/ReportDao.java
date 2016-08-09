@@ -2,6 +2,7 @@ package com.ai.api.dao;
 
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
+import com.ai.commons.beans.report.ReportsForwardingBean;
 
 import java.util.List;
 
@@ -10,4 +11,5 @@ import java.util.List;
  */
 public interface ReportDao {
     List<ReportSearchResultBean> getUserReportsByCriteria(ReportSearchCriteriaBean criteria);
+    boolean forwardReports(ReportsForwardingBean reportsForwardingBean);
 }
