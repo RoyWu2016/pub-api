@@ -2,7 +2,7 @@ package com.ai.api.controller;
 
 import java.util.List;
 
-import com.ai.commons.beans.checklist.ChecklistDetailBean;
+import com.ai.commons.beans.checklist.api.ChecklistDetailBean;
 import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
 import org.springframework.http.ResponseEntity;
 

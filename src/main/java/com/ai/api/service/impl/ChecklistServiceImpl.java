@@ -9,7 +9,7 @@ import com.ai.api.dao.ChecklistDao;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.service.ChecklistService;
-import com.ai.commons.beans.checklist.ChecklistDetailBean;
+import com.ai.commons.beans.checklist.api.ChecklistDetailBean;
 import com.ai.commons.beans.checklist.ChecklistSearchCriteriaBean;
 import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
 import org.springframework.beans.factory.annotation.Autowired;

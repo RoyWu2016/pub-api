@@ -5,7 +5,7 @@ import java.util.List;
 import com.ai.api.controller.Checklist;
 import com.ai.api.service.ChecklistService;
 import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.checklist.ChecklistDetailBean;
+import com.ai.commons.beans.checklist.api.ChecklistDetailBean;
 import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
