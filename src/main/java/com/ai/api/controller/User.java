@@ -64,4 +64,6 @@ public interface User {
 	ResponseEntity<String> deleteCompanyLogo(String userId, String companyId);
 
 	ResponseEntity<Boolean> createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
+
+	ResponseEntity<String> updateBase64CompanyLogo(String userId, String companyId, CompanyLogoBean logoBean);
 }

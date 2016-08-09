@@ -6,7 +6,6 @@
  ***************************************************************************/
 package com.ai.api.service.impl;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -28,14 +27,15 @@ import com.ai.api.dao.ParameterDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
+import com.ai.api.util.BASE64DecodedMultipartFile;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.*;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.ai.commons.beans.legacy.customer.RejectionReasonCategory;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.user.GeneralUserBean;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -47,7 +47,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sun.misc.BASE64Encoder;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 /***************************************************************************
  * <PRE>
@@ -683,15 +683,8 @@ public class UserServiceImpl implements UserService {
 	public String getBase64CompanyLogo(String companyId){
 		try{
 			InputStream inputStream = customerDao.getCompanyLogo(companyId);
-			byte[] buff = new byte[8000];
-			int bytesRead = 0;
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			while((bytesRead = inputStream.read(buff)) != -1) {
-				bos.write(buff, 0, bytesRead);
-			}
-			byte[] data = bos.toByteArray();
-			BASE64Encoder encoder = new BASE64Encoder();
-			return "data:image/jpg;base64," + encoder.encode(data);
+			byte[] data = IOUtils.toByteArray(inputStream);
+			return "data:image/jpg;base64," + Base64.encode(data);
 		}catch (Exception e){
 			logger.error("ERROR! from service[getBase64CompanyLogo]",e);
 		}
@@ -714,6 +707,18 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
+	@Override
+	public boolean updateBase64CompanyLogo(CompanyLogoBean logoBean) {
+		try{
+			byte[] imageByte = Base64.decode(logoBean.getEncodedImageStr());
+			BASE64DecodedMultipartFile base64File = new BASE64DecodedMultipartFile(logoBean.getFileName(), logoBean.getFileOriginalName(),imageByte);
+			return customerDao.updateCompanyLogo(logoBean.getCompanyId(),base64File);
+		}catch (Exception e){
+			logger.error("ERROR!",e);
+		}
+		return false;
+	}
 
 	@Override
 	public boolean deleteCompanyLogo(String userId, String companyId) {

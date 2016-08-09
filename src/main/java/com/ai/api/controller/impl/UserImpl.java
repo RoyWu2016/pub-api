@@ -13,10 +13,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ai.api.bean.BookingPreferenceBean;
-import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.ContactInfoBean;
-import com.ai.api.bean.UserBean;
+import com.ai.api.bean.*;
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
@@ -182,7 +179,7 @@ public class UserImpl implements User {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/{userId}/company/{companyId}/file_logo", method = RequestMethod.POST)
     public ResponseEntity<String> updateCompanyLogo(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId, HttpServletRequest request) {
 		logger.info("update companyLogo----userId["+userId+"]companyId["+companyId+"]");
 		boolean b = false;
@@ -197,6 +194,25 @@ public class UserImpl implements User {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.POST)
+	public ResponseEntity<String> updateBase64CompanyLogo(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId, @RequestBody CompanyLogoBean logoBean) {
+		logger.info("update companyLogo----userId["+userId+"]companyId["+companyId+"]");
+		boolean b = false;
+		try {
+			b = userService.updateBase64CompanyLogo(logoBean);
+		}catch (Exception e){
+			logger.error("",e);
+		}
+		if (b){
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
 
 	@Override
 	@TokenSecured
