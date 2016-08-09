@@ -62,7 +62,7 @@ public class ReportDaoImpl implements ReportDao {
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 return true;
             } else {
-                logger.error("get reports from middleware error: " + result.getStatusCode() +
+                logger.error("forward reports from middleware error: " + result.getStatusCode() +
                         ", " + result.getResponseString());
                 return false;
             }
