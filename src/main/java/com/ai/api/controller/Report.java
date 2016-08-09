@@ -1,8 +1,10 @@
 package com.ai.api.controller;
 
 import com.ai.commons.beans.report.ReportSearchResultBean;
+import com.ai.commons.beans.report.ReportsForwardingBean;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -10,5 +12,5 @@ import java.util.List;
  */
 public interface Report {
     ResponseEntity<List<ReportSearchResultBean>> getUserReportsByCriteria(String userId,String orderTypeArray,Integer pageNumber,String archived,String starts,String ends,String keywords);
-    ResponseEntity<String> forwardReports(String userId,String ids,String to,String from,String cc,String bcc,String message);
+    ResponseEntity<String> forwardReports(String userId,String ids,ReportsForwardingBean reportsForwardingBean);
 }

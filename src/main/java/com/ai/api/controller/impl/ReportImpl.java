@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.ai.api.controller.Report;
 import com.ai.api.service.ReportService;
+import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
@@ -15,11 +16,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 /**
  * Created by yan on 2016/7/25.
@@ -80,22 +81,14 @@ public class ReportImpl implements Report {
     @Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/reports/{ids}/forwarded", method = RequestMethod.POST)
-    public ResponseEntity<String> forwardReports(@PathVariable("userId") String userId,@PathVariable("ids") String ids,
-                                                 @RequestParam(value = "to") String to,
-                                                 @RequestParam(value = "from",required = false) String from,
-                                                 @RequestParam(value = "cc",required = false) String cc,
-                                                 @RequestParam(value = "bcc",required = false) String bcc,
-                                                 @RequestParam(value = "message",required = false) String message) {
-
-        ReportsForwardingBean reportsForwardingBean = new ReportsForwardingBean();
-        reportsForwardingBean.setIds(ids);
+    @Produces({ MediaType.APPLICATION_JSON })
+    public ResponseEntity<String> forwardReports(@PathVariable("userId") String userId, @PathVariable("ids") String ids,
+                                                 @RequestBody ReportsForwardingBean reportsForwardingBean) {
+        if (StringUtils.isBlank(reportsForwardingBean.getTo())){
+            return new ResponseEntity<>("the field 'to' can not be null!",HttpStatus.BAD_REQUEST);
+        }
         reportsForwardingBean.setUserId(userId);
-        reportsForwardingBean.setTo(to);
-        reportsForwardingBean.setFrom(from);
-        reportsForwardingBean.setBcc(bcc);
-        reportsForwardingBean.setCc(cc);
-        reportsForwardingBean.setMessage(message);
-
+        reportsForwardingBean.setIds(ids);
         boolean b = reportService.forwardReports(reportsForwardingBean);
         if(b){
             return new ResponseEntity<>(HttpStatus.OK);
