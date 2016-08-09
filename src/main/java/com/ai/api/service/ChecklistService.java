@@ -2,7 +2,7 @@ package com.ai.api.service;
 
 import java.util.List;
 
-import com.ai.commons.beans.checklist.ChecklistDetailBean;
+import com.ai.commons.beans.checklist.api.ChecklistDetailBean;
 import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
 
 /***************************************************************************
