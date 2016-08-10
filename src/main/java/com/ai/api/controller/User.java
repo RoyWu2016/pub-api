@@ -9,16 +9,17 @@ package com.ai.api.controller;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.ai.api.bean.*;
+import com.ai.api.bean.BookingPreferenceBean;
+import com.ai.api.bean.CompanyBean;
+import com.ai.api.bean.CompanyLogoBean;
+import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import org.springframework.http.ResponseEntity;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /***************************************************************************
  * <PRE>
@@ -57,13 +58,15 @@ public interface User {
 
 	ResponseEntity<ServiceCallResult> updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException;
 
-	ResponseEntity<String> getCompanyLogo(String userId, String companyId,HttpServletResponse httpResponse);
+//	ResponseEntity<String> getCompanyLogoByFile(String userId, String companyId,HttpServletResponse httpResponse);
 
-    ResponseEntity<String> updateCompanyLogo(String userId, String companyId,HttpServletRequest request);
+	ResponseEntity<Map<String,String>> getCompanyLogo(String userId, String companyId);
+
+//    ResponseEntity<String> updateCompanyLogoByFile(String userId, String companyId, HttpServletRequest request);
 
 	ResponseEntity<String> deleteCompanyLogo(String userId, String companyId);
 
 	ResponseEntity<Boolean> createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
 
-	ResponseEntity<String> updateBase64CompanyLogo(String userId, String companyId, CompanyLogoBean logoBean);
+	ResponseEntity<String> updateCompanyLogo(String userId, String companyId, CompanyLogoBean logoBean);
 }
