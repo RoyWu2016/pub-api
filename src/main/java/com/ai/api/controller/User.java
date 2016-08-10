@@ -9,6 +9,7 @@ package com.ai.api.controller;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
@@ -59,7 +60,7 @@ public interface User {
 
 //	ResponseEntity<String> getCompanyLogoByFile(String userId, String companyId,HttpServletResponse httpResponse);
 
-	ResponseEntity<String> getCompanyLogo(String userId, String companyId);
+	ResponseEntity<Map<String,String>> getCompanyLogo(String userId, String companyId);
 
 //    ResponseEntity<String> updateCompanyLogoByFile(String userId, String companyId, HttpServletRequest request);
 

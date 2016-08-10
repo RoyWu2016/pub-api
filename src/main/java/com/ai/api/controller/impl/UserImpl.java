@@ -9,6 +9,7 @@ package com.ai.api.controller.impl;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
@@ -165,14 +166,17 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.GET)
-	public ResponseEntity<String> getCompanyLogo(@PathVariable("userId") String userId,
+	public ResponseEntity<Map<String, String>> getCompanyLogo(@PathVariable("userId") String userId,
 	                                             @PathVariable("companyId") String companyId) {
 		logger.info("get companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
 
 		try {
-			String result = userService.getCompanyLogo(companyId);
-			if (result != null)
+			String imageStr = userService.getCompanyLogo(companyId);
+			if (imageStr != null) {
+				Map<String, String> result = new HashMap<String, String>();
+				result.put("image",imageStr);
 				return new ResponseEntity<>(result, HttpStatus.OK);
+			}
 		} catch (Exception e) {
 			logger.error("", e);
 		}
