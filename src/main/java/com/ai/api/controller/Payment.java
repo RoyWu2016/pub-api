@@ -30,5 +30,5 @@ public interface Payment {
 	ResponseEntity<List<PaymentSearchResultBean>> getPaymentList(String userId, String archived,
 	                                                             String start, String end,
 	                                                             String keywords, Integer page) throws IOException, AIException;
-
+	ResponseEntity<String> createProformaInvoice(String userId, String orders);
 }

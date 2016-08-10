@@ -744,5 +744,9 @@ public class UserServiceImpl implements UserService {
 		return customerDao.searchPaymentList(criteria);
 	}
 
-
+	@Override
+	public String createProformaInvoice(String userId, String orders) {
+		String login = customerDao.getGeneralUser(userId).getLogin();
+		return customerDao.createProformaInvoice(userId, login, orders);
+	}
 }

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -294,6 +295,26 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 
+		return null;
+	}
+
+	@Override
+	public String createProformaInvoice(String userId, String login, String orders) {
+		try{
+			String url = config.getMwServiceUrl() + "/service/payment/proformaInvoice";
+			Map<String, String> dataMap = new HashMap<String, String>();
+			dataMap.put("userId",userId);
+			dataMap.put("login",login);
+			dataMap.put("orders",orders);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, dataMap);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return result.getResponseString();
+			} else {
+				logger.error("Generate Proforma Invoice For Given Orders from middleware error: " + result.getStatusCode() + ", " + result.getResponseString());
+			}
+		}catch (Exception e){
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
 		return null;
 	}
 

@@ -92,4 +92,17 @@ public class PaymentImpl implements Payment {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/proformaInvoice", method = RequestMethod.POST)
+	public ResponseEntity<String> createProformaInvoice(@PathVariable("userId") String userId,
+																		@RequestParam("orders") String orders){
+		String result = userService.createProformaInvoice(userId, orders);
+		if(result!=null){
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 }
