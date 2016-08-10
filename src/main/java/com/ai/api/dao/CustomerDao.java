@@ -33,4 +33,6 @@ public interface CustomerDao {
 	boolean createNewAccount(ClientInfoBean clientInfoBean);
 
 	List<PaymentSearchResultBean> searchPaymentList(PaymentSearchCriteriaBean criteria) ;
+
+	String createProformaInvoice(String userId, String login, String orders);
 }

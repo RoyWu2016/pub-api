@@ -69,4 +69,6 @@ public interface UserService {
     String getCompanyLogo(String companyId);
 
     boolean updateCompanyLogo(CompanyLogoBean logoBean);
+
+    String createProformaInvoice(String userId, String orders);
 }
