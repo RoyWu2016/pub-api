@@ -81,7 +81,6 @@ public class ReportImpl implements Report {
     @Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/reports/{ids}/forwarded", method = RequestMethod.POST)
-    @Produces({ MediaType.APPLICATION_JSON })
     public ResponseEntity<String> forwardReports(@PathVariable("userId") String userId, @PathVariable("ids") String ids,
                                                  @RequestBody ReportsForwardingBean reportsForwardingBean) {
         if (StringUtils.isBlank(reportsForwardingBean.getTo())){
@@ -90,6 +89,18 @@ public class ReportImpl implements Report {
         reportsForwardingBean.setUserId(userId);
         reportsForwardingBean.setIds(ids);
         boolean b = reportService.forwardReports(reportsForwardingBean);
+        if(b){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/report/{id}/undone", method = RequestMethod.PUT)
+    public ResponseEntity<String> undoDecision(@PathVariable("userId") String userId, @PathVariable("id") String id){
+        boolean b = reportService.undoDecision(userId,id);
         if(b){
             return new ResponseEntity<>(HttpStatus.OK);
         } else {

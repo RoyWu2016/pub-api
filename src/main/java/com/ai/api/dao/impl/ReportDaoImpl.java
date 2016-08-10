@@ -4,6 +4,7 @@ import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.ReportDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
+import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
@@ -59,6 +60,27 @@ public class ReportDaoImpl implements ReportDao {
         String url = config.getMwServiceUrl() + "/service/report/forward";
         try {
             ServiceCallResult result = HttpUtil.issuePostRequest(url, null, reportsForwardingBean);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                return true;
+            } else {
+                logger.error("forward reports from middleware error: " + result.getStatusCode() +
+                        ", " + result.getResponseString());
+                return false;
+            }
+        }catch (Exception e){
+            logger.error(ExceptionUtils.getStackTrace(e));
+            return false;
+        }
+    }
+
+    @Override
+    public boolean undoDecision(String login,String reportDetailId){
+        String url = config.getMwServiceUrl() + "/service/report/undo";
+        try {
+            url = url+"/"+reportDetailId+"?login="+login;
+            GetRequest request = GetRequest.newInstance().setUrl(url);
+            logger.info("get!!! Url:"+url );
+            ServiceCallResult result = HttpUtil.issueGetRequest(request);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 return true;
             } else {
