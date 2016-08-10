@@ -46,4 +46,11 @@ public class ReportServiceImpl implements ReportService {
         }
         return reportDao.forwardReports(reportsForwardingBean);
     }
+
+    @Override
+    public boolean undoDecision(String userId,String reportDetailId){
+        String login = customerDao.getGeneralUser(userId).getLogin();
+        return reportDao.undoDecision(login,reportDetailId);
+    }
+
 }
