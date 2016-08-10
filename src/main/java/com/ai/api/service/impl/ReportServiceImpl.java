@@ -3,6 +3,7 @@ package com.ai.api.service.impl;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ReportDao;
 import com.ai.api.service.ReportService;
+import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
@@ -53,4 +54,10 @@ public class ReportServiceImpl implements ReportService {
         return reportDao.undoDecision(login,reportDetailId);
     }
 
+
+    @Override
+    public List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String reportId) {
+        String login = customerDao.getGeneralUser(userId).getLogin();
+        return reportDao.getUserReportPdfInfo(userId, login, reportId);
+    }
 }

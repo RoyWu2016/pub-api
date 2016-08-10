@@ -6,6 +6,7 @@ import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
@@ -92,5 +93,19 @@ public class ReportDaoImpl implements ReportDao {
             logger.error(ExceptionUtils.getStackTrace(e));
             return false;
         }
+    }
+
+    @Override
+    public List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String login, String reportId) {
+        String url = config.getMwServiceUrl() + "/service/report/fileNames?reportDetailId="+reportId+"&login="+login+"&userId="+userId;
+        try{
+            GetRequest request = GetRequest.newInstance().setUrl(url);
+            ServiceCallResult result = HttpUtil.issueGetRequest(request);
+            List<ReportPdfFileInfoBean> reportPdfInfo = JsonUtil.mapToObject(result.getResponseString(), new TypeReference<List<ReportPdfFileInfoBean>>(){});
+            return reportPdfInfo;
+        }catch (Exception e){
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+        return null;
     }
 }

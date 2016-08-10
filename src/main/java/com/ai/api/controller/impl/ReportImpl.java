@@ -8,6 +8,7 @@ import com.ai.api.controller.Report;
 import com.ai.api.service.ReportService;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
@@ -103,6 +104,20 @@ public class ReportImpl implements Report {
         boolean b = reportService.undoDecision(userId,id);
         if(b){
             return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/report/{reportId}/pdf", method = RequestMethod.GET)
+    public ResponseEntity<List<ReportPdfFileInfoBean>> getUserReportPdfInfo(@PathVariable("userId") String userId,
+                                                                            @PathVariable("reportId") String reportId){
+
+        List<ReportPdfFileInfoBean> result = reportService.getUserReportPdfInfo(userId, reportId);
+        if(result!=null){
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

@@ -1,5 +1,6 @@
 package com.ai.api.dao;
 
+import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
@@ -13,4 +14,5 @@ public interface ReportDao {
     List<ReportSearchResultBean> getUserReportsByCriteria(ReportSearchCriteriaBean criteria);
     boolean forwardReports(ReportsForwardingBean reportsForwardingBean);
     boolean undoDecision(String login,String reportDetailId);
+    List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String login, String reportId);
 }
