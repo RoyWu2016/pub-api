@@ -662,7 +662,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean getCompanyLogo(String userId, String companyId,HttpServletResponse httpResponse) {
+	public boolean getCompanyLogoByFile(String userId, String companyId,HttpServletResponse httpResponse) {
         try {
             InputStream inputStream = customerDao.getCompanyLogo(companyId);
             ServletOutputStream output = httpResponse.getOutputStream();
@@ -680,7 +680,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String getBase64CompanyLogo(String companyId){
+	public String getCompanyLogo(String companyId){
 		try{
 			InputStream inputStream = customerDao.getCompanyLogo(companyId);
 			byte[] data = IOUtils.toByteArray(inputStream);
@@ -692,7 +692,7 @@ public class UserServiceImpl implements UserService {
 	}
 
     @Override
-    public boolean updateCompanyLogo(String userId, String companyId, HttpServletRequest request) {
+    public boolean updateCompanyLogoByFile(String userId, String companyId, HttpServletRequest request) {
         try{
             MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
             Iterator<String> fileNames = multipartHttpServletRequest.getFileNames();
@@ -709,7 +709,7 @@ public class UserServiceImpl implements UserService {
     }
 
 	@Override
-	public boolean updateBase64CompanyLogo(CompanyLogoBean logoBean) {
+	public boolean updateCompanyLogo(CompanyLogoBean logoBean) {
 		try{
 			byte[] imageByte = Base64.decode(logoBean.getEncodedImageStr());
 			BASE64DecodedMultipartFile base64File = new BASE64DecodedMultipartFile(logoBean.getFileName(), logoBean.getFileOriginalName(),imageByte);

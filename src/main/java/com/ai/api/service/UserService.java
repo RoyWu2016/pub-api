@@ -56,9 +56,9 @@ public interface UserService {
 
     ServiceCallResult updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException;
 
-    boolean getCompanyLogo(String userId,String companyId,HttpServletResponse httpResponse);
+    boolean getCompanyLogoByFile(String userId,String companyId,HttpServletResponse httpResponse);
 
-    boolean updateCompanyLogo(String userId,String companyId,HttpServletRequest request);
+    boolean updateCompanyLogoByFile(String userId, String companyId, HttpServletRequest request);
 
     boolean deleteCompanyLogo(String userId,String companyId);
 
@@ -66,7 +66,7 @@ public interface UserService {
 
 	List<PaymentSearchResultBean> searchPaymentList(PaymentSearchCriteriaBean criteria) throws IOException, AIException;
 
-    String getBase64CompanyLogo(String companyId);
+    String getCompanyLogo(String companyId);
 
-    boolean updateBase64CompanyLogo(CompanyLogoBean logoBean);
+    boolean updateCompanyLogo(CompanyLogoBean logoBean);
 }
