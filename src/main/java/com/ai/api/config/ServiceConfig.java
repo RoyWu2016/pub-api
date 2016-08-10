@@ -42,6 +42,8 @@ public class ServiceConfig {
 
 	private String mwServiceUrl;
 
+    private String reportServiceUrl;
+
     /**
      * @return the baseURL
      */
@@ -103,4 +105,12 @@ public class ServiceConfig {
 	public void setMwServiceUrl(String mwServiceUrl) {
 		this.mwServiceUrl = mwServiceUrl;
 	}
+
+    public String getReportServiceUrl() {
+        return reportServiceUrl;
+    }
+
+    public void setReportServiceUrl(String reportServiceUrl) {
+        this.reportServiceUrl = reportServiceUrl;
+    }
 }

@@ -4,7 +4,9 @@ import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.ReportDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
+import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -48,6 +50,20 @@ public class ReportDaoImpl implements ReportDao {
             }
 
         } catch (IOException e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+        return null;
+    }
+
+    @Override
+    public List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String reportId) {
+        String url = config.getReportServiceUrl() + "/list-pdf-names-and-size/"+reportId;
+        try{
+            GetRequest request = GetRequest.newInstance().setUrl(url);
+            ServiceCallResult result = HttpUtil.issueGetRequest(request);
+            List<ReportPdfFileInfoBean> reportPdfInfo = JsonUtil.mapToObject(result.getResponseString(), new TypeReference<List<ReportPdfFileInfoBean>>(){});
+            return reportPdfInfo;
+        }catch (Exception e){
             logger.error(ExceptionUtils.getStackTrace(e));
         }
         return null;

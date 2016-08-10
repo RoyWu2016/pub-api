@@ -10,6 +10,7 @@ import java.util.List;
 import com.ai.api.controller.Report;
 import com.ai.api.service.ReportService;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import org.slf4j.Logger;
@@ -72,6 +73,20 @@ public class ReportImpl implements Report {
         criteriaBean.setEndDate(ends);
 
         List<ReportSearchResultBean> result = reportService.getUserReportsByCriteria(criteriaBean);
+        if(result!=null){
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/report/{reportId}/pdf", method = RequestMethod.GET)
+    public ResponseEntity<List<ReportPdfFileInfoBean>> getUserReportPdfInfo(@PathVariable("userId") String userId,
+                                                                            @PathVariable("userId") String reportId){
+
+        List<ReportPdfFileInfoBean> result = reportService.getUserReportPdfInfo(userId, reportId);
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {

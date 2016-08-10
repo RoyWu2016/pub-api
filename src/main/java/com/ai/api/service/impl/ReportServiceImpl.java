@@ -3,6 +3,7 @@ package com.ai.api.service.impl;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ReportDao;
 import com.ai.api.service.ReportService;
+import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import org.slf4j.Logger;
@@ -35,5 +36,10 @@ public class ReportServiceImpl implements ReportService {
             criteria.setLogin(login);
         }
         return reportDao.getUserReportsByCriteria(criteria);
+    }
+
+    @Override
+    public List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String reportId) {
+        return reportDao.getUserReportPdfInfo(userId, reportId);
     }
 }
