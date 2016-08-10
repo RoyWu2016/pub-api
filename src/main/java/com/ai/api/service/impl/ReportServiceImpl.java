@@ -57,6 +57,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String reportId) {
-        return reportDao.getUserReportPdfInfo(userId, reportId);
+        String login = customerDao.getGeneralUser(userId).getLogin();
+        return reportDao.getUserReportPdfInfo(userId, login, reportId);
     }
 }

@@ -113,7 +113,7 @@ public class ReportImpl implements Report {
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/report/{reportId}/pdf", method = RequestMethod.GET)
     public ResponseEntity<List<ReportPdfFileInfoBean>> getUserReportPdfInfo(@PathVariable("userId") String userId,
-                                                                            @PathVariable("userId") String reportId){
+                                                                            @PathVariable("reportId") String reportId){
 
         List<ReportPdfFileInfoBean> result = reportService.getUserReportPdfInfo(userId, reportId);
         if(result!=null){

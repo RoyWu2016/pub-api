@@ -96,8 +96,8 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String reportId) {
-        String url = config.getReportServiceUrl() + "/list-pdf-names-and-size/"+reportId;
+    public List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String login, String reportId) {
+        String url = config.getMwServiceUrl() + "/service/report/fileNames?reportDetailId="+reportId+"&login="+login+"&userId="+userId;
         try{
             GetRequest request = GetRequest.newInstance().setUrl(url);
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
