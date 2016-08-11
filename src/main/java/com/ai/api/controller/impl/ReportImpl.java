@@ -127,6 +127,8 @@ public class ReportImpl implements Report {
     @RequestMapping(value = "/user/{userId}/report/{reportId}", method = RequestMethod.PUT)
     public ResponseEntity<String> confirmApprovalCertificate(@PathVariable("userId") String userId, @PathVariable("reportId") String reportId,
                                                  @RequestBody ReportCertificateBean reportCertificateBean) {
+        logger.info("confirmApprovalCertificate ...");
+        logger.info(reportCertificateBean.toString());
         ReportDetail reportDetail = reportCertificateBean.getReportDetail();
         if (null==reportDetail) {
             reportDetail = new ReportDetail();
