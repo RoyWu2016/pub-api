@@ -10,6 +10,7 @@ import com.ai.api.service.UserService;
 import com.ai.commons.DateUtils;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import org.slf4j.Logger;
@@ -114,6 +115,19 @@ public class PaymentImpl implements Payment {
 		boolean result = userService.reissueProFormaInvoice(userId, orders);
 		if(result){
 			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/globalPayment", method = RequestMethod.GET)
+	public ResponseEntity<List<GlobalPaymentInfoBean>> generateGlobalPayment(@PathVariable("userId") String userId,
+																			  @RequestParam("orders") String orders){
+		List<GlobalPaymentInfoBean> result = userService.generateGlobalPayment(userId, orders);
+		if(result!=null){
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}

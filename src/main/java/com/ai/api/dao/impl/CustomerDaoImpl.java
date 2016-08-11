@@ -22,10 +22,12 @@ import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -336,6 +338,19 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return false;
+	}
+
+	@Override
+	public List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String login, String orders){
+		try{
+			String url = config.getMwServiceUrl() + "/service/payment/globalPayment?userId="+userId+"&login="+login+"&order_ids_array="+orders;
+			GetRequest request = GetRequest.newInstance().setUrl(url);
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			return JsonUtil.mapToObject(result.getResponseString(), new TypeReference<List<GlobalPaymentInfoBean>>(){});
+		}catch (Exception e){
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
 	}
 
 }

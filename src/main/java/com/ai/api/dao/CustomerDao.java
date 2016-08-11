@@ -7,6 +7,7 @@ import java.util.List;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.user.GeneralUserBean;
@@ -37,4 +38,6 @@ public interface CustomerDao {
 	String createProformaInvoice(String userId, String login, String orders);
 
 	boolean reissueProFormaInvoice(String userId, String login, String orders);
+
+	List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String login, String orders);
 }
