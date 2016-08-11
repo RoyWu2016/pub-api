@@ -22,8 +22,8 @@ Set an environment variable for Tomcat path (CATALINA_HOME)
 Ask [@Allen](https://github.com/actan) for keystore file, lib folder and database credentials
 
 ```bash
-cp server.xml %CATALINA_HOME%
-cp context.xml %CATALINA_HOME%
+cp config/server.xml %CATALINA_HOME%/conf/
+cp config/context.xml %CATALINA_HOME%/conf/
 cp -R lib %CATALINA_HOME%/lib
 ```
 
