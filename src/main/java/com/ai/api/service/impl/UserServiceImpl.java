@@ -749,4 +749,10 @@ public class UserServiceImpl implements UserService {
 		String login = customerDao.getGeneralUser(userId).getLogin();
 		return customerDao.createProformaInvoice(userId, login, orders);
 	}
+
+	@Override
+	public boolean reissueProFormaInvoice(String userId, String orders) {
+		String login = customerDao.getGeneralUser(userId).getLogin();
+		return customerDao.reissueProFormaInvoice(userId, login, orders);
+	}
 }

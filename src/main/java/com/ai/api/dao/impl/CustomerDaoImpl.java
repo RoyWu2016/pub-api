@@ -318,4 +318,24 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 		return null;
 	}
 
+	@Override
+	public boolean reissueProFormaInvoice(String userId, String login, String orders) {
+		try{
+			String url = config.getMwServiceUrl() + "/service/payment/reissueProformaInvoice";
+			Map<String, String> dataMap = new HashMap<String, String>();
+			dataMap.put("userId",userId);
+			dataMap.put("login",login);
+			dataMap.put("orders",orders);
+			ServiceCallResult result = HttpUtil.issuePutRequest(url, null, dataMap);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return true;
+			} else {
+				logger.error("Reissue Proforma Invoice For Given Orders from middleware error: " + result.getStatusCode() + ", " + result.getResponseString());
+			}
+		}catch (Exception e){
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return false;
+	}
+
 }
