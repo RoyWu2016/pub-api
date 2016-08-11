@@ -34,12 +34,12 @@
         jdbcUrl="jdbc:oracle:thin:@192.168.0.6:1521:aidev" user="aidatauser"
 
     -->
-    <!-- c3p0 oracle --> 
+    <!-- c3p0 oracle -->
     <Resource name="jdbc/dataSource" auth="Container"
         factory="org.apache.naming.factory.BeanFactory" type="com.mchange.v2.c3p0.ComboPooledDataSource"
         driverClass="oracle.jdbc.OracleDriver" minPoolSize="2"
         maxPoolSize="16" initialPoolSize="2" idleConnectionTestPeriod="18000"
         maxIdleTime="25000" acquireIncrement="2"
-        jdbcUrl="jdbc:oracle:thin:@202.66.128.140:1521:aidev" user="aidatauser"
-        password="tiger" />
+        jdbcUrl="jdbc:oracle:thin:@host" user="user"
+        password="password" />
 </Context>
