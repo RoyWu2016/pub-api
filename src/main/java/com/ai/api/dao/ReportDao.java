@@ -4,6 +4,7 @@ import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
+import com.ai.commons.beans.report.api.ReportCertificateBean;
 
 import java.util.List;
 
@@ -15,4 +16,5 @@ public interface ReportDao {
     boolean forwardReports(ReportsForwardingBean reportsForwardingBean);
     boolean undoDecision(String login,String reportDetailId);
     List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String login, String reportId);
+    ReportCertificateBean getApprovalCertificate(String reportId, String login, String certType, String reference);
 }

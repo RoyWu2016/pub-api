@@ -4,12 +4,15 @@ import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.ReportDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
+import com.ai.commons.StringUtils;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
+import com.ai.commons.beans.report.api.ReportCertificateBean;
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -92,6 +95,30 @@ public class ReportDaoImpl implements ReportDao {
         }catch (Exception e){
             logger.error(ExceptionUtils.getStackTrace(e));
             return false;
+        }
+    }
+
+    @Override
+    public ReportCertificateBean getApprovalCertificate(String reportId, String login, String certType, String reference){
+        StringBuilder url = new StringBuilder(config.getMwServiceUrl() + "/service/report/");
+        try {
+            url = url.append(reportId+"/certificate?login="+login+"&certType="+certType);
+            if (StringUtils.isNotBlank(reference)){
+                url = url.append("&reference="+reference);
+            }
+            GetRequest request = GetRequest.newInstance().setUrl(url.toString());
+            logger.info("get!!! Url:"+url );
+            ServiceCallResult result = HttpUtil.issueGetRequest(request);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                return JSON.parseObject(result.getResponseString(),ReportCertificateBean.class);
+            } else {
+                logger.error("getApprovalCertificate from middleware error: " +
+                        result.getStatusCode() +", " + result.getResponseString());
+                return null;
+            }
+        }catch (Exception e){
+            logger.error(ExceptionUtils.getStackTrace(e));
+            return null;
         }
     }
 
