@@ -13,16 +13,13 @@ import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
 import com.ai.commons.beans.report.api.ReportCertificateBean;
+import com.ai.commons.beans.report.api.ReportDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 /**
  * Created by yan on 2016/7/25.
@@ -120,6 +117,25 @@ public class ReportImpl implements Report {
         ReportCertificateBean reportCertificateBean = reportService.getApprovalCertificate(reportId,userId,certType,reference);
         if(null!=reportCertificateBean){
             return new ResponseEntity<>(reportCertificateBean,HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/report/{reportId}", method = RequestMethod.PUT)
+    public ResponseEntity<String> confirmApprovalCertificate(@PathVariable("userId") String userId, @PathVariable("reportId") String reportId,
+                                                 @RequestBody ReportCertificateBean reportCertificateBean) {
+        ReportDetail reportDetail = reportCertificateBean.getReportDetail();
+        if (null==reportDetail) {
+            reportDetail = new ReportDetail();
+        }
+        reportDetail.setUuid(reportId);
+        reportCertificateBean.setReportDetail(reportDetail);
+        boolean b = reportService.confirmApprovalCertificate(userId,reportCertificateBean);
+        if(b){
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

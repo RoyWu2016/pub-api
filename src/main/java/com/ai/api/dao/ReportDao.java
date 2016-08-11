@@ -15,6 +15,7 @@ public interface ReportDao {
     List<ReportSearchResultBean> getUserReportsByCriteria(ReportSearchCriteriaBean criteria);
     boolean forwardReports(ReportsForwardingBean reportsForwardingBean);
     boolean undoDecision(String login,String reportDetailId);
-    List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String login, String reportId);
     ReportCertificateBean getApprovalCertificate(String reportId, String login, String certType, String reference);
+    boolean confirmApprovalCertificate(ReportCertificateBean reportCertificateBean,String login);
+    List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String login, String reportId);
 }

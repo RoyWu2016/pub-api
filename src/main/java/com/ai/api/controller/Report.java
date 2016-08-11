@@ -14,7 +14,7 @@ public interface Report {
     ResponseEntity<List<ReportSearchResultBean>> getUserReportsByCriteria(String userId,String orderTypeArray,Integer pageNumber,String archived,String starts,String ends,String keywords);
     ResponseEntity<String> forwardReports(String userId,String ids,ReportsForwardingBean reportsForwardingBean);
     ResponseEntity<String> undoDecision(String userId,String id);
-    ResponseEntity<List<ReportPdfFileInfoBean>> getUserReportPdfInfo(String userId, String reportId);
-
     ResponseEntity<ReportCertificateBean> getApprovalCertificate(String userId, String reportId, String certType, String reference);
+    ResponseEntity<String> confirmApprovalCertificate(String userId,String reportId,ReportCertificateBean reportCertificateBean);
+    ResponseEntity<List<ReportPdfFileInfoBean>> getUserReportPdfInfo(String userId, String reportId);
 }
