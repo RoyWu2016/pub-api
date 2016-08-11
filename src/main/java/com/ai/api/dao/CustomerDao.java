@@ -35,4 +35,6 @@ public interface CustomerDao {
 	List<PaymentSearchResultBean> searchPaymentList(PaymentSearchCriteriaBean criteria) ;
 
 	String createProformaInvoice(String userId, String login, String orders);
+
+	boolean reissueProFormaInvoice(String userId, String login, String orders);
 }

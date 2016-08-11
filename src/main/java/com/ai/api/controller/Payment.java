@@ -31,4 +31,5 @@ public interface Payment {
 	                                                             String start, String end,
 	                                                             String keywords, Integer page) throws IOException, AIException;
 	ResponseEntity<String> createProformaInvoice(String userId, String orders);
+	ResponseEntity<Boolean> reissueProFormaInvoice(String userId,String orders);
 }

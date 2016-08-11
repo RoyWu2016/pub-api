@@ -71,4 +71,6 @@ public interface UserService {
     boolean updateCompanyLogo(CompanyLogoBean logoBean);
 
     String createProformaInvoice(String userId, String orders);
+
+    boolean reissueProFormaInvoice(String userId, String orders);
 }
