@@ -1,9 +1,9 @@
 package com.ai.api.controller;
 
 import com.ai.commons.beans.report.ReportPdfFileInfoBean;
-import com.ai.commons.beans.report.ReportCertificateBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
+import com.ai.commons.beans.report.api.ReportCertificateBean;
 import org.springframework.http.ResponseEntity;
 import java.util.List;
 

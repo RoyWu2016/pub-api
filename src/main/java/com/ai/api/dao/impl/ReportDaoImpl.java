@@ -8,10 +8,10 @@ import com.ai.commons.StringUtils;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.report.ReportPdfFileInfoBean;
-import com.ai.commons.beans.report.ReportCertificateBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
+import com.ai.commons.beans.report.api.ReportCertificateBean;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -99,7 +99,7 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public ReportCertificateBean getApprovalCertificate(String reportId,String login,String certType,String reference){
+    public ReportCertificateBean getApprovalCertificate(String reportId, String login, String certType, String reference){
         StringBuilder url = new StringBuilder(config.getMwServiceUrl() + "/service/report/");
         try {
             url = url.append(reportId+"/certificate?login="+login+"&certType="+certType);

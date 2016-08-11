@@ -1,10 +1,10 @@
 package com.ai.api.dao;
 
 import com.ai.commons.beans.report.ReportPdfFileInfoBean;
-import com.ai.commons.beans.report.ReportCertificateBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
+import com.ai.commons.beans.report.api.ReportCertificateBean;
 
 import java.util.List;
 
