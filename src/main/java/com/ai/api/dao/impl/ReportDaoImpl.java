@@ -132,6 +132,9 @@ public class ReportDaoImpl implements ReportDao {
             Map<String,Object> paramsMap = new HashMap<>();
             paramsMap.put("login",login);
             paramsMap.put("reportCertificateBean",reportCertificateBean);
+            logger.info("POST URL:"+url);
+            logger.info("login : "+login);
+            logger.info("reportCertificateBean : "+reportCertificateBean.toString());
             ServiceCallResult result = HttpUtil.issuePostRequest(url, null, paramsMap);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 return true;
