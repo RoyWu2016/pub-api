@@ -8,6 +8,7 @@ import com.ai.api.controller.Report;
 import com.ai.api.service.ReportService;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.report.ReportCertificateBean;
 import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
@@ -104,6 +105,21 @@ public class ReportImpl implements Report {
         boolean b = reportService.undoDecision(userId,id);
         if(b){
             return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/report/{reportId}/certificate/{certType}", method = RequestMethod.GET)
+    public ResponseEntity<ReportCertificateBean> getApprovalCertificate(@PathVariable("userId") String userId,
+                                               @PathVariable("reportId") String reportId,
+                                               @PathVariable("certType") String certType,
+                                               @RequestParam(value = "reference",required = false) String reference){
+        ReportCertificateBean reportCertificateBean = reportService.getApprovalCertificate(reportId,userId,certType,reference);
+        if(null!=reportCertificateBean){
+            return new ResponseEntity<>(reportCertificateBean,HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

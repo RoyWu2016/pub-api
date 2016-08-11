@@ -3,6 +3,7 @@ package com.ai.api.service.impl;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ReportDao;
 import com.ai.api.service.ReportService;
+import com.ai.commons.beans.report.ReportCertificateBean;
 import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
@@ -52,6 +53,11 @@ public class ReportServiceImpl implements ReportService {
     public boolean undoDecision(String userId,String reportDetailId){
         String login = customerDao.getGeneralUser(userId).getLogin();
         return reportDao.undoDecision(login,reportDetailId);
+    }
+    @Override
+    public ReportCertificateBean getApprovalCertificate(String reportId, String userId, String certType, String reference) {
+        String login = customerDao.getGeneralUser(userId).getLogin();
+        return reportDao.getApprovalCertificate(reportId,login,certType,reference);
     }
 
 
