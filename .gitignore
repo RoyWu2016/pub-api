@@ -1,5 +1,5 @@
 .idea/*
 target/*
 api.iml
-src/test/*
+src/test/test.iml
 src/main/main.iml
