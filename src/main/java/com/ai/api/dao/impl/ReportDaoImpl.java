@@ -14,6 +14,7 @@ import com.ai.commons.beans.report.ReportsForwardingBean;
 import com.ai.commons.beans.report.api.ReportCertificateBean;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yan on 2016/7/25.
@@ -119,6 +122,27 @@ public class ReportDaoImpl implements ReportDao {
         }catch (Exception e){
             logger.error(ExceptionUtils.getStackTrace(e));
             return null;
+        }
+    }
+
+    @Override
+    public boolean confirmApprovalCertificate(ReportCertificateBean reportCertificateBean,String login){
+        String url = config.getMwServiceUrl() + "/service/report/confirmApprovalCertificate";
+        try {
+            Map<String,Object> paramsMap = new HashMap();
+            paramsMap.put("login",login);
+            paramsMap.put("reportCertificateBean",reportCertificateBean);
+            ServiceCallResult result = HttpUtil.issuePostRequest(url, null, paramsMap);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                return true;
+            } else {
+                logger.error("confirmApprovalCertificate from middleware error: " + result.getStatusCode() +
+                        ", " + result.getResponseString());
+                return false;
+            }
+        }catch (Exception e){
+            logger.error(ExceptionUtils.getStackTrace(e));
+            return false;
         }
     }
 

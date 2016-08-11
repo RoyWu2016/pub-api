@@ -60,6 +60,12 @@ public class ReportServiceImpl implements ReportService {
         return reportDao.getApprovalCertificate(reportId,login,certType,reference);
     }
 
+    @Override
+    public boolean confirmApprovalCertificate(String userId,ReportCertificateBean reportCertificateBean){
+        String login = customerDao.getGeneralUser(userId).getLogin();
+        return reportDao.confirmApprovalCertificate(reportCertificateBean,login);
+    }
+
 
     @Override
     public List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String reportId) {
