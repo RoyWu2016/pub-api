@@ -32,6 +32,7 @@ import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.*;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.user.GeneralUserBean;
@@ -755,4 +756,11 @@ public class UserServiceImpl implements UserService {
 		String login = customerDao.getGeneralUser(userId).getLogin();
 		return customerDao.reissueProFormaInvoice(userId, login, orders);
 	}
+
+	@Override
+	public List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders){
+		String login = customerDao.getGeneralUser(userId).getLogin();
+		return customerDao.generateGlobalPayment(userId, login, orders);
+	}
+
 }
