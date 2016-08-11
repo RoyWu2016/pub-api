@@ -129,7 +129,7 @@ public class ReportDaoImpl implements ReportDao {
     public boolean confirmApprovalCertificate(ReportCertificateBean reportCertificateBean,String login){
         String url = config.getMwServiceUrl() + "/service/report/confirmApprovalCertificate";
         try {
-            Map<String,Object> paramsMap = new HashMap();
+            Map<String,Object> paramsMap = new HashMap<>();
             paramsMap.put("login",login);
             paramsMap.put("reportCertificateBean",reportCertificateBean);
             ServiceCallResult result = HttpUtil.issuePostRequest(url, null, paramsMap);
