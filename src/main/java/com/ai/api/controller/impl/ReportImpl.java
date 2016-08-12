@@ -21,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Created by yan on 2016/7/25.
  */
@@ -152,6 +154,25 @@ public class ReportImpl implements Report {
         List<ReportPdfFileInfoBean> result = reportService.getUserReportPdfInfo(userId, reportId);
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/report/{reportId}/fileName/{fileName}/pdf", method = RequestMethod.GET)
+    public ResponseEntity<String> downloadPDF(@PathVariable("userId") String userId,
+                                              @PathVariable("reportId") String reportId,
+                                              @PathVariable("fileName") String fileName,
+                                              HttpServletResponse httpResponse) {
+        logger.info("downloadPDF ...");
+        logger.info("userId : "+userId);
+        logger.info("reportId : "+reportId);
+        logger.info("fileName : "+fileName);
+        boolean b = reportService.downloadPDF(reportId,fileName,httpResponse);
+        if(b){
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

@@ -6,6 +6,7 @@ import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
 import com.ai.commons.beans.report.api.ReportCertificateBean;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -18,4 +19,5 @@ public interface ReportService {
     ReportCertificateBean getApprovalCertificate(String reportId, String userId, String certType, String reference);
     boolean confirmApprovalCertificate(String userId,ReportCertificateBean reportCertificateBean);
     List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String reportId);
+    boolean downloadPDF(String reportId,String fileName,HttpServletResponse httpResponse);
 }
