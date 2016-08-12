@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.ai.api.controller.Payment;
+import com.ai.api.service.PaymentService;
 import com.ai.api.service.UserService;
 import com.ai.commons.DateUtils;
 import com.ai.commons.StringUtils;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
 
 /***************************************************************************
  * <PRE>
@@ -49,6 +52,9 @@ public class PaymentImpl implements Payment {
 
 	@Autowired
 	UserService userService;
+
+    @Autowired
+    PaymentService paymentService;
 
 	@Override
 	@TokenSecured
@@ -128,6 +134,23 @@ public class PaymentImpl implements Payment {
 		List<GlobalPaymentInfoBean> result = userService.generateGlobalPayment(userId, orders);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/proformaInvoice/{invoiceId}/pdf", method = RequestMethod.GET)
+	public ResponseEntity<String> downloadProformaInvoicePDF(@PathVariable("userId") String userId,
+															 @PathVariable("invoiceId") String invoiceId,
+                                                             HttpServletResponse httpResponse){
+        logger.info("downloadProformaInvoicePDF ... ");
+        logger.info("userId ："+userId);
+        logger.info("invoiceId : "+invoiceId);
+		boolean b = paymentService.downloadProformaInvoicePDF(userId,invoiceId,httpResponse);
+		if(b){
+			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
