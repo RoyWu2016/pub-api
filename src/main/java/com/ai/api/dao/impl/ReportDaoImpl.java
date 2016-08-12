@@ -129,9 +129,10 @@ public class ReportDaoImpl implements ReportDao {
     public boolean confirmApprovalCertificate(ReportCertificateBean reportCertificateBean,String login){
         String url = config.getMwServiceUrl() + "/service/report/confirmApprovalCertificate";
         try {
-            Map<String,Object> paramsMap = new HashMap<>();
+            String jsonStr = JSON.toJSONString(reportCertificateBean);
+            Map<String,String> paramsMap = new HashMap<>();
             paramsMap.put("login",login);
-            paramsMap.put("reportCertificateBean",reportCertificateBean);
+            paramsMap.put("reportCertificateBean",jsonStr);
             logger.info("POST URL:"+url);
             logger.info("login : "+login);
             logger.info("reportCertificateBean : "+reportCertificateBean.toString());
