@@ -44,6 +44,10 @@ public class ServiceConfig {
 
     private String reportServiceUrl;
 
+    private String mwFTPHost;
+    private String mwFTPUsername;
+    private String mwFTPPassword;
+
     /**
      * @return the baseURL
      */
@@ -112,5 +116,29 @@ public class ServiceConfig {
 
     public void setReportServiceUrl(String reportServiceUrl) {
         this.reportServiceUrl = reportServiceUrl;
+    }
+
+    public String getMwFTPHost() {
+        return mwFTPHost;
+    }
+
+    public void setMwFTPHost(String mwFTPHost) {
+        this.mwFTPHost = mwFTPHost;
+    }
+
+    public String getMwFTPUsername() {
+        return mwFTPUsername;
+    }
+
+    public void setMwFTPUsername(String mwFTPUsername) {
+        this.mwFTPUsername = mwFTPUsername;
+    }
+
+    public String getMwFTPPassword() {
+        return mwFTPPassword;
+    }
+
+    public void setMwFTPPassword(String mwFTPPassword) {
+        this.mwFTPPassword = mwFTPPassword;
     }
 }
