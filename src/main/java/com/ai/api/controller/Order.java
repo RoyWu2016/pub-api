@@ -9,7 +9,7 @@ package com.ai.api.controller;
 import java.util.List;
 
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
-import com.ai.commons.beans.order.OrderSearchResultBean;
+import com.ai.commons.beans.order.api.SimpleOrderBean;
 import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
@@ -34,7 +34,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface Order {
 
-	ResponseEntity<List<OrderSearchResultBean>> getOrderListByUserId(String userId,
+	ResponseEntity<List<SimpleOrderBean>> getOrderListByUserId(String userId,
 	                                                                 Integer pageNumber,
 	                                                                 String orderTypeArray,
 	                                                                 String orderStatus,
