@@ -13,7 +13,7 @@ import com.ai.api.dao.OrderDao;
 import com.ai.api.service.OrderService;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
-import com.ai.commons.beans.order.OrderSearchResultBean;
+import com.ai.commons.beans.order.api.SimpleOrderBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
 	private CustomerDao customerDao;
 
 	@Override
-	public List<OrderSearchResultBean> getOrdersByUserId(OrderSearchCriteriaBean criteria) {
+	public List<SimpleOrderBean> getOrdersByUserId(OrderSearchCriteriaBean criteria) {
 		if(criteria.getLogin()==null){
 			String login = customerDao.getGeneralUser(criteria.getUserID()).getLogin();
 			criteria.setLogin(login);
@@ -63,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<OrderSearchResultBean> getDraftsByUserId(OrderSearchCriteriaBean criteria) {
+	public List<SimpleOrderBean> getDraftsByUserId(OrderSearchCriteriaBean criteria) {
 		if(criteria.getLogin()==null){
 			String login = customerDao.getGeneralUser(criteria.getUserID()).getLogin();
 			criteria.setLogin(login);
