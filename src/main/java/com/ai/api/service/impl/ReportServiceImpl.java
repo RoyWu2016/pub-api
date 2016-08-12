@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -66,10 +69,29 @@ public class ReportServiceImpl implements ReportService {
         return reportDao.confirmApprovalCertificate(reportCertificateBean,login);
     }
 
-
     @Override
     public List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String reportId) {
         String login = customerDao.getGeneralUser(userId).getLogin();
         return reportDao.getUserReportPdfInfo(userId, login, reportId);
+    }
+
+    @Override
+    public boolean downloadPDF(String reportId,String fileName,HttpServletResponse httpResponse){
+        boolean b = false;
+        try {
+
+            httpResponse.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+            InputStream inputStream =  reportDao.downloadPDF(reportId,fileName);
+            ServletOutputStream output = httpResponse.getOutputStream();
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            byte[] buffer = new byte[10240];
+            for (int length = 0; (length = inputStream.read(buffer)) > 0;) {
+                output.write(buffer, 0, length);
+            }
+            b = true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return b;
     }
 }
