@@ -210,7 +210,7 @@ public class UserImpl implements User {
 		logger.info("update companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
 		boolean b = false;
 		try {
-			b = userService.updateCompanyLogo(logoBean);
+			b = userService.updateCompanyLogo(userId, companyId, logoBean);
 		} catch (Exception e) {
 			logger.error("", e);
 		}
