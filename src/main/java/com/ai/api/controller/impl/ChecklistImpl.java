@@ -5,8 +5,8 @@ import java.util.List;
 import com.ai.api.controller.Checklist;
 import com.ai.api.service.ChecklistService;
 import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.checklist.api.ChecklistDetailBean;
-import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
+import com.ai.commons.beans.checklist.api.ChecklistBean;
+import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,11 +44,11 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklists", method = RequestMethod.GET)
-	public ResponseEntity<List<ChecklistSearchResultBean>> searchChecklist(@PathVariable("userId") String userID,
+	public ResponseEntity<List<SimpleChecklistBean>> searchChecklist(@PathVariable("userId") String userID,
 	                                                                       @RequestParam(value = "keyword",required = false) String keyword,
 																		   @RequestParam(value = "pageNumber",required = false) Integer pageNumber) {
 
-		List<ChecklistSearchResultBean> result = checklistService.searchChecklist(userID,keyword,pageNumber);
+		List<SimpleChecklistBean> result = checklistService.searchChecklist(userID,keyword,pageNumber);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
@@ -59,9 +59,9 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/publicChecklists", method = RequestMethod.GET)
-	public ResponseEntity<List<ChecklistSearchResultBean>> searchPublicChecklist(@PathVariable("userId") String userId,
+	public ResponseEntity<List<SimpleChecklistBean>> searchPublicChecklist(@PathVariable("userId") String userId,
 	                                                                             @RequestParam(value = "keyword",required = false) String keyword) {
-		List<ChecklistSearchResultBean> result = checklistService.searchPublicChecklist(userId, keyword);
+		List<SimpleChecklistBean> result = checklistService.searchPublicChecklist(userId, keyword);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
@@ -72,8 +72,8 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist", method = RequestMethod.POST)
-	public ResponseEntity<String> createChecklist(@PathVariable("userId") String userId,ChecklistDetailBean checklistDetailBean){
-		String result = checklistService.createChecklist(userId,checklistDetailBean);
+	public ResponseEntity<String> createChecklist(@PathVariable("userId") String userId,ChecklistBean ChecklistBean){
+		String result = checklistService.createChecklist(userId,ChecklistBean);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
@@ -84,9 +84,9 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}", method = RequestMethod.PUT)
-	public ResponseEntity<String> updateChecklist(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId,ChecklistDetailBean checklistDetailBean){
-		checklistDetailBean.setId(checklistId);
-		String result = checklistService.updateChecklist(userId,checklistDetailBean);
+	public ResponseEntity<String> updateChecklist(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId,ChecklistBean ChecklistBean){
+		ChecklistBean.setId(checklistId);
+		String result = checklistService.updateChecklist(userId,ChecklistBean);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
@@ -97,8 +97,8 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}", method = RequestMethod.GET)
-	public ResponseEntity<ChecklistDetailBean> getChecklist(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId){
-		ChecklistDetailBean result = checklistService.getChecklist(userId,checklistId);
+	public ResponseEntity<ChecklistBean> getChecklist(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId){
+		ChecklistBean result = checklistService.getChecklist(userId,checklistId);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {

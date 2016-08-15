@@ -9,9 +9,9 @@ import com.ai.api.dao.ChecklistDao;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.service.ChecklistService;
-import com.ai.commons.beans.checklist.api.ChecklistDetailBean;
-import com.ai.commons.beans.checklist.ChecklistSearchCriteriaBean;
-import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
+import com.ai.commons.beans.checklist.api.ChecklistBean;
+import com.ai.commons.beans.checklist.api.ChecklistSearchCriteriaBean;
+import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -50,7 +50,7 @@ public class ChecklistServiceImpl implements ChecklistService {
 	private CustomerDao customerDao;
 
 	@Override
-	public List<ChecklistSearchResultBean> searchChecklist(String userID, String keyword, Integer pageNumber) {
+	public List<SimpleChecklistBean> searchChecklist(String userID, String keyword, Integer pageNumber) {
 		//ReportSearchCriteriaBean criteria = new ReportSearchCriteriaBean();
 		ChecklistSearchCriteriaBean criteria = new ChecklistSearchCriteriaBean();
 		criteria.setUserID(userID);
@@ -60,11 +60,11 @@ public class ChecklistServiceImpl implements ChecklistService {
 		criteria.setPageNumber(pageNumber);
 		criteria.setLogin(customerDao.getGeneralUser(userID).getLogin());
 
-		List<ChecklistSearchResultBean> list = checklistDao.searchChecklist(criteria);
+		List<SimpleChecklistBean> list = checklistDao.searchChecklist(criteria);
 
 		List<ProductCategoryDtoBean> categoryList = paramDao.getProductCategoryList();
 		List<ProductFamilyDtoBean> familyList = paramDao.getProductFamilyList();
-		for (ChecklistSearchResultBean bean:list){
+		for (SimpleChecklistBean bean:list){
 			String mwCategory = bean.getProductCategory();
 			String mwFamily = bean.getProductFamily();
 			bean.setProductCategory(mwFamily);
@@ -86,29 +86,29 @@ public class ChecklistServiceImpl implements ChecklistService {
 	}
 
 	@Override
-	public List<ChecklistSearchResultBean> searchPublicChecklist(String userId, String keyword){
+	public List<SimpleChecklistBean> searchPublicChecklist(String userId, String keyword){
 		ChecklistSearchCriteriaBean criteria = new ChecklistSearchCriteriaBean();
 		criteria.setUserID(userId);
 		criteria.setKeywords(keyword);
 		criteria.setLogin(customerDao.getGeneralUser(userId).getLogin());
-		List<ChecklistSearchResultBean> list = checklistDao.searchPublicChecklist(criteria);
+		List<SimpleChecklistBean> list = checklistDao.searchPublicChecklist(criteria);
 		return list;
 	}
 
 	@Override
-	public String createChecklist(String userId,ChecklistDetailBean checklistDetailBean){
+	public String createChecklist(String userId,ChecklistBean ChecklistBean){
 		String login = customerDao.getGeneralUser(userId).getLogin();
-		return checklistDao.createChecklist(login,checklistDetailBean);
+		return checklistDao.createChecklist(login,ChecklistBean);
 	}
 
 	@Override
-	public String updateChecklist(String userId,ChecklistDetailBean checklistDetailBean){
+	public String updateChecklist(String userId,ChecklistBean ChecklistBean){
 		String login = customerDao.getGeneralUser(userId).getLogin();
-		return checklistDao.updateChecklist(login,checklistDetailBean);
+		return checklistDao.updateChecklist(login,ChecklistBean);
 	}
 
 	@Override
-	public ChecklistDetailBean getChecklist(String userId,String checklistId){
+	public ChecklistBean getChecklist(String userId,String checklistId){
 		String login = customerDao.getGeneralUser(userId).getLogin();
 		return checklistDao.getChecklist(login,checklistId);
 	}
