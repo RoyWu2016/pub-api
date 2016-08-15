@@ -711,7 +711,7 @@ public class UserServiceImpl implements UserService {
 			}
 			return true;
 		} catch (Exception e) {
-			logger.error("ERROR! from service[getCompanyLogo]", ExceptionUtils.getStackTrace(e));
+			logger.error("ERROR! from service[getCompanyLogo]" + ExceptionUtils.getStackTrace(e));
 		}
 		return false;
 	}
@@ -723,7 +723,7 @@ public class UserServiceImpl implements UserService {
 			byte[] data = IOUtils.toByteArray(inputStream);
 			return "data:image/jpg;base64," + Base64.encode(data);
 		} catch (Exception e) {
-			logger.error("ERROR! from service[getBase64CompanyLogo]", ExceptionUtils.getStackTrace(e));
+			logger.error("ERROR! from service[getBase64CompanyLogo]" + ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
@@ -740,7 +740,7 @@ public class UserServiceImpl implements UserService {
 			MultipartFile file = multipartHttpServletRequest.getFile(fileName);
 			return customerDao.updateCompanyLogo(companyId, file);
 		} catch (Exception e) {
-			logger.error("ERROR!", ExceptionUtils.getStackTrace(e));
+			logger.error("ERROR!" + ExceptionUtils.getStackTrace(e));
 		}
 		return false;
 	}
@@ -753,7 +753,7 @@ public class UserServiceImpl implements UserService {
 					logoBean.getFileOriginalName(), imageByte);
 			return customerDao.updateCompanyLogo(compId, base64File);
 		} catch (Exception e) {
-			logger.error("ERROR!", ExceptionUtils.getStackTrace(e));
+			logger.error("ERROR!" + ExceptionUtils.getStackTrace(e));
 		}
 		return false;
 	}
@@ -763,7 +763,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			return customerDao.deleteCompanyLogo(companyId);
 		} catch (Exception e) {
-			logger.error("ERROR!", ExceptionUtils.getStackTrace(e));
+			logger.error("ERROR!" + ExceptionUtils.getStackTrace(e));
 		}
 		return false;
 	}
