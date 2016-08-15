@@ -94,4 +94,26 @@ public class ReportServiceImpl implements ReportService {
         }
         return b;
     }
+
+	@Override
+	public boolean exportReports(ReportSearchCriteriaBean criteria,HttpServletResponse httpResponse){
+        boolean b = false;
+        try{
+            if(criteria.getLogin()==null){
+                String login = customerDao.getGeneralUser(criteria.getUserID()).getLogin();
+                criteria.setLogin(login);
+            }
+            InputStream inputStream = reportDao.exportReports(criteria);
+            ServletOutputStream output = httpResponse.getOutputStream();
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            byte[] buffer = new byte[10240];
+            for (int length = 0; (length = inputStream.read(buffer)) > 0;) {
+                output.write(buffer, 0, length);
+            }
+            b = true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+            return b;
+        }
 }

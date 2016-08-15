@@ -177,4 +177,26 @@ public class ReportImpl implements Report {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/reports", method = RequestMethod.POST)
+	public ResponseEntity<String> exportReports(@PathVariable("userId") String userId,
+	                                            @RequestParam(value = "start",required = false) String start,
+	                                            @RequestParam(value = "end",required = false) String end,
+                                                HttpServletResponse httpResponse) {
+		logger.info("export reports ... ");
+		logger.info("userId : "+userId);
+		logger.info("start : "+start+ "   end : "+end);
+		ReportSearchCriteriaBean criteriaBean = new ReportSearchCriteriaBean();
+		criteriaBean.setUserID(userId);
+		criteriaBean.setStartDate(start);
+		criteriaBean.setEndDate(end);
+		boolean b = reportService.exportReports(criteriaBean,httpResponse);
+		if(b){
+			return new ResponseEntity<>( HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 }

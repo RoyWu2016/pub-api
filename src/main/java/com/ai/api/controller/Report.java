@@ -20,4 +20,5 @@ public interface Report {
     ResponseEntity<String> confirmApprovalCertificate(String userId,String reportId,ReportCertificateBean reportCertificateBean);
     ResponseEntity<List<ReportPdfFileInfoBean>> getUserReportPdfInfo(String userId, String reportId);
     ResponseEntity<String> downloadPDF(String userId,String reportId,String fileName,HttpServletResponse httpResponse);
+	ResponseEntity<String> exportReports(String userId,String starts,String ends,HttpServletResponse httpResponse);
 }

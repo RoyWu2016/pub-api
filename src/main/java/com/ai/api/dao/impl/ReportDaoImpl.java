@@ -2,6 +2,7 @@ package com.ai.api.dao.impl;
 
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.ReportDao;
+import com.ai.api.util.FTPUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.StringUtils;
@@ -27,6 +28,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -185,4 +188,47 @@ public class ReportDaoImpl implements ReportDao {
         return inputStream;
 
     }
+
+	@Override
+	public InputStream exportReports(ReportSearchCriteriaBean criteria){
+		String url = config.getMwServiceUrl() + "/service/report/export";
+//		String url = "http://127.0.0.1:8888/service/report/export";
+		try {
+			logger.info("post url:"+url);
+			logger.info(criteria.toString());
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                logger.info("request OK!");
+                String remotePath = "/CACHE/";
+                String fileName = result.getResponseString();
+                String host = config.getMwFTPHost();
+                int port = 21;
+                String username = config.getMwFTPUsername();
+                String password = config.getMwFTPPassword();
+                String tempPath = "/tmp/";
+                logger.info(remotePath);
+                logger.info(fileName);
+                logger.info(host+":"+port);
+                logger.info(username+" || "+password);
+                logger.info(tempPath);
+                boolean b = FTPUtil.downloadFile(host,port,username,password,remotePath,fileName,tempPath);
+                if (b){
+                    logger.info("success download File to /tmp ");
+                    File tempFile = new File(tempPath + fileName);
+                    InputStream inputStream = new FileInputStream(tempFile);
+                    return inputStream;
+                }else {
+                    logger.error("ERROR! fail to download file from FTP server. ");
+                    return null;
+                }
+			} else {
+				logger.error("get reports from middleware error: " + result.getStatusCode() +
+						", " + result.getResponseString());
+			}
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+
+	}
 }

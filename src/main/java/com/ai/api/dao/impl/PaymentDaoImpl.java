@@ -57,7 +57,7 @@ public class PaymentDaoImpl implements PaymentDao {
                 boolean b = FTPUtil.downloadFile(host,port,username,password,remotePath,fileName,tempPath);
                 if (b){
                     logger.info("success downloadFile to /tmp ");
-                    File tempFile = new File(tempPath + "/" + fileName);
+                    File tempFile = new File(tempPath + fileName);
                     InputStream inputStream = new FileInputStream(tempFile);
                     return inputStream;
                 }else {
