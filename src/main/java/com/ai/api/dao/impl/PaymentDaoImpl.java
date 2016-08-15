@@ -42,7 +42,7 @@ public class PaymentDaoImpl implements PaymentDao {
             logger.info("get done!");
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 logger.info("get OK!");
-                String remotePath = "/CACHE";
+                String remotePath = "/CACHE/";
                 String fileName = result.getResponseString();
                 String host = config.getMwFTPHost();
                 int port = 21;

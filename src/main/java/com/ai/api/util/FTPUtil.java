@@ -1,8 +1,8 @@
 package com.ai.api.util;
 
+
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.*;
@@ -67,27 +67,24 @@ public class FTPUtil {
             ftpClient.setControlEncoding(encoding);
             ftpClient.connect(url, port);
             ftpClient.login(username, password);
-            ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+            ftpClient.enterLocalPassiveMode();
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
             reply = ftpClient.getReplyCode();
             if (!FTPReply.isPositiveCompletion(reply)) {
                 ftpClient.disconnect();
                 System.out.println("FTP server refused connection.");
                 return result;
             }
-            ftpClient.changeWorkingDirectory(new String(remotePath.getBytes(encoding),"iso-8859-1"));
-            FTPFile[] fs = ftpClient.listFiles();
-            for (FTPFile ff : fs) {
-                if (ff.getName().equals(fileName)) {
-                    File localFile = new File(localPath + "/" + ff.getName());
-                    OutputStream is = new FileOutputStream(localFile);
-                    ftpClient.retrieveFile(ff.getName(), is);
-                    is.close();
-                    break;
-                }
+            File localFile = new File(localPath+fileName);
+            OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(localFile));
+            boolean b = ftpClient.retrieveFile(remotePath+fileName, outputStream);
+            outputStream.close();
+            if (b){
+                System.out.print("success download file :"+fileName);
             }
             ftpClient.logout();
             result = true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (ftpClient.isConnected()) {
