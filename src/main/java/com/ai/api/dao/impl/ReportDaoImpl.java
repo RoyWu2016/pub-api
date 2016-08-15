@@ -159,13 +159,13 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String login, String reportId) {
-        String url = config.getMwServiceUrl() + "/service/report/fileNames?reportDetailId="+reportId+"&login="+login+"&userId="+userId;
+    public List<String> getUserReportPdfInfo(String userId, String login, String reportId) {
+        String url = config.getReportServiceUrl() + "/list-pdf-names/"+reportId;
         try{
             GetRequest request = GetRequest.newInstance().setUrl(url);
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
-            List<ReportPdfFileInfoBean> reportPdfInfo = JsonUtil.mapToObject(result.getResponseString(), new TypeReference<List<ReportPdfFileInfoBean>>(){});
-            return reportPdfInfo;
+            List<String> pdfList = JSON.parseArray(result.getResponseString(),String.class);
+            return pdfList;
         }catch (Exception e){
             logger.error(ExceptionUtils.getStackTrace(e));
         }

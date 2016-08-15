@@ -148,10 +148,10 @@ public class ReportImpl implements Report {
     @Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/report/{reportId}/pdfInfo", method = RequestMethod.GET)
-    public ResponseEntity<List<ReportPdfFileInfoBean>> getUserReportPdfInfo(@PathVariable("userId") String userId,
+    public ResponseEntity<List<String>> getUserReportPdfInfo(@PathVariable("userId") String userId,
                                                                             @PathVariable("reportId") String reportId){
 
-        List<ReportPdfFileInfoBean> result = reportService.getUserReportPdfInfo(userId, reportId);
+        List<String> result = reportService.getUserReportPdfInfo(userId, reportId);
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {

@@ -18,7 +18,7 @@ public interface ReportDao {
     boolean undoDecision(String login,String reportDetailId);
     ReportCertificateBean getApprovalCertificate(String reportId, String login, String certType, String reference);
     boolean confirmApprovalCertificate(ReportCertificateBean reportCertificateBean,String login);
-    List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String login, String reportId);
+    List<String> getUserReportPdfInfo(String userId, String login, String reportId);
     InputStream downloadPDF(String reportId, String fileName);
     InputStream exportReports(ReportSearchCriteriaBean criteria);
 }
