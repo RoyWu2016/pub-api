@@ -6,11 +6,8 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import com.ai.api.bean.UserBean;
@@ -20,7 +17,7 @@ import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
-import com.ai.commons.beans.order.OrderSearchResultBean;
+import com.ai.commons.beans.order.api.SimpleOrderBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +64,7 @@ public class OrderImpl implements Order {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/orders", method = RequestMethod.GET)
-	public ResponseEntity<List<OrderSearchResultBean>> getOrderListByUserId(@PathVariable("userId") String userId,
+	public ResponseEntity<List<SimpleOrderBean>> getOrderListByUserId(@PathVariable("userId") String userId,
 	                                                                        @RequestParam(value = "page", required = false) Integer pageNumber,
 	                                                                        @RequestParam(value = "types", required = false) String orderTypeArray,
 	                                                                        @RequestParam(value = "status", required = false) String orderStatus,
@@ -97,7 +94,7 @@ public class OrderImpl implements Order {
 		}
 		criteriaBean.setServiceTypes(typeList);
 
-		List<OrderSearchResultBean> result = null;
+		List<SimpleOrderBean> result = null;
 		if (orderStatus == null) {
 			criteriaBean.setOrderStatus((short) 1);
 			result = orderService.getOrdersByUserId(criteriaBean);

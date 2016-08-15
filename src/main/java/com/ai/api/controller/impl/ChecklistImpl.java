@@ -5,7 +5,7 @@ import java.util.List;
 import com.ai.api.controller.Checklist;
 import com.ai.api.service.ChecklistService;
 import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.checklist.ChecklistDetailBean;
+import com.ai.commons.beans.checklist.api.ChecklistDetailBean;
 import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -85,7 +85,7 @@ public class ChecklistImpl implements Checklist {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}", method = RequestMethod.PUT)
 	public ResponseEntity<String> updateChecklist(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId,ChecklistDetailBean checklistDetailBean){
-		checklistDetailBean.setChecklistId(checklistId);
+		checklistDetailBean.setId(checklistId);
 		String result = checklistService.updateChecklist(userId,checklistDetailBean);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);

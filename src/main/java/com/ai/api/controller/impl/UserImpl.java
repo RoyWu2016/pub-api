@@ -9,12 +9,11 @@ package com.ai.api.controller.impl;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
+import com.ai.api.bean.CompanyLogoBean;
 import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.controller.User;
@@ -37,20 +36,20 @@ import org.springframework.web.bind.annotation.RestController;
 /***************************************************************************
  * <PRE>
  * Project Name    : api
- * <p/>
+ * <p>
  * Package Name    : com.ai.api.controller.impl
- * <p/>
+ * <p>
  * File Name       : UserImpl.java
- * <p/>
+ * <p>
  * Creation Date   : Mar 16, 2016
- * <p/>
+ * <p>
  * Author          : Allen Zhang
- * <p/>
+ * <p>
  * Purpose         : TODO
- * <p/>
- * <p/>
+ * <p>
+ * <p>
  * History         : TODO
- * <p/>
+ * <p>
  * </PRE>
  ***************************************************************************/
 
@@ -87,11 +86,11 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/company", method = RequestMethod.PUT)
 	public ResponseEntity<UserBean> updateUserProfileCompany(@PathVariable("userId") String userId,
-	                                                        @RequestBody CompanyBean newComp)
+	                                                         @RequestBody CompanyBean newComp)
 			throws IOException, AIException {
 		System.out.println("updating company for user: " + userId);
 		UserBean cust = userService.updateCompany(newComp, userId);
-		if (cust!=null) {
+		if (cust != null) {
 			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -102,11 +101,11 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/contactInfo", method = RequestMethod.PUT)
 	public ResponseEntity<UserBean> updateUserProfileContact(@PathVariable("userId") String userId,
-	                                                        @RequestBody ContactInfoBean newContact)
+	                                                         @RequestBody ContactInfoBean newContact)
 			throws IOException, AIException {
 		System.out.println("updating User contact " + userId);
 		UserBean cust = userService.updateContact(newContact, userId);
-		if (cust!=null) {
+		if (cust != null) {
 			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -118,12 +117,12 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/preference/booking", method = RequestMethod.PUT)
 	public ResponseEntity<UserBean> updateUserBookingPreference(@PathVariable("userId") String userId,
-	                                                           @RequestBody BookingPreferenceBean newBookingPref)
+	                                                            @RequestBody BookingPreferenceBean newBookingPref)
 			throws IOException, AIException {
 		System.out.println("Updating User booking preference: " + userId);
 
 		UserBean cust = userService.updateBookingPreference(newBookingPref, userId);
-		if (cust!=null) {
+		if (cust != null) {
 			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -134,7 +133,7 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/preference/booking/preferredProductFamilies", method = RequestMethod.PUT)
 	public ResponseEntity<UserBean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String userId,
-	                                                           @RequestBody List<String> newPreferred)
+	                                                                        @RequestBody List<String> newPreferred)
 			throws IOException, AIException {
 		System.out.println("Updating User preferred product family: " + userId);
 
@@ -150,15 +149,15 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/password", method = RequestMethod.PUT)
 	public ResponseEntity<ServiceCallResult> updateUserPassword(@PathVariable("userId") String userId,
-													  @RequestBody HashMap<String, String> pwdMap)
+	                                                            @RequestBody HashMap<String, String> pwdMap)
 			throws IOException, AIException {
 		System.out.println("Updating User password: " + userId);
 
 		ServiceCallResult result = userService.updateUserPassword(userId, pwdMap);
 
-		if(result.getStatusCode() == HttpStatus.OK.value()){
+		if (result.getStatusCode() == HttpStatus.OK.value()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
-		}else{
+		} else {
 			return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
 		}
 
@@ -167,53 +166,76 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.GET)
-	public ResponseEntity<String> getCompanyLogo(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId, HttpServletResponse httpResponse) {
-		logger.info("get companyLogo----userId["+userId+"]companyId["+companyId+"]");
+	public ResponseEntity<Map<String, String>> getCompanyLogo(@PathVariable("userId") String userId,
+	                                             @PathVariable("companyId") String companyId) {
+		logger.info("get companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
+
+		try {
+			String imageStr = userService.getCompanyLogo(companyId);
+			if (imageStr != null) {
+				Map<String, String> result = new HashMap<String, String>();
+				result.put("image",imageStr);
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	}
+
+//    @Override
+//    @TokenSecured
+//    @RequestMapping(value = "/user/{userId}/company/{companyId}/file_logo", method = RequestMethod.POST)
+//    public ResponseEntity<String> updateCompanyLogoByFile(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId, HttpServletRequest request) {
+//		logger.info("update companyLogo----userId["+userId+"]companyId["+companyId+"]");
+//		boolean b = false;
+//        try {
+//            b = userService.updateCompanyLogoByFile(userId, companyId, request);
+//        }catch (Exception e){
+//            logger.error("",e);
+//        }
+//        if (b){
+//            return new ResponseEntity<>(HttpStatus.OK);
+//        }else {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//    }
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.POST)
+	public ResponseEntity<String> updateCompanyLogo(@PathVariable("userId") String userId,
+	                                                @PathVariable("companyId") String companyId,
+	                                                @RequestBody CompanyLogoBean logoBean) {
+		logger.info("update companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
 		boolean b = false;
 		try {
-			b = userService.getCompanyLogo(userId,companyId,httpResponse);
-		}catch (Exception e){
-			logger.error("",e);
+			b = userService.updateCompanyLogo(userId, companyId, logoBean);
+		} catch (Exception e) {
+			logger.error("", e);
 		}
-		if (b){
+		if (b) {
 			return new ResponseEntity<>(HttpStatus.OK);
-		}else {
+		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
-    @Override
-    @TokenSecured
-    @RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.POST)
-    public ResponseEntity<String> updateCompanyLogo(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId, HttpServletRequest request) {
-		logger.info("update companyLogo----userId["+userId+"]companyId["+companyId+"]");
-		boolean b = false;
-        try {
-            b = userService.updateCompanyLogo(userId,companyId,request);
-        }catch (Exception e){
-            logger.error("",e);
-        }
-        if (b){
-            return new ResponseEntity<>(HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
 
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteCompanyLogo(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId) {
-		logger.info("delete companyLogo----userId["+userId+"]companyId["+companyId+"]");
+		logger.info("delete companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
 		boolean b = false;
 		try {
-			b = userService.deleteCompanyLogo(userId,companyId);
-		}catch (Exception e){
-			logger.error("",e);
+			b = userService.deleteCompanyLogo(userId, companyId);
+		} catch (Exception e) {
+			logger.error("", e);
 		}
-		if (b){
+		if (b) {
 			return new ResponseEntity<>(HttpStatus.OK);
-		}else {
+		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}

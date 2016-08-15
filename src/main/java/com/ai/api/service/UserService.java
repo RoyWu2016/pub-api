@@ -13,13 +13,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ai.api.bean.BookingPreferenceBean;
-import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.ContactInfoBean;
-import com.ai.api.bean.UserBean;
+import com.ai.api.bean.*;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 
@@ -59,13 +57,23 @@ public interface UserService {
 
     ServiceCallResult updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException;
 
-    boolean getCompanyLogo(String userId,String companyId,HttpServletResponse httpResponse);
+    boolean getCompanyLogoByFile(String userId,String companyId,HttpServletResponse httpResponse);
 
-    boolean updateCompanyLogo(String userId,String companyId,HttpServletRequest request);
+    boolean updateCompanyLogoByFile(String userId, String companyId, HttpServletRequest request);
 
     boolean deleteCompanyLogo(String userId,String companyId);
 
     boolean createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
 
 	List<PaymentSearchResultBean> searchPaymentList(PaymentSearchCriteriaBean criteria) throws IOException, AIException;
+
+    String getCompanyLogo(String companyId);
+
+    boolean updateCompanyLogo(final String userId, final String compId, CompanyLogoBean logoBean);
+
+    String createProformaInvoice(String userId, String orders);
+
+    boolean reissueProFormaInvoice(String userId, String orders);
+
+    List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders);
 }

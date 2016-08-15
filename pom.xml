@@ -29,11 +29,16 @@
         <httpmime.version>4.5.2</httpmime.version>
         <fileupload.version>1.3.1</fileupload.version>
         <fastjson.version>1.2.13</fastjson.version>
+        <commons-net.version>3.5</commons-net.version>
     </properties>
 
 
     <dependencies>
-
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>${commons-net.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
