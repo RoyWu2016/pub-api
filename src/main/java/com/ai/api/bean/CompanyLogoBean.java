@@ -7,30 +7,12 @@ import java.io.Serializable;
  */
 public class CompanyLogoBean implements Serializable {
 
-    private String userId;
-    private String companyId;
     private String fileName;
     private String fileOriginalName;
     private String encodedImageStr;
     private long fileSize;
 
     public CompanyLogoBean(){}
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
-    }
 
     public String getFileName() {
         return fileName;
@@ -63,4 +45,14 @@ public class CompanyLogoBean implements Serializable {
     public void setFileSize(long fileSize) {
         this.fileSize = fileSize;
     }
+
+	@Override
+	public String toString() {
+		return "CompanyLogoBean{" +
+				"fileName='" + fileName + '\'' +
+				", fileOriginalName='" + fileOriginalName + '\'' +
+				", encodedImageStr='" + encodedImageStr + '\'' +
+				", fileSize=" + fileSize +
+				'}';
+	}
 }
