@@ -183,7 +183,8 @@ public class ReportImpl implements Report {
 	@RequestMapping(value = "/user/{userId}/reports", method = RequestMethod.POST)
 	public ResponseEntity<String> exportReports(@PathVariable("userId") String userId,
 	                                            @RequestParam(value = "start",required = false) String start,
-	                                            @RequestParam(value = "end",required = false) String end) {
+	                                            @RequestParam(value = "end",required = false) String end,
+                                                HttpServletResponse httpResponse) {
 		logger.info("export reports ... ");
 		logger.info("userId : "+userId);
 		logger.info("start : "+start+ "   end : "+end);
@@ -191,9 +192,9 @@ public class ReportImpl implements Report {
 		criteriaBean.setUserID(userId);
 		criteriaBean.setStartDate(start);
 		criteriaBean.setEndDate(end);
-		String result = reportService.exportReports(criteriaBean);
-		if(result!=null){
-			return new ResponseEntity<>(result, HttpStatus.OK);
+		boolean b = reportService.exportReports(criteriaBean,httpResponse);
+		if(b){
+			return new ResponseEntity<>( HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}

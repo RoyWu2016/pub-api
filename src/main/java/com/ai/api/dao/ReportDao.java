@@ -20,5 +20,5 @@ public interface ReportDao {
     boolean confirmApprovalCertificate(ReportCertificateBean reportCertificateBean,String login);
     List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String login, String reportId);
     InputStream downloadPDF(String reportId, String fileName);
-	String exportReports(ReportSearchCriteriaBean criteria);
+    InputStream exportReports(ReportSearchCriteriaBean criteria);
 }
