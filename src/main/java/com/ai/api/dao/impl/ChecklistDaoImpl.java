@@ -10,9 +10,9 @@ import com.ai.api.dao.ChecklistDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.checklist.api.ChecklistDetailBean;
-import com.ai.commons.beans.checklist.ChecklistSearchCriteriaBean;
-import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
+import com.ai.commons.beans.checklist.api.ChecklistBean;
+import com.ai.commons.beans.checklist.api.ChecklistSearchCriteriaBean;
+import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -51,13 +51,13 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	private ServiceConfig config;
 
 	@Override
-	public List<ChecklistSearchResultBean> searchChecklist(ChecklistSearchCriteriaBean criteria) {
+	public List<SimpleChecklistBean> searchChecklist(ChecklistSearchCriteriaBean criteria) {
 		String url = config.getMwServiceUrl() + "/service/checklist/private";
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 
-				return JSON.parseArray(result.getResponseString(),ChecklistSearchResultBean.class);
+				return JSON.parseArray(result.getResponseString(),SimpleChecklistBean.class);
 
 			} else {
 				logger.error("searchChecklist from middleware error: " + result.getStatusCode() +
@@ -71,13 +71,13 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	}
 
 	@Override
-	public List<ChecklistSearchResultBean> searchPublicChecklist(ChecklistSearchCriteriaBean criteria) {
+	public List<SimpleChecklistBean> searchPublicChecklist(ChecklistSearchCriteriaBean criteria) {
 		String url = config.getMwServiceUrl() + "/service/checklist/public";
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 
-				return JSON.parseArray(result.getResponseString(),ChecklistSearchResultBean.class);
+				return JSON.parseArray(result.getResponseString(),SimpleChecklistBean.class);
 
 			} else {
 				logger.error("searchPublicChecklist from middleware error: " + result.getStatusCode() +
@@ -91,13 +91,13 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	}
 
 	@Override
-	public String createChecklist(String login,ChecklistDetailBean checklistDetailBean) {
+	public String createChecklist(String login,ChecklistBean ChecklistBean) {
 		String url = config.getMwServiceUrl() + "/service/checklist/create";
 		try {
 			Map<String,Object> dataMap = new HashMap<>();
 			dataMap.put("login",login);
-			dataMap.put("checklistDetailBean",checklistDetailBean);
-			logger.debug("create!!! Url:"+url+" login:"+login+" checklistDetailBean:"+checklistDetailBean.toString());
+			dataMap.put("ChecklistBean",ChecklistBean);
+			logger.debug("create!!! Url:"+url+" login:"+login+" ChecklistBean:"+ChecklistBean.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, dataMap);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return result.getResponseString();
@@ -113,13 +113,13 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	}
 
 	@Override
-	public String updateChecklist(String login,ChecklistDetailBean checklistDetailBean) {
+	public String updateChecklist(String login,ChecklistBean ChecklistBean) {
 		String url = config.getMwServiceUrl() + "/service/checklist/update";
 		try {
 			Map<String,Object> dataMap = new HashMap<>();
 			dataMap.put("login",login);
-			dataMap.put("checklistDetailBean",checklistDetailBean);
-			logger.debug("update!!! Url:"+url+" login:"+login+" checklistDetailBean:"+checklistDetailBean.toString());
+			dataMap.put("ChecklistBean",ChecklistBean);
+			logger.debug("update!!! Url:"+url+" login:"+login+" ChecklistBean:"+ChecklistBean.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, dataMap);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return result.getResponseString();
@@ -135,14 +135,14 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	}
 
 	@Override
-	public ChecklistDetailBean getChecklist(String login,String checklistId) {
+	public ChecklistBean getChecklist(String login,String checklistId) {
 		String url = config.getMwServiceUrl() + "/service/checklist/get/"+checklistId+"?login="+login;
 		try {
 			GetRequest request = GetRequest.newInstance().setUrl(url);
 			logger.debug("get!!! Url:"+url+" login:"+login+" checklistId:"+checklistId);
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return  JSON.parseObject(result.getResponseString(),ChecklistDetailBean.class);
+				return  JSON.parseObject(result.getResponseString(),ChecklistBean.class);
 
 			} else {
 				logger.error("GET Checklist from middleware error: " + result.getStatusCode() +
