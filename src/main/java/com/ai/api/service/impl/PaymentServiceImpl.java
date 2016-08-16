@@ -39,9 +39,11 @@ public class PaymentServiceImpl implements PaymentService {
             InputStream inputStream =  paymentDao.downloadProformaInvoicePDF(login,invoiceId);
             ServletOutputStream output = httpResponse.getOutputStream();
             httpResponse.setStatus(HttpServletResponse.SC_OK);
-            byte[] buffer = new byte[10240];
-            for (int length = 0; (length = inputStream.read(buffer)) > 0;) {
-                output.write(buffer, 0, length);
+            if (null!=inputStream) {
+                byte[] buffer = new byte[10240];
+                for (int length = 0; (length = inputStream.read(buffer)) > 0; ) {
+                    output.write(buffer, 0, length);
+                }
             }
             b = true;
         }catch (Exception e){
