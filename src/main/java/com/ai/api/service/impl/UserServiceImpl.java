@@ -48,6 +48,7 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.api.util.BASE64DecodedMultipartFile;
+import com.ai.api.util.RedisUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.ApproverBean;
@@ -71,6 +72,7 @@ import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.user.GeneralUserBean;
+import com.alibaba.fastjson.JSON;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -543,8 +545,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserBean updateCompany(CompanyBean newComp, String userId) throws IOException, AIException {
 		//call customer service to get latest crmCompanyBean first
-		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
-		String compId = generalUserBean.getCompany().getCompanyId();
+//		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
+//		String compId = generalUserBean.getCompany().getCompanyId();
+        String compId = getCompanyIdByUserId(userId);
 
 		CrmCompanyBean company = companyDao.getCrmCompany(compId);
 
@@ -579,8 +582,9 @@ public class UserServiceImpl implements UserService {
 		user.setMobile(newContact.getMain().getMobileNumber());
 
 		//get comp id
-		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
-		String compId = generalUserBean.getCompany().getCompanyId();
+//		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
+//		String compId = generalUserBean.getCompany().getCompanyId();
+        String compId = getCompanyIdByUserId(userId);
 
 		//get contact bean
 		ContactBean contact = companyDao.getCompanyContact(compId);
@@ -610,10 +614,10 @@ public class UserServiceImpl implements UserService {
 		System.out.println("-----orderBookingBean-----" + newBookingPref + "---" + userId);
 
 		//get comp id
-		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
-		if (generalUserBean == null) return null;
-
-		String compId = generalUserBean.getCompany().getCompanyId();
+//		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
+//		if (generalUserBean == null) return null;
+//		String compId = generalUserBean.getCompany().getCompanyId();
+        String compId = getCompanyIdByUserId(userId);
 
 		//get booking preference first
 		OrderBookingBean booking = companyDao.getCompanyOrderBooking(compId);
@@ -656,8 +660,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserBean updateBookingPreferredProductFamily(List<String> newPreferred, String userId) throws IOException, AIException {
 		//get comp id
-		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
-		String compId = generalUserBean.getCompany().getCompanyId();
+//		GeneralUserViewBean generalUserBean = customerDao.getGeneralUserViewBean(userId);
+//		String compId = generalUserBean.getCompany().getCompanyId();
+        String compId = getCompanyIdByUserId(userId);
 
 		//get current product family
 		ProductFamilyBean family = companyDao.getCompanyProductFamily(compId);
@@ -800,4 +805,17 @@ public class UserServiceImpl implements UserService {
 		return customerDao.generateGlobalPayment(userId, login, orders);
 	}
 
+	private String getCompanyIdByUserId(String userId) throws IOException, AIException {
+        RedisUtil redisUtil = RedisUtil.getInstance();
+        String jsonStr = redisUtil.get(userId);
+        String companyId = null;
+        if (StringUtils.isNotBlank(jsonStr)){
+            companyId = JSON.parseObject(jsonStr).getJSONObject("company").getString("id");
+        }
+        if (StringUtils.isBlank(companyId)){
+            UserBean userBean = this.getCustById(userId);
+            companyId = userBean.getCompany().getId();
+        }
+        return companyId;
+    }
 }
