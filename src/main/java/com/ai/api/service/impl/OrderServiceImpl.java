@@ -11,6 +11,7 @@ import java.util.List;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.OrderDao;
 import com.ai.api.service.OrderService;
+import com.ai.api.service.UserService;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.api.SimpleOrderBean;
@@ -49,14 +50,18 @@ public class OrderServiceImpl implements OrderService {
 	@Qualifier("orderDao")
 	private OrderDao orderDao;
 
+//	@Autowired
+//	@Qualifier("customerDao")
+//	private CustomerDao customerDao;
+
 	@Autowired
-	@Qualifier("customerDao")
-	private CustomerDao customerDao;
+	@Qualifier("userService")
+	private UserService userService;
 
 	@Override
 	public List<SimpleOrderBean> getOrdersByUserId(OrderSearchCriteriaBean criteria) {
 		if(criteria.getLogin()==null){
-			String login = customerDao.getGeneralUser(criteria.getUserID()).getLogin();
+			String login = userService.getLoginByUserId(criteria.getUserID());//customerDao.getGeneralUser(criteria.getUserID()).getLogin();
 			criteria.setLogin(login);
 		}
 		return orderDao.getOrdersByUserId(criteria);
@@ -65,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<SimpleOrderBean> getDraftsByUserId(OrderSearchCriteriaBean criteria) {
 		if(criteria.getLogin()==null){
-			String login = customerDao.getGeneralUser(criteria.getUserID()).getLogin();
+			String login = userService.getLoginByUserId(criteria.getUserID());//customerDao.getGeneralUser(criteria.getUserID()).getLogin();
 			criteria.setLogin(login);
 		}
 		return orderDao.getDraftsByUserId(criteria);

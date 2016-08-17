@@ -781,7 +781,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<PaymentSearchResultBean> searchPaymentList(PaymentSearchCriteriaBean criteria) throws IOException, AIException {
 		if (criteria.getLogin() == null) {
-			String login = customerDao.getGeneralUser(criteria.getUserID()).getLogin();
+			String login = this.getLoginByUserId(criteria.getUserID());//customerDao.getGeneralUser(criteria.getUserID()).getLogin();
 			criteria.setLogin(login);
 		}
 		return customerDao.searchPaymentList(criteria);
@@ -789,21 +789,41 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public String createProformaInvoice(String userId, String orders) {
-		String login = customerDao.getGeneralUser(userId).getLogin();
+		String login = this.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
 		return customerDao.createProformaInvoice(userId, login, orders);
 	}
 
 	@Override
 	public boolean reissueProFormaInvoice(String userId, String orders) {
-		String login = customerDao.getGeneralUser(userId).getLogin();
+		String login = this.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
 		return customerDao.reissueProFormaInvoice(userId, login, orders);
 	}
 
 	@Override
 	public List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders) {
-		String login = customerDao.getGeneralUser(userId).getLogin();
+		String login = this.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
 		return customerDao.generateGlobalPayment(userId, login, orders);
 	}
+
+    @Override
+	public String getLoginByUserId(String userId) {
+        RedisUtil redisUtil = RedisUtil.getInstance();
+        String jsonStr = redisUtil.get(userId);
+        String login = null;
+        if (StringUtils.isNotBlank(jsonStr)){
+            login = JSON.parseObject(jsonStr).getString("login");
+        }
+        if (StringUtils.isBlank(login)){
+            try {
+                UserBean userBean = this.getCustById(userId);
+                login = userBean.getId();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return login;
+
+    }
 
 	private String getCompanyIdByUserId(String userId) throws IOException, AIException {
         RedisUtil redisUtil = RedisUtil.getInstance();

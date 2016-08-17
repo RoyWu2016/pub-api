@@ -9,6 +9,7 @@ import com.ai.api.dao.ChecklistDao;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.service.ChecklistService;
+import com.ai.api.service.UserService;
 import com.ai.commons.beans.checklist.api.ChecklistBean;
 import com.ai.commons.beans.checklist.api.ChecklistSearchCriteriaBean;
 import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
@@ -45,9 +46,13 @@ public class ChecklistServiceImpl implements ChecklistService {
 	@Qualifier("paramDao")
 	private ParameterDao paramDao;
 
+//	@Autowired
+//	@Qualifier("customerDao")
+//	private CustomerDao customerDao;
+
 	@Autowired
-	@Qualifier("customerDao")
-	private CustomerDao customerDao;
+	@Qualifier("userService")
+	private UserService userService;
 
 	@Override
 	public List<SimpleChecklistBean> searchChecklist(String userID, String keyword, Integer pageNumber) {
@@ -58,7 +63,7 @@ public class ChecklistServiceImpl implements ChecklistService {
 		if(pageNumber==null)
 			pageNumber = 1;
 		criteria.setPageNumber(pageNumber);
-		criteria.setLogin(customerDao.getGeneralUser(userID).getLogin());
+		criteria.setLogin(userService.getLoginByUserId(userID));
 
 		List<SimpleChecklistBean> list = checklistDao.searchChecklist(criteria);
 
@@ -90,32 +95,32 @@ public class ChecklistServiceImpl implements ChecklistService {
 		ChecklistSearchCriteriaBean criteria = new ChecklistSearchCriteriaBean();
 		criteria.setUserID(userId);
 		criteria.setKeywords(keyword);
-		criteria.setLogin(customerDao.getGeneralUser(userId).getLogin());
+		criteria.setLogin(userService.getLoginByUserId(userId));
 		List<SimpleChecklistBean> list = checklistDao.searchPublicChecklist(criteria);
 		return list;
 	}
 
 	@Override
 	public String createChecklist(String userId,ChecklistBean ChecklistBean){
-		String login = customerDao.getGeneralUser(userId).getLogin();
+		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
 		return checklistDao.createChecklist(login,ChecklistBean);
 	}
 
 	@Override
 	public String updateChecklist(String userId,ChecklistBean ChecklistBean){
-		String login = customerDao.getGeneralUser(userId).getLogin();
+		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
 		return checklistDao.updateChecklist(login,ChecklistBean);
 	}
 
 	@Override
 	public ChecklistBean getChecklist(String userId,String checklistId){
-		String login = customerDao.getGeneralUser(userId).getLogin();
+		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
 		return checklistDao.getChecklist(login,checklistId);
 	}
 
 	@Override
 	public  boolean deleteChecklist(String userId,String ids){
-		String login = customerDao.getGeneralUser(userId).getLogin();
+		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
 		return checklistDao.deleteChecklist(login,ids);
 	}
 }
