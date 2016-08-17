@@ -3,6 +3,7 @@ package com.ai.api.service.impl;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.PaymentDao;
 import com.ai.api.service.PaymentService;
+import com.ai.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -26,15 +27,19 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private PaymentDao paymentDao;
 
+//    @Autowired
+//    @Qualifier("customerDao")
+//    private CustomerDao customerDao;
+
     @Autowired
-    @Qualifier("customerDao")
-    private CustomerDao customerDao;
+    @Qualifier("userService")
+    private UserService userService;
 
     @Override
     public boolean downloadProformaInvoicePDF(String userId,String invoiceId,HttpServletResponse httpResponse){
         boolean b = false;
         try {
-            String login = customerDao.getGeneralUser(userId).getLogin();
+            String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
             httpResponse.setHeader("Content-Disposition", "attachment; filename=attachment-"+new Date().getTime()+".pdf");
             InputStream inputStream =  paymentDao.downloadProformaInvoicePDF(login,invoiceId);
             ServletOutputStream output = httpResponse.getOutputStream();

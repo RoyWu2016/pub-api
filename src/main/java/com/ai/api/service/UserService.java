@@ -76,4 +76,6 @@ public interface UserService {
     boolean reissueProFormaInvoice(String userId, String orders);
 
     List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders);
+
+    String getLoginByUserId(String userId);
 }
