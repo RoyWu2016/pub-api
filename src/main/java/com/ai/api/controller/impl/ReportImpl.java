@@ -194,9 +194,9 @@ public class ReportImpl implements Report {
 		criteriaBean.setEndDate(end);
 		boolean b = reportService.exportReports(criteriaBean,httpResponse);
 		if(b){
-			return new ResponseEntity<>( HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("no report pdf file found",HttpStatus.BAD_REQUEST);
 		}
 	}
 }
