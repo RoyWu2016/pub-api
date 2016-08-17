@@ -152,7 +152,7 @@ public class PaymentImpl implements Payment {
 		if(b){
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("no invoice pdf file found",HttpStatus.BAD_REQUEST);
 		}
 	}
 }
