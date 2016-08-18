@@ -32,4 +32,5 @@ public interface ChecklistDao {
 	String updateChecklist(String login,ChecklistBean ChecklistBean);
 	ChecklistBean getChecklist(String login,String checklistId);
 	boolean deleteChecklist(String login,String ids);
+	boolean checklistNameExist(String login,String checklistName);
 }

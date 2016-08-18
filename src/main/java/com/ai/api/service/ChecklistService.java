@@ -31,4 +31,5 @@ public interface ChecklistService {
 	String updateChecklist(String userId,ChecklistBean ChecklistBean);
 	ChecklistBean getChecklist(String userId,String checklistId);
 	boolean deleteChecklist(String userId,String ids);
+	boolean checklistNameExist(String userId,String checklistName);
 }
