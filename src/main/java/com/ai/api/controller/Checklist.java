@@ -32,4 +32,5 @@ public interface Checklist {
 	ResponseEntity<String> updateChecklist(String userId,String checklistId, ChecklistBean ChecklistBean);
 	ResponseEntity<ChecklistBean> getChecklist(String userId,String checklistId);
 	ResponseEntity deleteChecklist(String userId,String checklistIds);
+	ResponseEntity checklistNameExist(String userId,String checklistName);
 }

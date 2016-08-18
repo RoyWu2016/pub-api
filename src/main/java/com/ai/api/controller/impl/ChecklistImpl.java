@@ -111,11 +111,24 @@ public class ChecklistImpl implements Checklist {
 	@RequestMapping(value = "/user/{userId}/checklists/{checklistIds}", method = RequestMethod.DELETE)
 	public ResponseEntity deleteChecklist(@PathVariable("userId") String userId,@PathVariable("checklistIds") String checklistIds){
 
-		 boolean b = checklistService.deleteChecklist(userId,checklistIds);
+		boolean b = checklistService.deleteChecklist(userId,checklistIds);
 		if(b){
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/checklistName/{checklistName}", method = RequestMethod.GET)
+	public ResponseEntity checklistNameExist(@PathVariable("userId") String userId,@PathVariable("checklistName") String checklistName){
+
+		boolean b = checklistService.checklistNameExist(userId,checklistName);
+		if(b){
+			return new ResponseEntity<>(true,HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(false,HttpStatus.OK);
 		}
 	}
 }

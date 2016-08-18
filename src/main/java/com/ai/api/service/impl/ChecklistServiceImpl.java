@@ -123,4 +123,10 @@ public class ChecklistServiceImpl implements ChecklistService {
 		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
 		return checklistDao.deleteChecklist(login,ids);
 	}
+
+	@Override
+	public  boolean checklistNameExist(String userId,String checklistName){
+		String login = userService.getLoginByUserId(userId);
+		return checklistDao.checklistNameExist(login,checklistName);
+	}
 }

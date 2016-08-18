@@ -176,4 +176,24 @@ public class ChecklistDaoImpl implements ChecklistDao {
 		}
 		return false;
 	}
+
+	@Override
+	public  boolean checklistNameExist(String login,String checklistName) {
+		String url = config.getMwServiceUrl() + "/service/checklist/checklistNameExist";
+		try {
+			Map<String,Object> dataMap = new HashMap<>();
+			dataMap.put("login",login);
+			dataMap.put("checklistName",checklistName);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, dataMap);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return true;
+			} else {
+				logger.error("checklistNameExist from middleware error: " + result.getStatusCode() +
+						", " + result.getResponseString());
+			}
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return false;
+	}
 }
