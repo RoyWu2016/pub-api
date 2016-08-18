@@ -81,8 +81,19 @@ public class TokenJWTDaoImpl {
 			jwt = this.outerEncryption(innerJwt);
 			tokenSession.setToken(jwt);
 			tokenSession.setValidBefore(temp[1]);
-			RedisUtil redisUtil = RedisUtil.getInstance();
-			redisUtil.hset(TOKENKEY,sessionId,JSON.toJSONString(tokenSession));
+            logger.info("finished tokenSession generate ");
+            logger.info("ready to save tokenSession to Redis ...");
+            String tokenStr = null;
+            try{
+                tokenStr = JSON.toJSONString(tokenSession);
+                logger.info("success!! tokenSession ---->> String : "+tokenStr);
+            }catch (Exception e){
+                logger.error("error!! tokenSession can not be cast to String .");
+            }
+            if (StringUtils.isNotBlank(tokenStr)) {
+                RedisUtil redisUtil = RedisUtil.getInstance();
+                redisUtil.hset(TOKENKEY, sessionId,tokenStr);
+            }
 		}catch (Exception e){
 			logger.error("error generateToken",e);
 			tokenSession = null;
