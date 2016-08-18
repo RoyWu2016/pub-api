@@ -51,7 +51,7 @@ public class TokenJWTDaoImpl {
     private static final Logger logger = LoggerFactory.getLogger(TokenJWTDaoImpl.class);
 
     private static final String ISSUER_NAME = "http://asiainspection.com";
-    private static final Integer TOKEN_EXPIRATION_TIME = 1;
+    private static final Integer TOKEN_EXPIRATION_TIME = 120;
     private static final String TOKEN_SUBJECT = "AI API token";
     private static final String AES_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-token.aes";
     private static final String ECC_PRIV_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc";
