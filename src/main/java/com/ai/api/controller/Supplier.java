@@ -2,6 +2,7 @@ package com.ai.api.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import com.ai.api.bean.SupplierDetailBean;
 import com.ai.api.bean.legacy.FactorySearchBean;
@@ -15,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 public interface Supplier {
     ResponseEntity<List<SupplierSearchResultBean>> getUserSupplierById(String userId) throws IOException, AIException;
     ResponseEntity<SupplierDetailBean> getUserSupplierDetailInfoById(String userId, String supplierId) throws IOException, AIException;
-    ResponseEntity<Boolean> updateUserSupplierDetailInfo(String userId, String supplierId, SupplierDetailBean supplierDetailBean)
+    ResponseEntity<Map<String, String>> updateUserSupplierDetailInfo(String userId, String supplierId, SupplierDetailBean supplierDetailBean)
             throws IOException, AIException;
     ResponseEntity<Boolean> deleteSuppliers(String userId,String supplierIds)
             throws IOException, AIException;

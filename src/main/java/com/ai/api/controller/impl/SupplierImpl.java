@@ -2,10 +2,7 @@ package com.ai.api.controller.impl;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import com.ai.api.bean.SupplierDetailBean;
 import com.ai.api.bean.legacy.FactorySearchBean;
@@ -90,13 +87,15 @@ public class SupplierImpl implements Supplier {
     @Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/supplier/{supplierId}", method = RequestMethod.PUT)
-    public ResponseEntity<Boolean> updateUserSupplierDetailInfo(@PathVariable("userId") String userId,
-                                                            @PathVariable("supplierId") String supplierId,
-                                                            @RequestBody SupplierDetailBean supplierDetailBean)
+    public ResponseEntity<Map<String, String>> updateUserSupplierDetailInfo(@PathVariable("userId") String userId,
+                                                                            @PathVariable("supplierId") String supplierId,
+                                                                            @RequestBody SupplierDetailBean supplierDetailBean)
             throws IOException, AIException {
         System.out.println("updating supplier detail info for user: " + userId);
+        Map<String, String> result = new HashMap<String,String>();
         if (factoryService.updateSupplierDetailInfo(supplierDetailBean)) {
-            return new ResponseEntity<>(true, HttpStatus.OK);
+            result.put("success","true");
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
