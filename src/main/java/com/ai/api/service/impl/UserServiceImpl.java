@@ -35,6 +35,7 @@ import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -761,6 +762,11 @@ public class UserServiceImpl implements UserService {
 	public List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders){
 		String login = customerDao.getGeneralUser(userId).getLogin();
 		return customerDao.generateGlobalPayment(userId, login, orders);
+	}
+
+	@Override
+	public boolean logPaymentAction(String userId, PaymentActionLogBean logBean){
+		return customerDao.logPaymentAction(userId, logBean);
 	}
 
 }

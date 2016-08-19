@@ -13,16 +13,13 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /***************************************************************************
  * <PRE>
@@ -128,6 +125,19 @@ public class PaymentImpl implements Payment {
 		List<GlobalPaymentInfoBean> result = userService.generateGlobalPayment(userId, orders);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/paymentLog", method = RequestMethod.POST)
+	public ResponseEntity<Boolean> logPaymentAction(@PathVariable("userId") String userId,
+													@RequestBody PaymentActionLogBean logBean){
+		boolean result = userService.logPaymentAction(userId, logBean);
+		if(result){
+			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}

@@ -6,6 +6,7 @@ import java.util.List;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
@@ -34,4 +35,5 @@ public interface Payment {
 	ResponseEntity<String> createProformaInvoice(String userId, String orders);
 	ResponseEntity<Boolean> reissueProFormaInvoice(String userId,String orders);
 	ResponseEntity<List<GlobalPaymentInfoBean>> generateGlobalPayment(String userId, String orders);
+	ResponseEntity<Boolean> logPaymentAction(String userId, PaymentActionLogBean logBean);
 }
