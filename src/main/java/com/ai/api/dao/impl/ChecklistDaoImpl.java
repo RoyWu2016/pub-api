@@ -227,4 +227,29 @@ public class ChecklistDaoImpl implements ChecklistDao {
         }
         return false;
     }
+
+    @Override
+    public  boolean approved(String login,String checklistId) {
+        String url = config.getMwServiceUrl() + "/service/checklist/"+checklistId+"/approved";
+        try {
+            Map<String,Object> dataMap = new HashMap<>();
+            dataMap.put("login",login);
+            dataMap.put("checklistId",checklistId);
+            ServiceCallResult result = HttpUtil.issuePostRequest(url, null, dataMap);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                if ("true".equals(result.getResponseString())){
+                    logger.info("approved --->> pass");
+                    return true;
+                }else {
+                    logger.info("approved --->> fail");
+                }
+            } else {
+                logger.error("approved from middleware error: " + result.getStatusCode() +
+                        ", " + result.getResponseString());
+            }
+        } catch (IOException e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+        return false;
+    }
 }
