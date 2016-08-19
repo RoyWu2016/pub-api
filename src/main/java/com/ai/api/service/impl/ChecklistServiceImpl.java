@@ -119,20 +119,26 @@ public class ChecklistServiceImpl implements ChecklistService {
 	}
 
 	@Override
-	public  boolean deleteChecklist(String userId,String ids){
+	public boolean deleteChecklist(String userId,String ids){
 		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
 		return checklistDao.deleteChecklist(login,ids);
 	}
 
 	@Override
-	public  boolean checklistNameExist(String userId,String checklistName){
+	public boolean checklistNameExist(String userId,String checklistName){
 		String login = userService.getLoginByUserId(userId);
 		return checklistDao.checklistNameExist(login,checklistName);
 	}
 
 	@Override
-	public  boolean saveFeedback(String userId,String checklistId,String feedback){
+	public boolean saveFeedback(String userId,String checklistId,String feedback){
 		String login = userService.getLoginByUserId(userId);
 		return checklistDao.saveFeedback(login,checklistId,feedback);
+	}
+
+	@Override
+	public boolean approved(String userId,String checklistId){
+		String login = userService.getLoginByUserId(userId);
+		return checklistDao.approved(login,checklistId);
 	}
 }

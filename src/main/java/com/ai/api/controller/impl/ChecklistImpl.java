@@ -125,23 +125,34 @@ public class ChecklistImpl implements Checklist {
 	public ResponseEntity checklistNameExist(@PathVariable("userId") String userId,@PathVariable("checklistName") String checklistName){
 
 		boolean b = checklistService.checklistNameExist(userId,checklistName);
-		if(b){
-			return new ResponseEntity<>(true,HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(false,HttpStatus.OK);
-		}
+        if(b){
+            return new ResponseEntity<>("{\"success\":\"true\"}",HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("{\"success\":\"false\"}",HttpStatus.OK);
+        }
 	}
 
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}/feedback", method = RequestMethod.PUT)
-	public ResponseEntity saveFeedback(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId,String feedback){
-
+	public ResponseEntity saveFeedback(@PathVariable("userId") String userId, @PathVariable("checklistId") String checklistId, String feedback){
 		boolean b = checklistService.saveFeedback(userId,checklistId,feedback);
+        if(b){
+            return new ResponseEntity<>("{\"success\":\"true\"}",HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("{\"success\":\"false\"}",HttpStatus.OK);
+        }
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}/approved", method = RequestMethod.PUT)
+	public ResponseEntity approved(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId){
+		boolean b = checklistService.approved(userId,checklistId);
 		if(b){
-			return new ResponseEntity<>(true,HttpStatus.OK);
+			return new ResponseEntity<>("{\"success\":\"true\"}",HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(false,HttpStatus.OK);
+			return new ResponseEntity<>("{\"success\":\"false\"}",HttpStatus.OK);
 		}
 	}
 }

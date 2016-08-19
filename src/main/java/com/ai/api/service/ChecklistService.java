@@ -33,4 +33,5 @@ public interface ChecklistService {
 	boolean deleteChecklist(String userId,String ids);
 	boolean checklistNameExist(String userId,String checklistName);
     boolean saveFeedback(String userId,String checklistId,String feedback);
+    boolean approved(String userId,String checklistId);
 }

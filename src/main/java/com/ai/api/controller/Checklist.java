@@ -34,4 +34,5 @@ public interface Checklist {
 	ResponseEntity deleteChecklist(String userId,String checklistIds);
 	ResponseEntity checklistNameExist(String userId,String checklistName);
 	ResponseEntity saveFeedback(String userId,String checklistId,String feedback);
+    ResponseEntity approved(String userId,String checklistId);
 }
