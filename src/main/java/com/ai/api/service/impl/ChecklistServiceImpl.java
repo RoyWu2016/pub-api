@@ -129,4 +129,10 @@ public class ChecklistServiceImpl implements ChecklistService {
 		String login = userService.getLoginByUserId(userId);
 		return checklistDao.checklistNameExist(login,checklistName);
 	}
+
+	@Override
+	public  boolean saveFeedback(String userId,String checklistId,String feedback){
+		String login = userService.getLoginByUserId(userId);
+		return checklistDao.saveFeedback(login,checklistId,feedback);
+	}
 }

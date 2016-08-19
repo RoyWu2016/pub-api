@@ -186,7 +186,12 @@ public class ChecklistDaoImpl implements ChecklistDao {
 			dataMap.put("checklistName",checklistName);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, dataMap);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return true;
+				if ("true".equals(result.getResponseString())){
+                    logger.info("checklistNameExist --->> true");
+				    return true;
+				}else {
+				    logger.info("checklistNameExist --->> false");
+                }
 			} else {
 				logger.error("checklistNameExist from middleware error: " + result.getStatusCode() +
 						", " + result.getResponseString());
@@ -196,4 +201,30 @@ public class ChecklistDaoImpl implements ChecklistDao {
 		}
 		return false;
 	}
+
+    @Override
+    public  boolean saveFeedback(String login,String checklistId,String feedback) {
+        String url = config.getMwServiceUrl() + "/service/checklist/"+checklistId+"/feedback";
+        try {
+            Map<String,Object> dataMap = new HashMap<>();
+            dataMap.put("login",login);
+            dataMap.put("checklistId",checklistId);
+            dataMap.put("feedback",feedback);
+            ServiceCallResult result = HttpUtil.issuePostRequest(url, null, dataMap);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                if ("true".equals(result.getResponseString())){
+                    logger.info("saveFeedback --->> ok");
+                    return true;
+                }else {
+                    logger.info("saveFeedback --->> fail");
+                }
+            } else {
+                logger.error("saveFeedback from middleware error: " + result.getStatusCode() +
+                        ", " + result.getResponseString());
+            }
+        } catch (IOException e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+        return false;
+    }
 }
