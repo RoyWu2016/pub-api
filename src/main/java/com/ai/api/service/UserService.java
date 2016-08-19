@@ -70,7 +70,7 @@ public interface UserService {
 
     String getCompanyLogo(String companyId);
 
-    boolean updateCompanyLogo(CompanyLogoBean logoBean);
+    boolean updateCompanyLogo(final String userId, final String compId, CompanyLogoBean logoBean);
 
     String createProformaInvoice(String userId, String orders);
 
@@ -79,4 +79,6 @@ public interface UserService {
     List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders);
 
     boolean logPaymentAction(String userId, PaymentActionLogBean logBean);
+
+    String getLoginByUserId(String userId);
 }

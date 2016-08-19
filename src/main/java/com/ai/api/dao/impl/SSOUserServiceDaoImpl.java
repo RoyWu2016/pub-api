@@ -261,6 +261,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 				return result;
 			}
 			String token = this.getToken(authorization, response);
+			LOGGER.info("get token  :"+token);
 			if (token != null) {
 				JwtClaims claims = tokenJWTDao.getClaimsByJWT(token);
 				TokenSession oldToken = tokenJWTDao.getTokenSessionFromRedis((String)claims.getClaimValue("sessId"));//.getTokenSession(token,true);
@@ -312,6 +313,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 			result.setResponseString("OK");
 			result.setReasonPhase("");
 		}
+		LOGGER.info("checkAccessHeader result :"+JSON.toJSONString(result));
 		return result;
 	}
 

@@ -16,7 +16,7 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
-import com.ai.commons.beans.order.OrderSearchResultBean;
+import com.ai.commons.beans.order.api.SimpleOrderBean;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -56,14 +56,14 @@ public class OrderDaoImpl implements OrderDao {
 	private ServiceConfig config;
 
 	@Override
-	public List<OrderSearchResultBean> getOrdersByUserId(OrderSearchCriteriaBean criteria) {
+	public List<SimpleOrderBean> getOrdersByUserId(OrderSearchCriteriaBean criteria) {
 		String url = config.getMwServiceUrl() + "/service/order/search";
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 
 				return JsonUtil.mapToObject(result.getResponseString(),
-						new TypeReference<List<OrderSearchResultBean>>() {
+						new TypeReference<List<SimpleOrderBean>>() {
 						});
 
 			} else {
@@ -79,14 +79,14 @@ public class OrderDaoImpl implements OrderDao {
 	}
 
 	@Override
-	public List<OrderSearchResultBean> getDraftsByUserId(OrderSearchCriteriaBean criteria) {
+	public List<SimpleOrderBean> getDraftsByUserId(OrderSearchCriteriaBean criteria) {
 		String url = config.getMwServiceUrl() + "/service/draft/search";
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 
 				return JsonUtil.mapToObject(result.getResponseString(),
-						new TypeReference<List<OrderSearchResultBean>>() {
+						new TypeReference<List<SimpleOrderBean>>() {
 						});
 
 			} else {

@@ -28,11 +28,17 @@
           p:millisBetweenCleanUps="120000"/>
 
     <bean id="serviceConfig" class="com.ai.api.config.ServiceConfig"
-          p:baseURL="${user.service.url}" p:customerServiceUrl="${customer.service.url}"
-          p:paramServiceUrl="${parameter.service.url}" p:ssoUserServiceUrl="${user.service.url}"
-          p:factoryServiceUrl="${factory.service.url}" p:fileServiceUrl="${file.service.url}"
+          p:baseURL="${user.service.url}"
+          p:customerServiceUrl="${customer.service.url}"
+          p:paramServiceUrl="${parameter.service.url}"
+          p:ssoUserServiceUrl="${user.service.url}"
+          p:factoryServiceUrl="${factory.service.url}"
+          p:fileServiceUrl="${file.service.url}"
           p:mwServiceUrl="${middleware.booking-1.service.url}"
-            p:reportServiceUrl="${report.service.url}"/>
+          p:reportServiceUrl="${report.service.url}"
+          p:mwFTPHost="${middleware.ftp.host}"
+          p:mwFTPUsername="${middleware.ftp.username}"
+          p:mwFTPPassword="${middleware.ftp.password}"/>
 
     <bean id="app" class="com.ai.api.App"/>
     <bean id="userService" class="com.ai.api.service.impl.UserServiceImpl" />

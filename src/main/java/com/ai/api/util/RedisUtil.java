@@ -1,6 +1,8 @@
 package com.ai.api.util;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 /***************************************************************************
  * <PRE>
@@ -25,13 +27,22 @@ public class RedisUtil {
 
 	private static RedisUtil instance ;
 	private static Jedis jedis;
+	private JedisPool pool = null;
 
 	public RedisUtil(){
 		try{
-			jedis = new Jedis("202.66.128.138", 6379);
-			jedis.auth("aiitteam");
-			jedis.get("testKey");
-
+//			jedis = new Jedis("202.66.128.138", 6379);
+//			jedis.auth("aiitteam");
+//			jedis.get("testKey");
+			if (pool == null) {
+				JedisPoolConfig config = new JedisPoolConfig();
+				config.setMaxTotal(500);
+				config.setMaxIdle(5);
+				config.setMaxWaitMillis(1000 * 100);
+				config.setTestOnBorrow(true);
+				pool = new JedisPool(config, "202.66.128.138", 6379, 100000,"aiitteam");
+			}
+			jedis = pool.getResource();
 		}catch(Exception e){
 
 		}

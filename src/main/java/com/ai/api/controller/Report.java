@@ -5,6 +5,8 @@ import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
 import com.ai.commons.beans.report.api.ReportCertificateBean;
 import org.springframework.http.ResponseEntity;
+
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -16,5 +18,7 @@ public interface Report {
     ResponseEntity<String> undoDecision(String userId,String id);
     ResponseEntity<ReportCertificateBean> getApprovalCertificate(String userId, String reportId, String certType, String reference);
     ResponseEntity<String> confirmApprovalCertificate(String userId,String reportId,ReportCertificateBean reportCertificateBean);
-    ResponseEntity<List<ReportPdfFileInfoBean>> getUserReportPdfInfo(String userId, String reportId);
+    ResponseEntity<List<String>> getUserReportPdfInfo(String userId, String reportId);
+    ResponseEntity<String> downloadPDF(String userId,String reportId,String fileName,HttpServletResponse httpResponse);
+	ResponseEntity<String> exportReports(String userId,String starts,String ends,HttpServletResponse httpResponse);
 }

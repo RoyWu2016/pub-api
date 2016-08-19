@@ -21,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Created by yan on 2016/7/25.
  */
@@ -146,14 +148,55 @@ public class ReportImpl implements Report {
     @Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/report/{reportId}/pdfInfo", method = RequestMethod.GET)
-    public ResponseEntity<List<ReportPdfFileInfoBean>> getUserReportPdfInfo(@PathVariable("userId") String userId,
+    public ResponseEntity<List<String>> getUserReportPdfInfo(@PathVariable("userId") String userId,
                                                                             @PathVariable("reportId") String reportId){
 
-        List<ReportPdfFileInfoBean> result = reportService.getUserReportPdfInfo(userId, reportId);
+        List<String> result = reportService.getUserReportPdfInfo(userId, reportId);
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/report/{reportId}/fileName/{fileName}/pdf", method = RequestMethod.GET)
+    public ResponseEntity<String> downloadPDF(@PathVariable("userId") String userId,
+                                              @PathVariable("reportId") String reportId,
+                                              @PathVariable("fileName") String fileName,
+                                              HttpServletResponse httpResponse) {
+        logger.info("downloadPDF ...");
+        logger.info("userId : "+userId);
+        logger.info("reportId : "+reportId);
+        logger.info("fileName : "+fileName);
+        boolean b = reportService.downloadPDF(reportId,fileName,httpResponse);
+        if(b){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/reports", method = RequestMethod.POST)
+	public ResponseEntity<String> exportReports(@PathVariable("userId") String userId,
+	                                            @RequestParam(value = "start",required = false) String start,
+	                                            @RequestParam(value = "end",required = false) String end,
+                                                HttpServletResponse httpResponse) {
+		logger.info("export reports ... ");
+		logger.info("userId : "+userId);
+		logger.info("start : "+start+ "   end : "+end);
+		ReportSearchCriteriaBean criteriaBean = new ReportSearchCriteriaBean();
+		criteriaBean.setUserID(userId);
+		criteriaBean.setStartDate(start);
+		criteriaBean.setEndDate(end);
+		boolean b = reportService.exportReports(criteriaBean,httpResponse);
+		if(b){
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("no report pdf file found",HttpStatus.BAD_REQUEST);
+		}
+	}
 }

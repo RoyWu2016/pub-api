@@ -6,6 +6,7 @@ import java.util.Map;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.DraftDao;
 import com.ai.api.service.DraftService;
+import com.ai.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -35,14 +36,18 @@ public class DraftServiceImpl implements DraftService {
 	@Autowired
 	private DraftDao draftDao;
 
+//	@Autowired
+//	@Qualifier("customerDao")
+//	private CustomerDao customerDao;
+
 	@Autowired
-	@Qualifier("customerDao")
-	private CustomerDao customerDao;
+	@Qualifier("userService")
+	private UserService userService;
 
 	@Override
 	public boolean deleteDraft(String userId, String ids) throws Exception {
 		Map<String,String> params = new HashMap<String, String>();
-		String login = customerDao.getGeneralUser(userId).getLogin();
+		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
 		params.put("login",login);
 		params.put("ids",ids);
 		return draftDao.deleteDrafts(params);

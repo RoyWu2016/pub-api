@@ -2,8 +2,8 @@ package com.ai.api.controller;
 
 import java.util.List;
 
-import com.ai.commons.beans.checklist.api.ChecklistDetailBean;
-import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
+import com.ai.commons.beans.checklist.api.ChecklistBean;
+import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
 import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
@@ -26,10 +26,11 @@ import org.springframework.http.ResponseEntity;
 
 
 public interface Checklist {
-	ResponseEntity<List<ChecklistSearchResultBean>> searchChecklist(String userId,String keyword, Integer pageNumber);
-	ResponseEntity<List<ChecklistSearchResultBean>> searchPublicChecklist(String userId, String keyword);
-	ResponseEntity<String> createChecklist(String userId, ChecklistDetailBean checklistDetailBean);
-	ResponseEntity<String> updateChecklist(String userId,String checklistId, ChecklistDetailBean checklistDetailBean);
-	ResponseEntity<ChecklistDetailBean> getChecklist(String userId,String checklistId);
+	ResponseEntity<List<SimpleChecklistBean>> searchChecklist(String userId,String keyword, Integer pageNumber);
+	ResponseEntity<List<SimpleChecklistBean>> searchPublicChecklist(String userId, String keyword);
+	ResponseEntity<String> createChecklist(String userId, ChecklistBean ChecklistBean);
+	ResponseEntity<String> updateChecklist(String userId,String checklistId, ChecklistBean ChecklistBean);
+	ResponseEntity<ChecklistBean> getChecklist(String userId,String checklistId);
 	ResponseEntity deleteChecklist(String userId,String checklistIds);
+	ResponseEntity checklistNameExist(String userId,String checklistName);
 }

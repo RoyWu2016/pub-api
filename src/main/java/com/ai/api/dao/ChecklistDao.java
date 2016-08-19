@@ -2,9 +2,9 @@ package com.ai.api.dao;
 
 import java.util.List;
 
-import com.ai.commons.beans.checklist.api.ChecklistDetailBean;
-import com.ai.commons.beans.checklist.ChecklistSearchCriteriaBean;
-import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
+import com.ai.commons.beans.checklist.api.ChecklistBean;
+import com.ai.commons.beans.checklist.api.ChecklistSearchCriteriaBean;
+import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
 
 /***************************************************************************
  * <PRE>
@@ -26,10 +26,11 @@ import com.ai.commons.beans.checklist.ChecklistSearchResultBean;
 
 
 public interface ChecklistDao {
-	List<ChecklistSearchResultBean> searchChecklist(ChecklistSearchCriteriaBean criteria);
-	List<ChecklistSearchResultBean> searchPublicChecklist(ChecklistSearchCriteriaBean criteria);
-	String createChecklist(String login,ChecklistDetailBean checklistDetailBean);
-	String updateChecklist(String login,ChecklistDetailBean checklistDetailBean);
-	ChecklistDetailBean getChecklist(String login,String checklistId);
+	List<SimpleChecklistBean> searchChecklist(ChecklistSearchCriteriaBean criteria);
+	List<SimpleChecklistBean> searchPublicChecklist(ChecklistSearchCriteriaBean criteria);
+	String createChecklist(String login,ChecklistBean ChecklistBean);
+	String updateChecklist(String login,ChecklistBean ChecklistBean);
+	ChecklistBean getChecklist(String login,String checklistId);
 	boolean deleteChecklist(String login,String ids);
+	boolean checklistNameExist(String login,String checklistName);
 }

@@ -9,6 +9,8 @@ import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.http.HttpServletResponse;
+
 /***************************************************************************
  * <PRE>
  * Project Name    : Public-API
@@ -36,4 +38,5 @@ public interface Payment {
 	ResponseEntity<Boolean> reissueProFormaInvoice(String userId,String orders);
 	ResponseEntity<List<GlobalPaymentInfoBean>> generateGlobalPayment(String userId, String orders);
 	ResponseEntity<Boolean> logPaymentAction(String userId, PaymentActionLogBean logBean);
+	ResponseEntity<String> downloadProformaInvoicePDF(String userId,String invoiceId,HttpServletResponse httpResponse);
 }

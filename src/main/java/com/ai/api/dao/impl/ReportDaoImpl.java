@@ -2,6 +2,7 @@ package com.ai.api.dao.impl;
 
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.ReportDao;
+import com.ai.api.util.FTPUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.StringUtils;
@@ -14,8 +15,12 @@ import com.ai.commons.beans.report.ReportsForwardingBean;
 import com.ai.commons.beans.report.api.ReportCertificateBean;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +28,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -151,16 +159,76 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public List<ReportPdfFileInfoBean> getUserReportPdfInfo(String userId, String login, String reportId) {
-        String url = config.getMwServiceUrl() + "/service/report/fileNames?reportDetailId="+reportId+"&login="+login+"&userId="+userId;
+    public List<String> getUserReportPdfInfo(String userId, String login, String reportId) {
+        String url = config.getReportServiceUrl() + "/list-pdf-names/"+reportId;
         try{
             GetRequest request = GetRequest.newInstance().setUrl(url);
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
-            List<ReportPdfFileInfoBean> reportPdfInfo = JsonUtil.mapToObject(result.getResponseString(), new TypeReference<List<ReportPdfFileInfoBean>>(){});
-            return reportPdfInfo;
+            List<String> pdfList = JSON.parseArray(result.getResponseString(),String.class);
+            return pdfList;
         }catch (Exception e){
             logger.error(ExceptionUtils.getStackTrace(e));
         }
         return null;
     }
+
+    @Override
+    public InputStream downloadPDF(String reportId,String fileName){
+        String url = config.getReportServiceUrl() + "/attachment/download-pdf/"+reportId+"?fileName=" + fileName;
+        InputStream inputStream = null;
+        try {
+            HttpClient httpclient = HttpClients.createDefault();
+            HttpGet httpget = new HttpGet(url);
+            HttpResponse response = httpclient.execute(httpget);
+            HttpEntity entity = response.getEntity();
+            inputStream = entity.getContent();
+        } catch (Exception e) {
+            logger.error("ERROR!!! downloadPDF", e);
+        }
+        return inputStream;
+
+    }
+
+	@Override
+	public InputStream exportReports(ReportSearchCriteriaBean criteria){
+		String url = config.getMwServiceUrl() + "/service/report/export";
+//		String url = "http://127.0.0.1:8888/service/report/export";
+		try {
+			logger.info("post url:"+url);
+			logger.info(criteria.toString());
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                logger.info("request OK!");
+                String remotePath = "/CACHE/";
+                String fileName = result.getResponseString();
+                String host = config.getMwFTPHost();
+                int port = 21;
+                String username = config.getMwFTPUsername();
+                String password = config.getMwFTPPassword();
+                String tempPath = "/tmp/";
+                logger.info(remotePath);
+                logger.info(fileName);
+                logger.info(host+":"+port);
+                logger.info(username+" || "+password);
+                logger.info(tempPath);
+                boolean b = FTPUtil.downloadFile(host,port,username,password,remotePath,fileName,tempPath);
+                if (b){
+                    logger.info("success download File to /tmp ");
+                    File tempFile = new File(tempPath + fileName);
+                    InputStream inputStream = new FileInputStream(tempFile);
+                    return inputStream;
+                }else {
+                    logger.error("ERROR! fail to download file from FTP server. ");
+                    return null;
+                }
+			} else {
+				logger.error("get reports from middleware error: " + result.getStatusCode() +
+						", " + result.getResponseString());
+			}
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+
+	}
 }
