@@ -25,6 +25,7 @@ import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -353,4 +354,19 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 		return null;
 	}
 
+	@Override
+	public boolean logPaymentAction(String userId, PaymentActionLogBean logBean){
+		try{
+			String url = config.getMwServiceUrl() + "/service/payment/log";
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, logBean);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return true;
+			} else {
+				logger.error("Log Payment Action from middleware error: " + result.getStatusCode() + ", " + result.getResponseString());
+			}
+		}catch (Exception e){
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return false;
+	}
 }

@@ -20,6 +20,7 @@ import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 
 /***************************************************************************
  * <PRE>
@@ -76,6 +77,8 @@ public interface UserService {
     boolean reissueProFormaInvoice(String userId, String orders);
 
     List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders);
+
+    boolean logPaymentAction(String userId, PaymentActionLogBean logBean);
 
     String getLoginByUserId(String userId);
 }

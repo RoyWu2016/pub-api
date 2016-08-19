@@ -71,6 +71,7 @@ import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import com.alibaba.fastjson.JSON;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
@@ -838,4 +839,9 @@ public class UserServiceImpl implements UserService {
         }
         return companyId;
     }
+	@Override
+	public boolean logPaymentAction(String userId, PaymentActionLogBean logBean){
+		return customerDao.logPaymentAction(userId, logBean);
+	}
+
 }

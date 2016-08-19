@@ -10,6 +10,7 @@ import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,4 +41,6 @@ public interface CustomerDao {
 	boolean reissueProFormaInvoice(String userId, String login, String orders);
 
 	List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String login, String orders);
+
+	boolean logPaymentAction(String userId, PaymentActionLogBean logBean);
 }
