@@ -33,4 +33,5 @@ public interface ChecklistDao {
 	ChecklistBean getChecklist(String login,String checklistId);
 	boolean deleteChecklist(String login,String ids);
 	boolean checklistNameExist(String login,String checklistName);
+    boolean saveFeedback(String login,String checklistId,String feedback);
 }

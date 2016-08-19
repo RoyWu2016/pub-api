@@ -131,4 +131,17 @@ public class ChecklistImpl implements Checklist {
 			return new ResponseEntity<>(false,HttpStatus.OK);
 		}
 	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}/feedback", method = RequestMethod.PUT)
+	public ResponseEntity saveFeedback(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId,String feedback){
+
+		boolean b = checklistService.saveFeedback(userId,checklistId,feedback);
+		if(b){
+			return new ResponseEntity<>(true,HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(false,HttpStatus.OK);
+		}
+	}
 }

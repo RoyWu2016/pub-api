@@ -403,7 +403,7 @@ public class UserServiceImpl implements UserService {
 		aqlAndSamplingSizeBean.setCustomDefaultSampleLevel(orderBookingBean.getCustomizedSampleLevel());
 		CustomAQLBean customAQLBean = new CustomAQLBean();
 
-		if (orderBookingBean.getCustAqlLevel() != null && orderBookingBean.getCustAqlLevel().equals("yes")) {
+		if (orderBookingBean.getCustAqlLevel() != null && orderBookingBean.getCustAqlLevel().equalsIgnoreCase("yes")){ //.equals("yes")) {
 			aqlAndSamplingSizeBean.setUseCustomAQL("true");
 			customAQLBean.setCriticalDefects(orderBookingBean.getCriticalDefects());
 			customAQLBean.setMajorDefects(orderBookingBean.getMajorDefects());
