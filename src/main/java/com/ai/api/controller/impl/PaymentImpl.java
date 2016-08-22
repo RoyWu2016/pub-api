@@ -16,6 +16,7 @@ import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.payment.api.PaymentItemParamBean;
+import com.ai.commons.beans.payment.api.PaypalInfoBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,6 +176,19 @@ public class PaymentImpl implements Payment {
 		boolean result = paymentService.markAsPaid(userId, paymentItemParamBean);
 		if(result){
 			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/paypalPayment", method = RequestMethod.GET)
+	public ResponseEntity<List<PaypalInfoBean>> getPaypalPayment(@PathVariable("userId") String userId,
+																	  @RequestParam("orders") String orders){
+		List<PaypalInfoBean> result = paymentService.getPaypalPayment(userId, orders);
+		if(result!=null){
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}

@@ -8,6 +8,7 @@ import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.payment.api.PaymentItemParamBean;
+import com.ai.commons.beans.payment.api.PaypalInfoBean;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletResponse;
@@ -41,4 +42,5 @@ public interface Payment {
 	ResponseEntity<Boolean> logPaymentAction(String userId, PaymentActionLogBean logBean);
 	ResponseEntity<String> downloadProformaInvoicePDF(String userId,String invoiceId,HttpServletResponse httpResponse);
 	ResponseEntity<Boolean> markAsPaid(String userId, PaymentItemParamBean paymentItemParamBean);
+	ResponseEntity<List<PaypalInfoBean>> getPaypalPayment(String userId, String orders);
 }
