@@ -4,9 +4,12 @@ import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.PaymentDao;
 import com.ai.api.util.FTPUtil;
 import com.ai.commons.HttpUtil;
+import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.payment.api.PaymentItemParamBean;
+import com.ai.commons.beans.payment.api.PaypalInfoBean;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * Project Name    : Public-API
@@ -90,5 +94,18 @@ public class PaymentDaoImpl implements PaymentDao {
             logger.error(ExceptionUtils.getStackTrace(e));
         }
         return false;
+    }
+
+    @Override
+    public List<PaypalInfoBean> getPaypalPayment(String userId, String login, String orders) {
+        try{
+            String url = config.getMwServiceUrl() + "/service/payment/paypalPayment?userId="+userId+"&login="+login+"&order_ids_array="+orders;
+            GetRequest request = GetRequest.newInstance().setUrl(url);
+            ServiceCallResult result = HttpUtil.issueGetRequest(request);
+            return JsonUtil.mapToObject(result.getResponseString(), new TypeReference<List<PaypalInfoBean>>(){});
+        }catch (Exception e){
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+        return null;
     }
 }
