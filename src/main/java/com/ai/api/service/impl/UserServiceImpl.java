@@ -777,10 +777,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
 	public String getLoginByUserId(String userId) {
-//        RedisUtil redisUtil = RedisUtil.getInstance();
-//        String jsonStr = redisUtil.get(userId);
-        Object result = redisTemplate.opsForValue().get(userId);
-        String jsonStr = JSON.toJSONString(result);
+        RedisUtil redisUtil = RedisUtil.getInstance();
+        String jsonStr = redisUtil.get(userId);
+//        Object result = redisTemplate.opsForValue().get(userId);
+//        String jsonStr = JSON.toJSONString(result);
         String login = null;
         if (StringUtils.isNotBlank(jsonStr)){
             login = JSON.parseObject(jsonStr).getString("login");
