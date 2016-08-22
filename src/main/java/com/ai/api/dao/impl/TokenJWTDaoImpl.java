@@ -1,11 +1,5 @@
 package com.ai.api.dao.impl;
 
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
-import java.security.Key;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.IDGenerator;
 import com.ai.commons.StringUtils;
@@ -26,6 +20,12 @@ import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.security.Key;
+import java.util.HashMap;
+import java.util.Map;
 
 /***************************************************************************
  * <PRE>
@@ -93,6 +93,7 @@ public class TokenJWTDaoImpl {
             if (StringUtils.isNotBlank(tokenStr)) {
                 RedisUtil redisUtil = RedisUtil.getInstance();
                 redisUtil.hset(TOKENKEY, sessionId,tokenStr);
+//                redisTemplate.opsForHash().put(TOKENKEY, sessionId, tokenStr);
             }
 		}catch (Exception e){
 			logger.error("error generateToken",e);

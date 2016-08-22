@@ -6,38 +6,7 @@
  ***************************************************************************/
 package com.ai.api.service.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.ai.api.bean.AqlAndSamplingSizeBean;
-import com.ai.api.bean.BillingBean;
-import com.ai.api.bean.BookingPreferenceBean;
-import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.ContactInfoBean;
-import com.ai.api.bean.CustomAQLBean;
-import com.ai.api.bean.CustomizedProductType;
-import com.ai.api.bean.MainBean;
-import com.ai.api.bean.MinQuantityToBeReadyBean;
-import com.ai.api.bean.MultiReferenceBean;
-import com.ai.api.bean.PreferencesBean;
-import com.ai.api.bean.PreferredProductFamilies;
-import com.ai.api.bean.ProductCategoryDtoBean;
-import com.ai.api.bean.ProductFamilyDtoBean;
-import com.ai.api.bean.PublicProductType;
-import com.ai.api.bean.QualityManual;
-import com.ai.api.bean.ReportApproverBean;
-import com.ai.api.bean.ReportPreferenceBean;
-import com.ai.api.bean.ReportRejectCategoryBean;
-import com.ai.api.bean.ReportRejectCategoryReasonBean;
+import com.ai.api.bean.*;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.CompanyDao;
@@ -51,22 +20,7 @@ import com.ai.api.util.BASE64DecodedMultipartFile;
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.customer.ApproverBean;
-import com.ai.commons.beans.customer.CompanyEntireBean;
-import com.ai.commons.beans.customer.ContactBean;
-import com.ai.commons.beans.customer.CrmCompanyBean;
-import com.ai.commons.beans.customer.CrmSaleInChargeBean;
-import com.ai.commons.beans.customer.CustomerFeatureBean;
-import com.ai.commons.beans.customer.ExtraBean;
-import com.ai.commons.beans.customer.GeneralUserViewBean;
-import com.ai.commons.beans.customer.MultiRefBookingBean;
-import com.ai.commons.beans.customer.OrderBookingBean;
-import com.ai.commons.beans.customer.ProductFamilyBean;
-import com.ai.commons.beans.customer.QualityManualBean;
-import com.ai.commons.beans.customer.RejectCategoryBean;
-import com.ai.commons.beans.customer.RejectCategoryReasonBean;
-import com.ai.commons.beans.customer.RelevantCategoryInfoBean;
-import com.ai.commons.beans.customer.ReportCertificateBean;
+import com.ai.commons.beans.customer.*;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
@@ -88,6 +42,16 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /***************************************************************************
  * <PRE>
@@ -808,8 +772,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
 	public String getLoginByUserId(String userId) {
-        RedisUtil redisUtil = RedisUtil.getInstance();
-        String jsonStr = redisUtil.get(userId);
+//        RedisUtil redisUtil = RedisUtil.getInstance();
+//        String jsonStr = redisUtil.get(userId);
+        Object result = redisTemplate.opsForValue().get(userId);
+        String jsonStr = JSON.toJSONString(result);
         String login = null;
         if (StringUtils.isNotBlank(jsonStr)){
             login = JSON.parseObject(jsonStr).getString("login");
