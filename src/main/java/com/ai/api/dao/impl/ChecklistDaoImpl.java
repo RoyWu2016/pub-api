@@ -210,6 +210,8 @@ public class ChecklistDaoImpl implements ChecklistDao {
             dataMap.put("login",login);
             dataMap.put("checklistId",checklistId);
             dataMap.put("feedback",feedback);
+			logger.info("do post url : "+url);
+			logger.info("dataMap :"+dataMap);
             ServiceCallResult result = HttpUtil.issuePostRequest(url, null, dataMap);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 if ("true".equals(result.getResponseString())){

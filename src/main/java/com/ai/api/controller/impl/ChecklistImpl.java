@@ -7,14 +7,12 @@ import com.ai.api.service.ChecklistService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.checklist.api.ChecklistBean;
 import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /***************************************************************************
  * <PRE>
@@ -38,6 +36,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ChecklistImpl implements Checklist {
 
+	protected Logger logger = LoggerFactory.getLogger(ChecklistImpl.class);
+
 	@Autowired
 	private ChecklistService checklistService;
 
@@ -47,12 +47,15 @@ public class ChecklistImpl implements Checklist {
 	public ResponseEntity<List<SimpleChecklistBean>> searchChecklist(@PathVariable("userId") String userID,
 	                                                                       @RequestParam(value = "keyword",required = false) String keyword,
 																		   @RequestParam(value = "pageNumber",required = false) Integer pageNumber) {
-
+		logger.info("searchChecklist ...");
+		logger.info("userID :"+userID);
+		logger.info("keyword :"+keyword);
+		logger.info("pageNumber :"+pageNumber);
 		List<SimpleChecklistBean> result = checklistService.searchChecklist(userID,keyword,pageNumber);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -61,11 +64,14 @@ public class ChecklistImpl implements Checklist {
 	@RequestMapping(value = "/user/{userId}/publicChecklists", method = RequestMethod.GET)
 	public ResponseEntity<List<SimpleChecklistBean>> searchPublicChecklist(@PathVariable("userId") String userId,
 	                                                                             @RequestParam(value = "keyword",required = false) String keyword) {
+		logger.info("searchPublicChecklist ...");
+		logger.info("userId :"+userId);
+		logger.info("keyword :"+keyword);
 		List<SimpleChecklistBean> result = checklistService.searchPublicChecklist(userId, keyword);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -73,11 +79,14 @@ public class ChecklistImpl implements Checklist {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist", method = RequestMethod.POST)
 	public ResponseEntity<String> createChecklist(@PathVariable("userId") String userId,ChecklistBean ChecklistBean){
+        logger.info("createChecklist ...");
+        logger.info("userId :"+userId);
+        logger.info("ChecklistBean :"+ChecklistBean.toString());
 		String result = checklistService.createChecklist(userId,ChecklistBean);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -85,62 +94,80 @@ public class ChecklistImpl implements Checklist {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}", method = RequestMethod.PUT)
 	public ResponseEntity<String> updateChecklist(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId,ChecklistBean ChecklistBean){
+        logger.info("updateChecklist ...");
+        logger.info("userId :"+userId);
+        logger.info("checklistId :"+checklistId);
+        logger.info("ChecklistBean :"+ChecklistBean.toString());
+
 		ChecklistBean.setId(checklistId);
 		String result = checklistService.updateChecklist(userId,ChecklistBean);
 		if(result!=null){
-			return new ResponseEntity<>(result, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 	}
 
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}", method = RequestMethod.GET)
 	public ResponseEntity<ChecklistBean> getChecklist(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId){
+        logger.info("getChecklist ...");
+        logger.info("userId :"+userId);
+        logger.info("checklistId :"+checklistId);
 		ChecklistBean result = checklistService.getChecklist(userId,checklistId);
 		if(result!=null){
-			return new ResponseEntity<>(result, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 	}
 
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklists/{checklistIds}", method = RequestMethod.DELETE)
 	public ResponseEntity deleteChecklist(@PathVariable("userId") String userId,@PathVariable("checklistIds") String checklistIds){
+        logger.info("deleteChecklist ...");
+        logger.info("userId :"+userId);
+        logger.info("checklistIds :"+checklistIds);
 
 		boolean b = checklistService.deleteChecklist(userId,checklistIds);
-		if(b){
-			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
+        if(b){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 	}
 
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklistName/{checklistName}", method = RequestMethod.GET)
 	public ResponseEntity checklistNameExist(@PathVariable("userId") String userId,@PathVariable("checklistName") String checklistName){
+        logger.info("checklistNameExist ...");
+        logger.info("userId :"+userId);
+        logger.info("checklistName :"+checklistName);
 
 		boolean b = checklistService.checklistNameExist(userId,checklistName);
         if(b){
-            return new ResponseEntity<>("{\"success\":\"true\"}",HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("{\"success\":\"false\"}",HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 	}
 
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}/feedback", method = RequestMethod.PUT)
-	public ResponseEntity saveFeedback(@PathVariable("userId") String userId, @PathVariable("checklistId") String checklistId, String feedback){
+	public ResponseEntity saveFeedback(@PathVariable("userId") String userId, @PathVariable("checklistId") String checklistId,@RequestBody String feedback){
+        logger.info("saveFeedback ...");
+        logger.info("userId :"+userId);
+        logger.info("checklistId :"+checklistId);
+        logger.info("feedback :"+feedback);
 		boolean b = checklistService.saveFeedback(userId,checklistId,feedback);
         if(b){
-            return new ResponseEntity<>("{\"success\":\"true\"}",HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("{\"success\":\"false\"}",HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 	}
 
@@ -148,11 +175,14 @@ public class ChecklistImpl implements Checklist {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}/approved", method = RequestMethod.PUT)
 	public ResponseEntity approved(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId){
+        logger.info("approved ...");
+        logger.info("userId :"+userId);
+        logger.info("checklistId :"+checklistId);
 		boolean b = checklistService.approved(userId,checklistId);
 		if(b){
-			return new ResponseEntity<>("{\"success\":\"true\"}",HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>("{\"success\":\"false\"}",HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

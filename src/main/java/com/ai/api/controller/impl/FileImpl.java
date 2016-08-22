@@ -114,7 +114,7 @@ public class FileImpl implements File {
         if (b){
             return new ResponseEntity<>(HttpStatus.OK);
         }else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 	}
 }

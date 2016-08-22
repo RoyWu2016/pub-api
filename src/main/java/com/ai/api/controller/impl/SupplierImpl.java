@@ -65,7 +65,7 @@ public class SupplierImpl implements Supplier {
                 logger.error("", e);
             }
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class SupplierImpl implements Supplier {
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
         }else{
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -92,12 +92,12 @@ public class SupplierImpl implements Supplier {
                                                                             @RequestBody SupplierDetailBean supplierDetailBean)
             throws IOException, AIException {
         System.out.println("updating supplier detail info for user: " + userId);
-        Map<String, String> result = new HashMap<String,String>();
+//        Map<String, String> result = new HashMap<String,String>();
         if (factoryService.updateSupplierDetailInfo(supplierDetailBean)) {
-            result.put("success","true");
-            return new ResponseEntity<>(result, HttpStatus.OK);
+//            result.put("success","true");
+            return new ResponseEntity<>( HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -111,7 +111,7 @@ public class SupplierImpl implements Supplier {
         if (factoryService.deleteSuppliers(supplierIds)) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

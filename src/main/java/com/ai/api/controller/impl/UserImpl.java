@@ -93,7 +93,7 @@ public class UserImpl implements User {
 		if (cust != null) {
 			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -108,7 +108,7 @@ public class UserImpl implements User {
 		if (cust != null) {
 			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -125,7 +125,7 @@ public class UserImpl implements User {
 		if (cust != null) {
 			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -141,7 +141,7 @@ public class UserImpl implements User {
 		if (cust != null) {
 			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -180,7 +180,7 @@ public class UserImpl implements User {
 		} catch (Exception e) {
 			logger.error("", e);
 		}
-		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 //    @Override
@@ -217,7 +217,7 @@ public class UserImpl implements User {
 		if (b) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -236,7 +236,7 @@ public class UserImpl implements User {
 		if (b) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -247,7 +247,7 @@ public class UserImpl implements User {
 		if (userService.createNewAccount(clientInfoBean)) {
 			return new ResponseEntity<>(true, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
