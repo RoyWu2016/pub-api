@@ -15,6 +15,7 @@ import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
+import com.ai.commons.beans.payment.api.PaymentItemParamBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,6 +164,19 @@ public class PaymentImpl implements Payment {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>("no invoice pdf file found",HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/payment", method = RequestMethod.PUT)
+	public ResponseEntity<Boolean> markAsPaid(@PathVariable("userId") String userId,
+											  @RequestBody PaymentItemParamBean paymentItemParamBean){
+		boolean result = paymentService.markAsPaid(userId, paymentItemParamBean);
+		if(result){
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 }

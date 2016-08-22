@@ -4,6 +4,7 @@ import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.PaymentDao;
 import com.ai.api.service.PaymentService;
 import com.ai.api.service.UserService;
+import com.ai.commons.beans.payment.api.PaymentItemParamBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -55,5 +56,10 @@ public class PaymentServiceImpl implements PaymentService {
             e.printStackTrace();
         }
         return b;
+    }
+
+    @Override
+    public boolean markAsPaid(String userId, PaymentItemParamBean paymentItemParamBean) {
+        return paymentDao.markAsPaid(userId, paymentItemParamBean);
     }
 }

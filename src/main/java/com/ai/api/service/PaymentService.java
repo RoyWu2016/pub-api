@@ -1,5 +1,7 @@
 package com.ai.api.service;
 
+import com.ai.commons.beans.payment.api.PaymentItemParamBean;
+
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -12,4 +14,5 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface PaymentService {
     boolean downloadProformaInvoicePDF(String userId,String invoiceId,HttpServletResponse httpResponse);
+    boolean markAsPaid(String userId, PaymentItemParamBean paymentItemParamBean);
 }

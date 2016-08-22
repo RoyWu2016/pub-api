@@ -1,5 +1,7 @@
 package com.ai.api.dao;
 
+import com.ai.commons.beans.payment.api.PaymentItemParamBean;
+
 import java.io.InputStream;
 
 /**
@@ -12,4 +14,5 @@ import java.io.InputStream;
  */
 public interface PaymentDao {
     InputStream downloadProformaInvoicePDF(String login, String invoiceId);
+    boolean markAsPaid(String userId, PaymentItemParamBean paymentItemParamBean);
 }

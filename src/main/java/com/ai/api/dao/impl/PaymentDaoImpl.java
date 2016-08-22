@@ -6,6 +6,7 @@ import com.ai.api.util.FTPUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.payment.api.PaymentItemParamBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,5 +74,21 @@ public class PaymentDaoImpl implements PaymentDao {
             logger.error(ExceptionUtils.getStackTrace(e));
             return null;
         }
+    }
+
+    @Override
+    public boolean markAsPaid(String userId, PaymentItemParamBean paymentItemParamBean) {
+        try{
+            String url = config.getMwServiceUrl() + "/service/payment/markAsPaid";
+            ServiceCallResult result = HttpUtil.issuePostRequest(url, null, paymentItemParamBean);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                return true;
+            } else {
+                logger.error("Mark Payment As Paid from middleware error: " + result.getStatusCode() + ", " + result.getResponseString());
+            }
+        }catch (Exception e){
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+        return false;
     }
 }
