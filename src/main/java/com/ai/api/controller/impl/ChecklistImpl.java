@@ -102,7 +102,7 @@ public class ChecklistImpl implements Checklist {
 		ChecklistBean.setId(checklistId);
 		String result = checklistService.updateChecklist(userId,ChecklistBean);
 		if(result!=null){
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(result,HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -117,7 +117,7 @@ public class ChecklistImpl implements Checklist {
         logger.info("checklistId :"+checklistId);
 		ChecklistBean result = checklistService.getChecklist(userId,checklistId);
 		if(result!=null){
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(result,HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
