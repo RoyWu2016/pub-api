@@ -6,7 +6,6 @@ import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ai.api.util.RedisUtil;
 import com.ai.commons.IDGenerator;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.user.TokenSession;
@@ -25,6 +24,9 @@ import org.jose4j.jwt.consumer.NumericDateValidator;
 import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 /***************************************************************************
@@ -64,6 +66,10 @@ public class TokenJWTDaoImpl {
     private Map<String, Key> keys = new HashMap<String, Key>();
 	private String TOKENKEY = "publicAPIToken";
 
+    @Autowired
+    @Qualifier("redisTemplate")
+    private static RedisTemplate<String, Object> redisTemplate;
+
 
 //	@CachePut(value = "publicAPIToken",key = "#sessionId")//create or update-----function will run every called
 	public TokenSession generateToken(final String login, final String userId, String sessionId){
@@ -91,8 +97,9 @@ public class TokenJWTDaoImpl {
                 logger.error("error!! tokenSession can not be cast to String .");
             }
             if (StringUtils.isNotBlank(tokenStr)) {
-                RedisUtil redisUtil = RedisUtil.getInstance();
-                redisUtil.hset(TOKENKEY, sessionId,tokenStr);
+//                RedisUtil redisUtil = RedisUtil.getInstance();
+//                redisUtil.hset(TOKENKEY, sessionId,tokenStr);
+                redisTemplate.opsForHash().put(TOKENKEY,sessionId,tokenStr);
             }
 		}catch (Exception e){
 			logger.error("error generateToken",e);
@@ -132,8 +139,10 @@ public class TokenJWTDaoImpl {
 //	@Cacheable(value = "publicAPIToken",key = "#sessionId")//get data from redis and the function will not run
 	public TokenSession getTokenSessionFromRedis(String sessionId){
 //		logger.error("this message is not supposed to be saw!  id:"+sessionId);
-		RedisUtil redisUtil = RedisUtil.getInstance();
-		String resultStr = redisUtil.hget(TOKENKEY,sessionId);
+//		RedisUtil redisUtil = RedisUtil.getInstance();
+//		String resultStr = redisUtil.hget(TOKENKEY,sessionId);
+        Object result = redisTemplate.opsForHash().get(TOKENKEY,sessionId);
+        String resultStr = JSON.toJSONString(result);
 		if (StringUtils.isBlank(resultStr))return null;
 		return JSON.parseObject(resultStr).toJavaObject(TokenSession.class);
 	}
@@ -141,8 +150,9 @@ public class TokenJWTDaoImpl {
 //	@CacheEvict(value = "publicAPIToken",key = "#sessionId")
 	public boolean removePublicAPIToken(String sessionId) {
 		logger.info("remove tokenSession sessionId:" +sessionId);
-		RedisUtil redisUtil = RedisUtil.getInstance();
-		Long count = redisUtil.hdel(TOKENKEY,sessionId);
+//		RedisUtil redisUtil = RedisUtil.getInstance();
+//		Long count = redisUtil.hdel(TOKENKEY,sessionId);
+        Long count = redisTemplate.opsForHash().delete(TOKENKEY,sessionId);
 		if (count==1) {
 			logger.info("success remove tokenSession sessionId[" + sessionId + "]");
 			return true;

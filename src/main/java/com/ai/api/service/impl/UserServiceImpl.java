@@ -48,7 +48,6 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.api.util.BASE64DecodedMultipartFile;
-import com.ai.api.util.RedisUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.ApproverBean;
@@ -58,7 +57,6 @@ import com.ai.commons.beans.customer.CrmCompanyBean;
 import com.ai.commons.beans.customer.CrmSaleInChargeBean;
 import com.ai.commons.beans.customer.CustomerFeatureBean;
 import com.ai.commons.beans.customer.ExtraBean;
-import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.customer.MultiRefBookingBean;
 import com.ai.commons.beans.customer.OrderBookingBean;
 import com.ai.commons.beans.customer.ProductFamilyBean;
@@ -85,6 +83,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -132,6 +131,10 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	@Qualifier("featureDao")
 	private FeatureDao featureDao;
+
+	@Autowired
+	@Qualifier("redisTemplate")
+	private static RedisTemplate<String, Object> redisTemplate;
 
 	@Override
 	@CacheEvict(value = "userBeanCache", key = "#userId")
@@ -808,8 +811,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
 	public String getLoginByUserId(String userId) {
-        RedisUtil redisUtil = RedisUtil.getInstance();
-        String jsonStr = redisUtil.get(userId);
+//        RedisUtil redisUtil = RedisUtil.getInstance();
+//        String jsonStr = redisUtil.get(userId);
+        Object result = redisTemplate.opsForValue().get(userId);
+        String jsonStr = JSON.toJSONString(result);
         String login = null;
         if (StringUtils.isNotBlank(jsonStr)){
             login = JSON.parseObject(jsonStr).getString("login");
@@ -827,8 +832,10 @@ public class UserServiceImpl implements UserService {
     }
 
 	private String getCompanyIdByUserId(String userId) throws IOException, AIException {
-        RedisUtil redisUtil = RedisUtil.getInstance();
-        String jsonStr = redisUtil.get(userId);
+//        RedisUtil redisUtil = RedisUtil.getInstance();
+//        String jsonStr = redisUtil.get(userId);
+        Object result = redisTemplate.opsForValue().get(userId);
+        String jsonStr = JSON.toJSONString(result);
         String companyId = null;
         if (StringUtils.isNotBlank(jsonStr)){
             companyId = JSON.parseObject(jsonStr).getJSONObject("company").getString("id");
