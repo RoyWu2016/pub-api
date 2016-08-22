@@ -718,7 +718,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean updateCompanyLogo(String userId, String compId, CompanyLogoBean logoBean) {
 		try {
-			byte[] imageByte = Base64.decode(logoBean.getEncodedImageStr());
+			String encoded = logoBean.getEncodedImageStr();
+			String[] encodedStrs = encoded.split(",");
+			if(encodedStrs.length>1){
+				encoded = encodedStrs[1].trim();
+			}
+			byte[] imageByte = Base64.decode(encoded);
 			BASE64DecodedMultipartFile base64File = new BASE64DecodedMultipartFile(logoBean.getFileName(),
 					logoBean.getFileOriginalName(), imageByte);
 			return customerDao.updateCompanyLogo(compId, base64File);
