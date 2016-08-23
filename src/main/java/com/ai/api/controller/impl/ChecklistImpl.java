@@ -78,11 +78,11 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist", method = RequestMethod.POST)
-	public ResponseEntity<String> createChecklist(@PathVariable("userId") String userId,@RequestBody ChecklistBean ChecklistBean){
+	public ResponseEntity<String> createChecklist(@PathVariable("userId") String userId,@RequestBody ChecklistBean checklistBean){
         logger.info("createChecklist ...");
         logger.info("userId :"+userId);
-        logger.info("ChecklistBean :"+ChecklistBean.toString());
-		String result = checklistService.createChecklist(userId,ChecklistBean);
+        logger.info("checklistBean :"+checklistBean.toString());
+		String result = checklistService.createChecklist(userId,checklistBean);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
@@ -93,14 +93,14 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}", method = RequestMethod.PUT)
-	public ResponseEntity<String> updateChecklist(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId,@RequestBody ChecklistBean ChecklistBean){
+	public ResponseEntity<String> updateChecklist(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId,@RequestBody ChecklistBean checklistBean){
         logger.info("updateChecklist ...");
         logger.info("userId :"+userId);
         logger.info("checklistId :"+checklistId);
-        logger.info("ChecklistBean :"+ChecklistBean.toString());
+        logger.info("checklistBean :"+checklistBean.toString());
 
-		ChecklistBean.setId(checklistId);
-		String result = checklistService.updateChecklist(userId,ChecklistBean);
+        checklistBean.setId(checklistId);
+		String result = checklistService.updateChecklist(userId,checklistBean);
 		if(result!=null){
             return new ResponseEntity<>(result,HttpStatus.OK);
         } else {

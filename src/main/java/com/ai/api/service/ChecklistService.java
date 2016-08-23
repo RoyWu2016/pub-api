@@ -27,8 +27,8 @@ import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
 public interface ChecklistService {
 	List<SimpleChecklistBean> searchChecklist(String userID,String keyword, Integer pageNumber);
 	List<SimpleChecklistBean> searchPublicChecklist(String userId, String keyword);
-	String createChecklist(String userId,ChecklistBean ChecklistBean);
-	String updateChecklist(String userId,ChecklistBean ChecklistBean);
+	String createChecklist(String userId,ChecklistBean checklistBean);
+	String updateChecklist(String userId,ChecklistBean checklistBean);
 	ChecklistBean getChecklist(String userId,String checklistId);
 	boolean deleteChecklist(String userId,String ids);
 	boolean checklistNameExist(String userId,String checklistName);

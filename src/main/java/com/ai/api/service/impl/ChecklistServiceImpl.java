@@ -101,15 +101,15 @@ public class ChecklistServiceImpl implements ChecklistService {
 	}
 
 	@Override
-	public String createChecklist(String userId,ChecklistBean ChecklistBean){
+	public String createChecklist(String userId,ChecklistBean checklistBean){
 		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
-		return checklistDao.createChecklist(login,ChecklistBean);
+		return checklistDao.createChecklist(login,checklistBean);
 	}
 
 	@Override
-	public String updateChecklist(String userId,ChecklistBean ChecklistBean){
+	public String updateChecklist(String userId,ChecklistBean checklistBean){
 		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
-		return checklistDao.updateChecklist(login,ChecklistBean);
+		return checklistDao.updateChecklist(login,checklistBean);
 	}
 
 	@Override

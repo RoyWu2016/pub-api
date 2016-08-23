@@ -97,7 +97,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 //			Map<String,Object> dataMap = new HashMap<>();
 //			dataMap.put("login",login);
 //			dataMap.put("checklistBean",checklistBean);
-			logger.info("create!!! Url:"+url+" login:"+login+" checklistBean:"+checklistBean.toString());
+			logger.info("create!!! POST Url:"+url+" || login:"+login+" || checklistBean:"+checklistBean.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistBean);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return result.getResponseString();
@@ -119,7 +119,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 //			Map<String,Object> dataMap = new HashMap<>();
 //			dataMap.put("login",login);
 //			dataMap.put("checklistBean",checklistBean);
-			logger.info("update!!! Url:"+url+" login:"+login+" checklistBean:"+checklistBean.toString());
+			logger.info("update!!! POST  Url:"+url+" || login:"+login+" || checklistBean:"+checklistBean.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistBean);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return result.getResponseString();
@@ -139,7 +139,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 		String url = config.getMwServiceUrl() + "/service/checklist/get/"+checklistId+"?login="+login;
 		try {
 			GetRequest request = GetRequest.newInstance().setUrl(url);
-			logger.debug("get!!! Url:"+url+" login:"+login+" checklistId:"+checklistId);
+			logger.info("get!!! Url:"+url+" login:"+login+" checklistId:"+checklistId);
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return  JSON.parseObject(result.getResponseString(),ChecklistBean.class);
@@ -162,7 +162,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 			Map<String,Object> dataMap = new HashMap<>();
 			dataMap.put("login",login);
 			dataMap.put("ids",ids);
-			logger.debug("delete!!! post Url:"+url+" login:"+login+" ids:"+ids);
+			logger.info("delete!!! post Url:"+url+" login:"+login+" ids:"+ids);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, dataMap);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					return true;
