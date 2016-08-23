@@ -97,7 +97,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 //			Map<String,Object> dataMap = new HashMap<>();
 //			dataMap.put("login",login);
 //			dataMap.put("checklistBean",checklistBean);
-			logger.debug("create!!! Url:"+url+" login:"+login+" checklistBean:"+checklistBean.toString());
+			logger.info("create!!! Url:"+url+" login:"+login+" checklistBean:"+checklistBean.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistBean);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return result.getResponseString();
@@ -114,13 +114,13 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
 	@Override
 	public String updateChecklist(String login,ChecklistBean checklistBean) {
-		String url = config.getMwServiceUrl() + "/service/checklist/update";
+		String url = config.getMwServiceUrl() + "/service/checklist/update?login="+login;
 		try {
-			Map<String,Object> dataMap = new HashMap<>();
-			dataMap.put("login",login);
-			dataMap.put("checklistBean",checklistBean);
-			logger.debug("update!!! Url:"+url+" login:"+login+" checklistBean:"+checklistBean.toString());
-			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, dataMap);
+//			Map<String,Object> dataMap = new HashMap<>();
+//			dataMap.put("login",login);
+//			dataMap.put("checklistBean",checklistBean);
+			logger.info("update!!! Url:"+url+" login:"+login+" checklistBean:"+checklistBean.toString());
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistBean);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return result.getResponseString();
 			} else {
