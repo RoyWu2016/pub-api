@@ -78,7 +78,7 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist", method = RequestMethod.POST)
-	public ResponseEntity<String> createChecklist(@PathVariable("userId") String userId,ChecklistBean ChecklistBean){
+	public ResponseEntity<String> createChecklist(@PathVariable("userId") String userId,@RequestBody ChecklistBean ChecklistBean){
         logger.info("createChecklist ...");
         logger.info("userId :"+userId);
         logger.info("ChecklistBean :"+ChecklistBean.toString());
@@ -93,7 +93,7 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}", method = RequestMethod.PUT)
-	public ResponseEntity<String> updateChecklist(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId,ChecklistBean ChecklistBean){
+	public ResponseEntity<String> updateChecklist(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId,@RequestBody ChecklistBean ChecklistBean){
         logger.info("updateChecklist ...");
         logger.info("userId :"+userId);
         logger.info("checklistId :"+checklistId);

@@ -92,13 +92,13 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
 	@Override
 	public String createChecklist(String login,ChecklistBean checklistBean) {
-		String url = config.getMwServiceUrl() + "/service/checklist/create";
+		String url = config.getMwServiceUrl() + "/service/checklist/create?login="+login;
 		try {
-			Map<String,Object> dataMap = new HashMap<>();
-			dataMap.put("login",login);
-			dataMap.put("checklistBean",checklistBean);
+//			Map<String,Object> dataMap = new HashMap<>();
+//			dataMap.put("login",login);
+//			dataMap.put("checklistBean",checklistBean);
 			logger.debug("create!!! Url:"+url+" login:"+login+" checklistBean:"+checklistBean.toString());
-			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, dataMap);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistBean);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return result.getResponseString();
 			} else {
