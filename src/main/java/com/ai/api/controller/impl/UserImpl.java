@@ -169,18 +169,19 @@ public class UserImpl implements User {
 	public ResponseEntity<Map<String, String>> getCompanyLogo(@PathVariable("userId") String userId,
 	                                             @PathVariable("companyId") String companyId) {
 		logger.info("get companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
-
+		Map<String, String> result = new HashMap<String, String>();
 		try {
 			String imageStr = userService.getCompanyLogo(companyId);
 			if (imageStr != null) {
-				Map<String, String> result = new HashMap<String, String>();
 				result.put("image",imageStr);
-				return new ResponseEntity<>(result, HttpStatus.OK);
+			} else {
+				result.put("image","");
 			}
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 //    @Override

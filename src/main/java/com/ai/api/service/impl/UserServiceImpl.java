@@ -690,8 +690,12 @@ public class UserServiceImpl implements UserService {
 	public String getCompanyLogo(String companyId) {
 		try {
 			InputStream inputStream = customerDao.getCompanyLogo(companyId);
-			byte[] data = IOUtils.toByteArray(inputStream);
-			return "data:image/jpg;base64," + Base64.encode(data);
+			if(inputStream!=null) {
+				byte[] data = IOUtils.toByteArray(inputStream);
+				return "data:image/jpg;base64," + Base64.encode(data);
+			}else{
+				return "";
+			}
 		} catch (Exception e) {
 			logger.error("ERROR! from service[getBase64CompanyLogo]" + ExceptionUtils.getStackTrace(e));
 		}
