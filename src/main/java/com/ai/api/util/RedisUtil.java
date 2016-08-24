@@ -1,5 +1,7 @@
 package com.ai.api.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -24,12 +26,15 @@ import redis.clients.jedis.JedisPoolConfig;
 
 public class RedisUtil {
 
+	protected static Logger logger = LoggerFactory.getLogger(RedisUtil.class);
 
 	private static RedisUtil instance ;
 	private static Jedis jedis;
-	private JedisPool pool = null;
+	//private JedisPool pool = null;
+	private static JedisPool pool = null;
 
 	public RedisUtil(){
+		/*
 		try{
 //			jedis = new Jedis("202.66.128.138", 6379);
 //			jedis.auth("aiitteam");
@@ -46,7 +51,56 @@ public class RedisUtil {
 		}catch(Exception e){
 
 		}
+		*/
+		jedis = this.getJedis();
 	}
+
+	/** * 初始化Redis连接池 */
+	private static void initialPool(){
+		try {
+			JedisPoolConfig config = new JedisPoolConfig();
+			//config.setMaxTotal(-1);
+			//config.setMaxIdle(8);
+			//config.setMaxWaitMillis(100000);
+			config.setTestOnBorrow(true);
+			pool = new JedisPool(config, "202.66.128.138", 6379, 100000,"aiitteam");
+		} catch (Exception e) {
+			logger.error("First create JedisPool error : "+e);
+		}
+	}
+
+	/** * 在多线程环境同步初始化 */
+	private static synchronized void poolInit() {
+		if (pool == null) {
+			initialPool();
+		}
+	}
+
+	/** * 同步获取Jedis实例 * @return Jedis */
+	public synchronized static Jedis getJedis() {
+		if (pool == null) {
+			poolInit();
+		}
+		Jedis jedis2 = null;
+		try {
+			if (pool != null) {
+				jedis2 = pool.getResource();
+			}
+		} catch (Exception e) {
+			logger.error("Get jedis error : "+e);
+		}finally{
+			returnResource(jedis2);
+		}
+		return jedis2;
+	}
+
+	/** * 释放jedis资源 * @param jedis */
+	public static void returnResource(final Jedis jedis) {
+		if (jedis != null && pool !=null) {
+			pool.returnResource(jedis);
+		}
+	}
+
 
 	public static synchronized RedisUtil getInstance() {
 		if(instance == null){

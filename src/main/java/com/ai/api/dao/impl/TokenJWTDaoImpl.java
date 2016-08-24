@@ -68,7 +68,7 @@ public class TokenJWTDaoImpl {
 	private String TOKENKEY = "publicAPIToken";
 
 
-	@CachePut(value = "publicAPIToken",key = "#sessionId")//create or update-----function will run every called
+	//@CachePut(value = "publicAPIToken",key = "#sessionId")//create or update-----function will run every called
 	public TokenSession generateToken(final String login, final String userId, String sessionId){
 		TokenSession tokenSession = new TokenSession();
 		String jwt = null;
@@ -94,10 +94,10 @@ public class TokenJWTDaoImpl {
             }
             if (StringUtils.isNotBlank(tokenStr)) {
                 logger.info("saving tokenSession to Redis ...");
-                //RedisUtil redisUtil = RedisUtil.getInstance();
-                //redisUtil.hset(TOKENKEY, sessionId,tokenStr);
+                RedisUtil redisUtil = RedisUtil.getInstance();
+                redisUtil.hset(TOKENKEY, sessionId,tokenStr);
 //                redisTemplate.opsForHash().put(TOKENKEY, sessionId, tokenStr);
-                //logger.info("success!  saved!!!");
+                logger.info("success!  saved!!!");
             }
 		}catch (Exception e){
 			logger.error("error generateToken",e);
@@ -134,20 +134,20 @@ public class TokenJWTDaoImpl {
 		return tmpClaim;
 	}
 
-	@Cacheable(value = "publicAPIToken",key = "#sessionId")//get data from redis and the function will not run
+	//@Cacheable(value = "publicAPIToken",key = "#sessionId")//get data from redis and the function will not run
 	public TokenSession getTokenSessionFromRedis(String sessionId){
 //		logger.error("this message is not supposed to be saw!  id:"+sessionId);
-		//RedisUtil redisUtil = RedisUtil.getInstance();
-		//String resultStr = redisUtil.hget(TOKENKEY,sessionId);
-		//if (StringUtils.isBlank(resultStr))return null;
-		//return JSON.parseObject(resultStr).toJavaObject(TokenSession.class);
-        return null;
+		RedisUtil redisUtil = RedisUtil.getInstance();
+		String resultStr = redisUtil.hget(TOKENKEY,sessionId);
+		if (StringUtils.isBlank(resultStr))return null;
+		return JSON.parseObject(resultStr).toJavaObject(TokenSession.class);
+        //return null;
 	}
 
-	@CacheEvict(value = "publicAPIToken",key = "#sessionId")
+	//@CacheEvict(value = "publicAPIToken",key = "#sessionId")
 	public boolean removePublicAPIToken(String sessionId) {
 		logger.info("remove tokenSession sessionId:" +sessionId);
-		/**
+
         RedisUtil redisUtil = RedisUtil.getInstance();
 		Long count = redisUtil.hdel(TOKENKEY,sessionId);
 		if (count==1) {
@@ -157,8 +157,8 @@ public class TokenJWTDaoImpl {
 			logger.info("fail to remove tokenSession sessionId["+sessionId+"]");
 			return false;
 		}
-        */
-        return true;
+
+        //return true;
 	}
 
     public boolean checkIfExpired(final String jwt) {
