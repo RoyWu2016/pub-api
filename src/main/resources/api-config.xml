@@ -50,6 +50,10 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <bean id="userDao" class="com.ai.api.dao.impl.UserDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
     <bean id="tokenJWTDao" class="com.ai.api.dao.impl.TokenJWTDaoImpl"/>
     <bean id="paramDao" class="com.ai.api.dao.impl.ParameterDaoImpl"/>
     <bean id="companyDao" class="com.ai.api.dao.impl.CompanyDaoImpl"/>
