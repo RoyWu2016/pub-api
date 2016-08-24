@@ -34,7 +34,7 @@ public class RedisUtil {
 	protected static ReentrantLock lockJedis = new ReentrantLock();
 
 	private static RedisUtil instance ;
-	private static Jedis jedis;
+	//private static Jedis jedis;
 	//private JedisPool pool = null;
 	private static JedisPool pool = null;
 
@@ -57,7 +57,7 @@ public class RedisUtil {
 
 		}
 		*/
-		jedis = this.getJedis();
+		//jedis = this.getJedis();
 	}
 
 	/** * 初始化Redis连接池 */
@@ -98,18 +98,18 @@ public class RedisUtil {
 		if (pool == null) {
 			poolInit();
 		}
-		Jedis jedis2 = null;
+		Jedis jedis = null;
 		try {
 			if (pool != null) {
-				jedis2 = pool.getResource();
+				jedis = pool.getResource();
 			}
 		} catch (Exception e) {
 			logger.error("Get jedis error : "+e);
-		}finally{
-			returnResource(jedis2);
+		} finally{
+			//returnResource(jedis2);
 			lockJedis.unlock();
 		}
-		return jedis2;
+		return jedis;
 	}
 
 	/** * 释放jedis资源 * @param jedis */
@@ -127,8 +127,16 @@ public class RedisUtil {
 		return instance;
 	}
 
-	public boolean exists(String key){
-		return jedis.exists(key.trim());
+	public synchronized static boolean exists(String key){
+		Jedis jedis = getJedis();
+		try {
+			return jedis.exists(key.trim());
+		} catch (Exception e) {
+			logger.error("key exists error : "+e);
+			return false;
+		} finally {
+			returnResource(jedis);
+		}
 	}
 	/**
 	 * Set the string value as value of the key. The string can't be longer than 1073741824 bytes (1GB).
@@ -136,8 +144,16 @@ public class RedisUtil {
 	 * @param value
 	 * @return
 	 */
-	public String set( String key,  String value){
-		return jedis.set(key.trim(), value.trim());
+	public synchronized static String set( String key,  String value){
+		Jedis jedis = getJedis();
+		try {
+			return jedis.set(key.trim(), value.trim());
+		} catch (Exception e) {
+			logger.error("key set error : "+e);
+			return null;
+		} finally {
+			returnResource(jedis);
+		}
 	}
 	/**
 	 * Get the value of the specified key. If the key does not exist null is returned. If the value
@@ -145,9 +161,17 @@ public class RedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public String get(String key){
-		if (!this.exists(key.trim())) return null;
-		return String.valueOf((jedis.get(key.trim())));
+	public synchronized static String get(String key){
+		Jedis jedis = getJedis();
+		try {
+			if (!exists(key.trim())) return null;
+			return String.valueOf((jedis.get(key.trim())));
+		} catch (Exception e) {
+			logger.error("key get error : "+e);
+			return null;
+		} finally {
+			returnResource(jedis);
+		}
 	}
 
 	/**
@@ -155,8 +179,16 @@ public class RedisUtil {
 	 * key. The command returns the number of keys removed.
 	 * @param key
 	 */
-	public Long del(String key){
-		return jedis.del(key.trim());
+	public synchronized static Long del(String key){
+		Jedis jedis = getJedis();
+		try{
+			return jedis.del(key.trim());
+		}catch (Exception e) {
+			logger.error("key del error : "+e);
+			return null;
+		} finally {
+			returnResource(jedis);
+		}
 	}
 
 	/**
@@ -168,8 +200,16 @@ public class RedisUtil {
 	 * @param value
 	 * @return
 	 */
-	public Long hset(String key,String fieId,String value){
-			return jedis.hset(key.trim(),fieId.trim(),value.trim());
+	public synchronized static Long hset(String key,String fieId,String value){
+		Jedis jedis = getJedis();
+		try {
+			return jedis.hset(key.trim(), fieId.trim(), value.trim());
+		}catch (Exception e) {
+			logger.error("key hset error : "+e);
+			return null;
+		} finally {
+			returnResource(jedis);
+		}
 	}
 
 	/**
@@ -179,9 +219,17 @@ public class RedisUtil {
 	 * @param fieId
 	 * @return
 	 */
-	public String hget(String key,String fieId){
-		if (!this.exists(key.trim())) return null;
-		return jedis.hget(key.trim(),fieId.trim());
+	public synchronized static String hget(String key,String fieId){
+		Jedis jedis = getJedis();
+		try {
+			if (!exists(key.trim())) return null;
+			return jedis.hget(key.trim(), fieId.trim());
+		} catch (Exception e) {
+			logger.error("key hget error : "+e);
+			return null;
+		} finally {
+			returnResource(jedis);
+		}
 	}
 
 	/**
@@ -190,11 +238,20 @@ public class RedisUtil {
 	 * otherwise 0 is returned and no operation is performed.
 	 * @param key
 	 */
-	public Long hdel(String key,String fieId){
-		return jedis.hdel(key.trim(),fieId.trim());
+	public synchronized static Long hdel(String key,String fieId){
+		Jedis jedis = getJedis();
+		try {
+			return jedis.hdel(key.trim(), fieId.trim());
+		} catch (Exception e) {
+			logger.error("key hdel error : "+e);
+			return null;
+		} finally {
+			returnResource(jedis);
+		}
 	}
 
-	private void flushAll(){
+	private synchronized static void flushAll(){
+		Jedis jedis = getJedis();
 		jedis.flushAll();
 	}
 

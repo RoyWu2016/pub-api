@@ -94,8 +94,9 @@ public class TokenJWTDaoImpl {
             }
             if (StringUtils.isNotBlank(tokenStr)) {
                 logger.info("saving tokenSession to Redis ...");
-                RedisUtil redisUtil = RedisUtil.getInstance();
-                redisUtil.hset(TOKENKEY, sessionId,tokenStr);
+                //RedisUtil redisUtil = RedisUtil.getInstance();
+                //redisUtil.hset(TOKENKEY, sessionId,tokenStr);
+                RedisUtil.hset(TOKENKEY, sessionId,tokenStr);
 //                redisTemplate.opsForHash().put(TOKENKEY, sessionId, tokenStr);
                 logger.info("success!  saved!!!");
             }
@@ -137,8 +138,11 @@ public class TokenJWTDaoImpl {
 	//@Cacheable(value = "publicAPIToken",key = "#sessionId")//get data from redis and the function will not run
 	public TokenSession getTokenSessionFromRedis(String sessionId){
 //		logger.error("this message is not supposed to be saw!  id:"+sessionId);
-		RedisUtil redisUtil = RedisUtil.getInstance();
-		String resultStr = redisUtil.hget(TOKENKEY,sessionId);
+		//RedisUtil redisUtil = RedisUtil.getInstance();
+		//String resultStr = redisUtil.hget(TOKENKEY,sessionId);
+
+        String resultStr = RedisUtil.hget(TOKENKEY,sessionId);
+
 		if (StringUtils.isBlank(resultStr))return null;
 		return JSON.parseObject(resultStr).toJavaObject(TokenSession.class);
         //return null;
@@ -148,8 +152,10 @@ public class TokenJWTDaoImpl {
 	public boolean removePublicAPIToken(String sessionId) {
 		logger.info("remove tokenSession sessionId:" +sessionId);
 
-        RedisUtil redisUtil = RedisUtil.getInstance();
-		Long count = redisUtil.hdel(TOKENKEY,sessionId);
+        //RedisUtil redisUtil = RedisUtil.getInstance();
+		//Long count = redisUtil.hdel(TOKENKEY,sessionId);
+
+        Long count = RedisUtil.hdel(TOKENKEY,sessionId);
 		if (count==1) {
 			logger.info("success remove tokenSession sessionId[" + sessionId + "]");
 			return true;

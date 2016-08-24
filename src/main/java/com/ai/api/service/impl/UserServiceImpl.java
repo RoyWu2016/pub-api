@@ -781,8 +781,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
 	public String getLoginByUserId(String userId) {
-        RedisUtil redisUtil = RedisUtil.getInstance();
-        String jsonStr = redisUtil.get(userId);
+        //RedisUtil redisUtil = RedisUtil.getInstance();
+        //String jsonStr = redisUtil.get(userId);
+
+		String jsonStr =RedisUtil.get(userId);
 //        Object result = redisTemplate.opsForValue().get(userId);
 //        String jsonStr = JSON.toJSONString(result);
         String login = null;
@@ -802,8 +804,11 @@ public class UserServiceImpl implements UserService {
     }
 
 	private String getCompanyIdByUserId(String userId) throws IOException, AIException {
-        RedisUtil redisUtil = RedisUtil.getInstance();
-        String jsonStr = redisUtil.get(userId);
+        //RedisUtil redisUtil = RedisUtil.getInstance();
+        //String jsonStr = redisUtil.get(userId);
+
+		String jsonStr = RedisUtil.get(userId);
+
         String companyId = null;
         if (StringUtils.isNotBlank(jsonStr)){
             companyId = JSON.parseObject(jsonStr).getJSONObject("company").getString("id");
