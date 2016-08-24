@@ -43,8 +43,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         logger.info("userType :"+userType);
         ServiceCallResult result = new ServiceCallResult();
         if (userType.toLowerCase().equals("client")){
-            String pwdMd5 = MD5.toMD5(password);
-//            String pwdMd5 = DigestUtils.shaHex(MD5.toMD5(password));
+//            String pwdMd5 = MD5.toMD5(password);
+            String pwdMd5 = DigestUtils.shaHex(MD5.toMD5(password));
             logger.info("client-----pwdMd5 :"+pwdMd5);
             logger.info("getting client from DB ... userName:"+userName);
             GeneralUserBean client = userDao.getClientUser(userName);
