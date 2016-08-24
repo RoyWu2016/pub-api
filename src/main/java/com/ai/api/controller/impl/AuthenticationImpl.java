@@ -15,9 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.ai.api.bean.LoginBean;
 import com.ai.api.controller.Authentication;
 import com.ai.api.dao.SSOUserServiceDao;
+import com.ai.api.service.AuthenticationService;
 import com.ai.api.service.SSOUserService;
 import com.ai.api.service.UserService;
 import com.ai.commons.HttpUtil;
+import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ServiceCallResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -64,6 +66,8 @@ public class AuthenticationImpl implements Authentication {
 
 	@Autowired
 	UserService userService;
+	@Autowired
+	AuthenticationService authenticationService;
 
 	@Override
 	@RequestMapping(method = RequestMethod.POST, value = "/auth/token")
@@ -81,10 +85,10 @@ public class AuthenticationImpl implements Authentication {
 		ServiceCallResult result = new ServiceCallResult();
 		ObjectMapper mapper = new ObjectMapper();
 
-		if ((account != null && account.isEmpty() ) || (password != null && password.isEmpty())) {
+		if ((StringUtils.isBlank(account))|| (StringUtils.isBlank(password))) {
 			result.setStatusCode(HttpServletResponse.SC_FORBIDDEN);
-			result.setResponseString("");
-			result.setReasonPhase("username/password empty.");
+			result.setResponseString("");//username and password can not be null
+			result.setReasonPhase("username/password empty");
 			return mapper.writeValueAsString(result);
 		}
 
@@ -97,14 +101,16 @@ public class AuthenticationImpl implements Authentication {
 
 		//check api access token
 		boolean validateResult = HttpUtil.validatePublicAPICallToken(request);
-        logger.info("validate token pass :"+validateResult);
+        logger.info("validate token result :"+validateResult);
 		if (!validateResult) {
 			result.setStatusCode(HttpServletResponse.SC_FORBIDDEN);
 			result.setResponseString("");
 			result.setReasonPhase("AI API call token not present or invalid for login.");
 			return mapper.writeValueAsString(result);
 		}
-		result = ssoUserServiceDao.userLogin(account, password, userType, HttpUtil.getPublicAPICallToken(request));
+//		result = ssoUserServiceDao.userLogin(account, password, userType, HttpUtil.getPublicAPICallToken(request));
+        logger.info("start to get user from DB --> verify pw --> generate tokenSession");
+        result = authenticationService.userLogin(account,password,userType);
 		logger.info("user login result: "+result.getResponseString());
 		return mapper.writeValueAsString(result);
 	}
