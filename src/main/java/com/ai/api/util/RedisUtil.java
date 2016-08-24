@@ -1,8 +1,12 @@
 package com.ai.api.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+
+import java.util.concurrent.locks.ReentrantLock;
 
 /***************************************************************************
  * <PRE>
@@ -24,12 +28,18 @@ import redis.clients.jedis.JedisPoolConfig;
 
 public class RedisUtil {
 
+	protected static Logger logger = LoggerFactory.getLogger(RedisUtil.class);
+
+	protected static ReentrantLock lockPool = new ReentrantLock();
+	protected static ReentrantLock lockJedis = new ReentrantLock();
 
 	private static RedisUtil instance ;
-	private static Jedis jedis;
-	private JedisPool pool = null;
+	//private static Jedis jedis;
+	//private JedisPool pool = null;
+	private static JedisPool pool = null;
 
 	public RedisUtil(){
+		/*
 		try{
 //			jedis = new Jedis("202.66.128.138", 6379);
 //			jedis.auth("aiitteam");
@@ -46,7 +56,69 @@ public class RedisUtil {
 		}catch(Exception e){
 
 		}
+		*/
+		//jedis = this.getJedis();
 	}
+
+	/** * 初始化Redis连接池 */
+	private static void initialPool(){
+		try {
+			JedisPoolConfig config = new JedisPoolConfig();
+			//config.setMaxTotal(-1);
+			//config.setMaxIdle(8);
+			//config.setMaxWaitMillis(100000);
+			config.setTestOnBorrow(true);
+			pool = new JedisPool(config, "202.66.128.138", 6379, 100000,"aiitteam");
+		} catch (Exception e) {
+			logger.error("First create JedisPool error : "+e);
+		}
+	}
+
+	/** * 在多线程环境同步初始化 */
+	private static synchronized void poolInit() {
+		//断言 ，当前锁是否已经锁住，如果锁住了，就啥也不干，没锁的话就执行下面步骤
+		assert ! lockPool.isHeldByCurrentThread();
+		lockPool.lock();
+		try {
+			if (pool == null) {
+				initialPool();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		} finally {
+			lockPool.unlock();
+		}
+	}
+
+	/** * 同步获取Jedis实例 * @return Jedis */
+	public synchronized static Jedis getJedis() {
+		assert ! lockJedis.isHeldByCurrentThread();
+		lockJedis.lock();
+
+		if (pool == null) {
+			poolInit();
+		}
+		Jedis jedis = null;
+		try {
+			if (pool != null) {
+				jedis = pool.getResource();
+			}
+		} catch (Exception e) {
+			logger.error("Get jedis error : "+e);
+		} finally{
+			//returnResource(jedis2);
+			lockJedis.unlock();
+		}
+		return jedis;
+	}
+
+	/** * 释放jedis资源 * @param jedis */
+	public static void returnResource(final Jedis jedis) {
+		if (jedis != null && pool !=null) {
+			pool.returnResource(jedis);
+		}
+	}
+
 
 	public static synchronized RedisUtil getInstance() {
 		if(instance == null){
@@ -55,8 +127,16 @@ public class RedisUtil {
 		return instance;
 	}
 
-	public boolean exists(String key){
-		return jedis.exists(key.trim());
+	public synchronized static boolean exists(String key){
+		Jedis jedis = getJedis();
+		try {
+			return jedis.exists(key.trim());
+		} catch (Exception e) {
+			logger.error("key exists error : "+e);
+			return false;
+		} finally {
+			returnResource(jedis);
+		}
 	}
 	/**
 	 * Set the string value as value of the key. The string can't be longer than 1073741824 bytes (1GB).
@@ -64,8 +144,16 @@ public class RedisUtil {
 	 * @param value
 	 * @return
 	 */
-	public String set( String key,  String value){
-		return jedis.set(key.trim(), value.trim());
+	public synchronized static String set( String key,  String value){
+		Jedis jedis = getJedis();
+		try {
+			return jedis.set(key.trim(), value.trim());
+		} catch (Exception e) {
+			logger.error("key set error : "+e);
+			return null;
+		} finally {
+			returnResource(jedis);
+		}
 	}
 	/**
 	 * Get the value of the specified key. If the key does not exist null is returned. If the value
@@ -73,9 +161,17 @@ public class RedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public String get(String key){
-		if (!this.exists(key.trim())) return null;
-		return String.valueOf((jedis.get(key.trim())));
+	public synchronized static String get(String key){
+		Jedis jedis = getJedis();
+		try {
+			if (!exists(key.trim())) return null;
+			return String.valueOf((jedis.get(key.trim())));
+		} catch (Exception e) {
+			logger.error("key get error : "+e);
+			return null;
+		} finally {
+			returnResource(jedis);
+		}
 	}
 
 	/**
@@ -83,8 +179,16 @@ public class RedisUtil {
 	 * key. The command returns the number of keys removed.
 	 * @param key
 	 */
-	public Long del(String key){
-		return jedis.del(key.trim());
+	public synchronized static Long del(String key){
+		Jedis jedis = getJedis();
+		try{
+			return jedis.del(key.trim());
+		}catch (Exception e) {
+			logger.error("key del error : "+e);
+			return null;
+		} finally {
+			returnResource(jedis);
+		}
 	}
 
 	/**
@@ -96,8 +200,16 @@ public class RedisUtil {
 	 * @param value
 	 * @return
 	 */
-	public Long hset(String key,String fieId,String value){
-			return jedis.hset(key.trim(),fieId.trim(),value.trim());
+	public synchronized static Long hset(String key,String fieId,String value){
+		Jedis jedis = getJedis();
+		try {
+			return jedis.hset(key.trim(), fieId.trim(), value.trim());
+		}catch (Exception e) {
+			logger.error("key hset error : "+e);
+			return null;
+		} finally {
+			returnResource(jedis);
+		}
 	}
 
 	/**
@@ -107,9 +219,17 @@ public class RedisUtil {
 	 * @param fieId
 	 * @return
 	 */
-	public String hget(String key,String fieId){
-		if (!this.exists(key.trim())) return null;
-		return jedis.hget(key.trim(),fieId.trim());
+	public synchronized static String hget(String key,String fieId){
+		Jedis jedis = getJedis();
+		try {
+			if (!exists(key.trim())) return null;
+			return jedis.hget(key.trim(), fieId.trim());
+		} catch (Exception e) {
+			logger.error("key hget error : "+e);
+			return null;
+		} finally {
+			returnResource(jedis);
+		}
 	}
 
 	/**
@@ -118,11 +238,20 @@ public class RedisUtil {
 	 * otherwise 0 is returned and no operation is performed.
 	 * @param key
 	 */
-	public Long hdel(String key,String fieId){
-		return jedis.hdel(key.trim(),fieId.trim());
+	public synchronized static Long hdel(String key,String fieId){
+		Jedis jedis = getJedis();
+		try {
+			return jedis.hdel(key.trim(), fieId.trim());
+		} catch (Exception e) {
+			logger.error("key hdel error : "+e);
+			return null;
+		} finally {
+			returnResource(jedis);
+		}
 	}
 
-	private void flushAll(){
+	private synchronized static void flushAll(){
+		Jedis jedis = getJedis();
 		jedis.flushAll();
 	}
 
