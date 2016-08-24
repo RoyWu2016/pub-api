@@ -6,6 +6,8 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 /***************************************************************************
  * <PRE>
  * Project Name    : Public-API
@@ -27,6 +29,9 @@ import redis.clients.jedis.JedisPoolConfig;
 public class RedisUtil {
 
 	protected static Logger logger = LoggerFactory.getLogger(RedisUtil.class);
+
+	protected static ReentrantLock lockPool = new ReentrantLock();
+	protected static ReentrantLock lockJedis = new ReentrantLock();
 
 	private static RedisUtil instance ;
 	private static Jedis jedis;
@@ -71,13 +76,25 @@ public class RedisUtil {
 
 	/** * 在多线程环境同步初始化 */
 	private static synchronized void poolInit() {
-		if (pool == null) {
-			initialPool();
+		//断言 ，当前锁是否已经锁住，如果锁住了，就啥也不干，没锁的话就执行下面步骤
+		assert ! lockPool.isHeldByCurrentThread();
+		lockPool.lock();
+		try {
+			if (pool == null) {
+				initialPool();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		} finally {
+			lockPool.unlock();
 		}
 	}
 
 	/** * 同步获取Jedis实例 * @return Jedis */
 	public synchronized static Jedis getJedis() {
+		assert ! lockJedis.isHeldByCurrentThread();
+		lockJedis.lock();
+
 		if (pool == null) {
 			poolInit();
 		}
@@ -90,6 +107,7 @@ public class RedisUtil {
 			logger.error("Get jedis error : "+e);
 		}finally{
 			returnResource(jedis2);
+			lockJedis.unlock();
 		}
 		return jedis2;
 	}
