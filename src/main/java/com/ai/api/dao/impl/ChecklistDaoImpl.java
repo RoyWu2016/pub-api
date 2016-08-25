@@ -110,27 +110,27 @@ public class ChecklistDaoImpl implements ChecklistDao {
 		return null;
 	}
 
-    @Override
-    public String createChecklistInMW(String login,ChecklistBean checklistBean) {
-        String url = config.getMwServiceUrl() + "/service/checklist/create?login="+login;
-        try {
-//			Map<String,Object> dataMap = new HashMap<>();
-//			dataMap.put("login",login);
-//			dataMap.put("checklistBean",checklistBean);
-            logger.info("create!!! POST Url:"+url+" || login:"+login+" || checklistBean:"+checklistBean.toString());
-            ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistBean);
-            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                return result.getResponseString();
-            } else {
-                logger.error("createChecklist from middleware error: " + result.getStatusCode() +
-                        ", " + result.getResponseString());
-            }
-
-        } catch (IOException e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-        }
-        return null;
-    }
+//    @Override
+//    public String createChecklistInMW(String login,ChecklistBean checklistBean) {
+//        String url = config.getMwServiceUrl() + "/service/checklist/create?login="+login;
+//        try {
+////			Map<String,Object> dataMap = new HashMap<>();
+////			dataMap.put("login",login);
+////			dataMap.put("checklistBean",checklistBean);
+//            logger.info("create!!! POST Url:"+url+" || login:"+login+" || checklistBean:"+checklistBean.toString());
+//            ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistBean);
+//            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+//                return result.getResponseString();
+//            } else {
+//                logger.error("createChecklist from middleware error: " + result.getStatusCode() +
+//                        ", " + result.getResponseString());
+//            }
+//
+//        } catch (IOException e) {
+//            logger.error(ExceptionUtils.getStackTrace(e));
+//        }
+//        return null;
+//    }
 
 	@Override
 	public String updateChecklist(String login,ChecklistBean checklistBean) {

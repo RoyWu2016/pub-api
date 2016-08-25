@@ -10,6 +10,7 @@ import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.service.ChecklistService;
 import com.ai.api.service.UserService;
+import com.ai.commons.IDGenerator;
 import com.ai.commons.beans.checklist.api.ChecklistBean;
 import com.ai.commons.beans.checklist.api.ChecklistSearchCriteriaBean;
 import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
@@ -112,14 +113,15 @@ public class ChecklistServiceImpl implements ChecklistService {
 		}catch (Exception e){
 			logger.error("creating checklist ... getCompanyId error ",e);
 		}
+		checklistVO.setCheckListId(IDGenerator.uuid());
 		return checklistDao.createChecklist(checklistVO);
 	}
 
-    @Override
-    public String createChecklistInMW(String userId,ChecklistBean checklistBean){
-        String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
-        return checklistDao.createChecklistInMW(login,checklistBean);
-    }
+//    @Override
+//    public String createChecklistInMW(String userId,ChecklistBean checklistBean){
+//        String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
+//        return checklistDao.createChecklistInMW(login,checklistBean);
+//    }
 
 	@Override
 	public String updateChecklist(String userId,ChecklistBean checklistBean){
