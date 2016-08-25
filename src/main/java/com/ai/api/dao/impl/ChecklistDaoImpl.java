@@ -175,20 +175,18 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
 	@Override
 	public  boolean deleteChecklist(String login,String ids) {
-		String url = config.getMwServiceUrl() + "/service/checklist/delete";
+        String url = config.getChecklistServiceUrl() + "/checklist/delete?checklistIds="+ids+"&operator="+login;
 		try {
-			Map<String,Object> dataMap = new HashMap<>();
-			dataMap.put("login",login);
-			dataMap.put("ids",ids);
-			logger.info("delete!!! post Url:"+url+" login:"+login+" ids:"+ids);
-			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, dataMap);
+            GetRequest request = GetRequest.newInstance().setUrl(url);
+            logger.info("get!!! Url:"+url);
+            ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					return true;
 			} else {
-				logger.error("updateChecklist from middleware error: " + result.getStatusCode() +
-						", " + result.getResponseString());
+				logger.error("updateChecklist from checklist-service error: " +
+                        result.getStatusCode() + ", " +
+                        result.getResponseString());
 			}
-
 		} catch (IOException e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
 		}
