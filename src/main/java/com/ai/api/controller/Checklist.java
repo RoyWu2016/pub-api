@@ -30,7 +30,7 @@ public interface Checklist {
 	ResponseEntity<List<SimpleChecklistBean>> searchChecklist(String userId,String keyword, Integer pageNumber);
 	ResponseEntity<List<SimpleChecklistBean>> searchPublicChecklist(String userId, String keyword);
 	ResponseEntity<String> createChecklist(String userId, CKLChecklistVO checklistVO);
-	ResponseEntity<String> updateChecklist(String userId,String checklistId,CKLChecklistVO checklist);
+	ResponseEntity<String> updateChecklist(String userId,String checklistId, ChecklistBean checklistBean);
 	ResponseEntity<ChecklistBean> getChecklist(String userId,String checklistId);
 	ResponseEntity deleteChecklist(String userId,String checklistIds);
 	ResponseEntity checklistNameExist(String userId,String checklistName);
