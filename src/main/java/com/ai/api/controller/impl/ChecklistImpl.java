@@ -7,6 +7,7 @@ import com.ai.api.service.ChecklistService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.checklist.api.ChecklistBean;
 import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
+import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,11 +79,11 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist", method = RequestMethod.POST)
-	public ResponseEntity<String> createChecklist(@PathVariable("userId") String userId,@RequestBody ChecklistBean checklistBean){
+	public ResponseEntity<String> createChecklist(@PathVariable("userId") String userId,@RequestBody CKLChecklistVO checklistVO){
         logger.info("createChecklist ...");
         logger.info("userId :"+userId);
-        logger.info("checklistBean :"+checklistBean.toString());
-		String result = checklistService.createChecklist(userId,checklistBean);
+        logger.info("checklistBean :"+checklistVO.toString());
+		String result = checklistService.createChecklist(userId,checklistVO);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {

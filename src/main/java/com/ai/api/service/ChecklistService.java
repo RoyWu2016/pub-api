@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ai.commons.beans.checklist.api.ChecklistBean;
 import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
+import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
 
 /***************************************************************************
  * <PRE>
@@ -27,7 +28,8 @@ import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
 public interface ChecklistService {
 	List<SimpleChecklistBean> searchChecklist(String userID,String keyword, Integer pageNumber);
 	List<SimpleChecklistBean> searchPublicChecklist(String userId, String keyword);
-	String createChecklist(String userId,ChecklistBean checklistBean);
+	String createChecklist(String userId,CKLChecklistVO checklistVO);
+//	String createChecklistInMW(String userId,ChecklistBean checklistBean);
 	String updateChecklist(String userId,ChecklistBean checklistBean);
 	ChecklistBean getChecklist(String userId,String checklistId);
 	boolean deleteChecklist(String userId,String ids);

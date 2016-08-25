@@ -81,4 +81,6 @@ public interface UserService {
     boolean logPaymentAction(String userId, PaymentActionLogBean logBean);
 
     String getLoginByUserId(String userId);
+
+    String getCompanyIdByUserId(String userId)throws IOException, AIException;
 }

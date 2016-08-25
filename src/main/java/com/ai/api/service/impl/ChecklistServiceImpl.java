@@ -10,9 +10,13 @@ import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.service.ChecklistService;
 import com.ai.api.service.UserService;
+import com.ai.commons.IDGenerator;
 import com.ai.commons.beans.checklist.api.ChecklistBean;
 import com.ai.commons.beans.checklist.api.ChecklistSearchCriteriaBean;
 import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
+import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -38,6 +42,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ChecklistServiceImpl implements ChecklistService {
+    protected Logger logger = LoggerFactory.getLogger(ChecklistServiceImpl.class);
 
 	@Autowired
 	private ChecklistDao checklistDao;
@@ -101,10 +106,22 @@ public class ChecklistServiceImpl implements ChecklistService {
 	}
 
 	@Override
-	public String createChecklist(String userId,ChecklistBean checklistBean){
-		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
-		return checklistDao.createChecklist(login,checklistBean);
+	public String createChecklist(String userId,CKLChecklistVO checklistVO){
+		try {
+			String companyId = userService.getCompanyIdByUserId(userId);
+			checklistVO.setClientId(companyId);
+		}catch (Exception e){
+			logger.error("creating checklist ... getCompanyId error ",e);
+		}
+		checklistVO.setCheckListId(IDGenerator.uuid());
+		return checklistDao.createChecklist(checklistVO);
 	}
+
+//    @Override
+//    public String createChecklistInMW(String userId,ChecklistBean checklistBean){
+//        String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
+//        return checklistDao.createChecklistInMW(login,checklistBean);
+//    }
 
 	@Override
 	public String updateChecklist(String userId,ChecklistBean checklistBean){

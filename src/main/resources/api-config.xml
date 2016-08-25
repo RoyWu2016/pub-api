@@ -35,6 +35,7 @@
           p:factoryServiceUrl="${factory.service.url}"
           p:fileServiceUrl="${file.service.url}"
           p:mwServiceUrl="${middleware.booking-1.service.url}"
+          p:checklistServiceUrl="${checklist.service.url}"
           p:reportServiceUrl="${report.service.url}"
           p:mwFTPHost="${middleware.ftp.host}"
           p:mwFTPUsername="${middleware.ftp.username}"

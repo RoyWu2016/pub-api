@@ -13,6 +13,7 @@ import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.checklist.api.ChecklistBean;
 import com.ai.commons.beans.checklist.api.ChecklistSearchCriteriaBean;
 import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
+import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -91,26 +92,45 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	}
 
 	@Override
-	public String createChecklist(String login,ChecklistBean checklistBean) {
-		String url = config.getMwServiceUrl() + "/service/checklist/create?login="+login;
+	public String createChecklist(CKLChecklistVO checklistVO) {
+		String url = config.getChecklistServiceUrl() + "/insert";
 		try {
-//			Map<String,Object> dataMap = new HashMap<>();
-//			dataMap.put("login",login);
-//			dataMap.put("checklistBean",checklistBean);
-			logger.info("create!!! POST Url:"+url+" || login:"+login+" || checklistBean:"+checklistBean.toString());
-			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistBean);
+			logger.info("create!!! POST Url:"+url+" || checklistBean:"+checklistVO.toString());
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistVO);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return result.getResponseString();
 			} else {
-				logger.error("createChecklist from middleware error: " + result.getStatusCode() +
-						", " + result.getResponseString());
+				logger.error("createChecklist from checklist-service error: " +
+						result.getStatusCode() + ", " +
+						result.getResponseString());
 			}
-
 		} catch (IOException e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
+
+//    @Override
+//    public String createChecklistInMW(String login,ChecklistBean checklistBean) {
+//        String url = config.getMwServiceUrl() + "/service/checklist/create?login="+login;
+//        try {
+////			Map<String,Object> dataMap = new HashMap<>();
+////			dataMap.put("login",login);
+////			dataMap.put("checklistBean",checklistBean);
+//            logger.info("create!!! POST Url:"+url+" || login:"+login+" || checklistBean:"+checklistBean.toString());
+//            ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistBean);
+//            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+//                return result.getResponseString();
+//            } else {
+//                logger.error("createChecklist from middleware error: " + result.getStatusCode() +
+//                        ", " + result.getResponseString());
+//            }
+//
+//        } catch (IOException e) {
+//            logger.error(ExceptionUtils.getStackTrace(e));
+//        }
+//        return null;
+//    }
 
 	@Override
 	public String updateChecklist(String login,ChecklistBean checklistBean) {
