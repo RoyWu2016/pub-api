@@ -20,6 +20,7 @@ import com.ai.commons.HttpUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
+import com.ai.commons.beans.params.product.SysProductTypeBean;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -156,6 +157,20 @@ public class ParameterDaoImpl implements ParameterDao {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return resultMap;
+	}
+
+	@Override
+	public List<SysProductTypeBean> getProductTypeList(){
+		try{
+			String url = config.getParamServiceUrl() +"/p/list-product-type";
+			GetRequest request = GetRequest.newInstance().setUrl(url);
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			List<SysProductTypeBean> productTypeList = JSON.parseArray(result.getResponseString(),SysProductTypeBean.class);
+			return productTypeList;
+		}catch(IOException e){
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
 	}
 
 }
