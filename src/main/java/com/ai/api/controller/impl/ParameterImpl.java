@@ -1,5 +1,6 @@
 package com.ai.api.controller.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import com.ai.api.controller.Parameter;
 import com.ai.api.service.ParameterService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
+import com.ai.commons.beans.params.product.SysProductTypeBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,5 +86,21 @@ public class ParameterImpl implements Parameter {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/paramter/productTypes", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Object>> getProductTypeList() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<SysProductTypeBean> sysProductTypeBeanList = parameterService.getProductTypeList();
+		if(sysProductTypeBeanList!=null){
+			map.put("success",true);
+			map.put("data",sysProductTypeBeanList);
+			return new ResponseEntity<>(map, HttpStatus.OK);
+		}else {
+			logger.error("TestSampleSizeList not found");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 }

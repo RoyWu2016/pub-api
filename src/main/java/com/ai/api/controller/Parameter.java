@@ -20,4 +20,6 @@ public interface Parameter {
 	ResponseEntity<List<String>> getCountryList();
 
 	ResponseEntity<Map<String,List<ChecklistTestSampleSizeBean>>> getTestSampleSizeList();
+
+    ResponseEntity<Map<String, Object>> getProductTypeList();
 }

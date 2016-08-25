@@ -8,6 +8,7 @@ import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.service.ParameterService;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
+import com.ai.commons.beans.params.product.SysProductTypeBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
@@ -44,4 +45,8 @@ public class ParameterServiceImpl implements ParameterService {
 		return paramDao.getTestSampleSizeList();
 	}
 
+    @Override
+    public List<SysProductTypeBean> getProductTypeList(){
+        return paramDao.getProductTypeList();
+    }
 }
