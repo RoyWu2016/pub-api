@@ -31,8 +31,8 @@ public interface ChecklistDao {
 	List<SimpleChecklistBean> searchPublicChecklist(ChecklistSearchCriteriaBean criteria);
 	String createChecklist(CKLChecklistVO checklistVO);
 //	String createChecklistInMW(String login,ChecklistBean ChecklistBean);
-String updateChecklist(CKLChecklistVO checklist);
-	ChecklistBean getChecklist(String login,String checklistId);
+    String updateChecklist(CKLChecklistVO checklist);
+	CKLChecklistVO getChecklist(String checklistId);
 	boolean deleteChecklist(String login,String ids);
 	boolean checklistNameExist(String login,String checklistName);
     boolean saveFeedback(String login,String checklistId,String feedback);
