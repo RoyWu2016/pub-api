@@ -42,6 +42,8 @@ public class ServiceConfig {
 
 	private String mwServiceUrl;
 
+    private String checklistServiceUrl;
+
     private String reportServiceUrl;
 
     private String mwFTPHost;
@@ -109,6 +111,14 @@ public class ServiceConfig {
 	public void setMwServiceUrl(String mwServiceUrl) {
 		this.mwServiceUrl = mwServiceUrl;
 	}
+
+    public String getChecklistServiceUrl() {
+        return checklistServiceUrl;
+    }
+
+    public void setChecklistServiceUrl(String checklistServiceUrl) {
+        this.checklistServiceUrl = checklistServiceUrl;
+    }
 
     public String getReportServiceUrl() {
         return reportServiceUrl;

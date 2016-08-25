@@ -803,7 +803,8 @@ public class UserServiceImpl implements UserService {
 
     }
 
-	private String getCompanyIdByUserId(String userId) throws IOException, AIException {
+	@Override
+	public String getCompanyIdByUserId(String userId) throws IOException, AIException {
         //RedisUtil redisUtil = RedisUtil.getInstance();
         //String jsonStr = redisUtil.get(userId);
 

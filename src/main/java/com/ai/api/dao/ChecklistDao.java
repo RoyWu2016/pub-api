@@ -5,6 +5,7 @@ import java.util.List;
 import com.ai.commons.beans.checklist.api.ChecklistBean;
 import com.ai.commons.beans.checklist.api.ChecklistSearchCriteriaBean;
 import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
+import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
 
 /***************************************************************************
  * <PRE>
@@ -28,7 +29,8 @@ import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
 public interface ChecklistDao {
 	List<SimpleChecklistBean> searchChecklist(ChecklistSearchCriteriaBean criteria);
 	List<SimpleChecklistBean> searchPublicChecklist(ChecklistSearchCriteriaBean criteria);
-	String createChecklist(String login,ChecklistBean ChecklistBean);
+	String createChecklist(CKLChecklistVO checklistVO);
+	String createChecklistInMW(String login,ChecklistBean ChecklistBean);
 	String updateChecklist(String login,ChecklistBean ChecklistBean);
 	ChecklistBean getChecklist(String login,String checklistId);
 	boolean deleteChecklist(String login,String ids);
