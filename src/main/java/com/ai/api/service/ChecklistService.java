@@ -30,8 +30,8 @@ public interface ChecklistService {
 	List<SimpleChecklistBean> searchPublicChecklist(String userId, String keyword);
 	String createChecklist(String userId,CKLChecklistVO checklistVO);
 //	String createChecklistInMW(String userId,ChecklistBean checklistBean);
-String updateChecklist(String userId,CKLChecklistVO checklist);
-	ChecklistBean getChecklist(String userId,String checklistId);
+    String updateChecklist(String userId,CKLChecklistVO checklist);
+	CKLChecklistVO getChecklist(String userId,String checklistId);
 	boolean deleteChecklist(String userId,String ids);
 	boolean checklistNameExist(String userId,String checklistName);
     boolean saveFeedback(String userId,String checklistId,String feedback);
