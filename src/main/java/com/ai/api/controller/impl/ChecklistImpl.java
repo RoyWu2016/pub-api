@@ -94,14 +94,16 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}", method = RequestMethod.PUT)
-	public ResponseEntity<String> updateChecklist(@PathVariable("userId") String userId,@PathVariable("checklistId") String checklistId,@RequestBody ChecklistBean checklistBean){
+	public ResponseEntity<String> updateChecklist(@PathVariable("userId") String userId,
+												  @PathVariable("checklistId") String checklistId,
+												  @RequestBody CKLChecklistVO checklist){
         logger.info("updateChecklist ...");
         logger.info("userId :"+userId);
         logger.info("checklistId :"+checklistId);
-        logger.info("checklistBean :"+checklistBean.toString());
+        logger.info("checklist :"+checklist);
 
-        checklistBean.setId(checklistId);
-		String result = checklistService.updateChecklist(userId,checklistBean);
+        checklist.setCheckListId(checklistId);
+		String result = checklistService.updateChecklist(userId,checklist);
 		if(result!=null){
             return new ResponseEntity<>(result,HttpStatus.OK);
         } else {

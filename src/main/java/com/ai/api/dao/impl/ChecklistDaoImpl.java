@@ -133,21 +133,18 @@ public class ChecklistDaoImpl implements ChecklistDao {
 //    }
 
 	@Override
-	public String updateChecklist(String login,ChecklistBean checklistBean) {
-		String url = config.getMwServiceUrl() + "/service/checklist/update?login="+login;
+	public String updateChecklist(CKLChecklistVO checklist) {
+        String url = config.getChecklistServiceUrl() + "/checklist/saveChecklistInfo";
 		try {
-//			Map<String,Object> dataMap = new HashMap<>();
-//			dataMap.put("login",login);
-//			dataMap.put("checklistBean",checklistBean);
-			logger.info("update!!! POST  Url:"+url+" || login:"+login+" || checklistBean:"+checklistBean.toString());
-			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistBean);
+			logger.info("update!!! POST  Url:"+url+" || checklist:"+checklist);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklist);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return result.getResponseString();
 			} else {
-				logger.error("updateChecklist from middleware error: " + result.getStatusCode() +
-						", " + result.getResponseString());
+				logger.error("updateChecklist from checklist-service error: " +
+                        result.getStatusCode() + ", " +
+                        result.getResponseString());
 			}
-
 		} catch (IOException e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
 		}
