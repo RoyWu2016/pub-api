@@ -15,6 +15,7 @@ import com.ai.api.service.UserService;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.api.SimpleOrderBean;
+import com.ai.commons.beans.psi.InspectionOrderBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,5 +81,11 @@ public class OrderServiceImpl implements OrderService {
 	public Boolean cancelOrder(OrderCancelBean orderCancelBean){
 		return orderDao.cancelOrder(orderCancelBean);
 	}
+
+	@Override
+	public InspectionOrderBean getOrderDetail(String userId, String orderId){
+		return orderDao.getOrderDetail(userId, orderId);
+	}
+
 
 }

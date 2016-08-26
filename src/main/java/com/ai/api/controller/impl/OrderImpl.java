@@ -6,9 +6,7 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import com.ai.api.bean.UserBean;
 import com.ai.api.controller.Order;
@@ -18,6 +16,7 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.api.SimpleOrderBean;
+import com.ai.commons.beans.psi.InspectionOrderBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,6 +135,27 @@ public class OrderImpl implements Order {
 					return new ResponseEntity<>(result, HttpStatus.OK);
 				}
 			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/order/{orderId}", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Object>> getOrderDetail(@PathVariable("userId") String userId,
+											   @PathVariable("orderId") String orderId) {
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+				InspectionOrderBean orderBean = orderService.getOrderDetail(userId, orderId);
+				if (orderBean != null) {
+					map.put("success", true);
+					map.put("data", orderBean);
+					return new ResponseEntity<>(map, HttpStatus.OK);
+				}
 
 		} catch (Exception e) {
 			e.printStackTrace();

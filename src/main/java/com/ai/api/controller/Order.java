@@ -7,6 +7,7 @@
 package com.ai.api.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.order.api.SimpleOrderBean;
@@ -42,4 +43,6 @@ public interface Order {
 	                                                                 String ends,
 	                                                                 String keyword);
 	ResponseEntity<Boolean> cancelOrder(String userId, String orderId, OrderCancelBean orderCancelBean);
+
+	ResponseEntity<Map<String, Object>> getOrderDetail(String userId,String orderId);
 }
