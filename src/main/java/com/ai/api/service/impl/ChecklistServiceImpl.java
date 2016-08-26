@@ -14,6 +14,7 @@ import com.ai.commons.IDGenerator;
 import com.ai.commons.beans.checklist.api.ChecklistBean;
 import com.ai.commons.beans.checklist.api.ChecklistSearchCriteriaBean;
 import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
+import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,102 +61,81 @@ public class ChecklistServiceImpl implements ChecklistService {
 	private UserService userService;
 
 	@Override
-	public List<SimpleChecklistBean> searchChecklist(String userID, String keyword, Integer pageNumber) {
-		//ReportSearchCriteriaBean criteria = new ReportSearchCriteriaBean();
-		ChecklistSearchCriteriaBean criteria = new ChecklistSearchCriteriaBean();
-		criteria.setUserID(userID);
-		criteria.setKeywords(keyword);
-		if(pageNumber==null)
-			pageNumber = 1;
-		criteria.setPageNumber(pageNumber);
-		criteria.setLogin(userService.getLoginByUserId(userID));
+	public List<CKLChecklistSearchVO> searchPrivateChecklist(String userId, String keyword, int pageNumber) {
+		if(0==pageNumber) pageNumber = 1;
+		List<CKLChecklistSearchVO> list = checklistDao.searchPrivateChecklist(userId,keyword,pageNumber);
 
-		List<SimpleChecklistBean> list = checklistDao.searchChecklist(criteria);
-
-		List<ProductCategoryDtoBean> categoryList = paramDao.getProductCategoryList();
-		List<ProductFamilyDtoBean> familyList = paramDao.getProductFamilyList();
-		for (SimpleChecklistBean bean:list){
-			String mwCategory = bean.getProductCategory();
-			String mwFamily = bean.getProductFamily();
-			bean.setProductCategory(mwFamily);
-			bean.setProductFamily(mwCategory);
-			for (ProductCategoryDtoBean category:categoryList){
-				if (category.getName().equals(mwFamily)){
-					bean.setProductCategoryId(category.getId());
-					break;
-				}
-			}
-			for (ProductFamilyDtoBean family:familyList){
-				if (family.getName().equals(mwCategory)){
-					bean.setProductFamilyId(family.getId());
-					break;
-				}
-			}
-		}
+        logger.info("warning ...");
+//		List<ProductCategoryDtoBean> categoryList = paramDao.getProductCategoryList();
+//		List<ProductFamilyDtoBean> familyList = paramDao.getProductFamilyList();
+//		for (CKLChecklistSearchVO bean:list){
+//		    //pls do pay attention to this !
+//			String mwCategory = bean.getProductCategory();
+//			String mwFamily = bean.getProductFamily();
+//			bean.setProductCategory(mwFamily);
+//			bean.setProductFamily(mwCategory);
+//			for (ProductCategoryDtoBean category:categoryList){
+//				if (category.getName().equals(mwFamily)){
+//					bean.setProductCategoryId(category.getId());
+//					break;
+//				}
+//			}
+//			for (ProductFamilyDtoBean family:familyList){
+//				if (family.getName().equals(mwCategory)){
+//					bean.setProductFamilyId(family.getId());
+//					break;
+//				}
+//			}
+//		}
+        logger.info("warning end!");
 		return list;
 	}
 
 	@Override
-	public List<SimpleChecklistBean> searchPublicChecklist(String userId, String keyword){
-		ChecklistSearchCriteriaBean criteria = new ChecklistSearchCriteriaBean();
-		criteria.setUserID(userId);
-		criteria.setKeywords(keyword);
-		criteria.setLogin(userService.getLoginByUserId(userId));
-		List<SimpleChecklistBean> list = checklistDao.searchPublicChecklist(criteria);
+	public List<CKLChecklistSearchVO> searchPublicChecklist(String userId, String keyword,int pageNumber){
+        if(0==pageNumber) pageNumber = 1;
+		List<CKLChecklistSearchVO> list = checklistDao.searchPublicChecklist(userId,keyword,pageNumber);
 		return list;
 	}
 
 	@Override
 	public String createChecklist(String userId,CKLChecklistVO checklistVO){
-		try {
-			String companyId = userService.getCompanyIdByUserId(userId);
-			checklistVO.setClientId(companyId);
-		}catch (Exception e){
-			logger.error("creating checklist ... getCompanyId error ",e);
-		}
-		checklistVO.setCheckListId(IDGenerator.uuid());
-		return checklistDao.createChecklist(checklistVO);
+		return checklistDao.createChecklist(userId,checklistVO);
 	}
 
-//    @Override
-//    public String createChecklistInMW(String userId,ChecklistBean checklistBean){
-//        String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
-//        return checklistDao.createChecklistInMW(login,checklistBean);
-//    }
-
 	@Override
-	public String updateChecklist(String userId,CKLChecklistVO checklist){
-		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
-		return checklistDao.updateChecklist(checklist);
+	public String updateChecklist(String userId,String checklistId,CKLChecklistVO checklist){
+//		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
+		return checklistDao.updateChecklist(userId,checklistId,checklist);
 	}
 
 	@Override
 	public CKLChecklistVO getChecklist(String userId,String checklistId){
-		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
-		return checklistDao.getChecklist(checklistId);
+//		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
+		return checklistDao.getChecklist(userId,checklistId);
 	}
 
 	@Override
 	public boolean deleteChecklist(String userId,String ids){
-		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
-		return checklistDao.deleteChecklist(login,ids);
+//		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
+		return checklistDao.deleteChecklist(userId,ids);
 	}
 
 	@Override
 	public boolean checklistNameExist(String userId,String checklistName){
-		String login = userService.getLoginByUserId(userId);
-		return checklistDao.checklistNameExist(login,checklistName);
+//		String login = userService.getLoginByUserId(userId);
+		return checklistDao.checklistNameExist(userId,checklistName);
 	}
 
 	@Override
 	public boolean saveFeedback(String userId,String checklistId,String feedback){
-		String login = userService.getLoginByUserId(userId);
-		return checklistDao.saveFeedback(login,checklistId,feedback);
+//		String login = userService.getLoginByUserId(userId);
+		return checklistDao.saveFeedback(userId,checklistId,feedback);
 	}
 
 	@Override
 	public boolean approved(String userId,String checklistId){
-		String login = userService.getLoginByUserId(userId);
-		return checklistDao.approved(login,checklistId);
+//		String login = userService.getLoginByUserId(userId);
+		return checklistDao.approved(userId,checklistId);
 	}
 }
