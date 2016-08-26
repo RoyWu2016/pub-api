@@ -50,6 +50,8 @@ public class ServiceConfig {
     private String mwFTPUsername;
     private String mwFTPPassword;
 
+    private String psiServiceUrl;
+
     /**
      * @return the baseURL
      */
@@ -150,5 +152,13 @@ public class ServiceConfig {
 
     public void setMwFTPPassword(String mwFTPPassword) {
         this.mwFTPPassword = mwFTPPassword;
+    }
+
+    public String getPsiServiceUrl() {
+        return psiServiceUrl;
+    }
+
+    public void setPsiServiceUrl(String psiServiceUrl) {
+        this.psiServiceUrl = psiServiceUrl;
     }
 }
