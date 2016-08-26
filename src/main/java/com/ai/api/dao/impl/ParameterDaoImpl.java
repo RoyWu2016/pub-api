@@ -19,6 +19,8 @@ import com.ai.api.dao.ParameterDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.checklist.vo.CKLDefectVO;
+import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 import com.alibaba.fastjson.JSON;
@@ -30,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 
 /***************************************************************************
  *<PRE>
@@ -158,6 +161,44 @@ public class ParameterDaoImpl implements ParameterDao {
 		}
 		return resultMap;
 	}
+
+	@Override
+	public List<CKLTestVO> getChecklistPublicTestList(){
+        String url = config.getChecklistServiceUrl() + "/user/publicAPI/tests";
+        try {
+            GetRequest request = GetRequest.newInstance().setUrl(url);
+            ServiceCallResult result = HttpUtil.issueGetRequest(request);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                return JSON.parseArray(result.getResponseString(), CKLTestVO.class);
+            } else {
+                LOGGER.error("getChecklistPublicTestList from checklist-service error: " +
+                        result.getStatusCode() +", " +
+                        result.getResponseString());
+            }
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
+        }
+        return null;
+	}
+
+    @Override
+    public List<CKLDefectVO> getChecklistPublicDefectList(){
+        String url = config.getChecklistServiceUrl() + "/user/publicAPI/defects";
+        try {
+            GetRequest request = GetRequest.newInstance().setUrl(url);
+            ServiceCallResult result = HttpUtil.issueGetRequest(request);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                return JSON.parseArray(result.getResponseString(), CKLDefectVO.class);
+            } else {
+                LOGGER.error("getChecklistPublicDefectList from checklist-service error: " +
+                        result.getStatusCode() +", " +
+                        result.getResponseString());
+            }
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
+        }
+        return null;
+    }
 
 	@Override
 	public List<SysProductTypeBean> getProductTypeList(){

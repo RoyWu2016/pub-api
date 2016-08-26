@@ -7,6 +7,8 @@ import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.service.ParameterService;
+import com.ai.commons.beans.checklist.vo.CKLDefectVO;
+import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,16 @@ public class ParameterServiceImpl implements ParameterService {
 	public Map<String,List<ChecklistTestSampleSizeBean>> getTestSampleSizeList(){
 		return paramDao.getTestSampleSizeList();
 	}
+
+    @Override
+    public List<CKLTestVO> getChecklistPublicTestList(){
+        return paramDao.getChecklistPublicTestList();
+    }
+
+    @Override
+    public List<CKLDefectVO> getChecklistPublicDefectList(){
+        return paramDao.getChecklistPublicDefectList();
+    }
 
     @Override
     public List<SysProductTypeBean> getProductTypeList(){

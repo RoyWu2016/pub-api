@@ -9,6 +9,8 @@ import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.controller.Parameter;
 import com.ai.api.service.ParameterService;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.checklist.vo.CKLDefectVO;
+import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 import org.slf4j.Logger;
@@ -83,6 +85,34 @@ public class ParameterImpl implements Parameter {
 
 		if(result==null){
 			logger.error("TestSampleSizeList not found");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/checklistPublicTestList", method = RequestMethod.GET)
+	public ResponseEntity<List<CKLTestVO>> getChecklistPublicTestList() {
+
+		List<CKLTestVO> result = parameterService.getChecklistPublicTestList();
+
+		if(result==null){
+			logger.error("checklistTestList not found");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/checklistPublicDefectList", method = RequestMethod.GET)
+	public ResponseEntity<List<CKLDefectVO>> getChecklistPublicDefectList() {
+
+		List<CKLDefectVO> result = parameterService.getChecklistPublicDefectList();
+
+		if(result==null){
+			logger.error("checklistTestList not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(result, HttpStatus.OK);
