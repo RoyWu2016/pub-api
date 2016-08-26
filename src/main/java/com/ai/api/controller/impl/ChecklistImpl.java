@@ -7,6 +7,7 @@ import com.ai.api.service.ChecklistService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.checklist.api.ChecklistBean;
 import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
+import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,14 +46,14 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklists", method = RequestMethod.GET)
-	public ResponseEntity<List<SimpleChecklistBean>> searchChecklist(@PathVariable("userId") String userID,
+	public ResponseEntity<List<CKLChecklistSearchVO>> searchPrivateChecklist(@PathVariable("userId") String userId,
 	                                                                       @RequestParam(value = "keyword",required = false) String keyword,
-																		   @RequestParam(value = "pageNumber",required = false) Integer pageNumber) {
+																		   @RequestParam(value = "pageNumber",required = false) int pageNumber) {
 		logger.info("searchChecklist ...");
-		logger.info("userID :"+userID);
+		logger.info("userId :"+userId);
 		logger.info("keyword :"+keyword);
 		logger.info("pageNumber :"+pageNumber);
-		List<SimpleChecklistBean> result = checklistService.searchChecklist(userID,keyword,pageNumber);
+		List<CKLChecklistSearchVO> result = checklistService.searchPrivateChecklist(userId,keyword,pageNumber);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
@@ -63,12 +64,14 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/publicChecklists", method = RequestMethod.GET)
-	public ResponseEntity<List<SimpleChecklistBean>> searchPublicChecklist(@PathVariable("userId") String userId,
-	                                                                             @RequestParam(value = "keyword",required = false) String keyword) {
+	public ResponseEntity<List<CKLChecklistSearchVO>> searchPublicChecklist(@PathVariable("userId") String userId,
+                                                                           @RequestParam(value = "keyword",required = false) String keyword,
+                                                                           @RequestParam(value = "pageNumber",required = false) int pageNumber) {
 		logger.info("searchPublicChecklist ...");
 		logger.info("userId :"+userId);
 		logger.info("keyword :"+keyword);
-		List<SimpleChecklistBean> result = checklistService.searchPublicChecklist(userId, keyword);
+        logger.info("pageNumber :"+pageNumber);
+		List<CKLChecklistSearchVO> result = checklistService.searchPublicChecklist(userId, keyword,pageNumber);
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
@@ -103,7 +106,7 @@ public class ChecklistImpl implements Checklist {
         logger.info("checklist :"+checklist);
 
         checklist.setCheckListId(checklistId);
-		String result = checklistService.updateChecklist(userId,checklist);
+		String result = checklistService.updateChecklist(userId,checklistId,checklist);
 		if(result!=null){
             return new ResponseEntity<>(result,HttpStatus.OK);
         } else {

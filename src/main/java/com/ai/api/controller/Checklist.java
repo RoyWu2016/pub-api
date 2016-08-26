@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ai.commons.beans.checklist.api.ChecklistBean;
 import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
+import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
 import org.springframework.http.ResponseEntity;
 
@@ -27,8 +28,8 @@ import org.springframework.http.ResponseEntity;
 
 
 public interface Checklist {
-	ResponseEntity<List<SimpleChecklistBean>> searchChecklist(String userId,String keyword, Integer pageNumber);
-	ResponseEntity<List<SimpleChecklistBean>> searchPublicChecklist(String userId, String keyword);
+	ResponseEntity<List<CKLChecklistSearchVO>> searchPrivateChecklist(String userId, String keyword,int pageNumber);
+	ResponseEntity<List<CKLChecklistSearchVO>> searchPublicChecklist(String userId, String keyword,int pageNumber);
 	ResponseEntity<String> createChecklist(String userId, CKLChecklistVO checklistVO);
 	ResponseEntity<String> updateChecklist(String userId,String checklistId,CKLChecklistVO checklist);
     ResponseEntity<CKLChecklistVO> getChecklist(String userId,String checklistId);
