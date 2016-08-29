@@ -3,10 +3,14 @@ package com.ai.api.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ai.api.dao.CustomerDao;
+import com.ai.api.bean.InspectionDraftBean;
+import com.ai.api.bean.UserBean;
+import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.dao.DraftDao;
 import com.ai.api.service.DraftService;
 import com.ai.api.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -33,12 +37,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class DraftServiceImpl implements DraftService {
 
+	protected Logger logger = LoggerFactory.getLogger(DraftServiceImpl.class);
+
 	@Autowired
 	private DraftDao draftDao;
-
-//	@Autowired
-//	@Qualifier("customerDao")
-//	private CustomerDao customerDao;
 
 	@Autowired
 	@Qualifier("userService")
@@ -47,9 +49,24 @@ public class DraftServiceImpl implements DraftService {
 	@Override
 	public boolean deleteDraft(String userId, String ids) throws Exception {
 		Map<String,String> params = new HashMap<String, String>();
-		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
+		String login = userService.getCustById(userId).getLogin();
 		params.put("login",login);
 		params.put("ids",ids);
 		return draftDao.deleteDrafts(params);
+	}
+
+	@Override
+	public InspectionDraftBean createDraft(String userId, String serviceType) throws Exception{
+
+		UserBean userBean = userService.getCustById(userId);
+		String parentId = userBean.getCompany().getParentCompanyId();
+		if (parentId == null) parentId = "";
+		return draftDao.createDraft(userId, userBean.getCompany().getId(),
+				 parentId, ConstMap.serviceTypeMap.get(serviceType));
+	}
+
+	@Override
+	public InspectionDraftBean getDraft(String userId, String draftId) throws Exception {
+		return draftDao.getDraft(userId, draftId);
 	}
 }

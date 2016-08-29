@@ -1,5 +1,7 @@
 package com.ai.api.service;
 
+import com.ai.api.bean.InspectionDraftBean;
+
 /***************************************************************************
  * <PRE>
  * Project Name    : Public-API
@@ -20,5 +22,9 @@ package com.ai.api.service;
 
 
 public interface DraftService {
-	boolean deleteDraft(String userId,String ids)throws Exception;
+	boolean deleteDraft(String userId,String ids) throws Exception;
+
+	InspectionDraftBean createDraft(String userId, String serviceType) throws Exception;
+
+	InspectionDraftBean getDraft(String userId, String draftId) throws Exception;
 }

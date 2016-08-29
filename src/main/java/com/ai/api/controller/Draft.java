@@ -1,5 +1,6 @@
 package com.ai.api.controller;
 
+import com.ai.api.bean.InspectionDraftBean;
 import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
@@ -22,5 +23,9 @@ import org.springframework.http.ResponseEntity;
 
 
 public interface Draft {
-	ResponseEntity<String> deleteDraft(String userId,String draftIds);
+	ResponseEntity<String> deleteDraft(final String userId, final String draftIds);
+
+	ResponseEntity<InspectionDraftBean> createDraft(final String userId, final String serviceType);
+
+	ResponseEntity<InspectionDraftBean> getDraft(final String userId, final String draftId);
 }

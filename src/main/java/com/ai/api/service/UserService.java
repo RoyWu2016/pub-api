@@ -82,5 +82,5 @@ public interface UserService {
 
     String getLoginByUserId(String userId);
 
-    String getCompanyIdByUserId(String userId)throws IOException, AIException;
+//    String getCompanyIdByUserId(String userId)throws IOException, AIException;
 }
