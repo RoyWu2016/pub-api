@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
+import com.ai.commons.beans.checklist.vo.CKLDefectVO;
+import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 
@@ -20,6 +22,10 @@ public interface ParameterService {
 	List<String> getCountryList();
 
 	Map<String,List<ChecklistTestSampleSizeBean>> getTestSampleSizeList();
+
+    List<CKLTestVO> getChecklistPublicTestList();
+
+    List<CKLDefectVO> getChecklistPublicDefectList();
 
     List<SysProductTypeBean> getProductTypeList();
 }

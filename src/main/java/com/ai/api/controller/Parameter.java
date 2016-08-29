@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
+import com.ai.commons.beans.checklist.vo.CKLDefectVO;
+import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import org.springframework.http.ResponseEntity;
 
@@ -20,6 +22,10 @@ public interface Parameter {
 	ResponseEntity<List<String>> getCountryList();
 
 	ResponseEntity<Map<String,List<ChecklistTestSampleSizeBean>>> getTestSampleSizeList();
+
+    ResponseEntity<List<CKLTestVO>> getChecklistPublicTestList();
+
+    ResponseEntity<List<CKLDefectVO>> getChecklistPublicDefectList();
 
     ResponseEntity<Map<String, Object>> getProductTypeList();
 }
