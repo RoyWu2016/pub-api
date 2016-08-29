@@ -63,14 +63,14 @@ public class OrderImpl implements Order {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/orders", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/psiOrders", method = RequestMethod.GET)
 	public ResponseEntity<List<SimpleOrderBean>> getOrderListByUserId(@PathVariable("userId") String userId,
-	                                                                        @RequestParam(value = "page", required = false) Integer pageNumber,
-	                                                                        @RequestParam(value = "types", required = false) String orderTypeArray,
-	                                                                        @RequestParam(value = "status", required = false) String orderStatus,
-	                                                                        @RequestParam(value = "start", required = false) String starts,
-	                                                                        @RequestParam(value = "end", required = false) String ends,
-	                                                                        @RequestParam(value = "keyword", required = false) String keywords) {
+																	@RequestParam(value = "page", required = false) Integer pageNumber,
+																	@RequestParam(value = "types", required = false) String orderTypeArray,
+																	@RequestParam(value = "status", required = false) String orderStatus,
+																	@RequestParam(value = "start", required = false) String starts,
+																	@RequestParam(value = "end", required = false) String ends,
+																	@RequestParam(value = "keyword", required = false) String keywords) {
 
 		OrderSearchCriteriaBean criteriaBean = new OrderSearchCriteriaBean();
 
@@ -86,7 +86,7 @@ public class OrderImpl implements Order {
 
 		ArrayList<String> typeList = new ArrayList<String>();
 		if (orderTypeArray == null || orderTypeArray.equals("")) {
-			String[] allTypes = {"PSI", "LT", "IPC", "DUPRO", "CLC", "MA", "PM", "EA", "StrA", "CTPAT"};
+			String[] allTypes = {"PSI", "IPC", "DUPRO", "CLC", "PM"};
 			Collections.addAll(typeList, allTypes);
 		} else {
 			String[] types = orderTypeArray.split(",");
@@ -123,8 +123,8 @@ public class OrderImpl implements Order {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/order/{orderId}", method = RequestMethod.DELETE)
 	public ResponseEntity<Boolean> cancelOrder(@PathVariable("userId") String userId,
-	                                           @PathVariable("orderId") String orderId, @RequestBody OrderCancelBean orderCancelBean) {
-
+	                                           @PathVariable("orderId") String orderId,
+	                                           @RequestBody OrderCancelBean orderCancelBean) {
 		try {
 			UserBean user = userService.getCustById(userId);
 			if (orderCancelBean != null) {
