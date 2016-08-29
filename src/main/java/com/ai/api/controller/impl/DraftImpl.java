@@ -45,18 +45,16 @@ public class DraftImpl implements Draft {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/drafts/{draftIds}", method = RequestMethod.DELETE)
-	public ResponseEntity<String> deleteDraft(@PathVariable("userId") String userId, @PathVariable("draftIds") String draftIds) {
-		boolean b = false;
+	public ResponseEntity<Boolean> deleteDraftFrom(@PathVariable("userId")String userId,@PathVariable("draftIds") String draftIds) {
 		try {
-			b = draftService.deleteDraft(userId, draftIds);
+			boolean result = draftService.deleteDraftFromPsi(userId, draftIds);
+			if(result){
+				return new ResponseEntity<>(HttpStatus.OK);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (b) {
-			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override

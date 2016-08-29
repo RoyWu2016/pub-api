@@ -23,7 +23,7 @@ import org.springframework.http.ResponseEntity;
 
 
 public interface Draft {
-	ResponseEntity<String> deleteDraft(final String userId, final String draftIds);
+	ResponseEntity<Boolean> deleteDraftFrom(String userId, String draftIds);
 
 	ResponseEntity<InspectionDraftBean> createDraft(final String userId, final String serviceType);
 

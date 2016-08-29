@@ -49,10 +49,15 @@ public class DraftServiceImpl implements DraftService {
 	@Override
 	public boolean deleteDraft(String userId, String ids) throws Exception {
 		Map<String,String> params = new HashMap<String, String>();
-		String login = userService.getCustById(userId).getLogin();
+		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
 		params.put("login",login);
 		params.put("ids",ids);
 		return draftDao.deleteDrafts(params);
+	}
+
+	@Override
+	public boolean deleteDraftFromPsi(String userId, String draftIds) throws Exception {
+		return draftDao.deleteDraftsFromPsi(userId, draftIds);
 	}
 
 	@Override

@@ -27,6 +27,8 @@ public interface DraftDao {
 
 	boolean deleteDrafts(Map<String,String> params);
 
+	boolean deleteDraftsFromPsi(String userId, String draftIds);
+
 	InspectionDraftBean createDraft(String userId, String compId, String parentId, String serviceTypeStrValue);
 
 	InspectionDraftBean getDraft(String userId, String draftId);

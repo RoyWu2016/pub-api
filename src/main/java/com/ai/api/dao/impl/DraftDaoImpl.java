@@ -12,6 +12,7 @@ import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.order.Draft;
+import com.ai.dto.JsonResponse;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +67,31 @@ public class DraftDaoImpl implements DraftDao {
 		}
 		return false;
 	}
+
+
+	@Override
+	public boolean deleteDraftsFromPsi(String userId, String draftIds) {
+		String url = config.getPsiServiceUrl() + "/draft/api/deleteDrafts/"+ userId + "/"+ draftIds;
+		try {
+			ServiceCallResult result = HttpUtil.issueDeleteRequest(url, null);
+
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				JsonResponse jsonResponse = JsonUtil.mapToObject(result.getResponseString(),JsonResponse.class);
+				if(jsonResponse.getStatus()==1) {
+					return true;
+				}
+
+			} else {
+				logger.error("delete drafts from psi error: " + result.getStatusCode() +
+						", " + result.getResponseString());
+			}
+
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return false;
+	}
+
 
 	@Override
 	public InspectionDraftBean createDraft(String userId, String compId, String parentId, String serviceTypeStrValue) {

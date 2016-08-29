@@ -24,6 +24,8 @@ import com.ai.api.bean.InspectionDraftBean;
 public interface DraftService {
 	boolean deleteDraft(String userId,String ids) throws Exception;
 
+	boolean deleteDraftFromPsi(String userId, String draftIds) throws Exception;
+
 	InspectionDraftBean createDraft(String userId, String serviceType) throws Exception;
 
 	InspectionDraftBean getDraft(String userId, String draftId) throws Exception;
