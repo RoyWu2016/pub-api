@@ -1,7 +1,22 @@
 package com.ai.api.service.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ai.api.bean.FileDetailBean;
-import com.ai.api.bean.consts.BucketMap;
+import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.dao.FileDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.FileService;
@@ -13,15 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /***************************************************************************
  * <PRE>
@@ -91,9 +97,9 @@ public class FileServiceImpl implements FileService {
         Map<String, String> requestMap = new HashMap<>();
         MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
         Iterator<String> fileNames = multipartHttpServletRequest.getFileNames();
-        int a = BucketMap.bucketMap.size();
+        int a = ConstMap.bucketMap.size();
         logger.info(a+"------------------------------");
-        String bucket = BucketMap.bucketMap.get(docType.toUpperCase());
+        String bucket = ConstMap.bucketMap.get(docType.toUpperCase());
         String createBy = "";//Get info by userId...............................
         if (fileNames == null) {
             throw new IllegalArgumentException("No upload file!");

@@ -21,10 +21,11 @@ import java.util.Map;
  * </PRE>
  ***************************************************************************/
 
-public class BucketMap {
+public class ConstMap {
 
 
     public final static Map<String,String> bucketMap = new HashMap();
+	public final static Map<String,String> serviceTypeMap = new HashMap();
 
     static {
         bucketMap.put("ACCESS_MAP","access-map");
@@ -41,6 +42,12 @@ public class BucketMap {
         bucketMap.put("GI_INSP_RPT","dm-general-instruction");
         bucketMap.put("GI_LAB_TEST","dm-general-instruction");
         bucketMap.put("ORDER_ATT","order-attachments");
+
+	    serviceTypeMap.put("psi", "1");
+	    serviceTypeMap.put("ipc", "2");
+	    serviceTypeMap.put("dupro", "3");
+	    serviceTypeMap.put("clc", "4");
+	    serviceTypeMap.put("pm", "6");
     }
 }
 

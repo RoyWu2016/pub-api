@@ -2,6 +2,8 @@ package com.ai.api.dao;
 
 import java.util.Map;
 
+import com.ai.api.bean.InspectionDraftBean;
+
 /***************************************************************************
  * <PRE>
  * Project Name    : Public-API
@@ -23,5 +25,9 @@ import java.util.Map;
 
 public interface DraftDao {
 
-	public boolean deleteDrafts(Map<String,String> params);
+	boolean deleteDrafts(Map<String,String> params);
+
+	InspectionDraftBean createDraft(String userId, String compId, String parentId, String serviceTypeStrValue);
+
+	InspectionDraftBean getDraft(String userId, String draftId);
 }
