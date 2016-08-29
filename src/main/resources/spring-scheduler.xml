@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+	   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+
+	<!-- Job classes -->
+	<bean name="cleanTokenJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="com.ai.api.job.CleanTokenJob" />
+	</bean>
+
+	<!-- JobCronTriggers -->
+	<bean id="tokenTask" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="cleanTokenJob" />
+		<property name="cronExpression" value="0 0 22 * * ?" />
+	</bean>
+
+	<!-- SchedulerFactoryBean: manage Jobs -->
+	<bean name="schedulerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="tokenTask" />
+			</list>
+		</property>
+	</bean>
+
+</beans>
