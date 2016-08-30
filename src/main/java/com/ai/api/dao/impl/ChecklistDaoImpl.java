@@ -55,7 +55,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
 	@Override
 	public List<CKLChecklistSearchVO> searchPrivateChecklist(String userId,String keyword,int pageNumber) {
-        String url = config.getChecklistServiceUrl() + "/user/"+userId+"/private/checklists?pageNumber="+pageNumber;
+        String url = config.getChecklistServiceUrl() + "/ws/"+userId+"/private/checklists?pageNumber="+pageNumber;
         if (StringUtils.isNotBlank(keyword))
             url = url+"&keyword="+keyword;
 		try {
@@ -79,7 +79,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
 	@Override
 	public List<CKLChecklistSearchVO> searchPublicChecklist(String userId,String keyword,int pageNumber) {
-        String url = config.getChecklistServiceUrl() + "/user/"+userId+"/public/checklists?pageNumber="+pageNumber;
+        String url = config.getChecklistServiceUrl() + "/ws/"+userId+"/public/checklists?pageNumber="+pageNumber;
         if (StringUtils.isNotBlank(keyword))
             url = url+"&keyword="+keyword;
 		try {
@@ -103,7 +103,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
 	@Override
 	public String createChecklist(String userId,CKLChecklistVO checklistVO) {
-		String url = config.getChecklistServiceUrl() + "/user/"+userId+"/checklist/create";
+		String url = config.getChecklistServiceUrl() + "/ws/"+userId+"/checklist/create";
 		try {
 			logger.info("createChecklist - POST Url:"+url+" || userId:"+userId+" || checklistVO:"+checklistVO);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistVO);
@@ -122,7 +122,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
 	@Override
 	public String updateChecklist(String userId,String checklistId,CKLChecklistVO checklist) {
-        String url = config.getChecklistServiceUrl() + "/user/"+userId+"/checklist/"+checklistId+"/update";
+        String url = config.getChecklistServiceUrl() + "/ws/"+userId+"/checklist/"+checklistId+"/update";
 		try {
 			logger.info("updateChecklist - POST  Url:"+url+" || checklist:"+checklist);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklist);
@@ -141,7 +141,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
 	@Override
 	public CKLChecklistVO getChecklist(String userId,String checklistId) {
-        String url = config.getChecklistServiceUrl() + "/user/"+userId+"/checklist/"+checklistId+"/getById";
+        String url = config.getChecklistServiceUrl() + "/ws/"+userId+"/checklist/"+checklistId+"/getById";
 		try {
 			GetRequest request = GetRequest.newInstance().setUrl(url);
 			logger.info("getChecklist - get!!! Url:"+url+" userId:"+userId+" checklistId:"+checklistId);
@@ -162,7 +162,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
 	@Override
 	public  boolean deleteChecklist(String userId,String ids) {
-        String url = config.getChecklistServiceUrl() + "/user/"+userId+"/checklist/"+ids+"/delete";
+        String url = config.getChecklistServiceUrl() + "/ws/"+userId+"/checklist/"+ids+"/delete";
 		try {
             GetRequest request = GetRequest.newInstance().setUrl(url);
             logger.info("deleteChecklist - get!!! Url:"+url);
@@ -182,7 +182,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
 	@Override
 	public  boolean checklistNameExist(String userId,String checklistName) {
-        String url = config.getChecklistServiceUrl() + "/user/"+userId+"/checklistName/"+checklistName+"/exisitName";
+        String url = config.getChecklistServiceUrl() + "/ws/"+userId+"/checklistName/"+checklistName+"/exisitName";
 		try {
             GetRequest request = GetRequest.newInstance().setUrl(url);
             logger.info("checklistNameExist - get!!! Url:"+url);
@@ -207,7 +207,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
     @Override
     public  boolean saveFeedback(String userId,String checklistId,String feedback) {
-        String url = config.getChecklistServiceUrl() + "/user/"+userId+"/checklist/"+checklistId+"/feedback";
+        String url = config.getChecklistServiceUrl() + "/ws/"+userId+"/checklist/"+checklistId+"/feedback";
         try {
             logger.info("saveFeedback - POST!!! Url:"+url+" || feedback:" +feedback);
             ServiceCallResult result = HttpUtil.issuePostRequest(url, null, feedback);
@@ -231,7 +231,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
     @Override
     public  boolean approved(String userId,String checklistId) {
-        String url = config.getChecklistServiceUrl() + "/user/"+userId+"/checklist/"+checklistId+"/approved";
+        String url = config.getChecklistServiceUrl() + "/ws/"+userId+"/checklist/"+checklistId+"/approved";
         try {
             logger.info("approved - POST!!! Url:"+url+" || checklistId:" +checklistId);
             ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistId);
