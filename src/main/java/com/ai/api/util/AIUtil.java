@@ -83,7 +83,7 @@ public class AIUtil {
 
 	public static String convertDateFormat(String input){
 		try{
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sdf = (input.matches(".*?[a-zA-Z]+.*?") == false) ? new SimpleDateFormat("yyyy-MM-dd", Locale.US) : new SimpleDateFormat("yyyy-MMMM-dd", Locale.US);
 			Date inputDate = sdf.parse(input);
 			DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
 			return dateFormat.format(inputDate);
@@ -101,10 +101,10 @@ public class AIUtil {
 		InspectionDraftBean draft = new InspectionDraftBean();
 		draft.setCompanyId(d.getCompanyId());
 		draft.setCompleted(d.getCompleted());
-//		draft.setCreateUnixTimestamp(d.getCreateTime());
-//		draft.setUpdateUnixTimestamp(d.getUpdateTime());
+		draft.setCreateUnixTimestamp(d.getCreateTime().getTime());
+		draft.setUpdateUnixTimestamp(d.getUpdateTime().getTime());
 		draft.setId(d.getDraftId());
-//		draft.setInspectionDate(d.getInspectionDate());
+		draft.setInspectionDate(convertDateFormat(d.getInspectionDate()));
 		draft.setInspectionType(d.getInspectionType());
 		draft.setOrderId(d.getOrderId());
 		draft.setOrderInfo(mapper.readValue(d.getOrderInfo(), InspectionOrderBean.class));
@@ -116,7 +116,7 @@ public class AIUtil {
 			p.setDraftId(psi.getDraftId());
 			p.setDraftProductId(psi.getDraftProductId());
 			p.setOrderProductId(psi.getProductId());
-//			p.setCreateUnixTimestamp(psi.getCreateTime());
+			p.setCreateUnixTimestamp(psi.getCreateTime().getTime());
 			p.setPoNumber(psi.getPoNumber());
 			p.setProductName(psi.getProductName());
 			p.setReferenceNumber(psi.getReferenceNumber());

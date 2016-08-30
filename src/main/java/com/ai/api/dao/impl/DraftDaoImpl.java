@@ -75,12 +75,8 @@ public class DraftDaoImpl implements DraftDao {
 		try {
 			ServiceCallResult result = HttpUtil.issueDeleteRequest(url, null);
 
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				JsonResponse jsonResponse = JsonUtil.mapToObject(result.getResponseString(),JsonResponse.class);
-				if(jsonResponse.getStatus()==1) {
-					return true;
-				}
-
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK") && result.getResponseString().equals("true")) {
+				return true;
 			} else {
 				logger.error("delete drafts from psi error: " + result.getStatusCode() +
 						", " + result.getResponseString());
