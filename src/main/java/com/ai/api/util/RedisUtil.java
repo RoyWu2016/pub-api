@@ -6,6 +6,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 /***************************************************************************
@@ -211,6 +212,26 @@ public class RedisUtil {
 			returnResource(jedis);
 		}
 	}
+
+    /**
+     * Return all the values in a hash.
+     * <p>
+     * <b>Time complexity:</b> O(N), where N is the total number of entries
+     * @param key
+     * @return All the fields values contained into a hash.
+     */
+    public synchronized static List<String> hvals(String key){
+        Jedis jedis = getJedis();
+        try {
+            if (!exists(key.trim())) return null;
+            return jedis.hvals(key.trim());
+        } catch (Exception e) {
+            logger.error("key hvals error : "+e);
+            return null;
+        } finally {
+            returnResource(jedis);
+        }
+    }
 
 	/**
 	 * If key holds a hash, retrieve the value associated to the specified field.
