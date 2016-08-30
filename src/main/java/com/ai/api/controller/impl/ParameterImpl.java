@@ -92,7 +92,7 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/parameter/checklist-public-tests", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/public-tests", method = RequestMethod.GET)
 	public ResponseEntity<List<CKLTestVO>> getChecklistPublicTestList() {
 		logger.info("get checklistPublicTests");
 		List<CKLTestVO> result = parameterService.getChecklistPublicTestList();
@@ -106,7 +106,7 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/parameter/checklist-public-defects", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/public-defects", method = RequestMethod.GET)
 	public ResponseEntity<List<CKLDefectVO>> getChecklistPublicDefectList() {
 		logger.info("get checklistPublicDefects");
 		List<CKLDefectVO> result = parameterService.getChecklistPublicDefectList();
