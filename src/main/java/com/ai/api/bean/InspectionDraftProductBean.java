@@ -31,7 +31,7 @@ import com.ai.commons.beans.psi.InspectionProductBookingBean;
  *</PRE>
  ***************************************************************************/
 
-public class InspectionDraftPrdocutBean implements Serializable{
+public class InspectionDraftProductBean implements Serializable{
 	private static final long serialVersionUID = -6683696172694029898L;
 
 	String draftProductId;      //primary key in DRAFT_PRODUCT table

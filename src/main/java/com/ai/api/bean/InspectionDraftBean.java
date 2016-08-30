@@ -48,9 +48,9 @@ public class InspectionDraftBean implements Serializable{
 	String inspectionDate;    //need format in DD-MMM-YYYY
 	long createUnixTimestamp;
 	long updateUnixTimestamp;
-	DraftOrderInfo pregress;
+	DraftOrderInfo progress;
 	InspectionOrderBookingBean orderInfo;
-	List<InspectionDraftPrdocutBean> prdocuts = new ArrayList<>();
+	List<InspectionDraftProductBean> products = new ArrayList<>();
 
 	public String getId() {
 		return id;
@@ -132,12 +132,12 @@ public class InspectionDraftBean implements Serializable{
 		this.updateUnixTimestamp = updateUnixTimestamp;
 	}
 
-	public DraftOrderInfo getPregress() {
-		return pregress;
+	public DraftOrderInfo getProgress() {
+		return progress;
 	}
 
-	public void setPregress(DraftOrderInfo pregress) {
-		this.pregress = pregress;
+	public void setProgress(DraftOrderInfo progress) {
+		this.progress = progress;
 	}
 
 	public InspectionOrderBookingBean getOrderInfo() {
@@ -148,16 +148,16 @@ public class InspectionDraftBean implements Serializable{
 		this.orderInfo = orderInfo;
 	}
 
-	public List<InspectionDraftPrdocutBean> getPrdocuts() {
-		return prdocuts;
-	}
-
-	public void setPrdocuts(List<InspectionDraftPrdocutBean> prdocuts) {
-		this.prdocuts = prdocuts;
-	}
-
 	public String getInspectionTypeText() {
 		return ConstMap.serviceTypeMap.get(inspectionType);
+	}
+
+	public List<InspectionDraftProductBean> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<InspectionDraftProductBean> products) {
+		this.products = products;
 	}
 
 	@Override
@@ -174,9 +174,9 @@ public class InspectionDraftBean implements Serializable{
 				", inspectionDate='" + inspectionDate + '\'' +
 				", createUnixTimestamp=" + createUnixTimestamp +
 				", updateUnixTimestamp=" + updateUnixTimestamp +
-				", pregress=" + pregress +
+				", progress=" + progress +
 				", orderInfo=" + orderInfo +
-				", prdocuts=" + prdocuts +
+				", products=" + products +
 				'}';
 	}
 

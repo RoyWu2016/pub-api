@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import com.ai.api.bean.InspectionDraftBean;
-import com.ai.api.bean.InspectionDraftPrdocutBean;
+import com.ai.api.bean.InspectionDraftProductBean;
 import com.ai.commons.beans.customer.CompanyEntireBean;
 import com.ai.commons.beans.customer.ExtraBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
@@ -112,7 +112,7 @@ public class AIUtil {
 		draft.setUserId(d.getUserId());
 
 		for (DraftProduct psi : psiDraft.getPrdocutList()) {
-			InspectionDraftPrdocutBean p = new InspectionDraftPrdocutBean();
+			InspectionDraftProductBean p = new InspectionDraftProductBean();
 			p.setDraftId(psi.getDraftId());
 			p.setDraftProductId(psi.getDraftProductId());
 			p.setOrderProductId(psi.getProductId());
@@ -121,9 +121,9 @@ public class AIUtil {
 			p.setProductName(psi.getProductName());
 			p.setReferenceNumber(psi.getReferenceNumber());
 			p.setProgress(mapper.readValue(psi.getDraftProductInfo(), DraftProductInfo.class));
-			p.setProductInfo(mapper.readValue(psi.getDraftProductInfo(), InspectionProductBookingBean.class ));
+			p.setProductInfo(mapper.readValue(psi.getProductInfo(), InspectionProductBookingBean.class ));
 
-			draft.getPrdocuts().add(p);
+			draft.getProducts().add(p);
 		}
 		return draft;
 	}
