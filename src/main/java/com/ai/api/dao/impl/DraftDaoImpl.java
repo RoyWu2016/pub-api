@@ -130,4 +130,23 @@ public class DraftDaoImpl implements DraftDao {
 		}
 		return null;
 	}
+
+	@Override
+	public boolean saveDraft(String userId,Draft draft) {
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+		url.append("/draft/api/updateDraft/").append(userId);
+		try {
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draft);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return true;
+			} else {
+				logger.error("save draft error from psi service : " + result.getStatusCode() +
+						", " + result.getResponseString());
+			}
+
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return false;
+	}
 }

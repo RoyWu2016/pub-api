@@ -3,6 +3,7 @@ package com.ai.api.dao;
 import java.util.Map;
 
 import com.ai.api.bean.InspectionDraftBean;
+import com.ai.commons.beans.order.Draft;
 
 /***************************************************************************
  * <PRE>
@@ -32,4 +33,6 @@ public interface DraftDao {
 	InspectionDraftBean createDraft(String userId, String compId, String parentId, String serviceTypeStrValue);
 
 	InspectionDraftBean getDraft(String userId, String draftId);
+
+	boolean saveDraft(String userId,Draft draft);
 }
