@@ -36,7 +36,7 @@ public class ParameterImpl implements Parameter {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/parameter/productCategories", method = RequestMethod.GET)
+    @RequestMapping(value = "/parameter/product-categories", method = RequestMethod.GET)
     public ResponseEntity<List<ProductCategoryDtoBean>> getProductCategoryList() {
 
         List<ProductCategoryDtoBean> result = parameterService.getProductCategoryList();
@@ -50,7 +50,7 @@ public class ParameterImpl implements Parameter {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/parameter/productFamilies", method = RequestMethod.GET)
+    @RequestMapping(value = "/parameter/product-families", method = RequestMethod.GET)
     public ResponseEntity<List<ProductFamilyDtoBean>> getProductFamilyList() {
 
         List<ProductFamilyDtoBean> result = parameterService.getProductFamilyList();
@@ -78,7 +78,7 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/parameter/checklistTestSampleSizeList", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/checklist-test-sample-size-list", method = RequestMethod.GET)
 	public ResponseEntity<Map<String,List<ChecklistTestSampleSizeBean>>> getTestSampleSizeList() {
 
 		Map<String,List<ChecklistTestSampleSizeBean>> result = parameterService.getTestSampleSizeList();
@@ -92,7 +92,7 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/parameter/checklistPublicTests", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/checklist-public-tests", method = RequestMethod.GET)
 	public ResponseEntity<List<CKLTestVO>> getChecklistPublicTestList() {
 		logger.info("get checklistPublicTests");
 		List<CKLTestVO> result = parameterService.getChecklistPublicTestList();
@@ -106,7 +106,7 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/parameter/checklistPublicDefects", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/checklist-public-defects", method = RequestMethod.GET)
 	public ResponseEntity<List<CKLDefectVO>> getChecklistPublicDefectList() {
 		logger.info("get checklistPublicDefects");
 		List<CKLDefectVO> result = parameterService.getChecklistPublicDefectList();
@@ -120,7 +120,7 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/paramter/productTypes", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/product-types", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Object>> getProductTypeList() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<SysProductTypeBean> sysProductTypeBeanList = parameterService.getProductTypeList();

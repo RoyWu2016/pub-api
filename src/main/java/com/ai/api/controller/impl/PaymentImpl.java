@@ -1,14 +1,13 @@
 package com.ai.api.controller.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.controller.Payment;
 import com.ai.api.service.PaymentService;
 import com.ai.api.service.UserService;
-import com.ai.commons.DateUtils;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
@@ -22,9 +21,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /***************************************************************************
  * <PRE>
@@ -101,7 +103,7 @@ public class PaymentImpl implements Payment {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/proformaInvoice", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/proforma-invoice", method = RequestMethod.POST)
 	public ResponseEntity<String> createProformaInvoice(@PathVariable("userId") String userId,
 																		@RequestParam("orders") String orders){
 		String result = userService.createProformaInvoice(userId, orders);
@@ -114,7 +116,7 @@ public class PaymentImpl implements Payment {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/proformaInvoice", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/proforma-invoice", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> reissueProFormaInvoice(@PathVariable("userId") String userId,
 														@RequestParam("orders") String orders){
 		boolean result = userService.reissueProFormaInvoice(userId, orders);
@@ -127,7 +129,7 @@ public class PaymentImpl implements Payment {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/globalPayment", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/global-payment", method = RequestMethod.GET)
 	public ResponseEntity<List<GlobalPaymentInfoBean>> generateGlobalPayment(@PathVariable("userId") String userId,
 																			  @RequestParam("orders") String orders){
 		List<GlobalPaymentInfoBean> result = userService.generateGlobalPayment(userId, orders);
@@ -140,7 +142,7 @@ public class PaymentImpl implements Payment {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/paymentLog", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/payment-log", method = RequestMethod.POST)
 	public ResponseEntity<Boolean> logPaymentAction(@PathVariable("userId") String userId,
 													@RequestBody PaymentActionLogBean logBean){
 		boolean result = userService.logPaymentAction(userId, logBean);
@@ -153,7 +155,7 @@ public class PaymentImpl implements Payment {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/proformaInvoice/{invoiceId}/pdf", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/proforma-invoice/{invoiceId}/pdf", method = RequestMethod.GET)
 	public ResponseEntity<String> downloadProformaInvoicePDF(@PathVariable("userId") String userId,
 															 @PathVariable("invoiceId") String invoiceId,
                                                              HttpServletResponse httpResponse){
@@ -183,7 +185,7 @@ public class PaymentImpl implements Payment {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/paypalPayment", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/paypal-payment", method = RequestMethod.GET)
 	public ResponseEntity<List<PaypalInfoBean>> getPaypalPayment(@PathVariable("userId") String userId,
 																	  @RequestParam("orders") String orders){
 		List<PaypalInfoBean> result = paymentService.getPaypalPayment(userId, orders);
