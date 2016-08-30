@@ -166,6 +166,7 @@ public class ParameterDaoImpl implements ParameterDao {
 	public List<CKLTestVO> getChecklistPublicTestList(){
         String url = config.getChecklistServiceUrl() + "/user/publicAPI/tests";
         try {
+        	LOGGER.info("Get! url : "+url);
             GetRequest request = GetRequest.newInstance().setUrl(url);
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
@@ -185,6 +186,7 @@ public class ParameterDaoImpl implements ParameterDao {
     public List<CKLDefectVO> getChecklistPublicDefectList(){
         String url = config.getChecklistServiceUrl() + "/user/publicAPI/defects";
         try {
+			LOGGER.info("Get! url : "+url);
             GetRequest request = GetRequest.newInstance().setUrl(url);
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
