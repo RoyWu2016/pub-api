@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.ai.api.controller.Report;
 import com.ai.api.service.ReportService;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
@@ -19,9 +20,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by yan on 2016/7/25.
@@ -60,7 +64,7 @@ public class ReportImpl implements Report {
 
 	    ArrayList<String> typeList = new ArrayList<String>();
 	    if(orderTypeArray==null || orderTypeArray.equals("")){
-            String[] allTypes = {"PSI","LT","IPC","DUPRO","CLC","MA","PM","EA","StrA","CTPAT"};
+            String[] allTypes = {"psi","lt","ipc","dupro","clc","ma","pm","ea","stra","ctpat"};
             Collections.addAll(typeList, allTypes);
 	    }else{
 		    String[] types = orderTypeArray.split(",");
@@ -161,7 +165,7 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/report/{reportId}/fileName/{fileName}/pdf", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{userId}/report/{reportId}/filename/{fileName}/pdf", method = RequestMethod.GET)
     public ResponseEntity<String> downloadPDF(@PathVariable("userId") String userId,
                                               @PathVariable("reportId") String reportId,
                                               @PathVariable("fileName") String fileName,

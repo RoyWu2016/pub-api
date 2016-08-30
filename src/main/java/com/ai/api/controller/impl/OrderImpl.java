@@ -63,7 +63,7 @@ public class OrderImpl implements Order {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/psiOrders", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/psi-orders", method = RequestMethod.GET)
 	public ResponseEntity<List<SimpleOrderBean>> getOrderListByUserId(@PathVariable("userId") String userId,
 																	@RequestParam(value = "page", required = false) Integer pageNumber,
 																	@RequestParam(value = "types", required = false) String orderTypeArray,
@@ -86,7 +86,7 @@ public class OrderImpl implements Order {
 
 		ArrayList<String> typeList = new ArrayList<String>();
 		if (orderTypeArray == null || orderTypeArray.equals("")) {
-			String[] allTypes = {"PSI", "IPC", "DUPRO", "CLC", "PM"};
+			String[] allTypes = {"psi", "ipc", "dupro", "clc", "pm"};
 			Collections.addAll(typeList, allTypes);
 		} else {
 			String[] types = orderTypeArray.split(",");

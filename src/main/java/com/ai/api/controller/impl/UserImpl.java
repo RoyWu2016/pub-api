@@ -99,7 +99,7 @@ public class UserImpl implements User {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/contactInfo", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/contact-info", method = RequestMethod.PUT)
 	public ResponseEntity<UserBean> updateUserProfileContact(@PathVariable("userId") String userId,
 	                                                         @RequestBody ContactInfoBean newContact)
 			throws IOException, AIException {
@@ -131,7 +131,7 @@ public class UserImpl implements User {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/preference/booking/preferredProductFamilies", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/preference/booking/preferred-product-families", method = RequestMethod.PUT)
 	public ResponseEntity<UserBean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String userId,
 	                                                                        @RequestBody List<String> newPreferred)
 			throws IOException, AIException {

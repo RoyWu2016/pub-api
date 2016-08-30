@@ -6,7 +6,6 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
-import java.util.HashMap;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -117,7 +116,7 @@ public class AuthenticationImpl implements Authentication {
 
 
 	@Override
-	@RequestMapping(method = RequestMethod.PUT, value = "/auth/refreshToken")
+	@RequestMapping(method = RequestMethod.PUT, value = "/auth/refresh-token")
 	@ResponseBody
 	public String refreshAPIToken(HttpServletRequest request, HttpServletResponse response)
 			throws JsonProcessingException {
@@ -130,7 +129,7 @@ public class AuthenticationImpl implements Authentication {
 	}
 
 	@Override
-	@RequestMapping(method = RequestMethod.PUT, value = "/auth/removeToken")
+	@RequestMapping(method = RequestMethod.PUT, value = "/auth/remove-token")
 	@ResponseBody
 	public String removeAPIToken(HttpServletRequest request, HttpServletResponse response)
 			throws JsonProcessingException {
@@ -140,7 +139,7 @@ public class AuthenticationImpl implements Authentication {
 		logger.info("remove token result: "+result.getResponseString());
 		return mapper.writeValueAsString(result);
 	}
-	@RequestMapping(method = RequestMethod.GET, value = "/auth/verifyToken")
+	@RequestMapping(method = RequestMethod.GET, value = "/auth/verify-token")
 	@ResponseBody
 	public String verifyPublicAPIToken(HttpServletRequest request, HttpServletResponse response)
 		throws JsonProcessingException {

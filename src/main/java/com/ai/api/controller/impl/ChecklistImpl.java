@@ -5,8 +5,6 @@ import java.util.List;
 import com.ai.api.controller.Checklist;
 import com.ai.api.service.ChecklistService;
 import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.checklist.api.ChecklistBean;
-import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
 import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
 import org.slf4j.Logger;
@@ -14,7 +12,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /***************************************************************************
  * <PRE>
@@ -63,7 +66,7 @@ public class ChecklistImpl implements Checklist {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/publicChecklists", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/public-checklists", method = RequestMethod.GET)
 	public ResponseEntity<List<CKLChecklistSearchVO>> searchPublicChecklist(@PathVariable("userId") String userId,
                                                                            @RequestParam(value = "keyword",required = false) String keyword,
                                                                            @RequestParam(value = "pageNumber",required = false) int pageNumber) {
@@ -147,7 +150,7 @@ public class ChecklistImpl implements Checklist {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/checklistName/{checklistName}", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/checklist-name/{checklistName}", method = RequestMethod.GET)
 	public ResponseEntity checklistNameExist(@PathVariable("userId") String userId,@PathVariable("checklistName") String checklistName){
         logger.info("checklistNameExist ...");
         logger.info("userId :"+userId);

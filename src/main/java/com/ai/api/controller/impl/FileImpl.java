@@ -82,7 +82,7 @@ public class FileImpl implements File {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/docType/{docType}/source/{sourceId}/file", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/doc-type/{docType}/source/{sourceId}/file", method = RequestMethod.POST)
 	public ResponseEntity<List<FileDetailBean>> uploadFile(@PathVariable("userId") String userId,
 									 @PathVariable("docType") String docType,
 									 @PathVariable("sourceId") String sourceId,
