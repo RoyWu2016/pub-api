@@ -9,7 +9,7 @@ package com.ai.api.bean;
 import java.io.Serializable;
 
 import com.ai.commons.beans.order.draft.DraftProductInfo;
-import com.ai.commons.beans.psi.InspectionProductBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
 /***************************************************************************
  *<PRE>
@@ -43,7 +43,7 @@ public class InspectionDraftPrdocutBean implements Serializable{
 	long createUnixTimestamp;
 	long updateUnixTimestamp;
 	DraftProductInfo progress;
-	InspectionProductBean productInfo;
+	InspectionProductBookingBean productInfo;
 
 	public String getDraftProductId() {
 		return draftProductId;
@@ -117,11 +117,11 @@ public class InspectionDraftPrdocutBean implements Serializable{
 		this.progress = progress;
 	}
 
-	public InspectionProductBean getProductInfo() {
+	public InspectionProductBookingBean getProductInfo() {
 		return productInfo;
 	}
 
-	public void setProductInfo(InspectionProductBean productInfo) {
+	public void setProductInfo(InspectionProductBookingBean productInfo) {
 		this.productInfo = productInfo;
 	}
 

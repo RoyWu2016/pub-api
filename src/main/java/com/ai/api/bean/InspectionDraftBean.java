@@ -12,7 +12,7 @@ import java.util.List;
 
 import com.ai.api.bean.consts.ConstMap;
 import com.ai.commons.beans.order.draft.DraftOrderInfo;
-import com.ai.commons.beans.psi.InspectionOrderBean;
+import com.ai.commons.beans.psi.InspectionOrderBookingBean;
 
 /***************************************************************************
  *<PRE>
@@ -49,7 +49,7 @@ public class InspectionDraftBean implements Serializable{
 	long createUnixTimestamp;
 	long updateUnixTimestamp;
 	DraftOrderInfo pregress;
-	InspectionOrderBean orderInfo;
+	InspectionOrderBookingBean orderInfo;
 	List<InspectionDraftPrdocutBean> prdocuts = new ArrayList<>();
 
 	public String getId() {
@@ -140,11 +140,11 @@ public class InspectionDraftBean implements Serializable{
 		this.pregress = pregress;
 	}
 
-	public InspectionOrderBean getOrderInfo() {
+	public InspectionOrderBookingBean getOrderInfo() {
 		return orderInfo;
 	}
 
-	public void setOrderInfo(InspectionOrderBean orderInfo) {
+	public void setOrderInfo(InspectionOrderBookingBean orderInfo) {
 		this.orderInfo = orderInfo;
 	}
 

@@ -19,10 +19,10 @@ import com.ai.commons.beans.customer.ExtraBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.order.Draft;
 import com.ai.commons.beans.order.draft.DraftOrder;
-import com.ai.commons.beans.order.draft.DraftPrdocut;
+import com.ai.commons.beans.order.draft.DraftProduct;
 import com.ai.commons.beans.order.draft.DraftProductInfo;
-import com.ai.commons.beans.psi.InspectionOrderBean;
-import com.ai.commons.beans.psi.InspectionProductBean;
+import com.ai.commons.beans.psi.InspectionOrderBookingBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -107,11 +107,11 @@ public class AIUtil {
 //		draft.setInspectionDate(d.getInspectionDate());
 		draft.setInspectionType(d.getInspectionType());
 		draft.setOrderId(d.getOrderId());
-		draft.setOrderInfo(mapper.readValue(d.getOrderInfo(), InspectionOrderBean.class));
+		draft.setOrderInfo(mapper.readValue(d.getOrderInfo(), InspectionOrderBookingBean.class));
 		draft.setParentCompanyId(d.getParentCompanyId());
 		draft.setUserId(d.getUserId());
 
-		for (DraftPrdocut psi : psiDraft.getPrdocutList()) {
+		for (DraftProduct psi : psiDraft.getPrdocutList()) {
 			InspectionDraftPrdocutBean p = new InspectionDraftPrdocutBean();
 			p.setDraftId(psi.getDraftId());
 			p.setDraftProductId(psi.getDraftProductId());
@@ -121,7 +121,7 @@ public class AIUtil {
 			p.setProductName(psi.getProductName());
 			p.setReferenceNumber(psi.getReferenceNumber());
 			p.setProgress(mapper.readValue(psi.getDraftProductInfo(), DraftProductInfo.class));
-			p.setProductInfo(mapper.readValue(psi.getDraftProductInfo(), InspectionProductBean.class ));
+			p.setProductInfo(mapper.readValue(psi.getDraftProductInfo(), InspectionProductBookingBean.class ));
 
 			draft.getPrdocuts().add(p);
 		}
