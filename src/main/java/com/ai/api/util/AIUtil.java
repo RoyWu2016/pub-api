@@ -111,7 +111,7 @@ public class AIUtil {
 		draft.setParentCompanyId(d.getParentCompanyId());
 		draft.setUserId(d.getUserId());
 
-		for (DraftProduct psi : psiDraft.getPrdocutList()) {
+		for (DraftProduct psi : psiDraft.getProductList()) {
 			InspectionDraftProductBean p = new InspectionDraftProductBean();
 			p.setDraftId(psi.getDraftId());
 			p.setDraftProductId(psi.getDraftProductId());
