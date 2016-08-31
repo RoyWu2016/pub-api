@@ -103,10 +103,10 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
 	@Override
 	public String createChecklist(String userId,CKLChecklistVO checklistVO) {
-	    // for test ..................
-        logger.info("for test ..............");
-		String url ="http://192.168.2.133:8888/checklist-service" + "/ws/"+userId+"/checklist/create";
-//		String url = config.getChecklistServiceUrl() + "/ws/"+userId+"/checklist/create";
+//	    // for test ..................
+//        logger.info("for test ..............");
+//		String url ="http://192.168.2.133:8888/checklist-service" + "/ws/"+userId+"/checklist/create";
+		String url = config.getChecklistServiceUrl() + "/ws/"+userId+"/checklist/create";
 		try {
 			logger.info("createChecklist - POST Url:"+url+" || userId:"+userId+" || checklistVO:"+checklistVO);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistVO);
