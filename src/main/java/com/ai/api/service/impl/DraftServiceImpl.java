@@ -10,6 +10,7 @@ import com.ai.api.dao.DraftDao;
 import com.ai.api.service.DraftService;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
+import com.ai.commons.beans.psi.InspectionBookingBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ public class DraftServiceImpl implements DraftService {
 	}
 
 	@Override
-	public InspectionDraftBean createDraft(String userId, String serviceType) throws Exception{
+	public InspectionBookingBean createDraft(String userId, String serviceType) throws Exception{
 
 		UserBean userBean = userService.getCustById(userId);
 		String parentId = userBean.getCompany().getParentCompanyId();
@@ -72,12 +73,12 @@ public class DraftServiceImpl implements DraftService {
 	}
 
 	@Override
-	public InspectionDraftBean getDraft(String userId, String draftId) throws Exception {
+	public InspectionBookingBean getDraft(String userId, String draftId) throws Exception {
 		return draftDao.getDraft(userId, draftId);
 	}
 
 	@Override
-	public boolean saveDraft(String userId,InspectionDraftBean inspectionDraftBean) throws Exception {
-		return draftDao.saveDraft(userId, AIUtil.convertAPIDraftBean2PSIDraftBean(inspectionDraftBean));
+	public boolean saveDraft(String userId,InspectionBookingBean draft) throws Exception {
+		return draftDao.saveDraft(userId, draft);
 	}
 }

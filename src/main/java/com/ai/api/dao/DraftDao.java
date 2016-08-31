@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.ai.api.bean.InspectionDraftBean;
 import com.ai.commons.beans.order.Draft;
+import com.ai.commons.beans.psi.InspectionBookingBean;
 
 /***************************************************************************
  * <PRE>
@@ -30,9 +31,9 @@ public interface DraftDao {
 
 	boolean deleteDraftsFromPsi(String userId, String draftIds);
 
-	InspectionDraftBean createDraft(String userId, String compId, String parentId, String serviceTypeStrValue);
+    InspectionBookingBean createDraft(String userId, String compId, String parentId, String serviceTypeStrValue);
 
-	InspectionDraftBean getDraft(String userId, String draftId);
+    InspectionBookingBean getDraft(String userId, String draftId);
 
-	boolean saveDraft(String userId,Draft draft);
+	boolean saveDraft(String userId,InspectionBookingBean draft);
 }

@@ -4,6 +4,7 @@ import com.ai.api.bean.InspectionDraftBean;
 import com.ai.api.controller.Draft;
 import com.ai.api.service.DraftService;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.psi.InspectionBookingBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,10 +57,10 @@ public class DraftImpl implements Draft {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/draft", method = RequestMethod.POST)
-	public ResponseEntity<InspectionDraftBean> createDraft(@PathVariable("userId") String userId,
+	public ResponseEntity<InspectionBookingBean> createDraft(@PathVariable("userId") String userId,
 	                                                       @RequestParam("serviceType") String serviceType) {
 		try {
-			InspectionDraftBean newDraft = draftService.createDraft(userId, serviceType);
+            InspectionBookingBean newDraft = draftService.createDraft(userId, serviceType);
 			return new ResponseEntity<>(newDraft, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("create draft error: " + ExceptionUtils.getFullStackTrace(e));
@@ -70,11 +71,11 @@ public class DraftImpl implements Draft {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/draft/{draftId}", method = RequestMethod.GET)
-	public ResponseEntity<InspectionDraftBean> getDraft(@PathVariable final String userId,
+	public ResponseEntity<InspectionBookingBean> getDraft(@PathVariable final String userId,
 	                                                    @PathVariable final String draftId) {
 
 		try {
-			InspectionDraftBean draft = draftService.getDraft(userId, draftId);
+            InspectionBookingBean draft = draftService.getDraft(userId, draftId);
 			return new ResponseEntity<>(draft, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("get draft error: " + ExceptionUtils.getFullStackTrace(e));
@@ -87,10 +88,10 @@ public class DraftImpl implements Draft {
 	@RequestMapping(value = "/user/{userId}/drafts/{draftId}", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> saveDraft(@PathVariable("userId")String userId,
 											 @PathVariable("draftId") String draftId,
-											 @RequestBody InspectionDraftBean inspectionDraftBean) {
+											 @RequestBody InspectionBookingBean draft) {
 		try {
-            inspectionDraftBean.setId(draftId);
-			boolean result = draftService.saveDraft(userId, inspectionDraftBean);
+            draft.setDraftId(draftId);
+			boolean result = draftService.saveDraft(userId, draft);
 			if(result){
 				return new ResponseEntity<>(HttpStatus.OK);
 			}
