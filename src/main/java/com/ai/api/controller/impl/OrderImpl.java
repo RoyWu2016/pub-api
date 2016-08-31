@@ -121,7 +121,7 @@ public class OrderImpl implements Order {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/order/{orderId}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}", method = RequestMethod.DELETE)
 	public ResponseEntity<Boolean> cancelOrder(@PathVariable("userId") String userId,
 	                                           @PathVariable("orderId") String orderId,
 	                                           @RequestBody OrderCancelBean orderCancelBean) {
