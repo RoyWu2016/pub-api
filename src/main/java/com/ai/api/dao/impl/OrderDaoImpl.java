@@ -13,10 +13,13 @@ import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.OrderDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
+import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.api.SimpleOrderBean;
+import com.ai.commons.beans.psi.InspectionOrderBean;
+import com.ai.dto.JsonResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -112,6 +115,25 @@ public class OrderDaoImpl implements OrderDao {
 						", " + result.getResponseString());
 			}
 		}catch (Exception e){
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
+
+	@Override
+	public InspectionOrderBean getOrderDetail(String userId, String orderId){
+		try{
+			String url = config.getPsiServiceUrl()+"/order/api/getOrder/"+userId+"/"+orderId;
+			GetRequest request = GetRequest.newInstance().setUrl(url);
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")){
+				JsonResponse jsonResponse = JsonUtil.mapToObject(result.getResponseString(),JsonResponse.class);
+				if(jsonResponse != null && jsonResponse.getStatus() == 1){
+					InspectionOrderBean orderBean = (InspectionOrderBean)jsonResponse.getData();
+					return orderBean;
+				}
+			}
+		} catch(Exception e){
 			logger.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;

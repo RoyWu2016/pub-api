@@ -11,6 +11,7 @@ import java.util.List;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.api.SimpleOrderBean;
+import com.ai.commons.beans.psi.InspectionOrderBean;
 
 /***************************************************************************
  *<PRE>
@@ -37,4 +38,5 @@ public interface OrderDao {
 	List<SimpleOrderBean> getOrdersByUserId(OrderSearchCriteriaBean criteria);
 	List<SimpleOrderBean> getDraftsByUserId(OrderSearchCriteriaBean criteria);
 	Boolean cancelOrder(OrderCancelBean orderCancelBean);
+	InspectionOrderBean getOrderDetail(String userId, String orderId);
 }
