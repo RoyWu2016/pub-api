@@ -6,11 +6,13 @@ import java.util.Map;
 import com.ai.api.bean.InspectionDraftBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.bean.consts.ConstMap;
+import com.ai.api.controller.Parameter;
 import com.ai.api.dao.DraftDao;
 import com.ai.api.service.DraftService;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,5 +82,20 @@ public class DraftServiceImpl implements DraftService {
 	@Override
 	public boolean saveDraft(String userId,InspectionBookingBean draft) throws Exception {
 		return draftDao.saveDraft(userId, draft);
+	}
+
+	@Override
+	public boolean addProduct(String userId,String draftId) throws Exception {
+		return draftDao.addProduct(userId,draftId);
+	}
+
+	@Override
+	public boolean saveProduct(String userId,InspectionProductBookingBean draftProduct) throws Exception {
+		return draftDao.saveProduct(userId, draftProduct);
+	}
+
+	@Override
+	public boolean deleteProduct(String userId,String productId) throws Exception {
+		return draftDao.deleteProduct(userId, productId);
 	}
 }

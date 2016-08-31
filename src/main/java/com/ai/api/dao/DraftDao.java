@@ -1,10 +1,8 @@
 package com.ai.api.dao;
 
 import java.util.Map;
-
-import com.ai.api.bean.InspectionDraftBean;
-import com.ai.commons.beans.order.Draft;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
 /***************************************************************************
  * <PRE>
@@ -36,4 +34,10 @@ public interface DraftDao {
     InspectionBookingBean getDraft(String userId, String draftId);
 
 	boolean saveDraft(String userId,InspectionBookingBean draft);
+
+    boolean addProduct(String userId,String draftId);
+
+    boolean saveProduct(String userId,InspectionProductBookingBean draftProduct);
+
+    boolean deleteProduct(String userId,String productId);
 }

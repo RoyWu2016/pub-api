@@ -1,7 +1,7 @@
 package com.ai.api.service;
 
-import com.ai.api.bean.InspectionDraftBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
 /***************************************************************************
  * <PRE>
@@ -32,4 +32,10 @@ public interface DraftService {
     InspectionBookingBean getDraft(String userId, String draftId) throws Exception;
 
 	boolean saveDraft(String userId,InspectionBookingBean draft) throws Exception;
+
+    boolean addProduct(String userId,String draftId) throws Exception;
+
+    boolean saveProduct(String userId,InspectionProductBookingBean draftProduct) throws Exception;
+
+    boolean deleteProduct(String userId,String productId) throws Exception;
 }
