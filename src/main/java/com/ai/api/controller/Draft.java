@@ -1,7 +1,7 @@
 package com.ai.api.controller;
 
-import com.ai.api.bean.InspectionDraftBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
 import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
@@ -31,4 +31,10 @@ public interface Draft {
 	ResponseEntity<InspectionBookingBean> getDraft(final String userId, final String draftId);
 
 	ResponseEntity<Boolean> saveDraft(String userId,String draftId,InspectionBookingBean draft);
+
+    ResponseEntity<Boolean> addProduct( String userId,String draftId);
+
+    ResponseEntity<Boolean> saveProduct(String userId,String draftId,String productId,InspectionProductBookingBean draftProduct);
+
+    ResponseEntity<Boolean> deleteProduct( String userId,String draftId,String productId);
 }

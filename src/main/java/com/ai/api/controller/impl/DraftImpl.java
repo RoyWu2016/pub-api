@@ -5,6 +5,7 @@ import com.ai.api.controller.Draft;
 import com.ai.api.service.DraftService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,4 +101,57 @@ public class DraftImpl implements Draft {
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/drafts/{draftId}/product", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> addProduct(@PathVariable("userId")String userId,
+                                               @PathVariable("draftId") String draftId) {
+        try {
+            boolean result = draftService.addProduct(userId, draftId);
+            if(result){
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/drafts/{draftId}/product/{productId}", method = RequestMethod.PUT)
+    public ResponseEntity<Boolean> saveProduct(@PathVariable("userId")String userId,
+                                               @PathVariable("draftId") String draftId,
+                                               @PathVariable("productId") String productId,
+                                               @RequestBody InspectionProductBookingBean draftProduct) {
+        try {
+            draftProduct.setDraftProductId(productId);
+            draftProduct.setDraftId(draftId);
+            boolean result = draftService.saveProduct(userId, draftProduct);
+            if(result){
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/drafts/{draftId}/product/{productId}", method = RequestMethod.DELETE)
+    public ResponseEntity<Boolean> deleteProduct(@PathVariable("userId")String userId,
+                                               @PathVariable("draftId") String draftId,
+                                               @PathVariable("productId") String productId) {
+        try {
+            boolean result = draftService.deleteProduct(userId,productId);
+            if(result){
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

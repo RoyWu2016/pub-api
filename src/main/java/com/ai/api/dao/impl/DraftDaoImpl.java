@@ -13,6 +13,7 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.order.Draft;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
 import com.ai.dto.JsonResponse;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -148,4 +149,64 @@ public class DraftDaoImpl implements DraftDao {
 		}
 		return false;
 	}
+
+    @Override
+    public boolean addProduct(String userId,String draftId) {
+        StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+        url.append("/draft/api/addProduct?userId=").append(userId);
+        try {
+            logger.info("addProduct POST! URL : "+url.toString());
+            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftId);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                return true;
+            } else {
+                logger.error("add product error from psi service : " + result.getStatusCode() +
+                        ", " + result.getResponseString());
+            }
+
+        } catch (IOException e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+        return false;
+    }
+
+	@Override
+	public boolean saveProduct(String userId,InspectionProductBookingBean draftProduct) {
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+		url.append("/draft/api/updateProduct?userId=").append(userId);
+		try {
+			logger.info("saveProduct POST! URL : "+url.toString());
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftProduct);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return true;
+			} else {
+				logger.error("save product error from psi service : " + result.getStatusCode() +
+						", " + result.getResponseString());
+			}
+
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return false;
+	}
+
+    @Override
+    public boolean deleteProduct(String userId,String productId) {
+        StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+        url.append("/draft/api/deleteProduct/").append(userId).append("/").append(productId);
+        try {
+            logger.info("deleteProduct DELETE! URL : "+url.toString());
+            ServiceCallResult result = HttpUtil.issueDeleteRequest(url.toString(),null);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                return true;
+            } else {
+                logger.error("delete product error from psi service : " + result.getStatusCode() +
+                        ", " + result.getResponseString());
+            }
+
+        } catch (IOException e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+        return false;
+    }
 }
