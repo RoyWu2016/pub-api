@@ -79,7 +79,7 @@ public class AuthenticationImpl implements Authentication {
 		String password = loginBean.getPassword();
 		String userType = loginBean.getUserType();
         logger.info("account:"+account);
-        logger.info("password:"+password);
+//        logger.info("password:"+password);
         logger.info("userType:"+userType);
 		ServiceCallResult result = new ServiceCallResult();
 		ObjectMapper mapper = new ObjectMapper();

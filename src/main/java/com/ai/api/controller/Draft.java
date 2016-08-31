@@ -1,6 +1,7 @@
 package com.ai.api.controller;
 
 import com.ai.api.bean.InspectionDraftBean;
+import com.ai.commons.beans.psi.InspectionBookingBean;
 import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
@@ -25,9 +26,9 @@ import org.springframework.http.ResponseEntity;
 public interface Draft {
 	ResponseEntity<Boolean> deleteDraftFrom(String userId, String draftIds);
 
-	ResponseEntity<InspectionDraftBean> createDraft(final String userId, final String serviceType);
+	ResponseEntity<InspectionBookingBean> createDraft(final String userId, final String serviceType);
 
-	ResponseEntity<InspectionDraftBean> getDraft(final String userId, final String draftId);
+	ResponseEntity<InspectionBookingBean> getDraft(final String userId, final String draftId);
 
-	ResponseEntity<Boolean> saveDraft(String userId,String draftId,InspectionDraftBean inspectionDraftBean);
+	ResponseEntity<Boolean> saveDraft(String userId,String draftId,InspectionBookingBean draft);
 }
