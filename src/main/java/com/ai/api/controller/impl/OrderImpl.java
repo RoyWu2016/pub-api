@@ -144,7 +144,7 @@ public class OrderImpl implements Order {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/order/{orderId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Object>> getOrderDetail(@PathVariable("userId") String userId,
 											   @PathVariable("orderId") String orderId) {
 
