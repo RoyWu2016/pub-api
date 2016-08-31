@@ -188,7 +188,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
             logger.info("checklistNameExist - get!!! Url:"+url);
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				if ("true".equals(result.getResponseString())){
+				if ("true".equalsIgnoreCase(result.getResponseString())){
                     logger.info("checklistNameExist --->> true");
 				    return true;
 				}else {
@@ -212,7 +212,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
             logger.info("saveFeedback - POST!!! Url:"+url+" || feedback:" +feedback);
             ServiceCallResult result = HttpUtil.issuePostRequest(url, null, feedback);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                if ("true".equals(result.getResponseString())){
+                if ("true".equalsIgnoreCase(result.getResponseString())){
                     logger.info("saveFeedback --->> ok");
                     return true;
                 }else {
@@ -236,7 +236,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
             logger.info("approved - POST!!! Url:"+url+" || checklistId:" +checklistId);
             ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistId);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                if ("true".equals(result.getResponseString())){
+                if ("true".equalsIgnoreCase(result.getResponseString())){
                     logger.info("approved --->> pass");
                     return true;
                 }else {

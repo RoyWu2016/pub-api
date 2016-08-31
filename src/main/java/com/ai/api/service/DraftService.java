@@ -29,4 +29,6 @@ public interface DraftService {
 	InspectionDraftBean createDraft(String userId, String serviceType) throws Exception;
 
 	InspectionDraftBean getDraft(String userId, String draftId) throws Exception;
+
+	boolean saveDraft(String userId,InspectionDraftBean inspectionDraftBean) throws Exception;
 }

@@ -10,11 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /***************************************************************************
  * <PRE>
@@ -84,5 +80,23 @@ public class DraftImpl implements Draft {
 			logger.error("get draft error: " + ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/drafts/{draftId}", method = RequestMethod.PUT)
+	public ResponseEntity<Boolean> saveDraft(@PathVariable("userId")String userId,
+											 @PathVariable("draftId") String draftId,
+											 @RequestBody InspectionDraftBean inspectionDraftBean) {
+		try {
+            inspectionDraftBean.setId(draftId);
+			boolean result = draftService.saveDraft(userId, inspectionDraftBean);
+			if(result){
+				return new ResponseEntity<>(HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
