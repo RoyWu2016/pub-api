@@ -28,8 +28,8 @@ import org.springframework.http.ResponseEntity;
 
 
 public interface Checklist {
-	ResponseEntity<List<CKLChecklistSearchVO>> searchPrivateChecklist(String userId, String keyword,int pageNumber);
-	ResponseEntity<List<CKLChecklistSearchVO>> searchPublicChecklist(String userId, String keyword,int pageNumber);
+	ResponseEntity<List<CKLChecklistSearchVO>> searchPrivateChecklist(String userId, String keyword,String pageNumber);
+	ResponseEntity<List<CKLChecklistSearchVO>> searchPublicChecklist(String userId, String keyword,String pageNumber);
 	ResponseEntity<String> createChecklist(String userId, CKLChecklistVO checklistVO);
 	ResponseEntity<String> updateChecklist(String userId,String checklistId,CKLChecklistVO checklist);
     ResponseEntity<CKLChecklistVO> getChecklist(String userId,String checklistId);

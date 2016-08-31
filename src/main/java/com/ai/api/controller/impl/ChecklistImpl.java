@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ai.api.controller.Checklist;
 import com.ai.api.service.ChecklistService;
+import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
@@ -51,12 +52,12 @@ public class ChecklistImpl implements Checklist {
 	@RequestMapping(value = "/user/{userId}/checklists", method = RequestMethod.GET)
 	public ResponseEntity<List<CKLChecklistSearchVO>> searchPrivateChecklist(@PathVariable("userId") String userId,
 	                                                                       @RequestParam(value = "keyword",required = false) String keyword,
-																		   @RequestParam(value = "pageNumber",required = false) int pageNumber) {
+																		   @RequestParam(value = "pageNumber",required = false) String pageNumber) {
 		logger.info("searchChecklist ...");
 		logger.info("userId :"+userId);
 		logger.info("keyword :"+keyword);
 		logger.info("pageNumber :"+pageNumber);
-		List<CKLChecklistSearchVO> result = checklistService.searchPrivateChecklist(userId,keyword,pageNumber);
+		List<CKLChecklistSearchVO> result = checklistService.searchPrivateChecklist(userId,keyword, StringUtils.isBlank(pageNumber)?0:Integer.valueOf(pageNumber));
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
@@ -69,12 +70,12 @@ public class ChecklistImpl implements Checklist {
 	@RequestMapping(value = "/user/{userId}/public-checklists", method = RequestMethod.GET)
 	public ResponseEntity<List<CKLChecklistSearchVO>> searchPublicChecklist(@PathVariable("userId") String userId,
                                                                            @RequestParam(value = "keyword",required = false) String keyword,
-                                                                           @RequestParam(value = "pageNumber",required = false) int pageNumber) {
+                                                                           @RequestParam(value = "pageNumber",required = false) String pageNumber) {
 		logger.info("searchPublicChecklist ...");
 		logger.info("userId :"+userId);
 		logger.info("keyword :"+keyword);
         logger.info("pageNumber :"+pageNumber);
-		List<CKLChecklistSearchVO> result = checklistService.searchPublicChecklist(userId, keyword,pageNumber);
+		List<CKLChecklistSearchVO> result = checklistService.searchPublicChecklist(userId, keyword,StringUtils.isBlank(pageNumber)?0:Integer.valueOf(pageNumber));
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
