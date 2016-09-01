@@ -18,6 +18,7 @@ import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.api.SimpleOrderBean;
+import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionOrderBean;
 import com.ai.dto.JsonResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -121,22 +122,89 @@ public class OrderDaoImpl implements OrderDao {
 	}
 
 	@Override
-	public InspectionOrderBean getOrderDetail(String userId, String orderId){
+	public InspectionBookingBean getOrderDetail(String userId, String orderId){
 		try{
 			String url = config.getPsiServiceUrl()+"/order/api/getOrder/"+userId+"/"+orderId;
+            logger.info("Get!!! url :"+url);
 			GetRequest request = GetRequest.newInstance().setUrl(url);
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")){
-				JsonResponse jsonResponse = JsonUtil.mapToObject(result.getResponseString(),JsonResponse.class);
-				if(jsonResponse != null && jsonResponse.getStatus() == 1){
-					InspectionOrderBean orderBean = (InspectionOrderBean)jsonResponse.getData();
-					return orderBean;
-				}
+				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+			} else {
+				logger.error("getOrder error from psi service : " + result.getStatusCode() +
+						", " + result.getResponseString());
 			}
 		} catch(Exception e){
 			logger.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
+
+	@Override
+	public InspectionBookingBean createOrderByDraft(String userId, String draftId,String companyId,String parentId){
+		try{
+			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+			url.append("/order/api/createOrderByDraft?userId=").append(userId).
+					append("&companyId=").append(companyId).
+					append("&parentId=").append(parentId).
+					append("&draftId=").append(draftId);
+            logger.info("Post!!! url :"+url);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftId);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+			} else {
+				logger.error("createOrderByDraft error from psi service : " + result.getStatusCode() +
+						", " + result.getResponseString());
+			}
+		} catch(Exception e){
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
+
+    @Override
+    public InspectionBookingBean editOrder(String userId, String orderId,String companyId,String parentId){
+        try{
+            StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+            url.append("/order/api/editOrder?userId=").append(userId).
+                    append("&companyId=").append(companyId).
+                    append("&parentId=").append(parentId).
+                    append("&draftId=").append(orderId);
+            logger.info("Get!!! url :"+url);
+            GetRequest request = GetRequest.newInstance().setUrl(url.toString());
+            ServiceCallResult result = HttpUtil.issueGetRequest(request);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")){
+                return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+            } else {
+                logger.error("editOrder error from psi service : " + result.getStatusCode() +
+                        ", " + result.getResponseString());
+            }
+        } catch(Exception e){
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+        return null;
+    }
+
+    @Override
+    public InspectionBookingBean saveOrderByDraft(String userId, String draftId,String companyId,String parentId){
+        try{
+            StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+            url.append("/order/api/saveOrderByDraft?userId=").append(userId).
+                    append("&companyId=").append(companyId).
+                    append("&parentId=").append(parentId).
+                    append("&draftId=").append(draftId);
+            logger.info("Post!!! url :"+url);
+            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftId);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+            } else {
+                logger.error("saveOrderByDraft error from psi service : " + result.getStatusCode() +
+                        ", " + result.getResponseString());
+            }
+        } catch(Exception e){
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+        return null;
+    }
 
 }

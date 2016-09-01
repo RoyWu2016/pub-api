@@ -16,7 +16,10 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.api.SimpleOrderBean;
+import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionOrderBean;
+import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,6 +128,10 @@ public class OrderImpl implements Order {
 	                                           @PathVariable("orderId") String orderId,
 	                                           @RequestBody OrderCancelBean orderCancelBean) {
 		try {
+			logger.info("cancelOrder ...");
+			logger.info("userId :"+userId);
+			logger.info("orderId:"+orderId);
+			logger.info("orderCancelBean:"+orderCancelBean);
 			UserBean user = userService.getCustById(userId);
 			if (orderCancelBean != null) {
 				orderCancelBean.setLogin(user.getLogin());
@@ -146,18 +153,97 @@ public class OrderImpl implements Order {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Object>> getOrderDetail(@PathVariable("userId") String userId,
-											   @PathVariable("orderId") String orderId) {
+															  @PathVariable("orderId") String orderId) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-				InspectionOrderBean orderBean = orderService.getOrderDetail(userId, orderId);
-				if (orderBean != null) {
-					map.put("success", true);
-					map.put("data", orderBean);
-					return new ResponseEntity<>(map, HttpStatus.OK);
-				}
-
+			logger.info("getOrderDetail ...");
+			logger.info("userId :"+userId);
+			logger.info("orderId:"+orderId);
+			InspectionBookingBean orderBean = orderService.getOrderDetail(userId, orderId);
+			if (orderBean != null) {
+				map.put("success", true);
+				map.put("data", orderBean);
+				return new ResponseEntity<>(map, HttpStatus.OK);
+			}
 		} catch (Exception e) {
+			logger.error("error in getOrderDetail",e);
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}/draft/{draftId}", method = RequestMethod.POST)
+	public ResponseEntity<Map<String, Object>> createOrderByDraft(@PathVariable("userId") String userId,
+															  @PathVariable("draftId") String draftId,
+																  @PathVariable("orderId") String orderId) {
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			logger.info("createOrderByDraft ...");
+			logger.info("userId :"+userId);
+			logger.info("draftId :"+draftId);
+			logger.info("orderId:"+orderId);
+			InspectionBookingBean orderBean = orderService.createOrderByDraft(userId, draftId);
+			if (orderBean != null) {
+				map.put("success", true);
+				map.put("data", orderBean);
+				return new ResponseEntity<>(map, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			logger.error("error in createOrderByDraft",e);
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}/editing", method = RequestMethod.PUT)
+	public ResponseEntity<Map<String, Object>> editOrder(@PathVariable("userId") String userId,
+																  @PathVariable("orderId") String orderId) {
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			logger.info("editOrder ...");
+			logger.info("userId :"+userId);
+			logger.info("orderId:"+orderId);
+			InspectionBookingBean orderBean = orderService.editOrder(userId, orderId);
+			if (orderBean != null) {
+				map.put("success", true);
+				map.put("data", orderBean);
+				return new ResponseEntity<>(map, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			logger.error("error in editOrder",e);
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}/draft/{draftId}/saved", method = RequestMethod.PUT)
+	public ResponseEntity<Map<String, Object>> saveOrderByDraft(@PathVariable("userId") String userId,
+																@PathVariable("draftId") String draftId,
+																@PathVariable("orderId") String orderId) {
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			logger.info("saveOrderByDraft ...");
+			logger.info("userId :"+userId);
+			logger.info("draftId :"+draftId);
+			logger.info("orderId:"+orderId);
+			InspectionBookingBean orderBean = orderService.saveOrderByDraft(userId, draftId);
+			if (orderBean != null) {
+				map.put("success", true);
+				map.put("data", orderBean);
+				return new ResponseEntity<>(map, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			logger.error("error in saveOrderByDraft",e);
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

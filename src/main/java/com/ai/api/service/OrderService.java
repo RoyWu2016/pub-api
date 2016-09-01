@@ -11,6 +11,7 @@ import java.util.List;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.api.SimpleOrderBean;
+import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionOrderBean;
 
 /***************************************************************************
@@ -39,5 +40,11 @@ public interface OrderService {
 	List<SimpleOrderBean> getDraftsByUserId(OrderSearchCriteriaBean criteria);
 	Boolean cancelOrder(OrderCancelBean orderCancelBean);
 
-	InspectionOrderBean getOrderDetail(String userId, String orderId);
+	InspectionBookingBean getOrderDetail(String userId, String orderId);
+
+	InspectionBookingBean createOrderByDraft(String userId, String draftId);
+
+    InspectionBookingBean editOrder(String userId, String orderId);
+
+    InspectionBookingBean saveOrderByDraft(String userId, String draftId);
 }
