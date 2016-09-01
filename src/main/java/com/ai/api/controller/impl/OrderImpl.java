@@ -128,6 +128,10 @@ public class OrderImpl implements Order {
 	                                           @PathVariable("orderId") String orderId,
 	                                           @RequestBody OrderCancelBean orderCancelBean) {
 		try {
+			logger.info("cancelOrder ...");
+			logger.info("userId :"+userId);
+			logger.info("orderId:"+orderId);
+			logger.info("orderCancelBean:"+orderCancelBean);
 			UserBean user = userService.getCustById(userId);
 			if (orderCancelBean != null) {
 				orderCancelBean.setLogin(user.getLogin());
@@ -153,6 +157,9 @@ public class OrderImpl implements Order {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
+			logger.info("getOrderDetail ...");
+			logger.info("userId :"+userId);
+			logger.info("orderId:"+orderId);
 			InspectionBookingBean orderBean = orderService.getOrderDetail(userId, orderId);
 			if (orderBean != null) {
 				map.put("success", true);
@@ -160,6 +167,7 @@ public class OrderImpl implements Order {
 				return new ResponseEntity<>(map, HttpStatus.OK);
 			}
 		} catch (Exception e) {
+			logger.error("error in getOrderDetail",e);
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -174,6 +182,10 @@ public class OrderImpl implements Order {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
+			logger.info("createOrderByDraft ...");
+			logger.info("userId :"+userId);
+			logger.info("draftId :"+draftId);
+			logger.info("orderId:"+orderId);
 			InspectionBookingBean orderBean = orderService.createOrderByDraft(userId, draftId);
 			if (orderBean != null) {
 				map.put("success", true);
@@ -181,6 +193,7 @@ public class OrderImpl implements Order {
 				return new ResponseEntity<>(map, HttpStatus.OK);
 			}
 		} catch (Exception e) {
+			logger.error("error in createOrderByDraft",e);
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -194,6 +207,9 @@ public class OrderImpl implements Order {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
+			logger.info("editOrder ...");
+			logger.info("userId :"+userId);
+			logger.info("orderId:"+orderId);
 			InspectionBookingBean orderBean = orderService.editOrder(userId, orderId);
 			if (orderBean != null) {
 				map.put("success", true);
@@ -201,6 +217,7 @@ public class OrderImpl implements Order {
 				return new ResponseEntity<>(map, HttpStatus.OK);
 			}
 		} catch (Exception e) {
+			logger.error("error in editOrder",e);
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -215,6 +232,10 @@ public class OrderImpl implements Order {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
+			logger.info("saveOrderByDraft ...");
+			logger.info("userId :"+userId);
+			logger.info("draftId :"+draftId);
+			logger.info("orderId:"+orderId);
 			InspectionBookingBean orderBean = orderService.saveOrderByDraft(userId, draftId);
 			if (orderBean != null) {
 				map.put("success", true);
@@ -222,6 +243,7 @@ public class OrderImpl implements Order {
 				return new ResponseEntity<>(map, HttpStatus.OK);
 			}
 		} catch (Exception e) {
+			logger.error("error in saveOrderByDraft",e);
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

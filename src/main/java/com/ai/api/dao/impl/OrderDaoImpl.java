@@ -125,6 +125,7 @@ public class OrderDaoImpl implements OrderDao {
 	public InspectionBookingBean getOrderDetail(String userId, String orderId){
 		try{
 			String url = config.getPsiServiceUrl()+"/order/api/getOrder/"+userId+"/"+orderId;
+            logger.info("Get!!! url :"+url);
 			GetRequest request = GetRequest.newInstance().setUrl(url);
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")){
@@ -147,6 +148,7 @@ public class OrderDaoImpl implements OrderDao {
 					append("&companyId=").append(companyId).
 					append("&parentId=").append(parentId).
 					append("&draftId=").append(draftId);
+            logger.info("Post!!! url :"+url);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftId);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
@@ -168,6 +170,7 @@ public class OrderDaoImpl implements OrderDao {
                     append("&companyId=").append(companyId).
                     append("&parentId=").append(parentId).
                     append("&draftId=").append(orderId);
+            logger.info("Get!!! url :"+url);
             GetRequest request = GetRequest.newInstance().setUrl(url.toString());
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")){
@@ -190,6 +193,7 @@ public class OrderDaoImpl implements OrderDao {
                     append("&companyId=").append(companyId).
                     append("&parentId=").append(parentId).
                     append("&draftId=").append(draftId);
+            logger.info("Post!!! url :"+url);
             ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftId);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
