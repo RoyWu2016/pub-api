@@ -45,4 +45,11 @@ public interface Order {
 	ResponseEntity<Boolean> cancelOrder(String userId, String orderId, OrderCancelBean orderCancelBean);
 
 	ResponseEntity<Map<String, Object>> getOrderDetail(String userId,String orderId);
+
+	ResponseEntity<Map<String, Object>> createOrderByDraft(String userId,String draftId,String orderId);
+
+    ResponseEntity<Map<String, Object>> editOrder(String userId,String orderId);
+
+    ResponseEntity<Map<String, Object>> saveOrderByDraft(String userId,String draftId,String orderId);
+
 }

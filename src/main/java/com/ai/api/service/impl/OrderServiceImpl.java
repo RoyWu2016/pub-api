@@ -8,6 +8,7 @@ package com.ai.api.service.impl;
 
 import java.util.List;
 
+import com.ai.api.bean.UserBean;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.OrderDao;
 import com.ai.api.service.OrderService;
@@ -15,6 +16,7 @@ import com.ai.api.service.UserService;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.api.SimpleOrderBean;
+import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionOrderBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,9 +85,58 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public InspectionOrderBean getOrderDetail(String userId, String orderId){
+	public InspectionBookingBean getOrderDetail(String userId, String orderId){
 		return orderDao.getOrderDetail(userId, orderId);
 	}
+
+    @Override
+    public InspectionBookingBean createOrderByDraft(String userId, String draftId){
+        String companyId = "";
+        String parentId = "";
+        UserBean user = this.getUserBeanByUserId(userId);
+        if (null!=user){
+            parentId = user.getCompany().getParentCompanyId();
+            if (parentId == null) parentId = "";
+            companyId = user.getCompany().getId();
+        }
+        return orderDao.createOrderByDraft(userId, draftId,companyId,parentId);
+    }
+
+    @Override
+    public InspectionBookingBean editOrder(String userId, String orderId){
+        String companyId = "";
+        String parentId = "";
+        UserBean user = this.getUserBeanByUserId(userId);
+        if (null!=user){
+            parentId = user.getCompany().getParentCompanyId();
+            if (parentId == null) parentId = "";
+            companyId = user.getCompany().getId();
+        }
+        return orderDao.editOrder(userId, orderId,companyId,parentId);
+    }
+
+    @Override
+    public InspectionBookingBean saveOrderByDraft(String userId, String draftId){
+        String companyId = "";
+        String parentId = "";
+        UserBean user = this.getUserBeanByUserId(userId);
+        if (null!=user){
+            parentId = user.getCompany().getParentCompanyId();
+            if (parentId == null) parentId = "";
+            companyId = user.getCompany().getId();
+        }
+        return orderDao.saveOrderByDraft(userId, draftId,companyId,parentId);
+    }
+
+    private UserBean getUserBeanByUserId(String userId){
+        UserBean user = null;
+        try {
+            user = userService.getCustById(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return user;
+    }
 
 
 }
