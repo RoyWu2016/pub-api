@@ -31,6 +31,8 @@ public interface DraftDao {
 
     InspectionBookingBean createDraft(String userId, String compId, String parentId, String serviceTypeStrValue);
 
+    InspectionBookingBean createDraftFromPreviousOrder(String userId, String companyId, String parentId, String orderId);
+
     InspectionBookingBean getDraft(String userId, String draftId);
 
 	boolean saveDraft(String userId,InspectionBookingBean draft);

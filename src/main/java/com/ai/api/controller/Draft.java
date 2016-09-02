@@ -28,6 +28,8 @@ public interface Draft {
 
 	ResponseEntity<InspectionBookingBean> createDraft(final String userId, final String serviceType);
 
+	ResponseEntity<InspectionBookingBean> createDraftFromPreviousOrder(final String userId, final String orderId);
+
 	ResponseEntity<InspectionBookingBean> getDraft(final String userId, final String draftId);
 
 	ResponseEntity<Boolean> saveDraft(String userId,String draftId,InspectionBookingBean draft);

@@ -75,6 +75,19 @@ public class DraftServiceImpl implements DraftService {
 	}
 
 	@Override
+	public InspectionBookingBean createDraftFromPreviousOrder(String userId, String orderId) throws Exception{
+		String companyId = "";
+		String parentId = "";
+		UserBean user = userService.getCustById(userId);
+		if (null!=user){
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null) parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		return draftDao.createDraftFromPreviousOrder(userId,companyId,parentId,orderId);
+	}
+
+	@Override
 	public InspectionBookingBean getDraft(String userId, String draftId) throws Exception {
 		return draftDao.getDraft(userId, draftId);
 	}
