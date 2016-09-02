@@ -113,6 +113,29 @@ public class DraftDaoImpl implements DraftDao {
 	}
 
 	@Override
+	public InspectionBookingBean createDraftFromPreviousOrder(String userId, String companyId, String parentId, String orderId) {
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl()).
+				append("/draft/api/createDraftFromPreviousOrder").
+				append("?userId=").append(userId).
+				append("&companyId=").append(companyId).
+				append("&parentId=").append(parentId).
+				append("&orderId=").append(orderId);
+		try {
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,orderId);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+			} else {
+				logger.error("createDraftFromPreviousOrder error from psi service : " + result.getStatusCode() +
+						", " + result.getResponseString());
+			}
+
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
+
+	@Override
 	public InspectionBookingBean getDraft(String userId, String draftId) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		url.append("/draft/api/getDraft/").append(userId).append("/").append(draftId);

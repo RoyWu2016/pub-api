@@ -1,6 +1,5 @@
 package com.ai.api.controller.impl;
 
-import com.ai.api.bean.InspectionDraftBean;
 import com.ai.api.controller.Draft;
 import com.ai.api.service.DraftService;
 import com.ai.commons.annotation.TokenSecured;
@@ -65,6 +64,20 @@ public class DraftImpl implements Draft {
 			return new ResponseEntity<>(newDraft, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("create draft error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/previous-psi-order/{orderId}", method = RequestMethod.POST)
+	public ResponseEntity<InspectionBookingBean> createDraftFromPreviousOrder(@PathVariable("userId") String userId,
+																			  @PathVariable("orderId") String orderId) {
+		try {
+			InspectionBookingBean newDraft = draftService.createDraftFromPreviousOrder(userId, orderId);
+			return new ResponseEntity<>(newDraft, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("create draft from previous order error: " + ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
