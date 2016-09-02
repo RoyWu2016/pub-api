@@ -1,14 +1,15 @@
 package com.ai.api.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ai.api.bean.FileDetailBean;
 import com.ai.api.exception.AIException;
+import com.ai.commons.beans.fileservice.FileMetaBean;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /***************************************************************************
  * <PRE>
@@ -28,14 +29,14 @@ import org.springframework.http.ResponseEntity;
  * </PRE>
  ***************************************************************************/
 
-public interface File {
+public interface FileController {
 
-    ResponseEntity<FileDetailBean> getFileDetailInfo(String userId,String fileId) throws IOException, AIException;
+    ResponseEntity<FileMetaBean> getFileDetailInfo(String userId,String fileId) throws IOException, AIException;
 
-    void getFile(String userId,String fileId,HttpServletResponse httpResponse);
+    boolean  getFile(String userId,String fileId,HttpServletRequest request, HttpServletResponse httpResponse) throws IOException;
 
-    ResponseEntity<List<FileDetailBean>> uploadFile(String userId, String docType, String sourceId, HttpServletRequest request, HttpServletResponse response);
+    ResponseEntity<FileMetaBean> uploadFile(String userId, String docType, String sourceId, MultipartHttpServletRequest request, HttpServletResponse response)throws IOException;
 
-    ResponseEntity<String> deleteFile(String userId,String fileId);
+    ResponseEntity<String> deleteFile(String userId,String fileId) throws IOException;
 
 }

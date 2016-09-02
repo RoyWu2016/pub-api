@@ -39,7 +39,11 @@ public class ServiceConfig {
     private String factoryServiceUrl;
 
     private String fileServiceUrl;
-
+   
+	private int fileMaximumSize;
+	
+    private int cacheRefreshInterval;
+ 
 	private String mwServiceUrl;
 
     private String checklistServiceUrl;
@@ -161,4 +165,22 @@ public class ServiceConfig {
     public void setPsiServiceUrl(String psiServiceUrl) {
         this.psiServiceUrl = psiServiceUrl;
     }
+
+	public int getCacheRefreshInterval() {
+		return cacheRefreshInterval;
+	}
+
+	public void setCacheRefreshInterval(int cacheRefreshInterval) {
+		this.cacheRefreshInterval = cacheRefreshInterval;
+	}
+
+	public int getFileMaximumSize() {
+		return fileMaximumSize;
+	}
+
+	public void setFileMaximumSize(int fileMaximumSize) {
+		this.fileMaximumSize = fileMaximumSize;
+	}
+	
+
 }
