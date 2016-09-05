@@ -81,9 +81,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -540,30 +537,29 @@ public class UserServiceImpl implements UserService {
         logger.info("success removed!!");
 	}
 
+	public UserBean updateUserBeanInCache(final String userId) {
+		UserBean newUserBean = this.getUserBeanByService(userId);
+		RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(newUserBean));
+		return newUserBean;
+	}
+
 //	@Cacheable("userBeanCache")
 	@Override
 	public UserBean getCustById(String userId) throws IOException, AIException {
-        UserBean user = new UserBean();
-	    try {
-	        logger.info("try to get userBean from redis ...");
-	        String jsonStr = RedisUtil.hget("userBeanCache",userId);
-            user = JSON.parseObject(jsonStr,UserBean.class);
-            if (StringUtils.isNotBlank(user.getId())){
-                logger.info("success get userBean from redis.");
-                return user;
-            }
-        }catch (Exception e){
-            logger.error("error getting userBean from redis.");
-        }
-        user = this.getUserBeanByService(userId);
-		try {
+		logger.info("try to get userBean from redis ...");
+		String jsonStr = RedisUtil.hget("userBeanCache",userId);
+		UserBean user = JSON.parseObject(jsonStr,UserBean.class);
+		if (user != null && StringUtils.isNotBlank(user.getId())){
+			logger.info("success get userBean from redis.");
+			return user;
+		} else {
+			logger.error("can't find user " + userId + " in cache. Will get from customer service. ");
+			user = this.getUserBeanByService(userId);
 			logger.info("saving userBean to redis ...");
 			RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(user));
 			logger.info("saving success !!!");
-		}catch (Exception e){
-                logger.error("error occurred in saving userBean to redis! ",e);
+			return user;
 		}
-		return user;
 	}
 
 //	@CachePut(value = "userBeanCache", key = "#userId")
@@ -580,22 +576,11 @@ public class UserServiceImpl implements UserService {
 		company.setCountryRegion(newComp.getCountry());
 		company.setWebsite(newComp.getWebsite());
 
-
 		//update
 		//return companyDao.updateCrmCompany(company);
-
 		if (companyDao.updateCrmCompany(company)) {
-            UserBean userInRedis = this.getCustById(userId);
-            newComp.setId(userInRedis.getCompany().getId());
-            userInRedis.setCompany(newComp);
-            try {
-                logger.info("update userBean after updateCrmCompany to redis ...");
-                RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(userInRedis));
-                logger.info("update success !!!");
-            }catch (Exception e){
-                logger.error("error occurred in update userBean to redis! ",e);
-            }
-			return userInRedis;
+			logger.info("update company finished for user:  " + userId);
+			return this.updateUserBeanInCache(userId);
 		}
 		return null;
 	}
@@ -632,16 +617,8 @@ public class UserServiceImpl implements UserService {
 		//update general user and company contact
 		//return customerDao.updateGeneralUser(user) && companyDao.updateCompanyContact(compId, contact);
 		if (customerDao.updateGeneralUser(user) && companyDao.updateCompanyContact(compId, contact)){
-            UserBean userInRedis = this.getCustById(userId);
-            userInRedis.setContacts(newContact);
-            try {
-                logger.info("update userBean after updateContact to redis ...");
-                RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(userInRedis));
-                logger.info("update success !!!");
-            }catch (Exception e){
-                logger.error("error occurred in update userBean to redis! ",e);
-            }
-            return userInRedis;
+			logger.info("update contact finished for user:  " + userId);
+			return this.updateUserBeanInCache(userId);
         }
 		return null;
 	}
@@ -689,16 +666,8 @@ public class UserServiceImpl implements UserService {
 		//update order booking and extra
 		//return companyDao.updateCompanyExtra(compId, extra) && companyDao.updateCompanyOrderBooking(compId, booking);
 		if (companyDao.updateCompanyExtra(compId, extra) && companyDao.updateCompanyOrderBooking(compId, booking)) {
-            UserBean userInRedis = this.getCustById(userId);
-            userInRedis.getPreferences().setBooking(newBookingPref);
-            try {
-                logger.info("update userBean after updateBookingPreference to redis ...");
-                RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(userInRedis));
-                logger.info("update success !!!");
-            }catch (Exception e){
-                logger.error("error occurred in update userBean to redis! ",e);
-            }
-            return userInRedis;
+			logger.info("update booking preference finished for user:  " + userId);
+			return this.updateUserBeanInCache(userId);
 		}
 		return null;
 	}
@@ -740,15 +709,8 @@ public class UserServiceImpl implements UserService {
 		family.setRelevantCategoryInfo(infos);
 		//return companyDao.updateCompanyProductFamily(compId, family);
 		if (companyDao.updateCompanyProductFamily(compId, family)) {
-            UserBean newUser = this.getUserBeanByService(userId);
-            try {
-                logger.info("update userBean after updateBookingPreferredProductFamily to redis ...");
-                RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(newUser));
-                logger.info("update success !!!");
-            }catch (Exception e){
-                logger.error("error occurred in update userBean to redis! ",e);
-            }
-            return newUser;
+			logger.info("update booking preference finished for user:  " + userId);
+			return this.updateUserBeanInCache(userId);
 		}
 		return null;
 	}
