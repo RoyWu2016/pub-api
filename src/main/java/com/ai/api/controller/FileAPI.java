@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  * </PRE>
  ***************************************************************************/
 
-public interface FileController {
+public interface FileAPI {
 
     ResponseEntity<FileMetaBean> getFileDetailInfo(String userId,String fileId) throws IOException, AIException;
 

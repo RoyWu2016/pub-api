@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.config.ServiceConfig;
-import com.ai.api.controller.FileController;
+import com.ai.api.controller.FileAPI;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.APIFileService;
 import com.ai.commons.annotation.TokenSecured;
@@ -49,7 +49,7 @@ import com.ai.dto.JsonResponse;
  ***************************************************************************/
 
 @RestController
-public class FileControllerImpl implements FileController {
+public class FileControllerImpl implements FileAPI {
 
 	private static final Logger logger = LoggerFactory.getLogger(FileControllerImpl.class);
 
