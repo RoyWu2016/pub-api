@@ -24,7 +24,7 @@ import org.springframework.http.ResponseEntity;
 
 
 public interface Draft {
-	ResponseEntity<Boolean> deleteDraftFrom(String userId, String draftIds);
+	ResponseEntity<Boolean> deleteDrafts(String userId, String draftIds);
 
 	ResponseEntity<InspectionBookingBean> createDraft(final String userId, final String serviceType);
 

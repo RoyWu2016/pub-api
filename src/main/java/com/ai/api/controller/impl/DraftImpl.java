@@ -42,7 +42,7 @@ public class DraftImpl implements Draft {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/drafts/{draftIds}", method = RequestMethod.DELETE)
-	public ResponseEntity<Boolean> deleteDraftFrom(@PathVariable("userId")String userId,@PathVariable("draftIds") String draftIds) {
+	public ResponseEntity<Boolean> deleteDrafts(@PathVariable("userId") String userId, @PathVariable("draftIds") String draftIds) {
 		try {
 			boolean result = draftService.deleteDraftFromPsi(userId, draftIds);
 			if(result){
@@ -99,7 +99,7 @@ public class DraftImpl implements Draft {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/drafts/{draftId}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/draft/{draftId}", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> saveDraft(@PathVariable("userId")String userId,
 											 @PathVariable("draftId") String draftId,
 											 @RequestBody InspectionBookingBean draft) {
@@ -117,7 +117,7 @@ public class DraftImpl implements Draft {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/drafts/{draftId}/product", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/{userId}/draft/{draftId}/product", method = RequestMethod.POST)
     public ResponseEntity<Boolean> addProduct(@PathVariable("userId")String userId,
                                                @PathVariable("draftId") String draftId) {
         try {
@@ -133,7 +133,7 @@ public class DraftImpl implements Draft {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/drafts/{draftId}/product/{productId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/user/{userId}/draft/{draftId}/product/{productId}", method = RequestMethod.PUT)
     public ResponseEntity<Boolean> saveProduct(@PathVariable("userId")String userId,
                                                @PathVariable("draftId") String draftId,
                                                @PathVariable("productId") String productId,
@@ -153,7 +153,7 @@ public class DraftImpl implements Draft {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/drafts/{draftId}/product/{productId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/user/{userId}/draft/{draftId}/product/{productId}", method = RequestMethod.DELETE)
     public ResponseEntity<Boolean> deleteProduct(@PathVariable("userId")String userId,
                                                @PathVariable("draftId") String draftId,
                                                @PathVariable("productId") String productId) {
