@@ -49,9 +49,9 @@ import com.ai.dto.JsonResponse;
  ***************************************************************************/
 
 @RestController
-public class FileControllerImpl implements FileAPI {
+public class FileAPIImpl implements FileAPI {
 
-	private static final Logger logger = LoggerFactory.getLogger(FileControllerImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(FileAPIImpl.class);
 
 	@Autowired
 	private APIFileService myFileService;
