@@ -46,7 +46,7 @@ public interface Order {
 
 	ResponseEntity<Map<String, Object>> getOrderDetail(String userId,String orderId);
 
-	ResponseEntity<Map<String, Object>> createOrderByDraft(String userId,String draftId,String orderId);
+	ResponseEntity<Map<String, Object>> createOrderByDraft(String userId,String draftId);
 
     ResponseEntity<Map<String, Object>> editOrder(String userId,String orderId);
 
