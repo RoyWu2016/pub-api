@@ -132,420 +132,445 @@ public class UserServiceImpl implements UserService {
 	@Qualifier("featureDao")
 	private FeatureDao featureDao;
 
+    private UserBean getUserBeanByService(String userId){
+        UserBean user = new UserBean();
+        logger.info("...........start getting UserBean from user service...........");
+        CompanyEntireBean companyEntireBean = companyDao.getCompanyEntireInfo(userId);
+        if (companyEntireBean == null) return null;
+
+        GeneralUserBean userBean = null;
+        List<GeneralUserBean> generalUserBeenList = companyEntireBean.getUsers();
+        if (generalUserBeenList != null && generalUserBeenList.size() > 0) {
+            for (GeneralUserBean bean : generalUserBeenList) {
+                if (bean.getUserId().equals(userId)) {
+                    userBean = bean;
+                    break;
+                }
+            }
+        }
+
+        if (userBean == null) return null;
+
+        String compId = companyEntireBean.getCompanyId();
+
+        ContactBean contactBean = companyEntireBean.getContact();
+        OrderBookingBean orderBookingBean = companyEntireBean.getOrderBooking();
+        ExtraBean extrabean = companyEntireBean.getExtra();
+        ProductFamilyBean productFamilyBean = companyEntireBean.getProductFamily();
+        QualityManualBean qualityManualBean = companyEntireBean.getQualityManual();
+
+        List<ProductCategoryDtoBean> productCategoryDtoBeanList = paramDao.getProductCategoryList();
+        List<ProductFamilyDtoBean> productFamilyDtoBeanList = paramDao.getProductFamilyList();
+
+        MultiRefBookingBean multiRefBookingBean = companyEntireBean.getMultiRefBooking();
+
+        CustomerFeatureBean customerFeatureBean = featureDao.getCustomerFeatureBean(compId, "BookOrderWithMultipleFactories");
+
+        ReportCertificateBean reportCertificateBean = companyEntireBean.getReportCertificate();
+
+        user.setId(userBean.getUserId());
+        user.setLogin(userBean.getLogin());
+        user.setStatus(userBean.getStatusText());
+        user.setBusinessUnit(AIUtil.getCompanyBusinessUnit(companyEntireBean, extrabean));
+
+        List<CrmSaleInChargeBean> sales = companyEntireBean.getSales();
+        if (sales != null && sales.size() > 0) {
+            for (CrmSaleInChargeBean saleBean : sales) {
+                if (saleBean.getSicTypeKey() != null && saleBean.getSicTypeKey().equals("SIC")) {
+                    user.setSic(saleBean.getFirstName() + " " + saleBean.getLastName());
+                    break;
+                }
+            }
+        }
+
+        // ------------Set CompanyBean Properties ----------------
+        CompanyBean comp = new CompanyBean();
+        comp.setId(companyEntireBean.getCompanyId());
+
+        comp.setType(companyEntireBean.getCompanyProfile().getCompanyTypeKey());
+        if (companyEntireBean.getDirectParents() != null && companyEntireBean.getDirectParents().size() > 0) {
+            comp.setParentCompanyId(companyEntireBean.getDirectParents().get(0).getCompanyId());
+            comp.setParentCompanyName(companyEntireBean.getDirectParents().get(0).getCompanyName());
+        }
+
+        comp.setName(companyEntireBean.getCompanyProfile().getCompanyName());
+        comp.setNameCN(companyEntireBean.getCompanyProfile().getCompanyNameCN());
+        comp.setIndustry(companyEntireBean.getCompanyProfile().getIndustry());
+        comp.setCountry(companyEntireBean.getCompanyProfile().getCountryRegion());
+        comp.setAddress(companyEntireBean.getCompanyProfile().getAddress1());
+        comp.setCity(companyEntireBean.getCompanyProfile().getCity());
+        comp.setPostcode(companyEntireBean.getCompanyProfile().getPostCode());
+
+        comp.setWebsite(companyEntireBean.getCompanyProfile().getWebsite());
+        comp.setLogo(companyEntireBean.getCompanyProfile().getLogoPath());
+
+        user.setCompany(comp);
+
+        // ------------Set ContactInfoBean Properties ----------------
+        ContactInfoBean contactInfoBean = new ContactInfoBean();
+
+        MainBean main = new MainBean();
+        main.setSalutation(userBean.getFollowName());
+        main.setFamilyName(userBean.getLastName());
+        main.setGivenName(userBean.getFirstName());
+        main.setPosition(contactBean.getMainPosition());
+        main.setEmail(userBean.getPersonalEmail());
+        main.setPhoneNumber(userBean.getLandline());
+        main.setMobileNumber(userBean.getMobile());
+
+        contactInfoBean.setMain(main);
+
+        // ------------Set BillingBean Properties ----------------
+        BillingBean billingBean = new BillingBean();
+
+        billingBean.setSalutation(contactBean.getAccountingGender());
+        billingBean.setFamilyName(contactBean.getAccountingName());
+        billingBean.setGivenName(contactBean.getAccountingGivenName());
+        billingBean.setEmail(contactBean.getAccountingEmail());
+
+        String mainSalutation = String.valueOf(main.getSalutation());
+        String billSalutation = String.valueOf(billingBean.getSalutation());
+        String mainFamilyName = String.valueOf(main.getFamilyName());
+        String billFamilyName = String.valueOf(billingBean.getFamilyName());
+        String mainGivenName = String.valueOf(main.getGivenName());
+        String billGivenName = String.valueOf(billingBean.getGivenName());
+        String mainEmail = String.valueOf(main.getEmail());
+        String billEmail = String.valueOf(billingBean.getEmail());
+
+        if (mainSalutation.equals(billSalutation) && mainFamilyName.equals(billFamilyName)
+                && mainGivenName.equals(billGivenName) && mainEmail.equals(billEmail)) {
+            billingBean.setIsSameAsMainContact("true");
+        } else {
+            billingBean.setIsSameAsMainContact("false");
+        }
+
+        contactInfoBean.setBilling(billingBean);
+        user.setContacts(contactInfoBean);
+
+        // ------------Set PreferencesBean Properties ----------------
+
+        PreferencesBean preferencesBean = new PreferencesBean();
+        BookingPreferenceBean bookingbean = new BookingPreferenceBean();
+
+        bookingbean.setUseQuickFormByDefault(extrabean.getIsDetailedBookingForm());
+
+        String sendSampleToFactory = orderBookingBean.getSendSampleToFactory();
+        if (sendSampleToFactory != null && sendSampleToFactory.equalsIgnoreCase("Yes")) {
+            bookingbean.setShouldSendRefSampleToFactory(true);
+        } else {
+            bookingbean.setShouldSendRefSampleToFactory(false);
+        }
+
+        String poCompulsory = orderBookingBean.getPoCompulsory();
+        if (poCompulsory != null && poCompulsory.equalsIgnoreCase("Yes")) {
+            bookingbean.setIsPoMandatory(true);
+        } else {
+            bookingbean.setIsPoMandatory(false);
+        }
+
+        bookingbean.setProductDivisions(orderBookingBean.getAvailableDivisions());
+
+        if (customerFeatureBean != null) {
+            String featureValue = customerFeatureBean.getFeatureValue();
+            if (featureValue != null && featureValue.equalsIgnoreCase("Yes")) {
+                bookingbean.setBookOrdersWithMultipleFactories(true);
+            } else {
+                bookingbean.setBookOrdersWithMultipleFactories(false);
+            }
+        }
+
+        String sendModificationMail = orderBookingBean.getSendModificationMail();
+        if (sendModificationMail != null && sendModificationMail.equalsIgnoreCase("Yes")) {
+            bookingbean.setSendEmailAfterModification(true);
+        } else {
+            bookingbean.setSendEmailAfterModification(false);
+        }
+
+        String showProdDivision = orderBookingBean.getShowProdDivision();
+        if (showProdDivision != null && showProdDivision.equalsIgnoreCase("Yes")) {
+            bookingbean.setShowProductDivision(true);
+        } else {
+            bookingbean.setShowProductDivision(false);
+        }
+
+        String showFactoryDetails = orderBookingBean.getShowFactoryDetails();
+        if (showFactoryDetails != null && showFactoryDetails.equalsIgnoreCase("Yes")) {
+            bookingbean.setShowFactoryDetailsToMaster(true);
+        } else {
+            bookingbean.setShowFactoryDetailsToMaster(false);
+        }
+
+        String requireDropTesting = orderBookingBean.getRequireDropTesting();
+        if (requireDropTesting != null && requireDropTesting.equalsIgnoreCase("Yes")) {
+            bookingbean.setRequireDropTesting(true);
+        } else {
+            bookingbean.setRequireDropTesting(false);
+        }
+
+        String allowPostpone = orderBookingBean.getAllowPostpone();
+        if (allowPostpone != null && allowPostpone.equalsIgnoreCase("Yes")) {
+            bookingbean.setAllowPostponementBySuppliers(true);
+        } else {
+            bookingbean.setAllowPostponementBySuppliers(false);
+        }
+
+        String notifyClient = orderBookingBean.getNotifyClient();
+        if (notifyClient != null && notifyClient.equalsIgnoreCase("Yes")) {
+            bookingbean.setSendSupplierConfirmationEmailToClientAlways(true);
+        } else {
+            bookingbean.setSendSupplierConfirmationEmailToClientAlways(false);
+        }
+
+        String sharePerferredTests = orderBookingBean.getSharePerferredTests();
+        if (sharePerferredTests != null && sharePerferredTests.equalsIgnoreCase("Yes")) {
+            bookingbean.setShareFavoriteLabTestsWithSubAccounts(true);
+        } else {
+            bookingbean.setShareFavoriteLabTestsWithSubAccounts(false);
+        }
+
+        String shareChecklist = orderBookingBean.getShareChecklist();
+        if (shareChecklist != null && shareChecklist.equalsIgnoreCase("Yes")) {
+            bookingbean.setShareChecklistWithSubAccounts(true);
+        } else {
+            bookingbean.setShareChecklistWithSubAccounts(false);
+        }
+
+        String turnOffAIAccess = orderBookingBean.getTurnOffAIAccess();
+        if (turnOffAIAccess != null && turnOffAIAccess.equalsIgnoreCase("Yes")) {
+            bookingbean.setTurnOffAiWebsiteDirectAccess(true);
+        } else {
+            bookingbean.setTurnOffAiWebsiteDirectAccess(false);
+        }
+
+        MultiReferenceBean multiReferenceBean = new MultiReferenceBean();
+        String approveReferences = multiRefBookingBean.getApproveReferences();
+        if (approveReferences != null && approveReferences.equalsIgnoreCase("Yes")) {
+            multiReferenceBean.setClientCanApproveRejectIndividualProductReferences(true);
+        } else {
+            multiReferenceBean.setClientCanApproveRejectIndividualProductReferences(false);
+        }
+        bookingbean.setMultiReference(multiReferenceBean);
+
+        MinQuantityToBeReadyBean[] minQuantityToBeReadyBean = new MinQuantityToBeReadyBean[5];
+        MinQuantityToBeReadyBean minQuantityToBeReadyBean1 = new MinQuantityToBeReadyBean();
+        minQuantityToBeReadyBean1.setServiceType("PSI");
+        minQuantityToBeReadyBean1.setMinQty(orderBookingBean.getPsiPercentage());
+
+        MinQuantityToBeReadyBean minQuantityToBeReadyBean2 = new MinQuantityToBeReadyBean();
+        minQuantityToBeReadyBean2.setServiceType("DUPRO");
+        minQuantityToBeReadyBean2.setMinQty(orderBookingBean.getDuproPercentage());
+
+        MinQuantityToBeReadyBean minQuantityToBeReadyBean3 = new MinQuantityToBeReadyBean();
+        minQuantityToBeReadyBean3.setServiceType("IPC");
+        minQuantityToBeReadyBean3.setMinQty(orderBookingBean.getIpcPercentage());
+
+        MinQuantityToBeReadyBean minQuantityToBeReadyBean4 = new MinQuantityToBeReadyBean();
+        minQuantityToBeReadyBean4.setServiceType("CLC");
+        minQuantityToBeReadyBean4.setMinQty(orderBookingBean.getClcPercentage());
+
+        MinQuantityToBeReadyBean minQuantityToBeReadyBean5 = new MinQuantityToBeReadyBean();
+        minQuantityToBeReadyBean5.setServiceType("PM");
+        minQuantityToBeReadyBean5.setMinQty(orderBookingBean.getPmPercentage());
+
+        minQuantityToBeReadyBean[0] = minQuantityToBeReadyBean1;
+        minQuantityToBeReadyBean[1] = minQuantityToBeReadyBean2;
+        minQuantityToBeReadyBean[2] = minQuantityToBeReadyBean3;
+        minQuantityToBeReadyBean[3] = minQuantityToBeReadyBean4;
+        minQuantityToBeReadyBean[4] = minQuantityToBeReadyBean5;
+
+        bookingbean.setMinQuantityToBeReady(minQuantityToBeReadyBean);
+
+        // ------------Set AqlAndSamplingSizeBean Properties ----------------
+
+        AqlAndSamplingSizeBean aqlAndSamplingSizeBean = new AqlAndSamplingSizeBean();
+
+        if (orderBookingBean.getAllowChangeAql() != null && orderBookingBean.getAllowChangeAql().equals("1")) {
+            aqlAndSamplingSizeBean.setCanModify("true");
+        } else {
+            aqlAndSamplingSizeBean.setCanModify("false");
+        }
+
+        aqlAndSamplingSizeBean.setCustomDefaultSampleLevel(orderBookingBean.getCustomizedSampleLevel());
+        CustomAQLBean customAQLBean = new CustomAQLBean();
+
+        if (orderBookingBean.getCustAqlLevel() != null && orderBookingBean.getCustAqlLevel().equalsIgnoreCase("yes")){ //.equals("yes")) {
+            aqlAndSamplingSizeBean.setUseCustomAQL("true");
+            customAQLBean.setCriticalDefects(orderBookingBean.getCriticalDefects());
+            customAQLBean.setMajorDefects(orderBookingBean.getMajorDefects());
+            customAQLBean.setMinorDefects(orderBookingBean.getMinorDefects());
+            customAQLBean.setMaxMeasurementDefects(orderBookingBean.getMaxMeaDefects());
+        } else {
+            aqlAndSamplingSizeBean.setUseCustomAQL("false");
+            customAQLBean.setCriticalDefects(orderBookingBean.getCriticalDefects());
+            customAQLBean.setMajorDefects("0");
+            customAQLBean.setMinorDefects("0");
+            customAQLBean.setMaxMeasurementDefects("0");
+        }
+
+        aqlAndSamplingSizeBean.setCustomAQL(customAQLBean);
+        bookingbean.setAqlAndSamplingSize(aqlAndSamplingSizeBean);
+
+        // ------------Set PreferredProductFamilies Properties ----------------
+
+        PreferredProductFamilies preferredProductFamilies = new PreferredProductFamilies();
+        //"no" - Use Client Customized Product Type
+        if (productFamilyBean.getHowToChooseProType() != null &&
+                "NO".equals(productFamilyBean.getHowToChooseProType().toUpperCase())) {
+            preferredProductFamilies.setUseCustomizedProductType(true);
+        } else {
+            preferredProductFamilies.setUseCustomizedProductType(false);
+        }
+
+        int a = productFamilyBean.getRelevantCategoryInfo() != null ? productFamilyBean.getRelevantCategoryInfo().size() : 0;
+        int b = productFamilyBean.getProductFamilyInfo() != null ? productFamilyBean.getProductFamilyInfo().size() : 0;
+        List<PublicProductType> publicProductTypeList = new ArrayList<>();
+        List<CustomizedProductType> customizedProductTypeList = new ArrayList<>();
+
+        for (int i = 0; i < a; i++) {
+            PublicProductType publicProductType = new PublicProductType();
+            publicProductType.setProductCategoryId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavCategory());
+            publicProductType.setProductFamilyId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavFamily());
+            //set product category name
+            for (ProductCategoryDtoBean productCategoryDto : productCategoryDtoBeanList) {
+                if (publicProductType.getProductCategoryId() != null
+                        && publicProductType.getProductCategoryId().equals(productCategoryDto.getId())) {
+                    publicProductType.setProductCategoryName(productCategoryDto.getName());
+                    break;
+                }
+            }
+
+            //set product family name
+            for (ProductFamilyDtoBean productFamilyDtoBean : productFamilyDtoBeanList) {
+                if (publicProductType.getProductFamilyId().equals(productFamilyDtoBean.getId())) {
+                    publicProductType.setProductFamilyName(productFamilyDtoBean.getName());
+                    break;
+                }
+            }
+            publicProductTypeList.add(publicProductType);
+        }
+        for (int i = 0; i < b; i++) {
+            CustomizedProductType customizedProductType = new CustomizedProductType();
+            BeanUtils.copyProperties(productFamilyBean.getProductFamilyInfo().get(i), customizedProductType);
+            customizedProductTypeList.add(customizedProductType);
+        }
+        preferredProductFamilies.setPublicProductTypeList(publicProductTypeList);
+        preferredProductFamilies.setCustomizedProductTypeList(customizedProductTypeList);
+        bookingbean.setPreferredProductFamilies(preferredProductFamilies);
+
+        // ------------Set QualityManual Properties ----------------
+
+        QualityManual qualityManual = new QualityManual();
+        qualityManual.setDocType("QUALITY_MANUAL");
+        qualityManual.setFilename(qualityManualBean.getQmFileName());
+        qualityManual.setPublishDate(qualityManualBean.getQmReleaseDate());
+        qualityManual.setUrl(config.getCustomerServiceUrl() + "/customer/" + compId + "/quality-manual-file");
+
+        bookingbean.setQualityManual(qualityManual);
+        preferencesBean.setBooking(bookingbean);
+
+        ReportPreferenceBean reportPreferenceBean = new ReportPreferenceBean();
+        if (reportCertificateBean != null) {
+            reportPreferenceBean.setAttType(reportCertificateBean.getAttType());
+            reportPreferenceBean.setAllowReportApprover(reportCertificateBean.getAllowReportApprover());
+            reportPreferenceBean.setDisApproverName(reportCertificateBean.getDisApproverName());
+            reportPreferenceBean.setMaxReportSize(reportCertificateBean.getMaxReportSize());
+            reportPreferenceBean.setRejectReasonOther(reportCertificateBean.getRejectReasonOther());
+            reportPreferenceBean.setRejectReasonSortBy(reportCertificateBean.getRejectReasonSortBy());
+            reportPreferenceBean.setReportContactName(reportCertificateBean.getReportContactName());
+            reportPreferenceBean.setWithAttachment(reportCertificateBean.getWithAttachment());
+            reportPreferenceBean.setSendMailToSupplier(reportCertificateBean.getSendMailToSupplier());
+            reportPreferenceBean.setSameDayReport(reportCertificateBean.getSameDayReport());
+            reportPreferenceBean.setReportTemplate(reportCertificateBean.getReportTemplate());
+            List<ApproverBean> approverBeenList = reportCertificateBean.getApprovers();
+            if (approverBeenList != null) {
+                List<ReportApproverBean> reportApproverBeenList = new ArrayList<ReportApproverBean>();
+                for (ApproverBean approverBean : approverBeenList) {
+                    ReportApproverBean reportApproverBean = new ReportApproverBean();
+                    reportApproverBean.setApproverName(approverBean.getApproverName());
+                    reportApproverBean.setApproverPwd(approverBean.getApproverPwd());
+                    reportApproverBean.setApproverSeq(approverBean.getApproverSeq());
+                    reportApproverBean.setCreateTime(approverBean.getCreateTime());
+                    reportApproverBean.setUpdateTime(approverBean.getUpdateTime());
+                    reportApproverBeenList.add(reportApproverBean);
+                }
+                reportPreferenceBean.setApprovers(reportApproverBeenList);
+            }
+
+            List<RejectCategoryBean> rejectCategoryBeanList = reportCertificateBean.getRejectCategories();
+            if (rejectCategoryBeanList != null) {
+                List<ReportRejectCategoryBean> reportRejectCategoryBeanList = new ArrayList<ReportRejectCategoryBean>();
+                for (RejectCategoryBean rejectCategoryBean : rejectCategoryBeanList) {
+                    ReportRejectCategoryBean reportRejectCategoryBean = new ReportRejectCategoryBean();
+                    reportRejectCategoryBean.setUpdateTime(rejectCategoryBean.getUpdateTime());
+                    reportRejectCategoryBean.setCreateTime(rejectCategoryBean.getCreateTime());
+                    reportRejectCategoryBean.setRejectCategory(rejectCategoryBean.getRejectCategory());
+                    reportRejectCategoryBean.setRejectCategorySeq(rejectCategoryBean.getRejectCategorySeq());
+                    List<RejectCategoryReasonBean> rejectCategoryReasonBeenList = rejectCategoryBean.getRejectCategoryReasons();
+                    if (rejectCategoryReasonBeenList != null) {
+                        List<ReportRejectCategoryReasonBean> reportRejectReasonList = new ArrayList<ReportRejectCategoryReasonBean>();
+                        for (RejectCategoryReasonBean rejectReason : rejectCategoryReasonBeenList) {
+                            ReportRejectCategoryReasonBean reportRejectReason = new ReportRejectCategoryReasonBean();
+                            reportRejectReason.setRejectCategorySeq(rejectReason.getRejectCategorySeq());
+                            reportRejectReason.setCreateTime(rejectReason.getCreateTime());
+                            reportRejectReason.setUpdateTime(rejectReason.getUpdateTime());
+                            reportRejectReason.setRejectReason(rejectReason.getRejectReason());
+                            reportRejectReason.setRejectReasonSeq(rejectReason.getRejectReasonSeq());
+                            reportRejectReasonList.add(reportRejectReason);
+                        }
+                        reportRejectCategoryBean.setRejectCategoryReasons(reportRejectReasonList);
+                    }
+                    reportRejectCategoryBeanList.add(reportRejectCategoryBean);
+                }
+                reportPreferenceBean.setRejectCategories(reportRejectCategoryBeanList);
+            }
+        }
+        preferencesBean.setReport(reportPreferenceBean);
+
+        user.setPreferences(preferencesBean);
+        logger.info("...........return UserBean from user service...........");
+        return user;
+    }
+
 	@Override
-	@CacheEvict(value = "userBeanCache", key = "#userId")
+//	@CacheEvict(value = "userBeanCache", key = "#userId")
 	public void removeUserProfileCache(String userId) throws IOException, AIException {
-		System.out.println("remove user profile ...");
-		System.out.println("userId : " + userId);
+		logger.info("removing user profile ...");
+		logger.info("userId : " + userId);
+        RedisUtil.hdel("userBeanCache",userId);
+        logger.info("success removed!!");
 	}
 
-	@Cacheable("userBeanCache")
+//	@Cacheable("userBeanCache")
 	@Override
 	public UserBean getCustById(String userId) throws IOException, AIException {
-		logger.info("...........start getting UserBean from user service...........");
-		UserBean user = new UserBean();
-
-		CompanyEntireBean companyEntireBean = companyDao.getCompanyEntireInfo(userId);
-		if (companyEntireBean == null) return null;
-
-		GeneralUserBean userBean = null;
-		List<GeneralUserBean> generalUserBeenList = companyEntireBean.getUsers();
-		if (generalUserBeenList != null && generalUserBeenList.size() > 0) {
-			for (GeneralUserBean bean : generalUserBeenList) {
-				if (bean.getUserId().equals(userId)) {
-					userBean = bean;
-					break;
-				}
-			}
+        UserBean user = new UserBean();
+	    try {
+	        logger.info("try to get userBean from redis ...");
+	        String jsonStr = RedisUtil.hget("userBeanCache",userId);
+            user = JSON.parseObject(jsonStr,UserBean.class);
+            if (StringUtils.isNotBlank(user.getId())){
+                logger.info("success get userBean from redis.");
+                return user;
+            }
+        }catch (Exception e){
+            logger.error("error getting userBean from redis.");
+        }
+        user = this.getUserBeanByService(userId);
+		try {
+			logger.info("saving userBean to redis ...");
+			RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(user));
+			logger.info("saving success !!!");
+		}catch (Exception e){
+                logger.error("error occurred in saving userBean to redis! ",e);
 		}
-
-		if (userBean == null) return null;
-
-		String compId = companyEntireBean.getCompanyId();
-
-		ContactBean contactBean = companyEntireBean.getContact();
-		OrderBookingBean orderBookingBean = companyEntireBean.getOrderBooking();
-		ExtraBean extrabean = companyEntireBean.getExtra();
-		ProductFamilyBean productFamilyBean = companyEntireBean.getProductFamily();
-		QualityManualBean qualityManualBean = companyEntireBean.getQualityManual();
-
-		List<ProductCategoryDtoBean> productCategoryDtoBeanList = paramDao.getProductCategoryList();
-		List<ProductFamilyDtoBean> productFamilyDtoBeanList = paramDao.getProductFamilyList();
-
-		MultiRefBookingBean multiRefBookingBean = companyEntireBean.getMultiRefBooking();
-
-		CustomerFeatureBean customerFeatureBean = featureDao.getCustomerFeatureBean(compId, "BookOrderWithMultipleFactories");
-
-		ReportCertificateBean reportCertificateBean = companyEntireBean.getReportCertificate();
-
-		user.setId(userBean.getUserId());
-		user.setLogin(userBean.getLogin());
-		user.setStatus(userBean.getStatusText());
-		user.setBusinessUnit(AIUtil.getCompanyBusinessUnit(companyEntireBean, extrabean));
-
-		List<CrmSaleInChargeBean> sales = companyEntireBean.getSales();
-		if (sales != null && sales.size() > 0) {
-			for (CrmSaleInChargeBean saleBean : sales) {
-				if (saleBean.getSicTypeKey() != null && saleBean.getSicTypeKey().equals("SIC")) {
-					user.setSic(saleBean.getFirstName() + " " + saleBean.getLastName());
-					break;
-				}
-			}
-		}
-
-		// ------------Set CompanyBean Properties ----------------
-		CompanyBean comp = new CompanyBean();
-		comp.setId(companyEntireBean.getCompanyId());
-
-		comp.setType(companyEntireBean.getCompanyProfile().getCompanyTypeKey());
-		if (companyEntireBean.getDirectParents() != null && companyEntireBean.getDirectParents().size() > 0) {
-			comp.setParentCompanyId(companyEntireBean.getDirectParents().get(0).getCompanyId());
-			comp.setParentCompanyName(companyEntireBean.getDirectParents().get(0).getCompanyName());
-		}
-
-		comp.setName(companyEntireBean.getCompanyProfile().getCompanyName());
-		comp.setNameCN(companyEntireBean.getCompanyProfile().getCompanyNameCN());
-		comp.setIndustry(companyEntireBean.getCompanyProfile().getIndustry());
-		comp.setCountry(companyEntireBean.getCompanyProfile().getCountryRegion());
-		comp.setAddress(companyEntireBean.getCompanyProfile().getAddress1());
-		comp.setCity(companyEntireBean.getCompanyProfile().getCity());
-		comp.setPostcode(companyEntireBean.getCompanyProfile().getPostCode());
-
-		comp.setWebsite(companyEntireBean.getCompanyProfile().getWebsite());
-		comp.setLogo(companyEntireBean.getCompanyProfile().getLogoPath());
-
-		user.setCompany(comp);
-
-		// ------------Set ContactInfoBean Properties ----------------
-		ContactInfoBean contactInfoBean = new ContactInfoBean();
-
-		MainBean main = new MainBean();
-		main.setSalutation(userBean.getFollowName());
-		main.setFamilyName(userBean.getLastName());
-		main.setGivenName(userBean.getFirstName());
-		main.setPosition(contactBean.getMainPosition());
-		main.setEmail(userBean.getPersonalEmail());
-		main.setPhoneNumber(userBean.getLandline());
-		main.setMobileNumber(userBean.getMobile());
-
-		contactInfoBean.setMain(main);
-
-		// ------------Set BillingBean Properties ----------------
-		BillingBean billingBean = new BillingBean();
-
-		billingBean.setSalutation(contactBean.getAccountingGender());
-		billingBean.setFamilyName(contactBean.getAccountingName());
-		billingBean.setGivenName(contactBean.getAccountingGivenName());
-		billingBean.setEmail(contactBean.getAccountingEmail());
-
-		String mainSalutation = String.valueOf(main.getSalutation());
-		String billSalutation = String.valueOf(billingBean.getSalutation());
-		String mainFamilyName = String.valueOf(main.getFamilyName());
-		String billFamilyName = String.valueOf(billingBean.getFamilyName());
-		String mainGivenName = String.valueOf(main.getGivenName());
-		String billGivenName = String.valueOf(billingBean.getGivenName());
-		String mainEmail = String.valueOf(main.getEmail());
-		String billEmail = String.valueOf(billingBean.getEmail());
-
-		if (mainSalutation.equals(billSalutation) && mainFamilyName.equals(billFamilyName)
-				&& mainGivenName.equals(billGivenName) && mainEmail.equals(billEmail)) {
-			billingBean.setIsSameAsMainContact("true");
-		} else {
-			billingBean.setIsSameAsMainContact("false");
-		}
-
-		contactInfoBean.setBilling(billingBean);
-		user.setContacts(contactInfoBean);
-
-		// ------------Set PreferencesBean Properties ----------------
-
-		PreferencesBean preferencesBean = new PreferencesBean();
-		BookingPreferenceBean bookingbean = new BookingPreferenceBean();
-
-		bookingbean.setUseQuickFormByDefault(extrabean.getIsDetailedBookingForm());
-
-		String sendSampleToFactory = orderBookingBean.getSendSampleToFactory();
-		if (sendSampleToFactory != null && sendSampleToFactory.equalsIgnoreCase("Yes")) {
-			bookingbean.setShouldSendRefSampleToFactory(true);
-		} else {
-			bookingbean.setShouldSendRefSampleToFactory(false);
-		}
-
-		String poCompulsory = orderBookingBean.getPoCompulsory();
-		if (poCompulsory != null && poCompulsory.equalsIgnoreCase("Yes")) {
-			bookingbean.setIsPoMandatory(true);
-		} else {
-			bookingbean.setIsPoMandatory(false);
-		}
-
-		bookingbean.setProductDivisions(orderBookingBean.getAvailableDivisions());
-
-		if (customerFeatureBean != null) {
-			String featureValue = customerFeatureBean.getFeatureValue();
-			if (featureValue != null && featureValue.equalsIgnoreCase("Yes")) {
-				bookingbean.setBookOrdersWithMultipleFactories(true);
-			} else {
-				bookingbean.setBookOrdersWithMultipleFactories(false);
-			}
-		}
-
-		String sendModificationMail = orderBookingBean.getSendModificationMail();
-		if (sendModificationMail != null && sendModificationMail.equalsIgnoreCase("Yes")) {
-			bookingbean.setSendEmailAfterModification(true);
-		} else {
-			bookingbean.setSendEmailAfterModification(false);
-		}
-
-		String showProdDivision = orderBookingBean.getShowProdDivision();
-		if (showProdDivision != null && showProdDivision.equalsIgnoreCase("Yes")) {
-			bookingbean.setShowProductDivision(true);
-		} else {
-			bookingbean.setShowProductDivision(false);
-		}
-
-		String showFactoryDetails = orderBookingBean.getShowFactoryDetails();
-		if (showFactoryDetails != null && showFactoryDetails.equalsIgnoreCase("Yes")) {
-			bookingbean.setShowFactoryDetailsToMaster(true);
-		} else {
-			bookingbean.setShowFactoryDetailsToMaster(false);
-		}
-
-		String requireDropTesting = orderBookingBean.getRequireDropTesting();
-		if (requireDropTesting != null && requireDropTesting.equalsIgnoreCase("Yes")) {
-			bookingbean.setRequireDropTesting(true);
-		} else {
-			bookingbean.setRequireDropTesting(false);
-		}
-
-		String allowPostpone = orderBookingBean.getAllowPostpone();
-		if (allowPostpone != null && allowPostpone.equalsIgnoreCase("Yes")) {
-			bookingbean.setAllowPostponementBySuppliers(true);
-		} else {
-			bookingbean.setAllowPostponementBySuppliers(false);
-		}
-
-		String notifyClient = orderBookingBean.getNotifyClient();
-		if (notifyClient != null && notifyClient.equalsIgnoreCase("Yes")) {
-			bookingbean.setSendSupplierConfirmationEmailToClientAlways(true);
-		} else {
-			bookingbean.setSendSupplierConfirmationEmailToClientAlways(false);
-		}
-
-		String sharePerferredTests = orderBookingBean.getSharePerferredTests();
-		if (sharePerferredTests != null && sharePerferredTests.equalsIgnoreCase("Yes")) {
-			bookingbean.setShareFavoriteLabTestsWithSubAccounts(true);
-		} else {
-			bookingbean.setShareFavoriteLabTestsWithSubAccounts(false);
-		}
-
-		String shareChecklist = orderBookingBean.getShareChecklist();
-		if (shareChecklist != null && shareChecklist.equalsIgnoreCase("Yes")) {
-			bookingbean.setShareChecklistWithSubAccounts(true);
-		} else {
-			bookingbean.setShareChecklistWithSubAccounts(false);
-		}
-
-		String turnOffAIAccess = orderBookingBean.getTurnOffAIAccess();
-		if (turnOffAIAccess != null && turnOffAIAccess.equalsIgnoreCase("Yes")) {
-			bookingbean.setTurnOffAiWebsiteDirectAccess(true);
-		} else {
-			bookingbean.setTurnOffAiWebsiteDirectAccess(false);
-		}
-
-		MultiReferenceBean multiReferenceBean = new MultiReferenceBean();
-		String approveReferences = multiRefBookingBean.getApproveReferences();
-		if (approveReferences != null && approveReferences.equalsIgnoreCase("Yes")) {
-			multiReferenceBean.setClientCanApproveRejectIndividualProductReferences(true);
-		} else {
-			multiReferenceBean.setClientCanApproveRejectIndividualProductReferences(false);
-		}
-		bookingbean.setMultiReference(multiReferenceBean);
-
-		MinQuantityToBeReadyBean[] minQuantityToBeReadyBean = new MinQuantityToBeReadyBean[5];
-		MinQuantityToBeReadyBean minQuantityToBeReadyBean1 = new MinQuantityToBeReadyBean();
-		minQuantityToBeReadyBean1.setServiceType("PSI");
-		minQuantityToBeReadyBean1.setMinQty(orderBookingBean.getPsiPercentage());
-
-		MinQuantityToBeReadyBean minQuantityToBeReadyBean2 = new MinQuantityToBeReadyBean();
-		minQuantityToBeReadyBean2.setServiceType("DUPRO");
-		minQuantityToBeReadyBean2.setMinQty(orderBookingBean.getDuproPercentage());
-
-		MinQuantityToBeReadyBean minQuantityToBeReadyBean3 = new MinQuantityToBeReadyBean();
-		minQuantityToBeReadyBean3.setServiceType("IPC");
-		minQuantityToBeReadyBean3.setMinQty(orderBookingBean.getIpcPercentage());
-
-		MinQuantityToBeReadyBean minQuantityToBeReadyBean4 = new MinQuantityToBeReadyBean();
-		minQuantityToBeReadyBean4.setServiceType("CLC");
-		minQuantityToBeReadyBean4.setMinQty(orderBookingBean.getClcPercentage());
-
-		MinQuantityToBeReadyBean minQuantityToBeReadyBean5 = new MinQuantityToBeReadyBean();
-		minQuantityToBeReadyBean5.setServiceType("PM");
-		minQuantityToBeReadyBean5.setMinQty(orderBookingBean.getPmPercentage());
-
-		minQuantityToBeReadyBean[0] = minQuantityToBeReadyBean1;
-		minQuantityToBeReadyBean[1] = minQuantityToBeReadyBean2;
-		minQuantityToBeReadyBean[2] = minQuantityToBeReadyBean3;
-		minQuantityToBeReadyBean[3] = minQuantityToBeReadyBean4;
-		minQuantityToBeReadyBean[4] = minQuantityToBeReadyBean5;
-
-		bookingbean.setMinQuantityToBeReady(minQuantityToBeReadyBean);
-
-		// ------------Set AqlAndSamplingSizeBean Properties ----------------
-
-		AqlAndSamplingSizeBean aqlAndSamplingSizeBean = new AqlAndSamplingSizeBean();
-
-		if (orderBookingBean.getAllowChangeAql() != null && orderBookingBean.getAllowChangeAql().equals("1")) {
-			aqlAndSamplingSizeBean.setCanModify("true");
-		} else {
-			aqlAndSamplingSizeBean.setCanModify("false");
-		}
-
-		aqlAndSamplingSizeBean.setCustomDefaultSampleLevel(orderBookingBean.getCustomizedSampleLevel());
-		CustomAQLBean customAQLBean = new CustomAQLBean();
-
-		if (orderBookingBean.getCustAqlLevel() != null && orderBookingBean.getCustAqlLevel().equalsIgnoreCase("yes")){ //.equals("yes")) {
-			aqlAndSamplingSizeBean.setUseCustomAQL("true");
-			customAQLBean.setCriticalDefects(orderBookingBean.getCriticalDefects());
-			customAQLBean.setMajorDefects(orderBookingBean.getMajorDefects());
-			customAQLBean.setMinorDefects(orderBookingBean.getMinorDefects());
-			customAQLBean.setMaxMeasurementDefects(orderBookingBean.getMaxMeaDefects());
-		} else {
-			aqlAndSamplingSizeBean.setUseCustomAQL("false");
-			customAQLBean.setCriticalDefects(orderBookingBean.getCriticalDefects());
-			customAQLBean.setMajorDefects("0");
-			customAQLBean.setMinorDefects("0");
-			customAQLBean.setMaxMeasurementDefects("0");
-		}
-
-		aqlAndSamplingSizeBean.setCustomAQL(customAQLBean);
-		bookingbean.setAqlAndSamplingSize(aqlAndSamplingSizeBean);
-
-		// ------------Set PreferredProductFamilies Properties ----------------
-
-		PreferredProductFamilies preferredProductFamilies = new PreferredProductFamilies();
-		//"no" - Use Client Customized Product Type
-		if (productFamilyBean.getHowToChooseProType() != null &&
-				"NO".equals(productFamilyBean.getHowToChooseProType().toUpperCase())) {
-			preferredProductFamilies.setUseCustomizedProductType(true);
-		} else {
-			preferredProductFamilies.setUseCustomizedProductType(false);
-		}
-
-		int a = productFamilyBean.getRelevantCategoryInfo() != null ? productFamilyBean.getRelevantCategoryInfo().size() : 0;
-		int b = productFamilyBean.getProductFamilyInfo() != null ? productFamilyBean.getProductFamilyInfo().size() : 0;
-		List<PublicProductType> publicProductTypeList = new ArrayList<>();
-		List<CustomizedProductType> customizedProductTypeList = new ArrayList<>();
-
-		for (int i = 0; i < a; i++) {
-			PublicProductType publicProductType = new PublicProductType();
-			publicProductType.setProductCategoryId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavCategory());
-			publicProductType.setProductFamilyId(productFamilyBean.getRelevantCategoryInfo().get(i).getFavFamily());
-			//set product category name
-			for (ProductCategoryDtoBean productCategoryDto : productCategoryDtoBeanList) {
-				if (publicProductType.getProductCategoryId() != null
-						&& publicProductType.getProductCategoryId().equals(productCategoryDto.getId())) {
-					publicProductType.setProductCategoryName(productCategoryDto.getName());
-					break;
-				}
-			}
-
-			//set product family name
-			for (ProductFamilyDtoBean productFamilyDtoBean : productFamilyDtoBeanList) {
-				if (publicProductType.getProductFamilyId().equals(productFamilyDtoBean.getId())) {
-					publicProductType.setProductFamilyName(productFamilyDtoBean.getName());
-					break;
-				}
-			}
-			publicProductTypeList.add(publicProductType);
-		}
-		for (int i = 0; i < b; i++) {
-			CustomizedProductType customizedProductType = new CustomizedProductType();
-			BeanUtils.copyProperties(productFamilyBean.getProductFamilyInfo().get(i), customizedProductType);
-			customizedProductTypeList.add(customizedProductType);
-		}
-		preferredProductFamilies.setPublicProductTypeList(publicProductTypeList);
-		preferredProductFamilies.setCustomizedProductTypeList(customizedProductTypeList);
-		bookingbean.setPreferredProductFamilies(preferredProductFamilies);
-
-		// ------------Set QualityManual Properties ----------------
-
-		QualityManual qualityManual = new QualityManual();
-		qualityManual.setDocType("QUALITY_MANUAL");
-		qualityManual.setFilename(qualityManualBean.getQmFileName());
-		qualityManual.setPublishDate(qualityManualBean.getQmReleaseDate());
-		qualityManual.setUrl(config.getCustomerServiceUrl() + "/customer/" + compId + "/quality-manual-file");
-
-		bookingbean.setQualityManual(qualityManual);
-		preferencesBean.setBooking(bookingbean);
-
-		ReportPreferenceBean reportPreferenceBean = new ReportPreferenceBean();
-		if (reportCertificateBean != null) {
-			reportPreferenceBean.setAttType(reportCertificateBean.getAttType());
-			reportPreferenceBean.setAllowReportApprover(reportCertificateBean.getAllowReportApprover());
-			reportPreferenceBean.setDisApproverName(reportCertificateBean.getDisApproverName());
-			reportPreferenceBean.setMaxReportSize(reportCertificateBean.getMaxReportSize());
-			reportPreferenceBean.setRejectReasonOther(reportCertificateBean.getRejectReasonOther());
-			reportPreferenceBean.setRejectReasonSortBy(reportCertificateBean.getRejectReasonSortBy());
-			reportPreferenceBean.setReportContactName(reportCertificateBean.getReportContactName());
-			reportPreferenceBean.setWithAttachment(reportCertificateBean.getWithAttachment());
-			reportPreferenceBean.setSendMailToSupplier(reportCertificateBean.getSendMailToSupplier());
-			reportPreferenceBean.setSameDayReport(reportCertificateBean.getSameDayReport());
-			reportPreferenceBean.setReportTemplate(reportCertificateBean.getReportTemplate());
-			List<ApproverBean> approverBeenList = reportCertificateBean.getApprovers();
-			if (approverBeenList != null) {
-				List<ReportApproverBean> reportApproverBeenList = new ArrayList<ReportApproverBean>();
-				for (ApproverBean approverBean : approverBeenList) {
-					ReportApproverBean reportApproverBean = new ReportApproverBean();
-					reportApproverBean.setApproverName(approverBean.getApproverName());
-					reportApproverBean.setApproverPwd(approverBean.getApproverPwd());
-					reportApproverBean.setApproverSeq(approverBean.getApproverSeq());
-					reportApproverBean.setCreateTime(approverBean.getCreateTime());
-					reportApproverBean.setUpdateTime(approverBean.getUpdateTime());
-					reportApproverBeenList.add(reportApproverBean);
-				}
-				reportPreferenceBean.setApprovers(reportApproverBeenList);
-			}
-
-			List<RejectCategoryBean> rejectCategoryBeanList = reportCertificateBean.getRejectCategories();
-			if (rejectCategoryBeanList != null) {
-				List<ReportRejectCategoryBean> reportRejectCategoryBeanList = new ArrayList<ReportRejectCategoryBean>();
-				for (RejectCategoryBean rejectCategoryBean : rejectCategoryBeanList) {
-					ReportRejectCategoryBean reportRejectCategoryBean = new ReportRejectCategoryBean();
-					reportRejectCategoryBean.setUpdateTime(rejectCategoryBean.getUpdateTime());
-					reportRejectCategoryBean.setCreateTime(rejectCategoryBean.getCreateTime());
-					reportRejectCategoryBean.setRejectCategory(rejectCategoryBean.getRejectCategory());
-					reportRejectCategoryBean.setRejectCategorySeq(rejectCategoryBean.getRejectCategorySeq());
-					List<RejectCategoryReasonBean> rejectCategoryReasonBeenList = rejectCategoryBean.getRejectCategoryReasons();
-					if (rejectCategoryReasonBeenList != null) {
-						List<ReportRejectCategoryReasonBean> reportRejectReasonList = new ArrayList<ReportRejectCategoryReasonBean>();
-						for (RejectCategoryReasonBean rejectReason : rejectCategoryReasonBeenList) {
-							ReportRejectCategoryReasonBean reportRejectReason = new ReportRejectCategoryReasonBean();
-							reportRejectReason.setRejectCategorySeq(rejectReason.getRejectCategorySeq());
-							reportRejectReason.setCreateTime(rejectReason.getCreateTime());
-							reportRejectReason.setUpdateTime(rejectReason.getUpdateTime());
-							reportRejectReason.setRejectReason(rejectReason.getRejectReason());
-							reportRejectReason.setRejectReasonSeq(rejectReason.getRejectReasonSeq());
-							reportRejectReasonList.add(reportRejectReason);
-						}
-						reportRejectCategoryBean.setRejectCategoryReasons(reportRejectReasonList);
-					}
-					reportRejectCategoryBeanList.add(reportRejectCategoryBean);
-				}
-				reportPreferenceBean.setRejectCategories(reportRejectCategoryBeanList);
-			}
-		}
-		preferencesBean.setReport(reportPreferenceBean);
-
-		user.setPreferences(preferencesBean);
-		logger.info("...........return UserBean from user service...........");
 		return user;
 	}
 
-	@CachePut(value = "userBeanCache", key = "#userId")
+//	@CachePut(value = "userBeanCache", key = "#userId")
 	@Override
 	public UserBean updateCompany(CompanyBean newComp, String userId) throws IOException, AIException {
-		String compId = getCustById(userId).getCompany().getId();
-		CrmCompanyBean company = companyDao.getCrmCompany(compId);
+        CompanyBean redisCompany = getCustById(userId).getCompany();
+		CrmCompanyBean company = companyDao.getCrmCompany(redisCompany.getId());
 
 		//fill new values
 		company.setIndustry(newComp.getIndustry());
@@ -553,19 +578,29 @@ public class UserServiceImpl implements UserService {
 		company.setCity(newComp.getCity());
 		company.setPostCode(newComp.getPostcode());
 		company.setCountryRegion(newComp.getCountry());
-
 		company.setWebsite(newComp.getWebsite());
+
 
 		//update
 		//return companyDao.updateCrmCompany(company);
 
 		if (companyDao.updateCrmCompany(company)) {
-			return this.getCustById(userId);
+            UserBean userInRedis = this.getCustById(userId);
+            newComp.setId(userInRedis.getCompany().getId());
+            userInRedis.setCompany(newComp);
+            try {
+                logger.info("update userBean after updateCrmCompany to redis ...");
+                RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(userInRedis));
+                logger.info("update success !!!");
+            }catch (Exception e){
+                logger.error("error occurred in update userBean to redis! ",e);
+            }
+			return userInRedis;
 		}
 		return null;
 	}
 
-	@CachePut(value = "userBeanCache", key = "#userId")
+//	@CachePut(value = "userBeanCache", key = "#userId")
 	@Override
 	public UserBean updateContact(ContactInfoBean newContact, String userId) throws IOException, AIException {
 		//get general user bean
@@ -596,12 +631,22 @@ public class UserServiceImpl implements UserService {
 
 		//update general user and company contact
 		//return customerDao.updateGeneralUser(user) && companyDao.updateCompanyContact(compId, contact);
-		if (customerDao.updateGeneralUser(user) && companyDao.updateCompanyContact(compId, contact))
-			return this.getCustById(userId);
+		if (customerDao.updateGeneralUser(user) && companyDao.updateCompanyContact(compId, contact)){
+            UserBean userInRedis = this.getCustById(userId);
+            userInRedis.setContacts(newContact);
+            try {
+                logger.info("update userBean after updateContact to redis ...");
+                RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(userInRedis));
+                logger.info("update success !!!");
+            }catch (Exception e){
+                logger.error("error occurred in update userBean to redis! ",e);
+            }
+            return userInRedis;
+        }
 		return null;
 	}
 
-	@CachePut(value = "userBeanCache", key = "#userId")
+//	@CachePut(value = "userBeanCache", key = "#userId")
 	@Override
 	public UserBean updateBookingPreference(BookingPreferenceBean newBookingPref, String userId) throws IOException, AIException {
 		System.out.println("-----orderBookingBean-----" + newBookingPref + "---" + userId);
@@ -644,12 +689,21 @@ public class UserServiceImpl implements UserService {
 		//update order booking and extra
 		//return companyDao.updateCompanyExtra(compId, extra) && companyDao.updateCompanyOrderBooking(compId, booking);
 		if (companyDao.updateCompanyExtra(compId, extra) && companyDao.updateCompanyOrderBooking(compId, booking)) {
-			return this.getCustById(userId);
+            UserBean userInRedis = this.getCustById(userId);
+            userInRedis.getPreferences().setBooking(newBookingPref);
+            try {
+                logger.info("update userBean after updateBookingPreference to redis ...");
+                RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(userInRedis));
+                logger.info("update success !!!");
+            }catch (Exception e){
+                logger.error("error occurred in update userBean to redis! ",e);
+            }
+            return userInRedis;
 		}
 		return null;
 	}
 
-	@CachePut(value = "userBeanCache", key = "#userId")
+//	@CachePut(value = "userBeanCache", key = "#userId")
 	@Override
 	public UserBean updateBookingPreferredProductFamily(List<String> newPreferred, String userId) throws IOException, AIException {
 		//get comp id
@@ -686,7 +740,15 @@ public class UserServiceImpl implements UserService {
 		family.setRelevantCategoryInfo(infos);
 		//return companyDao.updateCompanyProductFamily(compId, family);
 		if (companyDao.updateCompanyProductFamily(compId, family)) {
-			return this.getCustById(userId);
+            UserBean newUser = this.getUserBeanByService(userId);
+            try {
+                logger.info("update userBean after updateBookingPreferredProductFamily to redis ...");
+                RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(newUser));
+                logger.info("update success !!!");
+            }catch (Exception e){
+                logger.error("error occurred in update userBean to redis! ",e);
+            }
+            return newUser;
 		}
 		return null;
 	}
