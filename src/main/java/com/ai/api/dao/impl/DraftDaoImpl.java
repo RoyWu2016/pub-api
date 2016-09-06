@@ -232,4 +232,34 @@ public class DraftDaoImpl implements DraftDao {
         }
         return false;
     }
+    
+	@Override
+	public InspectionBookingBean calculatePricing(String userId, String companyId,String parentId,
+			String draftId,String samplingLevel,String measurementSamplingSize) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+		url.append("/draft/api/calculatePricing")
+			.append("?userId=").append(userId)
+			.append("&companyId=").append(companyId)
+			.append("&parentId=").append(parentId)
+			.append("&draftId=").append(draftId)
+			.append("&samplingSize=").append(samplingLevel)	
+			.append("&measurementSamplingSize=").append(measurementSamplingSize);		
+		try {
+			logger.info("Invoking: " + url.toString());
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,new HashMap<>());
+			if (result.getStatusCode() == HttpStatus.OK.value() 
+					&& result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+			} else {
+				logger.error("calculate Pricing error from psi service : " 
+						+ result.getStatusCode() + ", "
+						+ result.getResponseString());
+			}
+
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
 }
