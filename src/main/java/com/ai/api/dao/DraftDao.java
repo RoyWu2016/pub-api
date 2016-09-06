@@ -42,4 +42,9 @@ public interface DraftDao {
     boolean saveProduct(String userId,InspectionProductBookingBean draftProduct);
 
     boolean deleteProduct(String userId,String productId);
+    
+	InspectionBookingBean calculatePricing(
+			String userId, String companyId, 
+			String parentId,String draftId,
+			String samplingLevel,String measurementSamplingSize);
 }

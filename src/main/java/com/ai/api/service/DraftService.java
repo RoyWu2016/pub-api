@@ -40,4 +40,7 @@ public interface DraftService {
     boolean saveProduct(String userId,InspectionProductBookingBean draftProduct) throws Exception;
 
     boolean deleteProduct(String userId,String productId) throws Exception;
+    
+	InspectionBookingBean calculatePricing(String userId, String draftId,
+			String samplingLevel,String measurementSamplingSize) throws Exception;
 }

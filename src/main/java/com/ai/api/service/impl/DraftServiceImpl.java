@@ -111,4 +111,21 @@ public class DraftServiceImpl implements DraftService {
 	public boolean deleteProduct(String userId,String productId) throws Exception {
 		return draftDao.deleteProduct(userId, productId);
 	}
+	
+	@Override
+	public InspectionBookingBean calculatePricing(String userId, String draftId,
+			String samplingLevel,String measurementSamplingSize) throws Exception {
+		// TODO Auto-generated method stub
+		UserBean userBean = userService.getCustById(userId);
+		String parentId = userBean.getCompany().getParentCompanyId();
+		String companyId = userBean.getCompany().getId();
+		if(null == companyId) {
+			companyId = "";
+		}
+		if(null == parentId) {
+			parentId = "";
+		}
+		return draftDao.calculatePricing(userId,companyId,parentId,
+				draftId,samplingLevel,measurementSamplingSize);
+	}
 }

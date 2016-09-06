@@ -167,4 +167,23 @@ public class DraftImpl implements Draft {
         }
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/draft/{draftId}/sampling-level/{samplingLevel}/price", 
+			method = RequestMethod.GET)
+	public ResponseEntity<InspectionBookingBean> calculatePricing(
+			@PathVariable("userId") String userId,
+			@PathVariable("draftId") String draftId, 
+			@PathVariable("samplingLevel") String samplingLevel,
+			@RequestParam("measurementSamplingSize") String measurementSamplingSize) {
+		// TODO Auto-generated method stub
+		try {
+			InspectionBookingBean newDraft = draftService.calculatePricing(userId, draftId,samplingLevel, measurementSamplingSize);
+			return new ResponseEntity<>(newDraft, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("calculate Pricing error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

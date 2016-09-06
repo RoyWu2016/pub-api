@@ -39,4 +39,7 @@ public interface Draft {
     ResponseEntity<Boolean> saveProduct(String userId,String draftId,String productId,InspectionProductBookingBean draftProduct);
 
     ResponseEntity<Boolean> deleteProduct( String userId,String draftId,String productId);
+    
+	ResponseEntity<InspectionBookingBean> calculatePricing(String userId, String draftId, 
+			String samplingLevel,String measurementSamplingSize);
 }
