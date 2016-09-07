@@ -14,16 +14,12 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ai.api.bean.UserForToken;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.SSOUserServiceDao;
 import com.ai.commons.Consts;
 import com.ai.commons.HttpUtil;
-import com.ai.commons.IDGenerator;
 import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.user.GeneralUserBean;
 import com.ai.commons.beans.user.TokenSession;
-import com.ai.userservice.common.util.MD5;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jose4j.jwt.JwtClaims;
@@ -65,6 +61,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 //    @Qualifier("tokenJWTDao")
     private TokenJWTDaoImpl tokenJWTDao;
 
+	/*
 	@Override
 	public ServiceCallResult userLogin(final String account, final String password,
 	                                   final String userType, final String accessToken){
@@ -149,6 +146,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 
 		return null;
 	}
+	*/
 
 	@Override
 	public ServiceCallResult refreshAPIToken(HttpServletRequest request,HttpServletResponse response) {

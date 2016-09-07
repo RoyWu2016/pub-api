@@ -7,7 +7,6 @@
 package com.ai.api.dao;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +35,7 @@ import com.ai.commons.beans.ServiceCallResult;
 
 public interface SSOUserServiceDao {
 
-	ServiceCallResult userLogin(String account, String password, String userType, String accessToken);
+//	ServiceCallResult userLogin(String account, String password, String userType, String accessToken);
 
 	ServiceCallResult refreshAPIToken(HttpServletRequest request, HttpServletResponse response);
 
