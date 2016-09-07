@@ -2,6 +2,7 @@ package com.ai.api.dao.impl;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.ai.api.bean.InspectionDraftBean;
@@ -10,11 +11,16 @@ import com.ai.api.dao.DraftDao;
 import com.ai.api.util.AIUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
+import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.order.Draft;
+import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
 import com.ai.dto.JsonResponse;
+import com.alibaba.fastjson.JSON;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -232,4 +238,46 @@ public class DraftDaoImpl implements DraftDao {
         }
         return false;
     }
+
+
+	@Override
+	public List<DraftOrder> searchDraft(String userId, String compId, String parentId, String serviceType,
+										String startDate, String endDate, String keyWord, String pageSize, String pageNumber) {
+		try {
+
+			  StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+			   url.append("/draft/api/search??userId=")
+			   	  .append(userId)
+			   	  .append("&companyId=").append(compId)
+			   	  .append("&parentId=").append(parentId)
+			   	  .append("&inspectionType=").append(serviceType)
+			   	  .append("&startDate=").append(startDate)
+			   	  .append("&endDate=").append(endDate)
+			   	  .append("&keyWord=").append(keyWord)
+			      .append("&pageSize=").append(pageSize)
+			      .append("&pageNo=").append(pageNumber);
+			   
+			   ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					@SuppressWarnings("unchecked")
+					PageBean<DraftOrder> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
+					
+					return pageBeanList.getPageItems();
+
+				} else {
+					logger.error("searchDraftOrder from PSI error: " + result.getStatusCode() + ", " + result.getResponseString());
+				}
+			
+		}catch(IOException e){
+			logger.error(ExceptionUtils.getStackTrace(e));
+			
+		}
+		
+		return null;
+		
+	}
+
+
+
+    
 }

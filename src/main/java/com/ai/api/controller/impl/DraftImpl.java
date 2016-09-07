@@ -3,8 +3,12 @@ package com.ai.api.controller.impl;
 import com.ai.api.controller.Draft;
 import com.ai.api.service.DraftService;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
+
+import java.util.List;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,4 +171,26 @@ public class DraftImpl implements Draft {
         }
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/psi-drafts", method = RequestMethod.GET)
+	public ResponseEntity<List<DraftOrder>> searchDraft(@PathVariable("userId")String userId, 
+			 					@RequestParam("service-type") String serviceType,
+			 					@RequestParam("start") String startDate,
+			 					@RequestParam("end") String endDate,
+			 					@RequestParam("keyword") String keyword,
+			 					@RequestParam("page") String pageNumber,
+			 					@RequestParam("page-size") String pageSize) {
+  
+		try {
+			List<DraftOrder> draftList = draftService.searchDraft(userId, serviceType, startDate, endDate, keyword, pageNumber, pageSize);
+			return new ResponseEntity<List<DraftOrder>>(draftList, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("get draft search error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+
 }
