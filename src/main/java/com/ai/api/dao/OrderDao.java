@@ -10,9 +10,9 @@ import java.util.List;
 
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.order.api.SimpleOrderBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.InspectionOrderBean;
 
 /***************************************************************************
  *<PRE>
@@ -43,4 +43,6 @@ public interface OrderDao {
 	InspectionBookingBean createOrderByDraft(String userId, String draftId,String companyId,String parentId);
     InspectionBookingBean editOrder(String userId, String orderId,String companyId,String parentId);
     InspectionBookingBean saveOrderByDraft(String userId, String draftId,String companyId,String parentId);
+    
+    List<SimpleOrderSearchBean> searchOrders(String userId, String compId, String parentId,  String serviceType, String startDate, String endDate, String keyWord,  String orderStatus, String pageSize, String pageNumber);
 }
