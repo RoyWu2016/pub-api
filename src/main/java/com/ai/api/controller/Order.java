@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.order.api.SimpleOrderBean;
+
 import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
@@ -51,5 +53,7 @@ public interface Order {
     ResponseEntity<Map<String, Object>> editOrder(String userId,String orderId);
 
     ResponseEntity<Map<String, Object>> saveOrderByDraft(String userId,String draftId,String orderId);
+    
+    ResponseEntity<List<SimpleOrderSearchBean>> searchOrder(String userId, String serviceType,String startDate, String endDate, String keyWord, String orderStatus, String pageNumber, String pageSize);
 
 }

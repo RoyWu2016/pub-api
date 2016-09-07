@@ -19,8 +19,11 @@ import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.order.api.SimpleOrderBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -248,5 +251,27 @@ public class OrderImpl implements Order {
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+
+	@Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/psi-orders", method = RequestMethod.GET)
+	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrder(@PathVariable("userId")String userId,
+																   @RequestParam("service-type") String serviceType,
+																   @RequestParam("start") String startDate,
+																   @RequestParam("end") String endDate,
+																   @RequestParam("keyword") String keyword,
+																   @RequestParam("orderStatus") String orderStatus,
+																   @RequestParam("page-size") String pageSize,
+																   @RequestParam("page") String pageNumber) {
+		try {
+			List<SimpleOrderSearchBean> OrdersList = orderService.searchOrders(userId, serviceType, startDate, endDate, keyword, orderStatus,pageSize, pageNumber);
+			return new ResponseEntity<List<SimpleOrderSearchBean>>(OrdersList, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
 
 }
