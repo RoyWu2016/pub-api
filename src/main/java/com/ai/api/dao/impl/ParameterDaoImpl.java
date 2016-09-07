@@ -25,14 +25,12 @@ import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 
 /***************************************************************************
@@ -63,44 +61,30 @@ public class ParameterDaoImpl implements ParameterDao {
 	private ServiceConfig config;
 
 	@Override
-//	@Cacheable(value="productCategoryListCache", key="#root.methodName")
 	public List<ProductCategoryDtoBean> getProductCategoryList(){
 
-        List<ProductCategoryDtoBean> productCategoryList = new ArrayList<>();
-        try {
-            LOGGER.info("try to getProductCategoryList from redis ...");
-            String jsonString = RedisUtil.get("productCategoryListCache");
-            productCategoryList = JSON.parseArray(jsonString, ProductCategoryDtoBean.class);
-            if (productCategoryList.size()>0){
-                LOGGER.info("success getProductCategoryList from redis");
-                return productCategoryList;
-            }
-        }catch (Exception e){
-            LOGGER.error("error getting productCategoryList from redis",e);
-        }
+		//get it from redis
+        List<ProductCategoryDtoBean> productCategoryList;
+		LOGGER.info("try to getProductCategoryList from redis ...");
+		String jsonString = RedisUtil.get("productCategoryListCache");
+		productCategoryList = JSON.parseArray(jsonString, ProductCategoryDtoBean.class);
 
-		String SysProductCategoryURL = config.getParamServiceUrl() + "/p/list-product-category";
-		GetRequest request7 = GetRequest.newInstance().setUrl(SysProductCategoryURL);
+		if (productCategoryList == null) {
+			//get it from param-service
+			String SysProductCategoryURL = config.getParamServiceUrl() + "/p/list-product-category";
+			GetRequest request7 = GetRequest.newInstance().setUrl(SysProductCategoryURL);
+			try {
+				ServiceCallResult result = HttpUtil.issueGetRequest(request7);
+				productCategoryList = JSON.parseArray(result.getResponseString(), ProductCategoryDtoBean.class);
 
-		try{
-			ServiceCallResult result = HttpUtil.issueGetRequest(request7);
-            productCategoryList = JSON.parseArray(result.getResponseString(),ProductCategoryDtoBean.class);
-//			JSONArray jsonArray =new JSONArray(result.getResponseString());
-//			for (int i = 0; i < jsonArray.length(); i++) {
-//				JSONObject obj = jsonArray.getJSONObject(i);
-//				ProductCategoryDtoBean productCategory = new ProductCategoryDtoBean(obj);
-//				produttCategoryList.add(productCategory);
-//			}
-
-		}catch(IOException e){
-			LOGGER.error(ExceptionUtils.getStackTrace(e));
+				LOGGER.info("get from param-service succeed, saving productCategoryListCache");
+				RedisUtil.set("productCategoryListCache",JSON.toJSONString(productCategoryList));
+			} catch(IOException e) {
+				LOGGER.error(ExceptionUtils.getStackTrace(e));
+			}
+		} else {
+			LOGGER.info("success getProductCategoryList from redis");
 		}
-		try {
-			LOGGER.info("saving productCategoryListCache");
-            RedisUtil.set("productCategoryListCache",JSON.toJSONString(productCategoryList));
-		}catch (Exception e){
-            LOGGER.error("error saving productCategoryListCache ",e);
-        }
 		return productCategoryList;
 	}
 
