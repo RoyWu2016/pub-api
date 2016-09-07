@@ -1,6 +1,5 @@
 package com.ai.api.service.impl;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,7 +86,7 @@ public class SSOUserServiceImpl implements SSOUserService {
 			}
 			return result;
 		} catch (Exception e) {
-			LOGGER.error(ExceptionUtils.getStackTrace(e));
+			LOGGER.error("remove token error: " + ExceptionUtils.getFullStackTrace(e));
 		}
 		return null;
 	}

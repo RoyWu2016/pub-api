@@ -6,7 +6,11 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.ai.api.bean.UserBean;
 import com.ai.api.controller.Order;
@@ -17,9 +21,6 @@ import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.api.SimpleOrderBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.InspectionOrderBean;
-import com.alibaba.fastjson.JSON;
-import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,17 +176,16 @@ public class OrderImpl implements Order {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}/draft/{draftId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/psi-order", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> createOrderByDraft(@PathVariable("userId") String userId,
-															  @PathVariable("draftId") String draftId,
-																  @PathVariable("orderId") String orderId) {
+	                                                             @RequestParam(value = "draftId", required = true) String draftId
+															  ) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			logger.info("createOrderByDraft ...");
 			logger.info("userId :"+userId);
 			logger.info("draftId :"+draftId);
-			logger.info("orderId:"+orderId);
 			InspectionBookingBean orderBean = orderService.createOrderByDraft(userId, draftId);
 			if (orderBean != null) {
 				map.put("success", true);

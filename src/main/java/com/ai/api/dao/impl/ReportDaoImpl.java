@@ -1,5 +1,13 @@
 package com.ai.api.dao.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.ReportDao;
 import com.ai.api.util.FTPUtil;
@@ -8,7 +16,6 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
@@ -27,14 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by yan on 2016/7/25.
@@ -201,10 +200,13 @@ public class ReportDaoImpl implements ReportDao {
                 logger.info("request OK!");
                 String remotePath = "/CACHE/";
                 String fileName = result.getResponseString();
-                String host = config.getMwFTPHost();
+//                String host = config.getMwFTPHost();
+				String host = "";
                 int port = 21;
-                String username = config.getMwFTPUsername();
-                String password = config.getMwFTPPassword();
+//				String username = config.getMwFTPUsername();
+//				String password = config.getMwFTPPassword();
+                String username = "";
+                String password = "";
                 String tempPath = "/tmp/";
                 logger.info(remotePath);
                 logger.info(fileName);

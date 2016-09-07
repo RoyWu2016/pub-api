@@ -28,13 +28,13 @@ package com.ai.api.config;
 
 public class ServiceConfig {
 
-    private String baseURL;
+//    private String baseURL;
 
     private String customerServiceUrl;
 
 	private String paramServiceUrl;
 
-	private String ssoUserServiceUrl;
+//	private String ssoUserServiceUrl;
 
     private String factoryServiceUrl;
 
@@ -50,25 +50,19 @@ public class ServiceConfig {
 
     private String reportServiceUrl;
 
-    private String mwFTPHost;
-    private String mwFTPUsername;
-    private String mwFTPPassword;
+//    private String mwFTPHost;
+//    private String mwFTPUsername;
+//    private String mwFTPPassword;
 
     private String psiServiceUrl;
 
-    /**
-     * @return the baseURL
-     */
-    public String getBaseURL() {
-        return baseURL;
-    }
+//    public String getBaseURL() {
+//        return baseURL;
+//    }
 
-    /**
-     * @param baseURL the baseURL to set
-     */
-    public void setBaseURL(String baseURL) {
-        this.baseURL = baseURL;
-    }
+//    public void setBaseURL(String baseURL) {
+//        this.baseURL = baseURL;
+//    }
 
 	public String getParamServiceUrl() {
 		return paramServiceUrl;
@@ -86,6 +80,7 @@ public class ServiceConfig {
         this.customerServiceUrl = customerServiceUrl;
     }
 
+	/*
 	public String getSsoUserServiceUrl() {
 		return ssoUserServiceUrl;
 	}
@@ -93,6 +88,7 @@ public class ServiceConfig {
 	public void setSsoUserServiceUrl(String ssoUserServiceUrl) {
 		this.ssoUserServiceUrl = ssoUserServiceUrl;
 	}
+	*/
 
     public String getFileServiceUrl() {
         return fileServiceUrl;
@@ -134,29 +130,29 @@ public class ServiceConfig {
         this.reportServiceUrl = reportServiceUrl;
     }
 
-    public String getMwFTPHost() {
-        return mwFTPHost;
-    }
-
-    public void setMwFTPHost(String mwFTPHost) {
-        this.mwFTPHost = mwFTPHost;
-    }
-
-    public String getMwFTPUsername() {
-        return mwFTPUsername;
-    }
-
-    public void setMwFTPUsername(String mwFTPUsername) {
-        this.mwFTPUsername = mwFTPUsername;
-    }
-
-    public String getMwFTPPassword() {
-        return mwFTPPassword;
-    }
-
-    public void setMwFTPPassword(String mwFTPPassword) {
-        this.mwFTPPassword = mwFTPPassword;
-    }
+//    public String getMwFTPHost() {
+//        return mwFTPHost;
+//    }
+//
+//    public void setMwFTPHost(String mwFTPHost) {
+//        this.mwFTPHost = mwFTPHost;
+//    }
+//
+//    public String getMwFTPUsername() {
+//        return mwFTPUsername;
+//    }
+//
+//    public void setMwFTPUsername(String mwFTPUsername) {
+//        this.mwFTPUsername = mwFTPUsername;
+//    }
+//
+//    public String getMwFTPPassword() {
+//        return mwFTPPassword;
+//    }
+//
+//    public void setMwFTPPassword(String mwFTPPassword) {
+//        this.mwFTPPassword = mwFTPPassword;
+//    }
 
     public String getPsiServiceUrl() {
         return psiServiceUrl;

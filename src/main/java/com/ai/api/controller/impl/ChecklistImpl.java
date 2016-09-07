@@ -92,7 +92,8 @@ public class ChecklistImpl implements Checklist {
         logger.info("checklistBean :"+checklistVO.toString());
 		String result = checklistService.createChecklist(userId,checklistVO);
 		if(result!=null){
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			logger.info("create result : "+result);
+			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -112,7 +113,8 @@ public class ChecklistImpl implements Checklist {
         checklist.setCheckListId(checklistId);
 		String result = checklistService.updateChecklist(userId,checklistId,checklist);
 		if(result!=null){
-            return new ResponseEntity<>(result,HttpStatus.OK);
+			logger.info("update result : "+result);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

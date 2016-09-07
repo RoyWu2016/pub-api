@@ -16,6 +16,7 @@ import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.ParameterDao;
+import com.ai.api.util.RedisUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
@@ -62,17 +63,28 @@ public class ParameterDaoImpl implements ParameterDao {
 	private ServiceConfig config;
 
 	@Override
-	@Cacheable(value="productCategoryListCache", key="#root.methodName")
+//	@Cacheable(value="productCategoryListCache", key="#root.methodName")
 	public List<ProductCategoryDtoBean> getProductCategoryList(){
+
+        List<ProductCategoryDtoBean> productCategoryList = new ArrayList<>();
+        try {
+            LOGGER.info("try to getProductCategoryList from redis ...");
+            String jsonString = RedisUtil.get("productCategoryListCache");
+            productCategoryList = JSON.parseArray(jsonString, ProductCategoryDtoBean.class);
+            if (productCategoryList.size()>0){
+                LOGGER.info("success getProductCategoryList from redis");
+                return productCategoryList;
+            }
+        }catch (Exception e){
+            LOGGER.error("error getting productCategoryList from redis",e);
+        }
 
 		String SysProductCategoryURL = config.getParamServiceUrl() + "/p/list-product-category";
 		GetRequest request7 = GetRequest.newInstance().setUrl(SysProductCategoryURL);
 
-		List<ProductCategoryDtoBean> produttCategoryList = new ArrayList<>();
-
 		try{
 			ServiceCallResult result = HttpUtil.issueGetRequest(request7);
-			produttCategoryList = JSON.parseArray(result.getResponseString(),ProductCategoryDtoBean.class);
+            productCategoryList = JSON.parseArray(result.getResponseString(),ProductCategoryDtoBean.class);
 //			JSONArray jsonArray =new JSONArray(result.getResponseString());
 //			for (int i = 0; i < jsonArray.length(); i++) {
 //				JSONObject obj = jsonArray.getJSONObject(i);
@@ -83,18 +95,33 @@ public class ParameterDaoImpl implements ParameterDao {
 		}catch(IOException e){
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
-		return produttCategoryList;
+		try {
+			LOGGER.info("saving productCategoryListCache");
+            RedisUtil.set("productCategoryListCache",JSON.toJSONString(productCategoryList));
+		}catch (Exception e){
+            LOGGER.error("error saving productCategoryListCache ",e);
+        }
+		return productCategoryList;
 	}
 
 	@Override
-	@Cacheable(value="productFamilyListCache", key="#root.methodName")
+//	@Cacheable(value="productFamilyListCache", key="#root.methodName")
 	public List<ProductFamilyDtoBean> getProductFamilyList(){
+        List<ProductFamilyDtoBean> productFamilyList = new ArrayList<>();
+        try {
+            LOGGER.info("try to getProductFamilyList from redis ...");
+            String jsonString = RedisUtil.get("productFamilyListCache");
+            productFamilyList = JSON.parseArray(jsonString, ProductFamilyDtoBean.class);
+            if (productFamilyList.size()>0){
+                LOGGER.info("success getProductFamilyList from redis");
+                return productFamilyList;
+            }
+        }catch (Exception e){
+            LOGGER.error("error getting productFamilyList from redis",e);
+        }
 
 		String SysProductFamilyBeanURL = config.getParamServiceUrl() +"/p/list-product-family";
 		GetRequest request7 = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
-
-		List<ProductFamilyDtoBean> productFamilyList = new ArrayList<>();
-
 		try{
 			ServiceCallResult result = HttpUtil.issueGetRequest(request7);
 			productFamilyList = JSON.parseArray(result.getResponseString(),ProductFamilyDtoBean.class);
@@ -108,15 +135,21 @@ public class ParameterDaoImpl implements ParameterDao {
 		}catch(IOException e){
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
+        try {
+            LOGGER.info("saving productFamilyListCache");
+            RedisUtil.set("productFamilyListCache",JSON.toJSONString(productFamilyList));
+        }catch (Exception e){
+            LOGGER.error("error saving productFamilyListCache ",e);
+        }
 		return productFamilyList;
 	}
 
 	@Override
 //	@Cacheable(value="countryListCache", key="#root.methodName")
 	public List<String> getCountryList(){
-		String SysProductFamilyBeanURL = config.getParamServiceUrl() +"/p/list-country";
+        List<String> countryList = new ArrayList<>();
+        String SysProductFamilyBeanURL = config.getParamServiceUrl() +"/p/list-country";
 		GetRequest request = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
-		List<String> countryList = new ArrayList<>();
 		try{
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			countryList = JSON.parseArray(result.getResponseString(),String.class);

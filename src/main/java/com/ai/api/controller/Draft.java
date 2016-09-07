@@ -1,3 +1,4 @@
+
 package com.ai.api.controller;
 
 import com.ai.commons.beans.order.draft.DraftOrder;
@@ -28,7 +29,7 @@ import org.springframework.http.ResponseEntity;
 
 
 public interface Draft {
-	ResponseEntity<Boolean> deleteDraftFrom(String userId, String draftIds);
+	ResponseEntity<Boolean> deleteDrafts(String userId, String draftIds);
 
 	ResponseEntity<InspectionBookingBean> createDraft(final String userId, final String serviceType);
 
@@ -44,5 +45,9 @@ public interface Draft {
 
     ResponseEntity<Boolean> deleteProduct( String userId,String draftId,String productId);
     
-    ResponseEntity<List<DraftOrder>> searchDraft(String userId, String serviceType,String startDate, String endDate, String keyWord, String pageNumber, String pageSize);
+	ResponseEntity<InspectionBookingBean> calculatePricing(String userId, String draftId, 
+			String samplingLevel,String measurementSamplingSize);
+	
+	 ResponseEntity<List<DraftOrder>> searchDraft(String userId, String serviceType,String startDate, String endDate, String keyWord, String pageNumber, String pageSize);
 }
+

@@ -1,5 +1,10 @@
 package com.ai.api.dao.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.List;
+
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.PaymentDao;
 import com.ai.api.util.FTPUtil;
@@ -17,9 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-
-import java.io.*;
-import java.util.List;
 
 /**
  * Project Name    : Public-API
@@ -49,10 +51,13 @@ public class PaymentDaoImpl implements PaymentDao {
                 logger.info("get OK!");
                 String remotePath = "/CACHE/";
                 String fileName = result.getResponseString();
-                String host = config.getMwFTPHost();
+//                String host = config.getMwFTPHost();
+	            String host = "";
                 int port = 21;
-                String username = config.getMwFTPUsername();
-                String password = config.getMwFTPPassword();
+                String username = "";
+                String password = "";
+//	            String username = config.getMwFTPUsername();
+//	            String password = config.getMwFTPPassword();
                 String tempPath = "/tmp";
                 logger.info(remotePath);
                 logger.info(fileName);

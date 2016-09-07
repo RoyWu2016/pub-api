@@ -28,7 +28,6 @@ import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
 
 public interface DraftService {
-	
 	boolean deleteDraft(String userId,String ids) throws Exception;
 
 	boolean deleteDraftFromPsi(String userId, String draftIds) throws Exception;
@@ -47,5 +46,9 @@ public interface DraftService {
 
     boolean deleteProduct(String userId,String productId) throws Exception;
     
-    List<DraftOrder> searchDraft(String userId, String serviceType,String startDate, String endDate, String keyWord, String pageNumber, String pageSize)  throws IOException, AIException;
+	InspectionBookingBean calculatePricing(String userId, String draftId,
+			String samplingLevel,String measurementSamplingSize) throws Exception;
+	
+	 List<DraftOrder> searchDraft(String userId, String serviceType,String startDate, String endDate, String keyWord, String pageNumber, String pageSize)  throws IOException, AIException;
 }
+

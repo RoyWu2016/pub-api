@@ -1,6 +1,7 @@
 package com.ai.api.service.impl;
 
-import org.apache.commons.codec.digest.DigestUtils;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ai.api.bean.UserForToken;
 import com.ai.api.dao.UserDao;
 import com.ai.api.dao.impl.TokenJWTDaoImpl;
@@ -11,12 +12,11 @@ import com.ai.commons.beans.user.GeneralUserBean;
 import com.ai.commons.beans.user.TokenSession;
 import com.ai.userservice.common.util.MD5;
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Project Name    : Public-API
@@ -37,18 +37,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public ServiceCallResult userLogin(String userName, String password, String userType) {
-        logger.info("userLogin ...");
-        logger.info("userName :"+userName);
-        logger.info("password :"+password);
-        logger.info("userType :"+userType);
+        logger.info("userLogin ... userName: " +userName + ", userType:" + userType);
         ServiceCallResult result = new ServiceCallResult();
         if (userType.toLowerCase().equals("client")){
-//            String pwdMd5 = MD5.toMD5(password);
             String pwdMd5 = DigestUtils.shaHex(MD5.toMD5(password));
             logger.info("client-----pwdMd5 :"+pwdMd5);
             logger.info("getting client from DB ... userName:"+userName);
             GeneralUserBean client = userDao.getClientUser(userName);
-            logger.info("client-----userId-[ "+client.getUserId()+"] pw-["+client.getPassword()+"]");
+//            logger.info("client-----userId-[ "+client.getUserId()+"] pw-["+client.getPassword()+"]");
             if (client != null && client.getUserId() != null && pwdMd5.equals(client.getPassword())) {
                 //Generate the token based on the User
                 TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(), client.getUserId(), IDGenerator.uuid());
@@ -69,11 +65,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
         }else if(userType.toLowerCase().equals("employee")){
             String pwdMd5 = MD5.toMD5(password);
-            logger.info("employee-----pwdMd5 :"+pwdMd5);
+//            logger.info("employee-----pwdMd5 :"+pwdMd5);
             logger.info("getting employee from DB ... userName:"+userName);
             UserForToken user = userDao.getEmployeeUser(userName);
             logger.info("employee-----userId-[ "+user.getUserId()+"] pw-["+user.getPassword()+"]");
-            if (null!=user && null!=user.getUserId() && pwdMd5.equals(user.getPassword())){
+            if (null != user.getUserId() && pwdMd5.equals(user.getPassword())){
                 //Generate the token based on the User
                 TokenSession tokenSession = tokenJWTDao.generateToken(user.getLogin(), user.getUserId(), IDGenerator.uuid());
                 if (tokenSession != null) {

@@ -1,3 +1,4 @@
+
 package com.ai.api.controller.impl;
 
 import com.ai.api.controller.Draft;
@@ -46,7 +47,7 @@ public class DraftImpl implements Draft {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/drafts/{draftIds}", method = RequestMethod.DELETE)
-	public ResponseEntity<Boolean> deleteDraftFrom(@PathVariable("userId")String userId,@PathVariable("draftIds") String draftIds) {
+	public ResponseEntity<Boolean> deleteDrafts(@PathVariable("userId") String userId, @PathVariable("draftIds") String draftIds) {
 		try {
 			boolean result = draftService.deleteDraftFromPsi(userId, draftIds);
 			if(result){
@@ -103,7 +104,7 @@ public class DraftImpl implements Draft {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/drafts/{draftId}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/draft/{draftId}", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> saveDraft(@PathVariable("userId")String userId,
 											 @PathVariable("draftId") String draftId,
 											 @RequestBody InspectionBookingBean draft) {
@@ -121,7 +122,7 @@ public class DraftImpl implements Draft {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/drafts/{draftId}/product", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/{userId}/draft/{draftId}/product", method = RequestMethod.POST)
     public ResponseEntity<Boolean> addProduct(@PathVariable("userId")String userId,
                                                @PathVariable("draftId") String draftId) {
         try {
@@ -137,7 +138,7 @@ public class DraftImpl implements Draft {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/drafts/{draftId}/product/{productId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/user/{userId}/draft/{draftId}/product/{productId}", method = RequestMethod.PUT)
     public ResponseEntity<Boolean> saveProduct(@PathVariable("userId")String userId,
                                                @PathVariable("draftId") String draftId,
                                                @PathVariable("productId") String productId,
@@ -157,7 +158,7 @@ public class DraftImpl implements Draft {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/drafts/{draftId}/product/{productId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/user/{userId}/draft/{draftId}/product/{productId}", method = RequestMethod.DELETE)
     public ResponseEntity<Boolean> deleteProduct(@PathVariable("userId")String userId,
                                                @PathVariable("draftId") String draftId,
                                                @PathVariable("productId") String productId) {
@@ -171,26 +172,46 @@ public class DraftImpl implements Draft {
         }
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    @Override
-    @TokenSecured
-    @RequestMapping(value = "/user/{userId}/psi-drafts", method = RequestMethod.GET)
-	public ResponseEntity<List<DraftOrder>> searchDraft(@PathVariable("userId")String userId, 
-			 					@RequestParam("service-type") String serviceType,
-			 					@RequestParam("start") String startDate,
-			 					@RequestParam("end") String endDate,
-			 					@RequestParam("keyword") String keyword,
-			 					@RequestParam("page") String pageNumber,
-			 					@RequestParam("page-size") String pageSize) {
-  
+    
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/draft/{draftId}/sampling-level/{samplingLevel}/price", 
+			method = RequestMethod.GET)
+	public ResponseEntity<InspectionBookingBean> calculatePricing(
+			@PathVariable("userId") String userId,
+			@PathVariable("draftId") String draftId, 
+			@PathVariable("samplingLevel") String samplingLevel,
+			@RequestParam("measurementSamplingSize") String measurementSamplingSize) {
+		// TODO Auto-generated method stub
 		try {
-			List<DraftOrder> draftList = draftService.searchDraft(userId, serviceType, startDate, endDate, keyword, pageNumber, pageSize);
-			return new ResponseEntity<List<DraftOrder>>(draftList, HttpStatus.OK);
+			InspectionBookingBean newDraft = draftService.calculatePricing(userId, draftId,samplingLevel, measurementSamplingSize);
+			return new ResponseEntity<>(newDraft, HttpStatus.OK);
 		} catch (Exception e) {
-			logger.error("get draft search error: " + ExceptionUtils.getFullStackTrace(e));
+			logger.error("calculate Pricing error: " + ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
 	}
-
+	
+	
+	 @Override
+	    @TokenSecured
+	    @RequestMapping(value = "/user/{userId}/psi-drafts", method = RequestMethod.GET)
+		public ResponseEntity<List<DraftOrder>> searchDraft(@PathVariable("userId")String userId, 
+				 					@RequestParam("service-type") String serviceType,
+				 					@RequestParam("start") String startDate,
+				 					@RequestParam("end") String endDate,
+				 					@RequestParam("keyword") String keyword,
+				 					@RequestParam("page") String pageNumber,
+				 					@RequestParam("page-size") String pageSize) {
+	  
+			try {
+				List<DraftOrder> draftList = draftService.searchDraft(userId, serviceType, startDate, endDate, keyword, pageNumber, pageSize);
+				return new ResponseEntity<List<DraftOrder>>(draftList, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("get draft search error: " + ExceptionUtils.getFullStackTrace(e));
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			
+		}
 }
+

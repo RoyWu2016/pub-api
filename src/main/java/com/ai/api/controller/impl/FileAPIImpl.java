@@ -49,9 +49,9 @@ import com.ai.dto.JsonResponse;
  ***************************************************************************/
 
 @RestController
-public class FileControllerImpl implements FileAPI {
+public class FileAPIImpl implements FileAPI {
 
-	private static final Logger logger = LoggerFactory.getLogger(FileControllerImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(FileAPIImpl.class);
 
 	@Autowired
 	private APIFileService myFileService;
@@ -145,15 +145,15 @@ public class FileControllerImpl implements FileAPI {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/file/{fileId}/delete", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/user/{userId}/file/{fileId}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteFile(@PathVariable("userId") String userId,
 			@PathVariable("fileId") String fileId) throws IOException {
 		try {
 			myFileService.getFileService().deleteFile(fileId, userId);
-			return new ResponseEntity<String>("Delete Successfully", HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("Error in update", e);
-			return new ResponseEntity<String>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }
