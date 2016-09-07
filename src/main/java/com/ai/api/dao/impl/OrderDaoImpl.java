@@ -17,14 +17,8 @@ import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
-import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
-import com.ai.commons.beans.order.api.SimpleOrderBean;
-import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.InspectionOrderBean;
-import com.ai.dto.JsonResponse;
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +56,7 @@ public class OrderDaoImpl implements OrderDao {
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
 
+	/*
 	@Override
 	public List<SimpleOrderBean> getOrdersByUserId(OrderSearchCriteriaBean criteria) {
 		String url = config.getMwServiceUrl() + "/service/order/search";
@@ -106,6 +101,7 @@ public class OrderDaoImpl implements OrderDao {
 		}
 		return null;
 	}
+	*/
 
 	@Override
 	public Boolean cancelOrder(OrderCancelBean orderCancelBean) {

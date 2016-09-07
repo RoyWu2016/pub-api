@@ -6,8 +6,6 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +16,8 @@ import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
-import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
-import com.ai.commons.beans.order.api.SimpleOrderBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
-
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +62,7 @@ public class OrderImpl implements Order {
 	@Autowired
 	OrderService orderService;
 
+	/*
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-orders", method = RequestMethod.GET)
@@ -124,6 +120,7 @@ public class OrderImpl implements Order {
 		}
 
 	}
+	*/
 
 	@Override
 	@TokenSecured

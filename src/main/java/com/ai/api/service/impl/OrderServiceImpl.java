@@ -15,9 +15,7 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
-import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
-import com.ai.commons.beans.order.api.SimpleOrderBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +60,7 @@ public class OrderServiceImpl implements OrderService {
 	@Qualifier("userService")
 	private UserService userService;
 
+	/*
 	@Override
 	public List<SimpleOrderBean> getOrdersByUserId(OrderSearchCriteriaBean criteria) {
 		if(criteria.getLogin()==null){
@@ -79,6 +78,7 @@ public class OrderServiceImpl implements OrderService {
 		}
 		return orderDao.getDraftsByUserId(criteria);
 	}
+	*/
 
 	@Override
 	public Boolean cancelOrder(OrderCancelBean orderCancelBean){

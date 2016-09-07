@@ -11,8 +11,6 @@ import java.util.Map;
 
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
-import com.ai.commons.beans.order.api.SimpleOrderBean;
-
 import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
@@ -37,13 +35,14 @@ import org.springframework.http.ResponseEntity;
 
 public interface Order {
 
+	/*
 	ResponseEntity<List<SimpleOrderBean>> getOrderListByUserId(String userId,
 	                                                                 Integer pageNumber,
 	                                                                 String orderTypeArray,
 	                                                                 String orderStatus,
 	                                                                 String starts,
 	                                                                 String ends,
-	                                                                 String keyword);
+	                                                                 String keyword);  */
 	ResponseEntity<Boolean> cancelOrder(String userId, String orderId, OrderCancelBean orderCancelBean);
 
 	ResponseEntity<Map<String, Object>> getOrderDetail(String userId,String orderId);
