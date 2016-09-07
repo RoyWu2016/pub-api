@@ -104,7 +104,7 @@ public class FileAPIImpl implements FileAPI {
 	public ResponseEntity<FileMetaBean> uploadFile(@PathVariable("userId") String userId,
 			@PathVariable("docType") String docType, @PathVariable("sourceId") String sourceId,
 			MultipartHttpServletRequest request, HttpServletResponse response) throws IOException {
-		JsonResponse jsonRes = new JsonResponse(JsonResponse.STATUS_SUC);
+		
 		String bucket = ConstMap.bucketMap.get(docType.toUpperCase());
 		FileMetaBean bean = new FileMetaBean();
 		try {
@@ -117,8 +117,7 @@ public class FileAPIImpl implements FileAPI {
 				double sizeM = mpf.getSize() / (1024 * 1000);
 				// 10M default
 				if (sizeM > serviceConfig.getFileMaximumSize()) {
-					jsonRes.setStatus(JsonResponse.STATUS_FAIL);
-					jsonRes.setMsg("Max of file size is " + serviceConfig.getFileMaximumSize() + "M");
+					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 				} else {
 					File tempDir = new File(myFileService.getFileService().getLocalTempDir() + sourceId);
 
@@ -137,8 +136,7 @@ public class FileAPIImpl implements FileAPI {
 			}
 		} catch (Exception e) {
 			logger.error("Error in update", e);
-			jsonRes.setStatus(JsonResponse.STATUS_FAIL);
-			jsonRes.setMsg("'File attached failed, please contact the IT department! >> Error: " + e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<FileMetaBean>(bean, HttpStatus.OK);
 	}

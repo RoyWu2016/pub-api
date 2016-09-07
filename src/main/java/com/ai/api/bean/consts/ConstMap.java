@@ -42,6 +42,8 @@ public class ConstMap {
         bucketMap.put("GI_INSP_RPT","dm-general-instruction");
         bucketMap.put("GI_LAB_TEST","dm-general-instruction");
         bucketMap.put("ORDER_ATT","order-attachments");
+        bucketMap.put("CHECKLIST_TEST","checklist-attachements");
+        bucketMap.put("CHECKLIST_EXPECTED_DEFECT","checklist-attachements");
 
 	    serviceTypeMap.put("psi", "1");
 	    serviceTypeMap.put("ipc", "2");
