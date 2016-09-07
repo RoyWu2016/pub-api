@@ -322,6 +322,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
         if (authorizationHeader == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST,
                     "Unauthorized: No Authorization header was found");
+	        return null;
         }
 
         String[] parts = authorizationHeader.split(" ");
