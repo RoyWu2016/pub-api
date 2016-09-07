@@ -1,13 +1,13 @@
 package com.ai.api.util;
 
+import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-
-import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
 /***************************************************************************
  * <PRE>
@@ -69,7 +69,7 @@ public class RedisUtil {
 			//config.setMaxIdle(8);
 			//config.setMaxWaitMillis(100000);
 			config.setTestOnBorrow(true);
-			pool = new JedisPool(config, "202.66.128.138", 6379, 100000,"aiitteam");
+			pool = new JedisPool(config, "localhost", 6379, 100000, "4zpKbZaHcRRjNBhr");
 		} catch (Exception e) {
 			logger.error("First create JedisPool error : "+e);
 		}
