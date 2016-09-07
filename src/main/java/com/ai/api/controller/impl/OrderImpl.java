@@ -255,7 +255,7 @@ public class OrderImpl implements Order {
 	@Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/psi-orders", method = RequestMethod.GET)
-	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrder(@PathVariable("userId")String userId,
+	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(@PathVariable("userId")String userId,
 																   @RequestParam("service-type") String serviceType,
 																   @RequestParam("start") String startDate,
 																   @RequestParam("end") String endDate,

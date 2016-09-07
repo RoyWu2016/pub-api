@@ -54,6 +54,6 @@ public interface Order {
 
     ResponseEntity<Map<String, Object>> saveOrderByDraft(String userId,String draftId,String orderId);
     
-    ResponseEntity<List<SimpleOrderSearchBean>> searchOrder(String userId, String serviceType,String startDate, String endDate, String keyWord, String orderStatus, String pageNumber, String pageSize);
+    ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(String userId, String serviceType,String startDate, String endDate, String keyWord, String orderStatus, String pageNumber, String pageSize);
 
 }
