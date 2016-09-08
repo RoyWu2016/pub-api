@@ -43,7 +43,7 @@ public interface Order {
 	                                                                 String starts,
 	                                                                 String ends,
 	                                                                 String keyword);  */
-	ResponseEntity<Boolean> cancelOrder(String userId, String orderId, OrderCancelBean orderCancelBean);
+	ResponseEntity<Boolean> cancelOrder(String userId, String orderId, String reason, String reason_options);
 
 	ResponseEntity<Map<String, Object>> getOrderDetail(String userId,String orderId);
 

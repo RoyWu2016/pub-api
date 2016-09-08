@@ -127,25 +127,23 @@ public class OrderImpl implements Order {
 	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}", method = RequestMethod.DELETE)
 	public ResponseEntity<Boolean> cancelOrder(@PathVariable("userId") String userId,
 	                                           @PathVariable("orderId") String orderId,
-	                                           @RequestBody OrderCancelBean orderCancelBean) {
+	                                           @RequestParam("reason") String reason,
+	                                           @RequestParam("reason_options") String reason_options
+	                                          ) {
 		try {
 			logger.info("cancelOrder ...");
 			logger.info("userId :"+userId);
 			logger.info("orderId:"+orderId);
-			logger.info("orderCancelBean:"+orderCancelBean);
-			UserBean user = userService.getCustById(userId);
-			if (orderCancelBean != null) {
-				orderCancelBean.setLogin(user.getLogin());
-				orderCancelBean.setOrderId(orderId);
-				orderCancelBean.setUserId(userId);
-				Boolean result = orderService.cancelOrder(orderCancelBean);
-				if (result != null) {
+			
+		
+				Boolean result = orderService.cancelOrder(userId, orderId, reason, reason_options);
+				if (result) {
 					return new ResponseEntity<>(result, HttpStatus.OK);
 				}
-			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
