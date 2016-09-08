@@ -94,7 +94,7 @@ public class ParameterDaoImpl implements ParameterDao {
 		LOGGER.info("try to getProductFamilyList from redis ...");
 		String jsonString = RedisUtil.get("productFamilyListCache");
 		productFamilyList = JSON.parseArray(jsonString, ProductFamilyDtoBean.class);
-		if (null != productFamilyList) {
+		if (null == productFamilyList) {
 			String SysProductFamilyBeanURL = config.getParamServiceUrl() + "/p/list-product-family";
 			GetRequest request7 = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
 			try {
@@ -150,7 +150,7 @@ public class ParameterDaoImpl implements ParameterDao {
 		LOGGER.info("try to getCountryList from redis ...");
 		String jsonString = RedisUtil.get("countryListCache");
 		countryList = JSON.parseArray(jsonString, String.class);
-		if (null != countryList) {
+		if (null == countryList) {
 			String SysProductFamilyBeanURL = config.getParamServiceUrl() + "/p/list-country";
 			GetRequest request7 = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
 			try {
