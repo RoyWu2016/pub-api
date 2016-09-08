@@ -81,8 +81,8 @@ public class OrderServiceImpl implements OrderService {
 	*/
 
 	@Override
-	public Boolean cancelOrder(OrderCancelBean orderCancelBean){
-		return orderDao.cancelOrder(orderCancelBean);
+	public Boolean cancelOrder(String userId, String orderId, String reason, String reason_options){
+		return orderDao.cancelOrder(userId, orderId, reason, reason_options);
 	}
 
 	@Override

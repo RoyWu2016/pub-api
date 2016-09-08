@@ -41,7 +41,7 @@ public interface OrderService {
 	List<SimpleOrderBean> getDraftsByUserId(OrderSearchCriteriaBean criteria);
 	*/
 
-	Boolean cancelOrder(OrderCancelBean orderCancelBean);
+	Boolean cancelOrder(String userId, String OrderId, String reason, String reason_options);
 
 	InspectionBookingBean getOrderDetail(String userId, String orderId);
 

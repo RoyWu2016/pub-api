@@ -8,7 +8,6 @@ package com.ai.api.dao;
 
 import java.util.List;
 
-import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 
@@ -39,7 +38,7 @@ public interface OrderDao {
 	List<SimpleOrderBean> getDraftsByUserId(OrderSearchCriteriaBean criteria);
 	*/
 
-	Boolean cancelOrder(OrderCancelBean orderCancelBean);
+	Boolean cancelOrder(String userId, String orderId, String reason, String reason_options);
 	InspectionBookingBean getOrderDetail(String userId, String orderId);
 	InspectionBookingBean createOrderByDraft(String userId, String draftId,String companyId,String parentId);
     InspectionBookingBean editOrder(String userId, String orderId,String companyId,String parentId);
