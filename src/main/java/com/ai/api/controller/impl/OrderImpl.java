@@ -252,7 +252,7 @@ public class OrderImpl implements Order {
 													   @RequestParam(value = "start", required = false) String startDate,
 													   @RequestParam(value = "end", required = false) String endDate,
 													   @RequestParam(value = "keyword", required = false) String keyword,
-													   @RequestParam(value = "orderStatus", required = false) String orderStatus,
+													   @RequestParam(value = "orderStatus", required = true) String orderStatus,
 													   @RequestParam(value = "page-size", required = false) String pageSize,
 													   @RequestParam(value = "page", required = false) String pageNumber) {
 		try {
