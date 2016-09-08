@@ -90,7 +90,7 @@ public class ParameterDaoImpl implements ParameterDao {
 	@Override
 	// @Cacheable(value="productFamilyListCache", key="#root.methodName")
 	public List<ProductFamilyDtoBean> getProductFamilyList() {
-		List<ProductFamilyDtoBean> productFamilyList = new ArrayList<>();
+		List<ProductFamilyDtoBean> productFamilyList = null;
 		LOGGER.info("try to getProductFamilyList from redis ...");
 		String jsonString = RedisUtil.get("productFamilyListCache");
 		productFamilyList = JSON.parseArray(jsonString, ProductFamilyDtoBean.class);
@@ -99,10 +99,15 @@ public class ParameterDaoImpl implements ParameterDao {
 			GetRequest request7 = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
 			try {
 				ServiceCallResult result = HttpUtil.issueGetRequest(request7);
-				productFamilyList = JSON.parseArray(result.getResponseString(), ProductFamilyDtoBean.class);
-
-				LOGGER.info("saving productFamilyListCache");
-				RedisUtil.set("productFamilyListCache", JSON.toJSONString(productFamilyList));
+				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					productFamilyList = JSON.parseArray(result.getResponseString(), ProductFamilyDtoBean.class);
+					
+					LOGGER.info("saving productFamilyListCache");
+					RedisUtil.set("productFamilyListCache", JSON.toJSONString(productFamilyList));
+				} else {
+					LOGGER.error("getProductFamilyList error: " + result.getStatusCode() + ", "
+							+ result.getResponseString());
+				}
 			} catch (IOException e) {
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
@@ -146,7 +151,7 @@ public class ParameterDaoImpl implements ParameterDao {
 	@Override
 	// @Cacheable(value="countryListCache", key="#root.methodName")
 	public List<String> getCountryList() {
-		List<String> countryList = new ArrayList<>();
+		List<String> countryList = null;
 		LOGGER.info("try to getCountryList from redis ...");
 		String jsonString = RedisUtil.get("countryListCache");
 		countryList = JSON.parseArray(jsonString, String.class);
@@ -155,10 +160,15 @@ public class ParameterDaoImpl implements ParameterDao {
 			GetRequest request7 = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
 			try {
 				ServiceCallResult result = HttpUtil.issueGetRequest(request7);
-				countryList = JSON.parseArray(result.getResponseString(), String.class);
-
-				LOGGER.info("saving getCountryList");
-				RedisUtil.set("countryListCache", JSON.toJSONString(countryList));
+				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					countryList = JSON.parseArray(result.getResponseString(), String.class);
+					
+					LOGGER.info("saving getCountryList");
+					RedisUtil.set("countryListCache", JSON.toJSONString(countryList));
+				} else {
+					LOGGER.error("getCountryList error: " + result.getStatusCode() + ", "
+							+ result.getResponseString());
+				}
 			} catch (IOException e) {
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
@@ -185,91 +195,275 @@ public class ParameterDaoImpl implements ParameterDao {
 	}
 
 	@Override
+	// @Cacheable(value="testSampleSizeListCache", key="#root.methodName")
 	public Map<String, List<ChecklistTestSampleSizeBean>> getTestSampleSizeList() {
 		String baseUrl = config.getParamServiceUrl() + "/systemconfig/classified/list/";
 		Map<String, List<ChecklistTestSampleSizeBean>> resultMap = new HashMap<>();
-		try {
+		
+		LOGGER.info("try to getTestSampleSizeList from redis ...");
+		String jsonStringPriceNo = RedisUtil.hget("testSampleSizeListCache","CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO");
+		String jsonStringSampleLevel = RedisUtil.hget("testSampleSizeListCache","CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL");
+		String jsonStringFabricLevel = RedisUtil.hget("testSampleSizeListCache","CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL");
+		
+		List<ChecklistTestSampleSizeBean> priceNoList = JSON.parseArray(jsonStringPriceNo, ChecklistTestSampleSizeBean.class);
+		List<ChecklistTestSampleSizeBean> sampleLevelList = JSON.parseArray(jsonStringSampleLevel, ChecklistTestSampleSizeBean.class);
+		List<ChecklistTestSampleSizeBean> fabricLevelList = JSON.parseArray(jsonStringFabricLevel, ChecklistTestSampleSizeBean.class);
+		
+		if(null == priceNoList) {
 			String url = baseUrl + "CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO";
+			LOGGER.info("get CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO url: " + url);
 			GetRequest request = GetRequest.newInstance().setUrl(url);
-			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-			JSONObject object = JSONObject.parseObject(result.getResponseString());
-			Object arrayStr = object.get("content");
-			List<ChecklistTestSampleSizeBean> list = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
-			resultMap.put("CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO", list);
-
-			url = baseUrl + "CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL";
-			request = GetRequest.newInstance().setUrl(url);
-			result = HttpUtil.issueGetRequest(request);
-			object = JSONObject.parseObject(result.getResponseString());
-			arrayStr = object.get("content");
-			list = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
-			resultMap.put("CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL", list);
-
-			url = baseUrl + "CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL";
-			request = GetRequest.newInstance().setUrl(url);
-			result = HttpUtil.issueGetRequest(request);
-			object = JSONObject.parseObject(result.getResponseString());
-			arrayStr = object.get("content");
-			list = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
-			resultMap.put("CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL", list);
-
-		} catch (IOException e) {
-			LOGGER.error(ExceptionUtils.getStackTrace(e));
+			try {
+				ServiceCallResult result = HttpUtil.issueGetRequest(request);
+				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					JSONObject object = JSONObject.parseObject(result.getResponseString());
+					Object arrayStr = object.get("content");
+					priceNoList = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
+					resultMap.put("CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO", priceNoList);
+					
+					LOGGER.info("saving priceNoList CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO");
+					RedisUtil.hset("testSampleSizeListCache","CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO",JSON.toJSONString(priceNoList));
+				} else {
+					LOGGER.error("getTestSampleSizeList CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO error: " + result.getStatusCode() + ", "
+							+ result.getResponseString());
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				LOGGER.error(ExceptionUtils.getStackTrace(e));
+			}
+		}else {
+			LOGGER.info("success getTestSampleSizeList CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO from redis");
 		}
+		
+		if(null == sampleLevelList) {
+			String url = baseUrl + "CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL";
+			LOGGER.info("get CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL url: " + url);
+			GetRequest request = GetRequest.newInstance().setUrl(url);
+			try {
+				ServiceCallResult result = HttpUtil.issueGetRequest(request);
+				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					JSONObject object = JSONObject.parseObject(result.getResponseString());
+					Object arrayStr = object.get("content");
+					sampleLevelList = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
+					resultMap.put("CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL", sampleLevelList);
+					
+					LOGGER.info("saving priceNoList CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL");
+					RedisUtil.hset("testSampleSizeListCache","CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL",JSON.toJSONString(sampleLevelList));
+				} else {
+					LOGGER.error("getTestSampleSizeList CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL error: " + result.getStatusCode() + ", "
+							+ result.getResponseString());
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				LOGGER.error(ExceptionUtils.getStackTrace(e));
+			}
+		}else {
+			LOGGER.info("success getTestSampleSizeList CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL from redis");
+		}
+		
+		if(null == fabricLevelList) {
+			String url = baseUrl + "CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL";
+			LOGGER.info("get CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL url: " + url);
+			GetRequest request = GetRequest.newInstance().setUrl(url);
+			try {
+				ServiceCallResult result = HttpUtil.issueGetRequest(request);
+				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					JSONObject object = JSONObject.parseObject(result.getResponseString());
+					Object arrayStr = object.get("content");
+					fabricLevelList = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
+					resultMap.put("CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL", fabricLevelList);
+					
+					LOGGER.info("saving priceNoList CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL");
+					RedisUtil.hset("testSampleSizeListCache","CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL",JSON.toJSONString(fabricLevelList));
+				} else {
+					LOGGER.error("getTestSampleSizeList CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL error: " + result.getStatusCode() + ", "
+							+ result.getResponseString());
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				LOGGER.error(ExceptionUtils.getStackTrace(e));
+			}
+		}else {
+			LOGGER.info("success getTestSampleSizeList CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL from redis");
+		}
+		
 		return resultMap;
+		
+		
+		
+//		String baseUrl = config.getParamServiceUrl() + "/systemconfig/classified/list/";
+//		Map<String, List<ChecklistTestSampleSizeBean>> resultMap = new HashMap<>();
+//		
+//		try {
+//			String url = baseUrl + "CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO";
+//			GetRequest request = GetRequest.newInstance().setUrl(url);
+//			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+//			JSONObject object = JSONObject.parseObject(result.getResponseString());
+//			Object arrayStr = object.get("content");
+//			List<ChecklistTestSampleSizeBean> list = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
+//			resultMap.put("CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO", list);
+//
+//			url = baseUrl + "CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL";
+//			request = GetRequest.newInstance().setUrl(url);
+//			result = HttpUtil.issueGetRequest(request);
+//			object = JSONObject.parseObject(result.getResponseString());
+//			arrayStr = object.get("content");
+//			list = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
+//			resultMap.put("CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL", list);
+//
+//			url = baseUrl + "CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL";
+//			request = GetRequest.newInstance().setUrl(url);
+//			result = HttpUtil.issueGetRequest(request);
+//			object = JSONObject.parseObject(result.getResponseString());
+//			arrayStr = object.get("content");
+//			list = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
+//			resultMap.put("CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL", list);
+//
+//		} catch (IOException e) {
+//			LOGGER.error(ExceptionUtils.getStackTrace(e));
+//		}
+//		return resultMap;
 	}
 
 	@Override
+	// @Cacheable(value="checklistPublicTestListCache", key="#root.methodName")
 	public List<CKLTestVO> getChecklistPublicTestList() {
-		String url = config.getChecklistServiceUrl() + "/ws/publicAPI/tests";
-		try {
+		
+		List<CKLTestVO> checklistPublicTestList = null ;
+		LOGGER.info("try to getChecklistPublicDefectList from redis ...");
+		String jsonString = RedisUtil.get("checklistPublicTestListCache");
+		checklistPublicTestList = JSON.parseArray(jsonString, CKLTestVO.class);
+		if (checklistPublicTestList.size()<=0) {
+			String url = config.getChecklistServiceUrl() + "/ws/publicAPI/tests";
 			LOGGER.info("Get! url : " + url);
 			GetRequest request = GetRequest.newInstance().setUrl(url);
-			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return JSON.parseArray(result.getResponseString(), CKLTestVO.class);
-			} else {
-				LOGGER.error("getChecklistPublicTestList from checklist-service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+			try {
+				ServiceCallResult result = HttpUtil.issueGetRequest(request);
+				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					checklistPublicTestList = JSON.parseArray(result.getResponseString(),CKLTestVO.class);
+					
+					LOGGER.info("saving getChecklistPublicTestList");
+					RedisUtil.set("checklistPublicTestListCache", JSON.toJSONString(checklistPublicTestList));
+				} else {
+					LOGGER.error("getChecklistPublicTestList from checklist-service error: " + result.getStatusCode() + ", "
+							+ result.getResponseString());
+				}
+			} catch (IOException e) {
+				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
-		} catch (IOException e) {
-			LOGGER.error(ExceptionUtils.getStackTrace(e));
+
+		} else {
+			LOGGER.info("success getChecklistPublicTestList from redis");
 		}
-		return null;
+		return checklistPublicTestList;
+		
+//		String url = config.getChecklistServiceUrl() + "/ws/publicAPI/tests";
+//		try {
+//			LOGGER.info("Get! url : " + url);
+//			GetRequest request = GetRequest.newInstance().setUrl(url);
+//			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+//			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+//				return JSON.parseArray(result.getResponseString(), CKLTestVO.class);
+//			} else {
+//				LOGGER.error("getChecklistPublicTestList from checklist-service error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
+//			}
+//		} catch (IOException e) {
+//			LOGGER.error(ExceptionUtils.getStackTrace(e));
+//		}
+//		return null;
 	}
 
 	@Override
+	// @Cacheable(value="checklistPublicDefectListCache",key="#root.methodName")
 	public List<CKLDefectVO> getChecklistPublicDefectList() {
-		String url = config.getChecklistServiceUrl() + "/ws/publicAPI/defects";
-		try {
+		
+		List<CKLDefectVO> checklistPublicDefectList = null ;
+		LOGGER.info("try to getChecklistPublicDefectList from redis ...");
+		String jsonString = RedisUtil.get("checklistPublicDefectListCache");
+		checklistPublicDefectList = JSON.parseArray(jsonString, CKLDefectVO.class);
+		if (checklistPublicDefectList.size()<=0) {
+			String url = config.getChecklistServiceUrl() + "/ws/publicAPI/defects";
 			LOGGER.info("Get! url : " + url);
 			GetRequest request = GetRequest.newInstance().setUrl(url);
-			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return JSON.parseArray(result.getResponseString(), CKLDefectVO.class);
-			} else {
-				LOGGER.error("getChecklistPublicDefectList from checklist-service error: " + result.getStatusCode()
-						+ ", " + result.getResponseString());
+			try {
+				ServiceCallResult result = HttpUtil.issueGetRequest(request);
+				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					checklistPublicDefectList = JSON.parseArray(result.getResponseString(),CKLDefectVO.class);
+					
+					LOGGER.info("saving checklistPublicDefectList");
+					RedisUtil.set("checklistPublicDefectListCache", JSON.toJSONString(checklistPublicDefectList));
+				} else {
+					LOGGER.error("getChecklistPublicDefectList from checklist-service error: " + result.getStatusCode()
+							+ ", " + result.getResponseString());
+				}
+			} catch (IOException e) {
+				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
-		} catch (IOException e) {
-			LOGGER.error(ExceptionUtils.getStackTrace(e));
+
+		} else {
+			LOGGER.info("success getChecklistPublicDefectList from redis");
 		}
-		return null;
+		return checklistPublicDefectList;
+		
+//		String url = config.getChecklistServiceUrl() + "/ws/publicAPI/defects";
+//		try {
+//			LOGGER.info("Get! url : " + url);
+//			GetRequest request = GetRequest.newInstance().setUrl(url);
+//			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+//			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+//				return JSON.parseArray(result.getResponseString(), CKLDefectVO.class);
+//			} else {
+//				LOGGER.error("getChecklistPublicDefectList from checklist-service error: " + result.getStatusCode()
+//						+ ", " + result.getResponseString());
+//			}
+//		} catch (IOException e) {
+//			LOGGER.error(ExceptionUtils.getStackTrace(e));
+//		}
+//		return null;
 	}
 
 	@Override
+	// @Cacheable(value="productTypeListCache", key="#root.methodName")
 	public List<SysProductTypeBean> getProductTypeList() {
-		try {
+		List<SysProductTypeBean> proTypeList = null ;
+		LOGGER.info("try to getProductTypeList from redis ...");
+		String jsonString = RedisUtil.get("productTypeListCache");
+		proTypeList = JSON.parseArray(jsonString, SysProductTypeBean.class);
+		if (proTypeList.size() <=0 ) {
 			String url = config.getParamServiceUrl() + "/p/list-product-type";
 			GetRequest request = GetRequest.newInstance().setUrl(url);
-			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-			List<SysProductTypeBean> productTypeList = JSON.parseArray(result.getResponseString(),
-					SysProductTypeBean.class);
-			return productTypeList;
-		} catch (IOException e) {
-			LOGGER.error(ExceptionUtils.getStackTrace(e));
+			try {
+				ServiceCallResult result = HttpUtil.issueGetRequest(request);
+				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					proTypeList = JSON.parseArray(result.getResponseString(),SysProductTypeBean.class);
+					
+					LOGGER.info("saving productTypeList");
+					RedisUtil.set("productTypeListCache", JSON.toJSONString(proTypeList));
+				} else {
+					LOGGER.error("getProductTypeList error: " + result.getStatusCode()
+							+ ", " + result.getResponseString());
+				}
+			} catch (IOException e) {
+				LOGGER.error(ExceptionUtils.getStackTrace(e));
+			}
+
+		} else {
+			LOGGER.info("success getProductTypeList from redis");
 		}
-		return null;
+		return proTypeList;
+
+		// try {
+		// String url = config.getParamServiceUrl() + "/p/list-product-type";
+		// GetRequest request = GetRequest.newInstance().setUrl(url);
+		// ServiceCallResult result = HttpUtil.issueGetRequest(request);
+		// List<SysProductTypeBean> productTypeList =
+		// JSON.parseArray(result.getResponseString(),SysProductTypeBean.class);
+		// return productTypeList;
+		// } catch (IOException e) {
+		// LOGGER.error(ExceptionUtils.getStackTrace(e));
+		// }
+		// return null;
 	}
 
 }
