@@ -10,12 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ai.api.bean.UserBean;
 import com.ai.api.controller.Order;
 import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -25,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -251,15 +248,16 @@ public class OrderImpl implements Order {
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/psi-orders", method = RequestMethod.GET)
 	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(@PathVariable("userId")String userId,
-																   @RequestParam("service-type") String serviceType,
-																   @RequestParam("start") String startDate,
-																   @RequestParam("end") String endDate,
-																   @RequestParam("keyword") String keyword,
-																   @RequestParam("orderStatus") String orderStatus,
-																   @RequestParam("page-size") String pageSize,
-																   @RequestParam("page") String pageNumber) {
+													   @RequestParam(value = "service-type", required = false) String serviceType,
+													   @RequestParam(value = "start", required = false) String startDate,
+													   @RequestParam(value = "end", required = false) String endDate,
+													   @RequestParam(value = "keyword", required = false) String keyword,
+													   @RequestParam(value = "orderStatus", required = false) String orderStatus,
+													   @RequestParam(value = "page-size", required = false) String pageSize,
+													   @RequestParam(value = "page", required = false) String pageNumber) {
 		try {
-			List<SimpleOrderSearchBean> OrdersList = orderService.searchOrders(userId, serviceType, startDate, endDate, keyword, orderStatus,pageSize, pageNumber);
+			List<SimpleOrderSearchBean> OrdersList = orderService.searchOrders(userId, serviceType,
+					startDate, endDate, keyword, orderStatus,pageSize, pageNumber);
 			return new ResponseEntity<List<SimpleOrderSearchBean>>(OrdersList, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));

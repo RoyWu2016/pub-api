@@ -1,22 +1,26 @@
 
 package com.ai.api.controller.impl;
 
+import java.util.List;
+
 import com.ai.api.controller.Draft;
 import com.ai.api.service.DraftService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
-
-import java.util.List;
-
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /***************************************************************************
  * <PRE>
@@ -196,13 +200,13 @@ public class DraftImpl implements Draft {
 	 	@Override
 	    @TokenSecured
 	    @RequestMapping(value = "/user/{userId}/psi-drafts", method = RequestMethod.GET)
-		public ResponseEntity<List<DraftOrder>> searchDraft(@PathVariable("userId")String userId, 
-				 					@RequestParam("service-type") String serviceType,
-				 					@RequestParam("start") String startDate,
-				 					@RequestParam("end") String endDate,
-				 					@RequestParam("keyword") String keyword,
-				 					@RequestParam("page") String pageNumber,
-				 					@RequestParam("page-size") String pageSize) {
+		public ResponseEntity<List<DraftOrder>> searchDraft(@PathVariable("userId")String userId,
+				 					@RequestParam(value = "service-type", required = false) String serviceType,
+				 					@RequestParam(value = "start", required = false) String startDate,
+				 					@RequestParam(value = "end", required = false) String endDate,
+				 					@RequestParam(value = "keyword", required = false) String keyword,
+				 					@RequestParam(value = "page", required = false) String pageNumber,
+				 					@RequestParam(value = "page-size", required = false) String pageSize) {
 	  
 			try {
 				List<DraftOrder> draftList = draftService.searchDraft(userId, serviceType, startDate, endDate, keyword, pageNumber, pageSize);
