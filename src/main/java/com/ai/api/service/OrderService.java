@@ -6,13 +6,13 @@
  ***************************************************************************/
 package com.ai.api.service;
 
+import java.io.IOException;
 import java.util.List;
 
+import com.ai.api.exception.AIException;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
-import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
-import com.ai.commons.beans.order.api.SimpleOrderBean;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.InspectionOrderBean;
 
 /***************************************************************************
  *<PRE>
@@ -36,8 +36,11 @@ import com.ai.commons.beans.psi.InspectionOrderBean;
 
 public interface OrderService {
 
+	/*
 	List<SimpleOrderBean> getOrdersByUserId(OrderSearchCriteriaBean criteria);
 	List<SimpleOrderBean> getDraftsByUserId(OrderSearchCriteriaBean criteria);
+	*/
+
 	Boolean cancelOrder(OrderCancelBean orderCancelBean);
 
 	InspectionBookingBean getOrderDetail(String userId, String orderId);
@@ -47,4 +50,6 @@ public interface OrderService {
     InspectionBookingBean editOrder(String userId, String orderId);
 
     InspectionBookingBean saveOrderByDraft(String userId, String draftId);
+    
+    List<SimpleOrderSearchBean> searchOrders(String userId, String serviceType,String startDate, String endDate, String keyWord, String orderStatus, String pageSize, String pageNumber)  throws IOException, AIException;
 }

@@ -1,16 +1,17 @@
 package com.ai.api.service.impl;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import com.ai.api.bean.InspectionDraftBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.bean.consts.ConstMap;
-import com.ai.api.controller.Parameter;
 import com.ai.api.dao.DraftDao;
+import com.ai.api.exception.AIException;
 import com.ai.api.service.DraftService;
 import com.ai.api.service.UserService;
-import com.ai.api.util.AIUtil;
+import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
 import org.slf4j.Logger;
@@ -75,6 +76,19 @@ public class DraftServiceImpl implements DraftService {
 	}
 
 	@Override
+	public InspectionBookingBean createDraftFromPreviousOrder(String userId, String orderId) throws Exception{
+		String companyId = "";
+		String parentId = "";
+		UserBean user = userService.getCustById(userId);
+		if (null!=user){
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null) parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		return draftDao.createDraftFromPreviousOrder(userId,companyId,parentId,orderId);
+	}
+
+	@Override
 	public InspectionBookingBean getDraft(String userId, String draftId) throws Exception {
 		return draftDao.getDraft(userId, draftId);
 	}
@@ -98,4 +112,37 @@ public class DraftServiceImpl implements DraftService {
 	public boolean deleteProduct(String userId,String productId) throws Exception {
 		return draftDao.deleteProduct(userId, productId);
 	}
+	
+	@Override
+	public InspectionBookingBean calculatePricing(String userId, String draftId,
+			String samplingLevel,String measurementSamplingSize) throws Exception {
+		// TODO Auto-generated method stub
+		UserBean userBean = userService.getCustById(userId);
+		String parentId = userBean.getCompany().getParentCompanyId();
+		String companyId = userBean.getCompany().getId();
+		if(null == companyId) {
+			companyId = "";
+		}
+		if(null == parentId) {
+			parentId = "";
+		}
+		return draftDao.calculatePricing(userId,companyId,parentId,
+				draftId,samplingLevel,measurementSamplingSize);
+	}
+	
+	@Override
+	public List<DraftOrder> searchDraft(String userId, String serviceType, String startDate, String endDate,
+			String keyWord, String pageNumber, String pageSize) throws IOException, AIException {
+		
+		String companyId = "";
+		String parentId = "";
+		UserBean user = userService.getCustById(userId);
+		if (null!=user){
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null) parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		return draftDao.searchDraft(userId, companyId, parentId, serviceType, startDate, endDate, keyWord, pageSize, pageNumber);
+	}
 }
+

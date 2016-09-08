@@ -5,7 +5,6 @@
            xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
     <bean id="serviceConfig" class="com.ai.api.config.ServiceConfig"
-          p:baseURL="${user.service.url}"
           p:customerServiceUrl="http://202.66.128.138:8093/customer-service"
           p:paramServiceUrl="http://202.66.128.138:8090/param-service"
           p:factoryServiceUrl="http://202.66.128.138:8090/factory-service"

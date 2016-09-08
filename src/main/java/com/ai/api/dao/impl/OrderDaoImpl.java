@@ -14,14 +14,11 @@ import com.ai.api.dao.OrderDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
+import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
-import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
-import com.ai.commons.beans.order.api.SimpleOrderBean;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.InspectionOrderBean;
-import com.ai.dto.JsonResponse;
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +56,7 @@ public class OrderDaoImpl implements OrderDao {
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
 
+	/*
 	@Override
 	public List<SimpleOrderBean> getOrdersByUserId(OrderSearchCriteriaBean criteria) {
 		String url = config.getMwServiceUrl() + "/service/order/search";
@@ -103,6 +101,7 @@ public class OrderDaoImpl implements OrderDao {
 		}
 		return null;
 	}
+	*/
 
 	@Override
 	public Boolean cancelOrder(OrderCancelBean orderCancelBean) {
@@ -206,5 +205,43 @@ public class OrderDaoImpl implements OrderDao {
         }
         return null;
     }
+
+	@Override
+	public List<SimpleOrderSearchBean> searchOrders(String userId, String compId, String parentId, String serviceType,
+			String startDate, String endDate, String keyWord, String orderStatus, String pageSize, String pageNumber) {
+		try {
+
+			  StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+			   url.append("/order/api/search??userId=")
+			   	  .append(userId)
+			   	  .append("&companyId=").append(compId)
+			   	  .append("&parentId=").append(parentId)
+			   	  .append("&serviceType=").append(serviceType)
+			   	  .append("&startDate=").append(startDate)
+			   	  .append("&endDate=").append(endDate)
+			   	  .append("&keyWord=").append(keyWord)
+			   	  .append("&orderStatus=").append(orderStatus)
+			      .append("&pageSize=").append(pageSize)
+			      .append("&pageNo=").append(pageNumber);
+			   
+			   ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					@SuppressWarnings("unchecked")
+					PageBean<SimpleOrderSearchBean> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
+					
+					return pageBeanList.getPageItems();
+
+				} else {
+					logger.error("searchOrders from PSI error: " + result.getStatusCode() + ", " + result.getResponseString());
+				}
+			
+		}catch(IOException e){
+			logger.error(ExceptionUtils.getStackTrace(e));
+			
+		}
+		
+		return null;
+		
+	}
 
 }

@@ -1,5 +1,10 @@
 package com.ai.api.service;
 
+import java.io.IOException;
+import java.util.List;
+
+import com.ai.api.exception.AIException;
+import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
@@ -29,6 +34,8 @@ public interface DraftService {
 
     InspectionBookingBean createDraft(String userId, String serviceType) throws Exception;
 
+    InspectionBookingBean createDraftFromPreviousOrder(String userId, String orderId) throws Exception;
+
     InspectionBookingBean getDraft(String userId, String draftId) throws Exception;
 
 	boolean saveDraft(String userId,InspectionBookingBean draft) throws Exception;
@@ -38,4 +45,10 @@ public interface DraftService {
     boolean saveProduct(String userId,InspectionProductBookingBean draftProduct) throws Exception;
 
     boolean deleteProduct(String userId,String productId) throws Exception;
+    
+	InspectionBookingBean calculatePricing(String userId, String draftId,
+			String samplingLevel,String measurementSamplingSize) throws Exception;
+	
+	 List<DraftOrder> searchDraft(String userId, String serviceType,String startDate, String endDate, String keyWord, String pageNumber, String pageSize)  throws IOException, AIException;
 }
+

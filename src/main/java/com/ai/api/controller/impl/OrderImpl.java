@@ -6,7 +6,9 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.ai.api.bean.UserBean;
 import com.ai.api.controller.Order;
@@ -14,12 +16,9 @@ import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.legacy.order.OrderCancelBean;
-import com.ai.commons.beans.legacy.order.OrderSearchCriteriaBean;
-import com.ai.commons.beans.order.api.SimpleOrderBean;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.InspectionOrderBean;
-import com.alibaba.fastjson.JSON;
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +62,7 @@ public class OrderImpl implements Order {
 	@Autowired
 	OrderService orderService;
 
+	/*
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-orders", method = RequestMethod.GET)
@@ -120,6 +120,7 @@ public class OrderImpl implements Order {
 		}
 
 	}
+	*/
 
 	@Override
 	@TokenSecured
@@ -175,17 +176,16 @@ public class OrderImpl implements Order {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}/draft/{draftId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/psi-order", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> createOrderByDraft(@PathVariable("userId") String userId,
-															  @PathVariable("draftId") String draftId,
-																  @PathVariable("orderId") String orderId) {
+	                                                             @RequestParam(value = "draftId", required = true) String draftId
+															  ) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			logger.info("createOrderByDraft ...");
 			logger.info("userId :"+userId);
 			logger.info("draftId :"+draftId);
-			logger.info("orderId:"+orderId);
 			InspectionBookingBean orderBean = orderService.createOrderByDraft(userId, draftId);
 			if (orderBean != null) {
 				map.put("success", true);
@@ -248,5 +248,27 @@ public class OrderImpl implements Order {
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+
+	@Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/psi-orders", method = RequestMethod.GET)
+	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(@PathVariable("userId")String userId,
+																   @RequestParam("service-type") String serviceType,
+																   @RequestParam("start") String startDate,
+																   @RequestParam("end") String endDate,
+																   @RequestParam("keyword") String keyword,
+																   @RequestParam("orderStatus") String orderStatus,
+																   @RequestParam("page-size") String pageSize,
+																   @RequestParam("page") String pageNumber) {
+		try {
+			List<SimpleOrderSearchBean> OrdersList = orderService.searchOrders(userId, serviceType, startDate, endDate, keyword, orderStatus,pageSize, pageNumber);
+			return new ResponseEntity<List<SimpleOrderSearchBean>>(OrdersList, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
 
 }

@@ -28,18 +28,22 @@ package com.ai.api.config;
 
 public class ServiceConfig {
 
-    private String baseURL;
+//    private String baseURL;
 
     private String customerServiceUrl;
 
 	private String paramServiceUrl;
 
-	private String ssoUserServiceUrl;
+//	private String ssoUserServiceUrl;
 
     private String factoryServiceUrl;
 
     private String fileServiceUrl;
-
+   
+	private int fileMaximumSize;
+	
+    private int cacheRefreshInterval;
+ 
 	private String mwServiceUrl;
 
     private String checklistServiceUrl;
@@ -52,19 +56,13 @@ public class ServiceConfig {
 
     private String psiServiceUrl;
 
-    /**
-     * @return the baseURL
-     */
-    public String getBaseURL() {
-        return baseURL;
-    }
+//    public String getBaseURL() {
+//        return baseURL;
+//    }
 
-    /**
-     * @param baseURL the baseURL to set
-     */
-    public void setBaseURL(String baseURL) {
-        this.baseURL = baseURL;
-    }
+//    public void setBaseURL(String baseURL) {
+//        this.baseURL = baseURL;
+//    }
 
 	public String getParamServiceUrl() {
 		return paramServiceUrl;
@@ -82,6 +80,7 @@ public class ServiceConfig {
         this.customerServiceUrl = customerServiceUrl;
     }
 
+	/*
 	public String getSsoUserServiceUrl() {
 		return ssoUserServiceUrl;
 	}
@@ -89,6 +88,7 @@ public class ServiceConfig {
 	public void setSsoUserServiceUrl(String ssoUserServiceUrl) {
 		this.ssoUserServiceUrl = ssoUserServiceUrl;
 	}
+	*/
 
     public String getFileServiceUrl() {
         return fileServiceUrl;
@@ -161,4 +161,22 @@ public class ServiceConfig {
     public void setPsiServiceUrl(String psiServiceUrl) {
         this.psiServiceUrl = psiServiceUrl;
     }
+
+	public int getCacheRefreshInterval() {
+		return cacheRefreshInterval;
+	}
+
+	public void setCacheRefreshInterval(int cacheRefreshInterval) {
+		this.cacheRefreshInterval = cacheRefreshInterval;
+	}
+
+	public int getFileMaximumSize() {
+		return fileMaximumSize;
+	}
+
+	public void setFileMaximumSize(int fileMaximumSize) {
+		this.fileMaximumSize = fileMaximumSize;
+	}
+	
+
 }
