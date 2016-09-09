@@ -108,7 +108,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 @Service
 public class UserServiceImpl implements UserService {
 	protected Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-
+	
 	@Autowired
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
@@ -539,7 +539,7 @@ public class UserServiceImpl implements UserService {
 
 	public UserBean updateUserBeanInCache(final String userId) {
 		UserBean newUserBean = this.getUserBeanByService(userId);
-		RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(newUserBean));
+		RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(newUserBean),RedisUtil.HOUR * 2);
 		return newUserBean;
 	}
 
@@ -556,7 +556,7 @@ public class UserServiceImpl implements UserService {
 			logger.error("can't find user " + userId + " in cache. Will get from customer service. ");
 			user = this.getUserBeanByService(userId);
 			logger.info("saving userBean to redis ...");
-			RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(user));
+			RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(user),RedisUtil.HOUR * 2);
 			logger.info("saving success !!!");
 			return user;
 		}
