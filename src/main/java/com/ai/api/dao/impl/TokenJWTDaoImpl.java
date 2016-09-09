@@ -60,7 +60,6 @@ public class TokenJWTDaoImpl {
     private static final String ECC_PRIV_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc";
     private static final String ECC_PUB_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc.pub";
     
-    public static final int REDIS_USER_SESSION_TOKEN_PARAMETER_EXPIRATION_TIME = 60 * 60 * 24 * 7;//7 days
 //    private static final String AES_KEY_PATH = "D:/AllProjects/AI-Projects/server-token.aes";
 //    private static final String ECC_PRIV_KEY_PATH = "D:/AllProjects/AI-Projects/server-sig.ecc";
 //    private static final String ECC_PUB_KEY_PATH = "D:/AllProjects/AI-Projects/server-sig.ecc.pub";
@@ -98,7 +97,7 @@ public class TokenJWTDaoImpl {
                 logger.info("saving tokenSession to Redis ...");
                 //RedisUtil redisUtil = RedisUtil.getInstance();
                 //redisUtil.hset(TOKENKEY, sessionId,tokenStr);
-                RedisUtil.hset(TOKENKEY, sessionId,tokenStr,REDIS_USER_SESSION_TOKEN_PARAMETER_EXPIRATION_TIME);
+                RedisUtil.hset(TOKENKEY, sessionId,tokenStr,RedisUtil.REDIS_EXPIRATION_TIME * 24 * 7);
 //                redisTemplate.opsForHash().put(TOKENKEY, sessionId, tokenStr);
                 logger.info("success!  saved!!!");
             }
