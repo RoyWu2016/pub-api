@@ -97,7 +97,7 @@ public class TokenJWTDaoImpl {
                 logger.info("saving tokenSession to Redis ...");
                 //RedisUtil redisUtil = RedisUtil.getInstance();
                 //redisUtil.hset(TOKENKEY, sessionId,tokenStr);
-                RedisUtil.hset(TOKENKEY, sessionId,tokenStr,RedisUtil.REDIS_EXPIRATION_TIME * 24 * 7);
+                RedisUtil.hset(TOKENKEY, sessionId,tokenStr,RedisUtil.HOUR * 24 * 7);
 //                redisTemplate.opsForHash().put(TOKENKEY, sessionId, tokenStr);
                 logger.info("success!  saved!!!");
             }

@@ -539,7 +539,7 @@ public class UserServiceImpl implements UserService {
 
 	public UserBean updateUserBeanInCache(final String userId) {
 		UserBean newUserBean = this.getUserBeanByService(userId);
-		RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(newUserBean),RedisUtil.REDIS_EXPIRATION_TIME * 2);
+		RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(newUserBean),RedisUtil.HOUR * 2);
 		return newUserBean;
 	}
 
@@ -556,7 +556,7 @@ public class UserServiceImpl implements UserService {
 			logger.error("can't find user " + userId + " in cache. Will get from customer service. ");
 			user = this.getUserBeanByService(userId);
 			logger.info("saving userBean to redis ...");
-			RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(user),RedisUtil.REDIS_EXPIRATION_TIME * 2);
+			RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(user),RedisUtil.HOUR * 2);
 			logger.info("saving success !!!");
 			return user;
 		}

@@ -37,7 +37,7 @@ public class RedisUtil {
 
 	protected static ReentrantLock lockPool = new ReentrantLock();
 	protected static ReentrantLock lockJedis = new ReentrantLock();
-	public static final int REDIS_EXPIRATION_TIME = 60 * 60; //1 hours
+	public static final int HOUR = 60 * 60; //1 hours
 
 	private static RedisUtil instance ;
 	//private static Jedis jedis;
