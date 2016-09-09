@@ -3,6 +3,7 @@ package com.ai.api.controller.impl;
 
 import java.util.List;
 
+import com.ai.api.bean.InspectionDraftProductBean;
 import com.ai.api.controller.Draft;
 import com.ai.api.service.DraftService;
 import com.ai.commons.annotation.TokenSecured;
@@ -217,5 +218,30 @@ public class DraftImpl implements Draft {
 			}
 			
 		}
+
+		@Override
+	    @TokenSecured
+	    @RequestMapping(value = "/user/{userId}/draft/{draftId}/products", method = RequestMethod.PUT)
+		public ResponseEntity<Boolean> saveUserPsiDraftProducts(
+				@PathVariable("userId") String userId,
+				@PathVariable("draftId") String draftId,
+				@RequestBody List<InspectionDraftProductBean> draftProductsList) {
+			// TODO Auto-generated method stub
+			for(InspectionDraftProductBean each : draftProductsList) {
+				try {
+					InspectionProductBookingBean draftProduct = new InspectionProductBookingBean();
+		            draftProduct.setDraftProductId(each.getDraftProductId());
+		            draftProduct.setDraftId(draftId);
+					boolean result = draftService.saveProduct(userId, draftProduct);
+					if(!result){
+						return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
 }
 
+ 
