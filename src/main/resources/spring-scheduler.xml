@@ -20,7 +20,7 @@
 	<bean name="schedulerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
-				<ref bean="tokenTask" />
+				<!--<ref bean="tokenTask" />-->
 			</list>
 		</property>
 	</bean>

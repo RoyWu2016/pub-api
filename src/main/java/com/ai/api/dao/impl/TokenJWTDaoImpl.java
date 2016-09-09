@@ -1,11 +1,5 @@
 package com.ai.api.dao.impl;
 
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
-import java.security.Key;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.IDGenerator;
 import com.ai.commons.StringUtils;
@@ -25,7 +19,16 @@ import org.jose4j.jwt.consumer.NumericDateValidator;
 import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.security.Key;
+import java.util.HashMap;
+import java.util.Map;
 
 /***************************************************************************
  * <PRE>
@@ -53,9 +56,10 @@ public class TokenJWTDaoImpl {
     private static final String ISSUER_NAME = "http://asiainspection.com";
     private static final Integer TOKEN_EXPIRATION_TIME = 120;
     private static final String TOKEN_SUBJECT = "AI API token";
-    private static final String AES_KEY_PATH = "/usr/local/tomcat_8080/conf/sso-sig/server-token.aes";
-    private static final String ECC_PRIV_KEY_PATH = "/usr/local/tomcat_8080/conf/sso-sig/server-sig.ecc";
-    private static final String ECC_PUB_KEY_PATH = "/usr/local/tomcat_8080/conf/sso-sig/server-sig.ecc.pub";
+    private static final String AES_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-token.aes";
+    private static final String ECC_PRIV_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc";
+    private static final String ECC_PUB_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc.pub";
+    
 //    private static final String AES_KEY_PATH = "D:/AllProjects/AI-Projects/server-token.aes";
 //    private static final String ECC_PRIV_KEY_PATH = "D:/AllProjects/AI-Projects/server-sig.ecc";
 //    private static final String ECC_PUB_KEY_PATH = "D:/AllProjects/AI-Projects/server-sig.ecc.pub";
@@ -93,7 +97,7 @@ public class TokenJWTDaoImpl {
                 logger.info("saving tokenSession to Redis ...");
                 //RedisUtil redisUtil = RedisUtil.getInstance();
                 //redisUtil.hset(TOKENKEY, sessionId,tokenStr);
-                RedisUtil.hset(TOKENKEY, sessionId,tokenStr);
+                RedisUtil.hset(TOKENKEY, sessionId,tokenStr,RedisUtil.HOUR * 24 * 7);
 //                redisTemplate.opsForHash().put(TOKENKEY, sessionId, tokenStr);
                 logger.info("success!  saved!!!");
             }

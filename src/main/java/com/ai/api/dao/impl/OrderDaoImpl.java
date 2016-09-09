@@ -104,20 +104,27 @@ public class OrderDaoImpl implements OrderDao {
 	*/
 
 	@Override
-	public Boolean cancelOrder(OrderCancelBean orderCancelBean) {
-		String url = config.getMwServiceUrl() + "/service/order/cancel";
+	public Boolean cancelOrder(String userId, String orderId, String reason, String reason_options) {
+		
 		try {
-			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, orderCancelBean);
-			if (result.getResponseString().equalsIgnoreCase("true")) {
-				return true;
-			}else {
-				logger.error("cancel order from middleware error: " + result.getStatusCode() +
-						", " + result.getResponseString());
-			}
+			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+			url.append("/order/api/cancelOrder?userId=").append(userId)
+			.append("&orderId=").append(orderId)
+			.append("&reason=").append(reason)
+			.append("&reasonOption=").append(reason_options);
+			 ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,orderId);
+			 if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					return true;
+				} else {
+					logger.error("cancel Order error from psi service : " + result.getStatusCode() +
+							", " + result.getResponseString());
+					return false;
+				}
+			
 		}catch (Exception e){
 			logger.error(ExceptionUtils.getStackTrace(e));
 		}
-		return null;
+		return false;
 	}
 
 	@Override
@@ -212,7 +219,7 @@ public class OrderDaoImpl implements OrderDao {
 		try {
 
 			  StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-			   url.append("/order/api/search??userId=")
+			   url.append("/order/api/search?userId=")
 			   	  .append(userId)
 			   	  .append("&companyId=").append(compId)
 			   	  .append("&parentId=").append(parentId)
@@ -224,7 +231,8 @@ public class OrderDaoImpl implements OrderDao {
 			      .append("&pageSize=").append(pageSize)
 			      .append("&pageNo=").append(pageNumber);
 			   
-			   ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+			   GetRequest request = GetRequest.newInstance().setUrl(url.toString());
+				ServiceCallResult result = HttpUtil.issueGetRequest(request);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					@SuppressWarnings("unchecked")
 					PageBean<SimpleOrderSearchBean> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
