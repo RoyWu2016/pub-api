@@ -219,7 +219,7 @@ public class OrderDaoImpl implements OrderDao {
 		try {
 
 			  StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-			   url.append("/order/api/search??userId=")
+			   url.append("/order/api/search?userId=")
 			   	  .append(userId)
 			   	  .append("&companyId=").append(compId)
 			   	  .append("&parentId=").append(parentId)
@@ -231,7 +231,8 @@ public class OrderDaoImpl implements OrderDao {
 			      .append("&pageSize=").append(pageSize)
 			      .append("&pageNo=").append(pageNumber);
 			   
-			   ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+			   GetRequest request = GetRequest.newInstance().setUrl(url.toString());
+				ServiceCallResult result = HttpUtil.issueGetRequest(request);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					@SuppressWarnings("unchecked")
 					PageBean<SimpleOrderSearchBean> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);

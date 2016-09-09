@@ -248,13 +248,13 @@ public class OrderImpl implements Order {
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/psi-orders", method = RequestMethod.GET)
 	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(@PathVariable("userId")String userId,
-													   @RequestParam(value = "service-type", required = false) String serviceType,
-													   @RequestParam(value = "start", required = false) String startDate,
-													   @RequestParam(value = "end", required = false) String endDate,
-													   @RequestParam(value = "keyword", required = false) String keyword,
-													   @RequestParam(value = "orderStatus", required = true) String orderStatus,
-													   @RequestParam(value = "page-size", required = false) String pageSize,
-													   @RequestParam(value = "page", required = false) String pageNumber) {
+													   @RequestParam(value = "service-type", required = false , defaultValue="") String serviceType,
+													   @RequestParam(value = "start", required = false, defaultValue="") String startDate,
+													   @RequestParam(value = "end", required = false , defaultValue="") String endDate,
+													   @RequestParam(value = "keyword", required = false , defaultValue="") String keyword,
+													   @RequestParam(value = "orderStatus", required = false, defaultValue="") String orderStatus,
+													   @RequestParam(value = "page-size", required = false , defaultValue="20") String pageSize,
+													   @RequestParam(value = "page", required = false , defaultValue="1") String pageNumber) {
 		try {
 			List<SimpleOrderSearchBean> OrdersList = orderService.searchOrders(userId, serviceType,
 					startDate, endDate, keyword, orderStatus,pageSize, pageNumber);

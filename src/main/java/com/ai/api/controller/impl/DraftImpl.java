@@ -201,12 +201,12 @@ public class DraftImpl implements Draft {
 	    @TokenSecured
 	    @RequestMapping(value = "/user/{userId}/psi-drafts", method = RequestMethod.GET)
 		public ResponseEntity<List<DraftOrder>> searchDraft(@PathVariable("userId")String userId,
-				 					@RequestParam(value = "service-type", required = false) String serviceType,
-				 					@RequestParam(value = "start", required = false) String startDate,
-				 					@RequestParam(value = "end", required = false) String endDate,
-				 					@RequestParam(value = "keyword", required = false) String keyword,
-				 					@RequestParam(value = "page", required = false) String pageNumber,
-				 					@RequestParam(value = "page-size", required = false) String pageSize) {
+				 					@RequestParam(value = "service-type", required = false ,defaultValue="") String serviceType,
+				 					@RequestParam(value = "start", required = false ,defaultValue="") String startDate,
+				 					@RequestParam(value = "end", required = false ,defaultValue="") String endDate,
+				 					@RequestParam(value = "keyword", required = false ,defaultValue="") String keyword,
+				 					@RequestParam(value = "page", required = false ,defaultValue="1") String pageNumber,
+				 					@RequestParam(value = "page-size", required = false ,defaultValue="20") String pageSize) {
 	  
 			try {
 				List<DraftOrder> draftList = draftService.searchDraft(userId, serviceType, startDate, endDate, keyword, pageNumber, pageSize);

@@ -272,7 +272,7 @@ public class DraftDaoImpl implements DraftDao {
 		try {
 
 			  StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-			   url.append("/draft/api/search??userId=")
+			   url.append("/draft/api/search?userId=")
 			   	  .append(userId)
 			   	  .append("&companyId=").append(compId)
 			   	  .append("&parentId=").append(parentId)
