@@ -77,7 +77,7 @@ public class ParameterDaoImpl implements ParameterDao {
 				productCategoryList = JSON.parseArray(result.getResponseString(), ProductCategoryDtoBean.class);
 
 				LOGGER.info("get from param-service succeed, saving productCategoryListCache");
-				RedisUtil.set("productCategoryListCache", JSON.toJSONString(productCategoryList));
+				RedisUtil.set("productCategoryListCache", JSON.toJSONString(productCategoryList),RedisUtil.HOUR * 24);
 			} catch (IOException e) {
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
@@ -103,7 +103,7 @@ public class ParameterDaoImpl implements ParameterDao {
 					productFamilyList = JSON.parseArray(result.getResponseString(), ProductFamilyDtoBean.class);
 					
 					LOGGER.info("saving productFamilyListCache");
-					RedisUtil.set("productFamilyListCache", JSON.toJSONString(productFamilyList));
+					RedisUtil.set("productFamilyListCache", JSON.toJSONString(productFamilyList),RedisUtil.HOUR * 24);
 				} else {
 					LOGGER.error("getProductFamilyList error: " + result.getStatusCode() + ", "
 							+ result.getResponseString());
@@ -164,7 +164,7 @@ public class ParameterDaoImpl implements ParameterDao {
 					countryList = JSON.parseArray(result.getResponseString(), String.class);
 					
 					LOGGER.info("saving getCountryList");
-					RedisUtil.set("countryListCache", JSON.toJSONString(countryList));
+					RedisUtil.set("countryListCache", JSON.toJSONString(countryList),RedisUtil.HOUR * 24);
 				} else {
 					LOGGER.error("getCountryList error: " + result.getStatusCode() + ", "
 							+ result.getResponseString());
@@ -222,7 +222,7 @@ public class ParameterDaoImpl implements ParameterDao {
 					resultMap.put("CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO", priceNoList);
 					
 					LOGGER.info("saving priceNoList CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO");
-					RedisUtil.hset("testSampleSizeListCache","CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO",JSON.toJSONString(priceNoList));
+					RedisUtil.hset("testSampleSizeListCache","CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO",JSON.toJSONString(priceNoList),RedisUtil.HOUR * 24);
 				} else {
 					LOGGER.error("getTestSampleSizeList CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO error: " + result.getStatusCode() + ", "
 							+ result.getResponseString());
@@ -248,7 +248,7 @@ public class ParameterDaoImpl implements ParameterDao {
 					resultMap.put("CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL", sampleLevelList);
 					
 					LOGGER.info("saving priceNoList CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL");
-					RedisUtil.hset("testSampleSizeListCache","CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL",JSON.toJSONString(sampleLevelList));
+					RedisUtil.hset("testSampleSizeListCache","CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL",JSON.toJSONString(sampleLevelList),RedisUtil.HOUR * 24);
 				} else {
 					LOGGER.error("getTestSampleSizeList CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL error: " + result.getStatusCode() + ", "
 							+ result.getResponseString());
@@ -274,7 +274,7 @@ public class ParameterDaoImpl implements ParameterDao {
 					resultMap.put("CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL", fabricLevelList);
 					
 					LOGGER.info("saving priceNoList CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL");
-					RedisUtil.hset("testSampleSizeListCache","CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL",JSON.toJSONString(fabricLevelList));
+					RedisUtil.hset("testSampleSizeListCache","CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL",JSON.toJSONString(fabricLevelList),RedisUtil.HOUR * 24);
 				} else {
 					LOGGER.error("getTestSampleSizeList CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL error: " + result.getStatusCode() + ", "
 							+ result.getResponseString());
@@ -329,11 +329,11 @@ public class ParameterDaoImpl implements ParameterDao {
 	// @Cacheable(value="checklistPublicTestListCache", key="#root.methodName")
 	public List<CKLTestVO> getChecklistPublicTestList() {
 		
-		List<CKLTestVO> checklistPublicTestList = null ;
+		List<CKLTestVO> checklistPublicTestList = null;
 		LOGGER.info("try to getChecklistPublicDefectList from redis ...");
 		String jsonString = RedisUtil.get("checklistPublicTestListCache");
 		checklistPublicTestList = JSON.parseArray(jsonString, CKLTestVO.class);
-		if (checklistPublicTestList.size()<=0) {
+		if (null == checklistPublicTestList) {
 			String url = config.getChecklistServiceUrl() + "/ws/publicAPI/tests";
 			LOGGER.info("Get! url : " + url);
 			GetRequest request = GetRequest.newInstance().setUrl(url);
@@ -343,7 +343,7 @@ public class ParameterDaoImpl implements ParameterDao {
 					checklistPublicTestList = JSON.parseArray(result.getResponseString(),CKLTestVO.class);
 					
 					LOGGER.info("saving getChecklistPublicTestList");
-					RedisUtil.set("checklistPublicTestListCache", JSON.toJSONString(checklistPublicTestList));
+					RedisUtil.set("checklistPublicTestListCache", JSON.toJSONString(checklistPublicTestList),RedisUtil.HOUR * 24);
 				} else {
 					LOGGER.error("getChecklistPublicTestList from checklist-service error: " + result.getStatusCode() + ", "
 							+ result.getResponseString());
@@ -382,7 +382,7 @@ public class ParameterDaoImpl implements ParameterDao {
 		LOGGER.info("try to getChecklistPublicDefectList from redis ...");
 		String jsonString = RedisUtil.get("checklistPublicDefectListCache");
 		checklistPublicDefectList = JSON.parseArray(jsonString, CKLDefectVO.class);
-		if (checklistPublicDefectList.size()<=0) {
+		if (null == checklistPublicDefectList) {
 			String url = config.getChecklistServiceUrl() + "/ws/publicAPI/defects";
 			LOGGER.info("Get! url : " + url);
 			GetRequest request = GetRequest.newInstance().setUrl(url);
@@ -392,7 +392,7 @@ public class ParameterDaoImpl implements ParameterDao {
 					checklistPublicDefectList = JSON.parseArray(result.getResponseString(),CKLDefectVO.class);
 					
 					LOGGER.info("saving checklistPublicDefectList");
-					RedisUtil.set("checklistPublicDefectListCache", JSON.toJSONString(checklistPublicDefectList));
+					RedisUtil.set("checklistPublicDefectListCache", JSON.toJSONString(checklistPublicDefectList),RedisUtil.HOUR * 24);
 				} else {
 					LOGGER.error("getChecklistPublicDefectList from checklist-service error: " + result.getStatusCode()
 							+ ", " + result.getResponseString());
@@ -430,7 +430,7 @@ public class ParameterDaoImpl implements ParameterDao {
 		LOGGER.info("try to getProductTypeList from redis ...");
 		String jsonString = RedisUtil.get("productTypeListCache");
 		proTypeList = JSON.parseArray(jsonString, SysProductTypeBean.class);
-		if (proTypeList.size() <=0 ) {
+		if (null ==  proTypeList) {
 			String url = config.getParamServiceUrl() + "/p/list-product-type";
 			GetRequest request = GetRequest.newInstance().setUrl(url);
 			try {
@@ -439,7 +439,7 @@ public class ParameterDaoImpl implements ParameterDao {
 					proTypeList = JSON.parseArray(result.getResponseString(),SysProductTypeBean.class);
 					
 					LOGGER.info("saving productTypeList");
-					RedisUtil.set("productTypeListCache", JSON.toJSONString(proTypeList));
+					RedisUtil.set("productTypeListCache", JSON.toJSONString(proTypeList),RedisUtil.HOUR * 24);
 				} else {
 					LOGGER.error("getProductTypeList error: " + result.getStatusCode()
 							+ ", " + result.getResponseString());

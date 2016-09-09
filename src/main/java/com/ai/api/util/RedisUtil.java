@@ -1,13 +1,17 @@
 package com.ai.api.util;
 
-import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSON;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 /***************************************************************************
  * <PRE>
@@ -33,6 +37,7 @@ public class RedisUtil {
 
 	protected static ReentrantLock lockPool = new ReentrantLock();
 	protected static ReentrantLock lockJedis = new ReentrantLock();
+	public static final int HOUR = 60 * 60; //1 hours
 
 	private static RedisUtil instance ;
 	//private static Jedis jedis;
@@ -69,7 +74,7 @@ public class RedisUtil {
 			//config.setMaxIdle(8);
 			//config.setMaxWaitMillis(100000);
 			config.setTestOnBorrow(true);
-			pool = new JedisPool(config, "localhost", 6379, 100000, "4zpKbZaHcRRjNBhr");
+			pool = new JedisPool(config, "202.66.128.138", 6379, 100000,"aiitteam");
 		} catch (Exception e) {
 			logger.error("First create JedisPool error : "+e);
 		}
@@ -145,10 +150,13 @@ public class RedisUtil {
 	 * @param value
 	 * @return
 	 */
-	public synchronized static String set( String key,  String value){
+	public synchronized static String set( String key,  String value, int expiry){
 		Jedis jedis = getJedis();
 		try {
-			return jedis.set(key.trim(), value.trim());
+			String result = jedis.set(key.trim(), value.trim());
+			jedis.expire(key.trim(), expiry);
+			return result;
+//			return jedis.set(key.trim(), value.trim());
 		} catch (Exception e) {
 			logger.error("key set error : "+e);
 			return null;
@@ -201,10 +209,14 @@ public class RedisUtil {
 	 * @param value
 	 * @return
 	 */
-	public synchronized static Long hset(String key,String fieId,String value){
+	public synchronized static Long hset(String key,String fieId,String value,int expiry){
 		Jedis jedis = getJedis();
 		try {
-			return jedis.hset(key.trim(), fieId.trim(), value.trim());
+			Long result = jedis.hset(key.trim(), fieId.trim(),value.trim());
+			jedis.expire(key.trim(), expiry);
+			return result;
+			
+//			return jedis.hset(key.trim(), fieId.trim(), value.trim());
 		}catch (Exception e) {
 			logger.error("key hset error : "+e);
 			return null;
@@ -276,15 +288,28 @@ public class RedisUtil {
 		jedis.flushAll();
 	}
 
-
-
-
-
-
+	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
 		RedisUtil ru = RedisUtil.getInstance();
-		ru.set("testKey", "helloWord!");
+		System.out.println("saving key [testKey],expiry is 20 seconds");
+		ru.set("testKey", "helloWord!",20);
+		List<String> testList = new ArrayList<String>();
+		testList.add("roy_test");
+		testList.add("roy_test1");
+		testList.add("roy_test2");
+		ru.hset("testHaspKey", "testHaspKey", JSON.toJSONString(testList), 20);
 //		ru.flushAll();
-		System.out.println(ru.get("testKey"));
+		System.out.println("get testKey from redis: " + ru.get("testKey"));
+		System.out.println("get testHaspKey from redis: " + ru.hget("testHaspKey","testHaspKey"));
+//		System.out.println(ru.get("testKey"));
+		
+		try {
+			Thread.sleep(1000*25);
+			System.out.println("after 25 seconds get testKey: " + ru.get("testKey"));
+			System.out.println("after 25 seconds get testHaspKey from redis: " + ru.hget("testHaspKey","testHaspKey"));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
