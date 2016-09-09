@@ -51,6 +51,6 @@ public interface Draft {
 	
 	 ResponseEntity<List<DraftOrder>> searchDraft(String userId, String serviceType,String startDate, String endDate, String keyWord, String pageNumber, String pageSize);
 	 
-	ResponseEntity<Boolean> saveUserPsiDraftProducts(String userId,String draftId,List<InspectionDraftProductBean> draftProductsList);
+	ResponseEntity<Boolean> saveProducts(String userId,String draftId,List<InspectionDraftProductBean> draftProductsList);
 }
 

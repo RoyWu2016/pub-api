@@ -222,7 +222,7 @@ public class DraftImpl implements Draft {
 		@Override
 	    @TokenSecured
 	    @RequestMapping(value = "/user/{userId}/draft/{draftId}/products", method = RequestMethod.PUT)
-		public ResponseEntity<Boolean> saveUserPsiDraftProducts(
+		public ResponseEntity<Boolean> saveProducts(
 				@PathVariable("userId") String userId,
 				@PathVariable("draftId") String draftId,
 				@RequestBody List<InspectionDraftProductBean> draftProductsList) {
