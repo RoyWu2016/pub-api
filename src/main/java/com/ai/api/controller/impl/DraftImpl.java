@@ -225,14 +225,11 @@ public class DraftImpl implements Draft {
 		public ResponseEntity<Boolean> saveProducts(
 				@PathVariable("userId") String userId,
 				@PathVariable("draftId") String draftId,
-				@RequestBody List<InspectionDraftProductBean> draftProductsList) {
+				@RequestBody List<InspectionProductBookingBean> draftProductsList) {
 			// TODO Auto-generated method stub
-			for(InspectionDraftProductBean each : draftProductsList) {
+			for(InspectionProductBookingBean each : draftProductsList) {
 				try {
-					InspectionProductBookingBean draftProduct = new InspectionProductBookingBean();
-		            draftProduct.setDraftProductId(each.getDraftProductId());
-		            draftProduct.setDraftId(draftId);
-					boolean result = draftService.saveProduct(userId, draftProduct);
+					boolean result = draftService.saveProduct(userId, each);
 					if(!result){
 						return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 					}
