@@ -89,6 +89,8 @@ public class RedisUtil {
 			//config.setMaxIdle(8);
 			//config.setMaxWaitMillis(100000);
 			config.setTestOnBorrow(true);
+            logger.info("initializing JedisPool ... ");
+            logger.info("Redis Host : "+serviceConfig.getRedisHost());
 			pool = new JedisPool(config, serviceConfig.getRedisHost(),
 					Integer.getInteger(serviceConfig.getRedisPort()),
 					100000,serviceConfig.getRedisPassword());
