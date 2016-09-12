@@ -1,5 +1,6 @@
 package com.ai.api.util;
 
+import com.ai.api.config.ServiceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,21 @@ import java.util.concurrent.locks.ReentrantLock;
  * </PRE>
  ***************************************************************************/
 
+//@Component
 public class RedisUtil {
+
+//	@Autowired
+//	@Qualifier("serviceConfig")
+	private static ServiceConfig serviceConfig;
+
+    public void setServiceConfig(ServiceConfig serviceConfig){
+        System.out.println("injecting serviceConfig into RedisUtil ...");
+        System.out.println("Redis Host : "+serviceConfig.getRedisHost());
+        this.serviceConfig = serviceConfig;
+    }
+    public ServiceConfig getServiceConfig(){
+        return this.serviceConfig;
+    }
 
 	protected static Logger logger = LoggerFactory.getLogger(RedisUtil.class);
 
@@ -44,27 +59,27 @@ public class RedisUtil {
 	//private JedisPool pool = null;
 	private static JedisPool pool = null;
 
-	public RedisUtil(){
-		/*
-		try{
-//			jedis = new Jedis("202.66.128.138", 6379);
-//			jedis.auth("aiitteam");
-//			jedis.get("testKey");
-			if (pool == null) {
-				JedisPoolConfig config = new JedisPoolConfig();
-				config.setMaxTotal(500);
-				config.setMaxIdle(5);
-				config.setMaxWaitMillis(1000 * 100);
-				config.setTestOnBorrow(true);
-				pool = new JedisPool(config, "202.66.128.138", 6379, 100000,"aiitteam");
-			}
-			jedis = pool.getResource();
-		}catch(Exception e){
-
-		}
-		*/
-		//jedis = this.getJedis();
-	}
+//	public RedisUtil(){
+//		/*
+//		try{
+////			jedis = new Jedis("202.66.128.138", 6379);
+////			jedis.auth("aiitteam");
+////			jedis.get("testKey");
+//			if (pool == null) {
+//				JedisPoolConfig config = new JedisPoolConfig();
+//				config.setMaxTotal(500);
+//				config.setMaxIdle(5);
+//				config.setMaxWaitMillis(1000 * 100);
+//				config.setTestOnBorrow(true);
+//				pool = new JedisPool(config, "202.66.128.138", 6379, 100000,"aiitteam");
+//			}
+//			jedis = pool.getResource();
+//		}catch(Exception e){
+//
+//		}
+//		*/
+//		//jedis = this.getJedis();
+//	}
 
 	/** * 初始化Redis连接池 */
 	private static void initialPool(){
@@ -74,9 +89,15 @@ public class RedisUtil {
 			//config.setMaxIdle(8);
 			//config.setMaxWaitMillis(100000);
 			config.setTestOnBorrow(true);
-			pool = new JedisPool(config, "202.66.128.138", 6379, 100000,"aiitteam");
+            logger.info("initializing JedisPool ... ");
+            logger.info("Redis Host : "+serviceConfig.getRedisHost());
+            logger.info("Redis Port : "+serviceConfig.getRedisPort()+serviceConfig.getRedisPassword());
+			pool = new JedisPool(config, serviceConfig.getRedisHost(),
+					Integer.parseInt(serviceConfig.getRedisPort()),
+					100000,serviceConfig.getRedisPassword());
+            logger.info("initialPool finished! ");
 		} catch (Exception e) {
-			logger.error("First create JedisPool error : "+e);
+			logger.error("First create JedisPool error : ",e);
 		}
 	}
 
@@ -110,7 +131,7 @@ public class RedisUtil {
 				jedis = pool.getResource();
 			}
 		} catch (Exception e) {
-			logger.error("Get jedis error : "+e);
+			logger.error("Get jedis error : ",e);
 		} finally{
 			//returnResource(jedis2);
 			lockJedis.unlock();
@@ -121,7 +142,8 @@ public class RedisUtil {
 	/** * 释放jedis资源 * @param jedis */
 	public static void returnResource(final Jedis jedis) {
 		if (jedis != null && pool !=null) {
-			pool.returnResource(jedis);
+            jedis.close();
+//			pool.returnResource(jedis);
 		}
 	}
 
@@ -290,23 +312,23 @@ public class RedisUtil {
 
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
-		RedisUtil ru = RedisUtil.getInstance();
+//		RedisUtil ru = RedisUtil.getInstance();
 		System.out.println("saving key [testKey],expiry is 20 seconds");
-		ru.set("testKey", "helloWord!",20);
+        RedisUtil.set("testKey", "helloWord!",20);
 		List<String> testList = new ArrayList<String>();
 		testList.add("roy_test");
 		testList.add("roy_test1");
 		testList.add("roy_test2");
-		ru.hset("testHaspKey", "testHaspKey", JSON.toJSONString(testList), 20);
+        RedisUtil.hset("testHaspKey", "testHaspKey", JSON.toJSONString(testList), 20);
 //		ru.flushAll();
-		System.out.println("get testKey from redis: " + ru.get("testKey"));
-		System.out.println("get testHaspKey from redis: " + ru.hget("testHaspKey","testHaspKey"));
+		System.out.println("get testKey from redis: " + RedisUtil.get("testKey"));
+		System.out.println("get testHaspKey from redis: " + RedisUtil.hget("testHaspKey","testHaspKey"));
 //		System.out.println(ru.get("testKey"));
 		
 		try {
 			Thread.sleep(1000*25);
-			System.out.println("after 25 seconds get testKey: " + ru.get("testKey"));
-			System.out.println("after 25 seconds get testHaspKey from redis: " + ru.hget("testHaspKey","testHaspKey"));
+			System.out.println("after 25 seconds get testKey: " + RedisUtil.get("testKey"));
+			System.out.println("after 25 seconds get testHaspKey from redis: " + RedisUtil.hget("testHaspKey","testHaspKey"));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
