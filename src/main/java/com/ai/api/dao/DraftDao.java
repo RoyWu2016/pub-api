@@ -30,21 +30,21 @@ public interface DraftDao {
 
 	boolean deleteDrafts(Map<String,String> params);
 
-	boolean deleteDraftsFromPsi(String userId, String draftIds);
+	boolean deleteDraftsFromPsi(String userId,String compId, String parentId, String draftIds);
 
     InspectionBookingBean createDraft(String userId, String compId, String parentId, String serviceTypeStrValue);
 
     InspectionBookingBean createDraftFromPreviousOrder(String userId, String companyId, String parentId, String orderId);
 
-    InspectionBookingBean getDraft(String userId, String draftId);
+    InspectionBookingBean getDraft(String userId,String compId, String parentId, String draftId);
 
-	boolean saveDraft(String userId,InspectionBookingBean draft);
+	boolean saveDraft(String userId,String companyId,String parentId,InspectionBookingBean draft);
 
-    boolean addProduct(String userId,String draftId);
+    boolean addProduct(String userId,String companyId,String parentId,String draftId);
 
-    boolean saveProduct(String userId,InspectionProductBookingBean draftProduct);
+    boolean saveProduct(String userId,String companyId,String parentId,InspectionProductBookingBean draftProduct);
 
-    boolean deleteProduct(String userId,String productId);
+    boolean deleteProduct(String userId,String companyId,String parentId,String productId);
     
 	InspectionBookingBean calculatePricing(
 			String userId, String companyId, 

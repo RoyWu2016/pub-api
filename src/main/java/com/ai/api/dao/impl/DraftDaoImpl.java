@@ -75,10 +75,15 @@ public class DraftDaoImpl implements DraftDao {
 
 
 	@Override
-	public boolean deleteDraftsFromPsi(String userId, String draftIds) {
-		String url = config.getPsiServiceUrl() + "/draft/api/deleteDrafts/"+ userId + "/"+ draftIds;
+	public boolean deleteDraftsFromPsi(String userId,String compId, String parentId, String draftIds) {
+        StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+        url.append("/draft/api/deleteDrafts");
+        url.append("?userId=").append(userId);
+        url.append("&companyId=").append(compId);
+        url.append("&parentId=").append(parentId);
+        url.append("&draftIds=").append(draftIds);
 		try {
-			ServiceCallResult result = HttpUtil.issueDeleteRequest(url, null);
+			ServiceCallResult result = HttpUtil.issueDeleteRequest(url.toString(), null);
 
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK") && result.getResponseString().equals("true")) {
 				return true;
@@ -97,8 +102,10 @@ public class DraftDaoImpl implements DraftDao {
 	@Override
 	public InspectionBookingBean createDraft(String userId, String compId, String parentId, String serviceTypeStrValue) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		url.append("/draft/api/createDraft").append("?userId=").append(userId);
-		url.append("&companyId=").append(compId).append("&parentId=").append(parentId);
+		url.append("/draft/api/createDraft");
+        url.append("?userId=").append(userId);
+		url.append("&companyId=").append(compId);
+        url.append("&parentId=").append(parentId);
 		url.append("&serviceType=").append(serviceTypeStrValue);
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, new HashMap<>());
@@ -117,12 +124,12 @@ public class DraftDaoImpl implements DraftDao {
 
 	@Override
 	public InspectionBookingBean createDraftFromPreviousOrder(String userId, String companyId, String parentId, String orderId) {
-		StringBuilder url = new StringBuilder(config.getPsiServiceUrl()).
-				append("/draft/api/createDraftFromPreviousOrder").
-				append("?userId=").append(userId).
-				append("&companyId=").append(companyId).
-				append("&parentId=").append(parentId).
-				append("&orderId=").append(orderId);
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+        url.append("/draft/api/createDraftFromPreviousOrder");
+        url.append("?userId=").append(userId);
+        url.append("&companyId=").append(companyId);
+        url.append("&parentId=").append(parentId);
+        url.append("&orderId=").append(orderId);
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,orderId);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
@@ -139,7 +146,7 @@ public class DraftDaoImpl implements DraftDao {
 	}
 
 	@Override
-	public InspectionBookingBean getDraft(String userId, String draftId) {
+	public InspectionBookingBean getDraft(String userId,String compId, String parentId, String draftId) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		url.append("/draft/api/getDraft/").append(userId).append("/").append(draftId);
 		try {
@@ -158,9 +165,12 @@ public class DraftDaoImpl implements DraftDao {
 	}
 
 	@Override
-	public boolean saveDraft(String userId,InspectionBookingBean draft) {
+	public boolean saveDraft(String userId,String companyId,String parentId,InspectionBookingBean draft) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		url.append("/draft/api/updateDraft/").append(userId);
+		url.append("/draft/api/updateDraft/");
+        url.append("?userId=").append(userId);
+        url.append("&companyId=").append(companyId);
+        url.append("&parentId=").append(parentId);
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draft);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
@@ -177,9 +187,13 @@ public class DraftDaoImpl implements DraftDao {
 	}
 
     @Override
-    public boolean addProduct(String userId,String draftId) {
+    public boolean addProduct(String userId,String companyId,String parentId,String draftId) {
         StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-        url.append("/draft/api/addProduct?userId=").append(userId);
+        url.append("/draft/api/addProduct");
+        url.append("?userId=").append(userId);
+        url.append("&companyId=").append(companyId);
+        url.append("&parentId=").append(parentId);
+        url.append("&draftId=").append(draftId);
         try {
             logger.info("addProduct POST! URL : "+url.toString());
             ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftId);
@@ -197,9 +211,12 @@ public class DraftDaoImpl implements DraftDao {
     }
 
 	@Override
-	public boolean saveProduct(String userId,InspectionProductBookingBean draftProduct) {
+	public boolean saveProduct(String userId,String companyId,String parentId,InspectionProductBookingBean draftProduct) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		url.append("/draft/api/updateProduct?userId=").append(userId);
+		url.append("/draft/api/updateProduct");
+        url.append("?userId=").append(userId);
+        url.append("&companyId=").append(companyId);
+        url.append("&parentId=").append(parentId);
 		try {
 			logger.info("saveProduct POST! URL : "+url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftProduct);
@@ -217,9 +234,13 @@ public class DraftDaoImpl implements DraftDao {
 	}
 
     @Override
-    public boolean deleteProduct(String userId,String productId) {
+    public boolean deleteProduct(String userId,String companyId,String parentId,String productId) {
         StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-        url.append("/draft/api/deleteProduct/").append(userId).append("/").append(productId);
+        url.append("/draft/api/deleteProduct");
+        url.append("?userId=").append(userId);
+        url.append("&companyId=").append(companyId);
+        url.append("&parentId=").append(parentId);
+        url.append("&productDraftId=").append(productId);
         try {
             logger.info("deleteProduct DELETE! URL : "+url.toString());
             ServiceCallResult result = HttpUtil.issueDeleteRequest(url.toString(),null);
@@ -246,8 +267,8 @@ public class DraftDaoImpl implements DraftDao {
 			.append("&companyId=").append(companyId)
 			.append("&parentId=").append(parentId)
 			.append("&draftId=").append(draftId)
-			.append("&samplingSize=").append(samplingLevel)	
-			.append("&measurementSamplingSize=").append(measurementSamplingSize);		
+			.append("&samplingLevel=").append(samplingLevel)
+			.append("&measurementSamplingLevel=").append(measurementSamplingSize);
 		try {
 			logger.info("Invoking: " + url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,new HashMap<>());
