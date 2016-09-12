@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.api.controller.CacheManagement;
 import com.ai.api.util.RedisUtil;
-import com.ai.commons.annotation.TokenSecured;
+
+import springfox.documentation.annotations.ApiIgnore;
+
 @RestController
+@ApiIgnore 
 public class CacheManagementImpl implements CacheManagement {
 	
 
