@@ -13,14 +13,12 @@ public class CacheManagementImpl implements CacheManagement {
 	
 
 	@Override
-	@TokenSecured
 	@RequestMapping(value = "/cache/key/{keyName}", method = RequestMethod.GET)
 	public String getCacheByKey(@PathVariable final String keyName) {
 		return RedisUtil.get(keyName);
 	}
 
 	@Override
-	@TokenSecured
 	@RequestMapping(value = "/cache/key/{keyName}/delete", method = RequestMethod.GET)
 	public String deleteCacheByKey(@PathVariable final String keyName) {
 		long val = RedisUtil.del(keyName);
@@ -32,14 +30,12 @@ public class CacheManagementImpl implements CacheManagement {
 	}
 
 	@Override
-	@TokenSecured
 	@RequestMapping(value = "/hashed-cache/hash/{hashName}/key/{keyName}", method = RequestMethod.GET)
 	public String getHashedCacheByHashAndKey(@PathVariable final String hashName,@PathVariable final String keyName) {
 		return RedisUtil.hget(hashName, keyName);
 	}
 
 	@Override
-	@TokenSecured
 	@RequestMapping(value = "/hashed-cache/hash/{hashName}/key/{keyName}/delete", method = RequestMethod.GET)
 	public String deleteHashedCacheByHashAndKey(@PathVariable final String hashName, @PathVariable final String keyName) {
 		long val = RedisUtil.hdel(hashName, keyName);
