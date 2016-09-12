@@ -56,7 +56,11 @@ public class ServiceConfig {
 
     private String psiServiceUrl;
 
-//    public String getBaseURL() {
+    private String redisHost;
+    private String redisPort;
+    private String redisPassword;
+
+    //    public String getBaseURL() {
 //        return baseURL;
 //    }
 
@@ -177,6 +181,31 @@ public class ServiceConfig {
 	public void setFileMaximumSize(int fileMaximumSize) {
 		this.fileMaximumSize = fileMaximumSize;
 	}
+
+
+    public String getRedisHost() {
+        return redisHost;
+    }
+
+    public void setRedisHost(String redisHost) {
+        this.redisHost = redisHost;
+    }
+
+    public String getRedisPort() {
+        return redisPort;
+    }
+
+    public void setRedisPort(String redisPort) {
+        this.redisPort = redisPort;
+    }
+
+    public String getRedisPassword() {
+        return redisPassword;
+    }
+
+    public void setRedisPassword(String redisPassword) {
+        this.redisPassword = redisPassword;
+    }
 	
 
 }
