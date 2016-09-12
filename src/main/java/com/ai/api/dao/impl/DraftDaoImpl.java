@@ -5,19 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ai.api.bean.InspectionDraftBean;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.dao.DraftDao;
-import com.ai.api.util.AIUtil;
-import com.ai.commons.HttpUtil;
-import com.ai.commons.JsonUtil;
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.order.Draft;
-import com.ai.commons.beans.order.draft.DraftOrder;
-import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.InspectionProductBookingBean;
-import com.ai.dto.JsonResponse;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.dao.DraftDao;
+import com.ai.commons.HttpUtil;
+import com.ai.commons.JsonUtil;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
+import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
 /***************************************************************************
  * <PRE>
@@ -258,7 +256,7 @@ public class DraftDaoImpl implements DraftDao {
     }
     
 	@Override
-	public InspectionBookingBean calculatePricing(String userId, String companyId,String parentId,
+	public OrderPriceMandayViewBean calculatePricing(String userId, String companyId,String parentId,
 			String draftId,String samplingLevel,String measurementSamplingSize) {
 		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
@@ -274,7 +272,7 @@ public class DraftDaoImpl implements DraftDao {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,new HashMap<>());
 			if (result.getStatusCode() == HttpStatus.OK.value() 
 					&& result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+				return JsonUtil.mapToObject(result.getResponseString(), OrderPriceMandayViewBean.class);
 			} else {
 				logger.error("calculate Pricing error from psi service : " 
 						+ result.getStatusCode() + ", "

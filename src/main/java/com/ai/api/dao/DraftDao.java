@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
@@ -46,7 +47,7 @@ public interface DraftDao {
 
     boolean deleteProduct(String userId,String companyId,String parentId,String productId);
     
-	InspectionBookingBean calculatePricing(
+    OrderPriceMandayViewBean calculatePricing(
 			String userId, String companyId, 
 			String parentId,String draftId,
 			String samplingLevel,String measurementSamplingSize);
