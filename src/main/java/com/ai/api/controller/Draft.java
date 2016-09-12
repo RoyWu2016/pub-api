@@ -1,13 +1,14 @@
 
 package com.ai.api.controller;
 
-import com.ai.commons.beans.order.draft.DraftOrder;
-import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.InspectionProductBookingBean;
-
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+
+import com.ai.api.bean.InspectionDraftProductBean;
+import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
 /***************************************************************************
  * <PRE>
@@ -49,5 +50,7 @@ public interface Draft {
 			String samplingLevel,String measurementSamplingSize);
 	
 	 ResponseEntity<List<DraftOrder>> searchDraft(String userId, String serviceType,String startDate, String endDate, String keyWord, String pageNumber, String pageSize);
+	 
+	ResponseEntity<Boolean> saveProducts(String userId,String draftId,List<InspectionProductBookingBean> draftProductsList);
 }
 
