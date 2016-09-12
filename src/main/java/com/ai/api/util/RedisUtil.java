@@ -91,8 +91,9 @@ public class RedisUtil {
 			config.setTestOnBorrow(true);
             logger.info("initializing JedisPool ... ");
             logger.info("Redis Host : "+serviceConfig.getRedisHost());
+            logger.info("Redis Port : "+serviceConfig.getRedisPort()+serviceConfig.getRedisPassword());
 			pool = new JedisPool(config, serviceConfig.getRedisHost(),
-					Integer.getInteger(serviceConfig.getRedisPort()),
+					Integer.parseInt(serviceConfig.getRedisPort()),
 					100000,serviceConfig.getRedisPassword());
             logger.info("initialPool finished! ");
 		} catch (Exception e) {
