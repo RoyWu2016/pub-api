@@ -72,11 +72,13 @@ public class DraftImpl implements Draft {
 	                                                       @RequestParam("serviceType") String serviceType) {
 		try {
             InspectionBookingBean newDraft = draftService.createDraft(userId, serviceType);
-			return new ResponseEntity<>(newDraft, HttpStatus.OK);
+            if (null!=newDraft) {
+                return new ResponseEntity<>(newDraft, HttpStatus.OK);
+            }
 		} catch (Exception e) {
 			logger.error("create draft error: " + ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override
@@ -86,11 +88,13 @@ public class DraftImpl implements Draft {
 																			  @PathVariable("orderId") String orderId) {
 		try {
 			InspectionBookingBean newDraft = draftService.createDraftFromPreviousOrder(userId, orderId);
-			return new ResponseEntity<>(newDraft, HttpStatus.OK);
+            if (null!=newDraft) {
+                return new ResponseEntity<>(newDraft, HttpStatus.OK);
+            }
 		} catch (Exception e) {
 			logger.error("create draft from previous order error: " + ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override
@@ -218,11 +222,13 @@ public class DraftImpl implements Draft {
 	  
 			try {
 				List<DraftOrder> draftList = draftService.searchDraft(userId, serviceType, startDate, endDate, keyword, pageNumber, pageSize);
-				return new ResponseEntity<List<DraftOrder>>(draftList, HttpStatus.OK);
+				if (null!=draftList&&draftList.size()>0) {
+                    return new ResponseEntity<List<DraftOrder>>(draftList, HttpStatus.OK);
+                }
 			} catch (Exception e) {
 				logger.error("get draft search error: " + ExceptionUtils.getFullStackTrace(e));
-				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			
 		}
 
