@@ -168,13 +168,11 @@ public class DraftServiceImpl implements DraftService {
 			String samplingLevel,String measurementSamplingSize) throws Exception {
 		// TODO Auto-generated method stub
 		UserBean userBean = userService.getCustById(userId);
-		String parentId = userBean.getCompany().getParentCompanyId();
-		String companyId = userBean.getCompany().getId();
-		if(null == companyId) {
-			companyId = "null";
-		}
-		if(null == parentId) {
-			parentId = "null";
+		String parentId = "null";
+		String companyId = "null";
+		if(null != userBean) {
+			userBean.getCompany().getParentCompanyId();
+			userBean.getCompany().getId();
 		}
 		return draftDao.calculatePricing(userId,companyId,parentId,
 				draftId,samplingLevel,measurementSamplingSize);
