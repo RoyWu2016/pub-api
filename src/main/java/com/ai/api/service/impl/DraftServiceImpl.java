@@ -171,8 +171,11 @@ public class DraftServiceImpl implements DraftService {
 		String parentId = "null";
 		String companyId = "null";
 		if(null != userBean) {
-			userBean.getCompany().getParentCompanyId();
-			userBean.getCompany().getId();
+			parentId = userBean.getCompany().getParentCompanyId();
+			if (null == parentId) {
+				parentId = "";
+			}
+			companyId = userBean.getCompany().getId();
 		}
 		return draftDao.calculatePricing(userId,companyId,parentId,
 				draftId,samplingLevel,measurementSamplingSize);
