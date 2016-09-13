@@ -196,6 +196,7 @@ public class DraftDaoImpl implements DraftDao {
             logger.info("addProduct POST! URL : "+url.toString());
             ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftId);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                logger.info("addProduct result from psi :"+result.getResponseString());
 				InspectionProductBookingBean product =JsonUtil.mapToObject(result.getResponseString(), InspectionProductBookingBean.class);
                 return product.getProductBean().getProductId();
             } else {
