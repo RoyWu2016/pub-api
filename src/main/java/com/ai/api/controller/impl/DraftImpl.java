@@ -191,7 +191,11 @@ public class DraftImpl implements Draft {
 		// TODO Auto-generated method stub
 		try {
 			OrderPriceMandayViewBean newDraft = draftService.calculatePricing(userId, draftId,samplingLevel, measurementSamplingSize);
-			return new ResponseEntity<>(newDraft, HttpStatus.OK);
+			if(null == newDraft) {
+				return new ResponseEntity<>(newDraft, HttpStatus.OK);
+			}else {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 		} catch (Exception e) {
 			logger.error("calculate Pricing error: " + ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
