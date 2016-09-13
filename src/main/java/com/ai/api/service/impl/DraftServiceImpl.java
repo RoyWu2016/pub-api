@@ -5,6 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.ai.api.bean.UserBean;
 import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.dao.DraftDao;
@@ -12,13 +18,9 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.DraftService;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 
 /***************************************************************************
  * <PRE>
@@ -162,7 +164,7 @@ public class DraftServiceImpl implements DraftService {
 	}
 	
 	@Override
-	public InspectionBookingBean calculatePricing(String userId, String draftId,
+	public OrderPriceMandayViewBean calculatePricing(String userId, String draftId,
 			String samplingLevel,String measurementSamplingSize) throws Exception {
 		// TODO Auto-generated method stub
 		UserBean userBean = userService.getCustById(userId);

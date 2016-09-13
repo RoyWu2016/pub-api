@@ -3,13 +3,6 @@ package com.ai.api.controller.impl;
 
 import java.util.List;
 
-import com.ai.api.bean.InspectionDraftProductBean;
-import com.ai.api.controller.Draft;
-import com.ai.api.service.DraftService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.order.draft.DraftOrder;
-import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.InspectionProductBookingBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ai.api.controller.Draft;
+import com.ai.api.service.DraftService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
+import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
 /***************************************************************************
  * <PRE>
@@ -182,14 +183,14 @@ public class DraftImpl implements Draft {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/draft/{draftId}/sampling-level/{samplingLevel}/price", 
 			method = RequestMethod.GET)
-	public ResponseEntity<InspectionBookingBean> calculatePricing(
+	public ResponseEntity<OrderPriceMandayViewBean> calculatePricing(
 			@PathVariable("userId") String userId,
 			@PathVariable("draftId") String draftId, 
 			@PathVariable("samplingLevel") String samplingLevel,
 			@RequestParam("measurementSamplingSize") String measurementSamplingSize) {
 		// TODO Auto-generated method stub
 		try {
-			InspectionBookingBean newDraft = draftService.calculatePricing(userId, draftId,samplingLevel, measurementSamplingSize);
+			OrderPriceMandayViewBean newDraft = draftService.calculatePricing(userId, draftId,samplingLevel, measurementSamplingSize);
 			return new ResponseEntity<>(newDraft, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("calculate Pricing error: " + ExceptionUtils.getFullStackTrace(e));
