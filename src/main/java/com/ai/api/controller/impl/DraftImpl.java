@@ -191,7 +191,7 @@ public class DraftImpl implements Draft {
 		// TODO Auto-generated method stub
 		try {
 			OrderPriceMandayViewBean newDraft = draftService.calculatePricing(userId, draftId,samplingLevel, measurementSamplingSize);
-			if(null == newDraft) {
+			if(null != newDraft) {
 				return new ResponseEntity<>(newDraft, HttpStatus.OK);
 			}else {
 				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
