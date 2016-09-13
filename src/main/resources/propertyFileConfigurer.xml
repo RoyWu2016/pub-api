@@ -35,6 +35,7 @@
     <bean name="commonsConfigurationFactoryBean"
         class="org.springmodules.commons.configuration.CommonsConfigurationFactoryBean">
         <constructor-arg ref="databaseConfiguration" />
+        <property name="locations" value="classpath:api-urls.properties" />
     </bean>
 
     <bean name="databaseConfiguration"

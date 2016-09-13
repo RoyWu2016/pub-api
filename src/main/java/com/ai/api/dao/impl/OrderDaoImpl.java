@@ -271,7 +271,7 @@ public class OrderDaoImpl implements OrderDao {
 		try {
 			AIUtil.addRestTemplateMessageConverter(restTemplate);
 			orders = Arrays.asList(restTemplate.getForObject(
-					buildTestSearchCriteria(userId, compId, orderStatus, pageSize, pageNumber, direction, "http://202.66.128.138:8093/AIMS-services-api/api/ordermanagement/search").build().encode().toUri(), 
+					buildTestSearchCriteria(userId, compId, orderStatus, pageSize, pageNumber, direction, config.getAimsServiceBaseUrl() + "/api/ordermanagement/search").build().encode().toUri(), 
 					OrderMaster[].class));
 
 /*			if(!orders.isEmpty()) {

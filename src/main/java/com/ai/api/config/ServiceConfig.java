@@ -59,6 +59,7 @@ public class ServiceConfig {
     private String redisHost;
     private String redisPort;
     private String redisPassword;
+    private String aimsServiceBaseUrl;
 
     //    public String getBaseURL() {
 //        return baseURL;
@@ -206,6 +207,12 @@ public class ServiceConfig {
     public void setRedisPassword(String redisPassword) {
         this.redisPassword = redisPassword;
     }
-	
 
+	public String getAimsServiceBaseUrl() {
+		return aimsServiceBaseUrl;
+	}
+
+	public void setAimsServiceBaseUrl(String aimsServiceBaseUrl) {
+		this.aimsServiceBaseUrl = aimsServiceBaseUrl;
+	}
 }
