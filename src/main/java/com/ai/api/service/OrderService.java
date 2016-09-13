@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.List;
 
 import com.ai.api.exception.AIException;
-import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 
@@ -52,4 +51,6 @@ public interface OrderService {
     InspectionBookingBean saveOrderByDraft(String userId, String draftId);
     
     List<SimpleOrderSearchBean> searchOrders(String userId, String serviceType,String startDate, String endDate, String keyWord, String orderStatus, String pageSize, String pageNumber)  throws IOException, AIException;
+    
+    List<SimpleOrderSearchBean> searchOrders(String userId, String orderStatus, String pageSize, String pageNumber, String direction)  throws IOException, AIException;
 }

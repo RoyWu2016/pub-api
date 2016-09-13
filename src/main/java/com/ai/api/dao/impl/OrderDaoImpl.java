@@ -7,18 +7,11 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.dao.OrderDao;
-import com.ai.commons.HttpUtil;
-import com.ai.commons.JsonUtil;
-import com.ai.commons.beans.GetRequest;
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.legacy.order.OrderCancelBean;
-import com.ai.commons.beans.order.SimpleOrderSearchBean;
-import com.ai.commons.beans.psi.InspectionBookingBean;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +19,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.dao.OrderDao;
+import com.ai.api.util.AIUtil;
+import com.ai.commons.HttpUtil;
+import com.ai.commons.JsonUtil;
+import com.ai.commons.beans.GetRequest;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
+import com.ai.commons.beans.psi.InspectionBookingBean;
 
 /***************************************************************************
  * <PRE>
@@ -250,6 +257,64 @@ public class OrderDaoImpl implements OrderDao {
 		
 		return null;
 		
+	}
+	
+	@Override
+	public List<SimpleOrderSearchBean> searchOrders(String userId, String compId, String orderStatus, String pageSize, String pageNumber, String direction) {
+		
+		RestTemplate restTemplate = new RestTemplate();
+		List<OrderMaster> orders = new ArrayList<OrderMaster>();
+		List<SimpleOrderSearchBean> orderSearchList = new ArrayList<SimpleOrderSearchBean>();
+		//int total = 0;
+		//PageBean<SimpleOrderSearchBean> pageBeanList = new PageBean<SimpleOrderSearchBean>();
+		
+		try {
+			AIUtil.addRestTemplateMessageConverter(restTemplate);
+			orders = Arrays.asList(restTemplate.getForObject(
+					buildTestSearchCriteria(userId, compId, orderStatus, pageSize, pageNumber, direction, "http://202.66.128.138:8093/AIMS-services-api/api/ordermanagement/search").build().encode().toUri(), 
+					OrderMaster[].class));
+
+/*			if(!orders.isEmpty()) {
+				total = restTemplate.getForObject(
+						buildTestSearchCriteria(userId, compId, orderStatus, pageSize, pageNumber, direction, "http://202.66.128.138:8093/AIMS-services-api/api/ordermanagement/count/total").build().encode().toUri(), 
+						Integer.class);				
+			}*/
+			
+			//int totalPages = total / Integer.parseInt(pageSize);
+			
+			for(OrderMaster order: orders) {
+				SimpleOrderSearchBean orderSearch = new SimpleOrderSearchBean();
+				orderSearch.setOrderId(order.getId());
+				orderSearch.setSupplierName(order.getSupplier().getCompanyName());
+				orderSearch.setServiceType("inspection");
+				orderSearch.setServiceTypeText("Inspection");
+				orderSearch.setPoNumbers(order.getClientPONo());
+				orderSearch.setStatus(order.getOrderStatus());
+				orderSearch.setStatusText(order.getOrderStatus());
+				orderSearchList.add(orderSearch);
+			}
+/*			pageBeanList.setPageItems(orderSearchList);
+			pageBeanList.setPageNo(Integer.parseInt(pageNumber));			
+			pageBeanList.setTotalPageNum( totalPages == 0 ? totalPages : totalPages + 1  );
+			pageBeanList.setTotalSize(Long.parseLong(pageSize));*/
+		} catch (Exception ex) {
+			logger.error("Exception", ex);
+			ex.printStackTrace();
+		}
+		
+		return orderSearchList;//pageBeanList.getPageItems();
+	}
+	
+	private UriComponentsBuilder buildTestSearchCriteria(String userId, String compId, String orderStatus, String pageSize, String pageNumber, String direction, String url) {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+		        .queryParam("page", (Integer.parseInt(pageNumber) - 1))
+		        .queryParam("size", pageSize)
+		        .queryParam("direction", (null != direction ? direction : "desc") );	
+		
+		if(!StringUtils.stripToEmpty(compId).trim().isEmpty())
+			builder.queryParam("clientId", compId.trim());
+		
+		return builder;
 	}
 
 }
