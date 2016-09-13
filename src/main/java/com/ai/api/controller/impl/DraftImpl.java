@@ -3,6 +3,7 @@ package com.ai.api.controller.impl;
 
 import java.util.List;
 
+import com.ai.commons.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,7 +140,7 @@ public class DraftImpl implements Draft {
                                                @PathVariable("draftId") String draftId) {
         try {
             String productId = draftService.addProduct(userId, draftId);
-            if(null!=productId){
+            if(StringUtils.isNotBlank(productId)){
                 return new ResponseEntity<>("{productId:"+productId+"}",HttpStatus.OK);
             }
         } catch (Exception e) {
