@@ -135,12 +135,12 @@ public class DraftImpl implements Draft {
     @Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/draft/{draftId}/product", method = RequestMethod.POST)
-    public ResponseEntity<Boolean> addProduct(@PathVariable("userId")String userId,
+    public ResponseEntity<String> addProduct(@PathVariable("userId")String userId,
                                                @PathVariable("draftId") String draftId) {
         try {
-            boolean result = draftService.addProduct(userId, draftId);
-            if(result){
-                return new ResponseEntity<>(HttpStatus.OK);
+            String productId = draftService.addProduct(userId, draftId);
+            if(null!=productId){
+                return new ResponseEntity<>("{productId:"+productId+"}",HttpStatus.OK);
             }
         } catch (Exception e) {
             e.printStackTrace();
