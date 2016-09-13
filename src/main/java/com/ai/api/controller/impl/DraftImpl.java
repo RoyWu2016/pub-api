@@ -101,11 +101,13 @@ public class DraftImpl implements Draft {
 
 		try {
             InspectionBookingBean draft = draftService.getDraft(userId, draftId);
-			return new ResponseEntity<>(draft, HttpStatus.OK);
+			if(null!=draft) {
+				return new ResponseEntity<>(draft, HttpStatus.OK);
+			}
 		} catch (Exception e) {
 			logger.error("get draft error: " + ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override
