@@ -41,7 +41,7 @@ public interface DraftDao {
 
 	boolean saveDraft(String userId,String companyId,String parentId,InspectionBookingBean draft);
 
-    boolean addProduct(String userId,String companyId,String parentId,String draftId);
+    String addProduct(String userId,String companyId,String parentId,String draftId);
 
     boolean saveProduct(String userId,String companyId,String parentId,InspectionProductBookingBean draftProduct);
 

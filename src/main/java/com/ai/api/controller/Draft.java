@@ -40,7 +40,7 @@ public interface Draft {
 
 	ResponseEntity<Boolean> saveDraft(String userId,String draftId,InspectionBookingBean draft);
 
-    ResponseEntity<Boolean> addProduct( String userId,String draftId);
+    ResponseEntity<String> addProduct( String userId,String draftId);
 
     ResponseEntity<Boolean> saveProduct(String userId,String draftId,String productId,InspectionProductBookingBean draftProduct);
 
