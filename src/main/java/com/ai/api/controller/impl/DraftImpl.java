@@ -187,7 +187,7 @@ public class DraftImpl implements Draft {
 			@PathVariable("userId") String userId,
 			@PathVariable("draftId") String draftId, 
 			@PathVariable("samplingLevel") String samplingLevel,
-			@RequestParam("measurementSamplingSize") String measurementSamplingSize) {
+			@RequestParam(value = "measurementSamplingSize", required = false ,defaultValue="") String measurementSamplingSize) {
 		// TODO Auto-generated method stub
 		try {
 			OrderPriceMandayViewBean newDraft = draftService.calculatePricing(userId, draftId,samplingLevel, measurementSamplingSize);
