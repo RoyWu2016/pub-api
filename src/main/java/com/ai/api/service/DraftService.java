@@ -41,7 +41,7 @@ public interface DraftService {
 
 	boolean saveDraft(String userId,InspectionBookingBean draft) throws Exception;
 
-    boolean addProduct(String userId,String draftId) throws Exception;
+    String addProduct(String userId,String draftId) throws Exception;
 
     boolean saveProduct(String userId,InspectionProductBookingBean draftProduct) throws Exception;
 

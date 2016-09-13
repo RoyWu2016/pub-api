@@ -185,7 +185,7 @@ public class DraftDaoImpl implements DraftDao {
 	}
 
     @Override
-    public boolean addProduct(String userId,String companyId,String parentId,String draftId) {
+    public String addProduct(String userId,String companyId,String parentId,String draftId) {
         StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
         url.append("/draft/api/addProduct");
         url.append("?userId=").append(userId);
@@ -196,7 +196,8 @@ public class DraftDaoImpl implements DraftDao {
             logger.info("addProduct POST! URL : "+url.toString());
             ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftId);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                return true;
+				InspectionProductBookingBean product =JsonUtil.mapToObject(result.getResponseString(), InspectionProductBookingBean.class);
+                return product.getProductBean().getProductId();
             } else {
                 logger.error("add product error from psi service : " + result.getStatusCode() +
                         ", " + result.getResponseString());
@@ -205,7 +206,7 @@ public class DraftDaoImpl implements DraftDao {
         } catch (IOException e) {
             logger.error(ExceptionUtils.getStackTrace(e));
         }
-        return false;
+        return null;
     }
 
 	@Override

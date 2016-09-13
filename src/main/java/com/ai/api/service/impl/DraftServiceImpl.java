@@ -125,7 +125,7 @@ public class DraftServiceImpl implements DraftService {
 	}
 
 	@Override
-	public boolean addProduct(String userId,String draftId) throws Exception {
+	public String addProduct(String userId,String draftId) throws Exception {
 		String companyId = "null";
 		String parentId = "null";
 		UserBean user = userService.getCustById(userId);
