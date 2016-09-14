@@ -1,9 +1,16 @@
 
 package com.ai.api.controller.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.ai.commons.StringUtils;
+import com.ai.api.controller.Draft;
+import com.ai.api.service.DraftService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
+import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,14 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.ai.api.controller.Draft;
-import com.ai.api.service.DraftService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.order.draft.DraftOrder;
-import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
-import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
 /***************************************************************************
  * <PRE>
@@ -108,6 +107,8 @@ public class DraftImpl implements Draft {
             InspectionBookingBean draft = draftService.getDraft(userId, draftId);
 			if(null!=draft) {
 				return new ResponseEntity<>(draft, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
 			logger.error("get draft error: " + ExceptionUtils.getFullStackTrace(e));
@@ -136,13 +137,13 @@ public class DraftImpl implements Draft {
     @Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/draft/{draftId}/product", method = RequestMethod.POST)
-    public ResponseEntity<String> addProduct(@PathVariable("userId")String userId,
+    public ResponseEntity<InspectionProductBookingBean> addProduct(@PathVariable("userId")String userId,
                                                @PathVariable("draftId") String draftId) {
         try {
-            String productId = draftService.addProduct(userId, draftId);
-            if(StringUtils.isNotBlank(productId)){
-                return new ResponseEntity<>("{productId:"+productId+"}",HttpStatus.OK);
-            }
+            InspectionProductBookingBean product = draftService.addProduct(userId, draftId);
+	        if(null != product) {
+		        return new ResponseEntity<>(product, HttpStatus.OK);
+	        }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -201,7 +202,7 @@ public class DraftImpl implements Draft {
 			if(null != newDraft) {
 				return new ResponseEntity<>(newDraft, HttpStatus.OK);
 			}else {
-				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
 			logger.error("calculate Pricing error: " + ExceptionUtils.getFullStackTrace(e));
@@ -224,8 +225,10 @@ public class DraftImpl implements Draft {
 			try {
 				List<DraftOrder> draftList = draftService.searchDraft(userId, serviceType, startDate, endDate, keyword, pageNumber, pageSize);
 				if (null!=draftList&&draftList.size()>0) {
-                    return new ResponseEntity<List<DraftOrder>>(draftList, HttpStatus.OK);
-                }
+                    return new ResponseEntity<>(draftList, HttpStatus.OK);
+                } else {
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
 			} catch (Exception e) {
 				logger.error("get draft search error: " + ExceptionUtils.getFullStackTrace(e));
 			}
@@ -241,6 +244,37 @@ public class DraftImpl implements Draft {
 				@PathVariable("draftId") String draftId,
 				@RequestBody List<InspectionProductBookingBean> draftProductsList) {
 			// TODO Auto-generated method stub
+			try {
+				logger.info("Checking what non-duplicate product id should be delete before update multiple products: ");
+				InspectionBookingBean draft = draftService.getDraft(userId, draftId);
+				if(null == draft) {
+					 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+				List<InspectionProductBookingBean> list = draft.getProducts();
+				if(list.size() > draftProductsList.size()) {
+					
+					List<String> needTodeleteProductIdList = new ArrayList<String>();
+					List<String> inputProductIdList = new ArrayList<String>();
+					for(InspectionProductBookingBean each : list) {
+						needTodeleteProductIdList.add(each.getDraftProductId());
+					}
+					for(InspectionProductBookingBean each : draftProductsList) {
+						inputProductIdList.add(each.getDraftProductId());
+					}
+					needTodeleteProductIdList.removeAll(inputProductIdList);
+					
+					for(String id :needTodeleteProductIdList) {
+						logger.debug("Deleting the product id: " + id);
+						if(!draftService.deleteProduct(userId, id)) {
+							return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			for(InspectionProductBookingBean each : draftProductsList) {
 				try {
 					boolean result = draftService.saveProduct(userId, each);
@@ -253,6 +287,7 @@ public class DraftImpl implements Draft {
 			}
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
+		
 }
 
  

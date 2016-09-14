@@ -184,24 +184,6 @@ public class UserImpl implements User {
 		}
 	}
 
-//    @Override
-//    @TokenSecured
-//    @RequestMapping(value = "/user/{userId}/company/{companyId}/file_logo", method = RequestMethod.POST)
-//    public ResponseEntity<String> updateCompanyLogoByFile(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId, HttpServletRequest request) {
-//		logger.info("update companyLogo----userId["+userId+"]companyId["+companyId+"]");
-//		boolean b = false;
-//        try {
-//            b = userService.updateCompanyLogoByFile(userId, companyId, request);
-//        }catch (Exception e){
-//            logger.error("",e);
-//        }
-//        if (b){
-//            return new ResponseEntity<>(HttpStatus.OK);
-//        }else {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//    }
-
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.POST)

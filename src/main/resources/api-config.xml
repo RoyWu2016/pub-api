@@ -7,7 +7,7 @@
     <context:annotation-config/>
     <context:spring-configured/>
     <!--<bean id="contextApplicationContextProvider" class="com.ai.commons.spring.ApplicationContextProvider"/>-->
- 	<context:component-scan base-package="com.ai.commons.service" /> 	
+ 	<context:component-scan base-package="com.ai.commons.service" />
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 
     <bean id="tokenJWTService" class="com.ai.commons.services.TokenJWTService" />
@@ -41,8 +41,7 @@
           p:psiServiceUrl="${inspection.service.url}"
           p:redisPassword="${redis.password}"
           p:redisPort="${redis.port}"
-          p:redisHost="${redis.host}"
-          p:aimsServiceBaseUrl="${aims.service.base.url}" />
+          p:redisHost="${redis.host}" />
 
     <bean id="redisUtil" class="com.ai.api.util.RedisUtil" >
         <property name="serviceConfig" ref="serviceConfig"/>

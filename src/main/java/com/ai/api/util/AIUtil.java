@@ -14,14 +14,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
-
 import com.ai.api.bean.InspectionDraftBean;
 import com.ai.api.bean.InspectionDraftProductBean;
 import com.ai.commons.beans.customer.CompanyEntireBean;
@@ -31,10 +23,15 @@ import com.ai.commons.beans.order.Draft;
 import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.order.draft.DraftProduct;
 import com.ai.commons.beans.order.draft.DraftProductInfo;
+import com.ai.commons.beans.params.PaymentRateBean;
 import com.ai.commons.beans.psi.InspectionOrderBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /***************************************************************************
  *<PRE>
@@ -164,16 +161,5 @@ public class AIUtil {
         }
         draft.setProductList(productList);
         return draft;
-	}
-	
-	public static void addRestTemplateMessageConverter(RestTemplate restTemplate) {
-		List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
-		messageConverters.add(new MappingJackson2HttpMessageConverter());
-		restTemplate.setMessageConverters(messageConverters);		
-	}
-	
-	public static void setMessageConverters(RestTemplate restTemplate) {
-		restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
-	    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 	}
 }

@@ -180,6 +180,11 @@
             <artifactId>quartz</artifactId>
             <version>${quartz.version}</version>
         </dependency>
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 982691bb76abb4d2a71e0ea34998c4e26eac4c53
     </dependencies>
 
     <repositories>
