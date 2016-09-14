@@ -40,7 +40,7 @@
     <bean name="databaseConfiguration"
         class="org.apache.commons.configuration.DatabaseConfiguration">
         <constructor-arg name="datasource" ref="dataSource" />
-        <constructor-arg name="table" value="PARM_GLOBAL_APP_CONFIG" />
+        <constructor-arg name="table" value="PARM_GLOBAL_APP_CONFIG_LM" />
         <constructor-arg name="keyColumn" value="PROP_KEY" />
         <constructor-arg name="valueColumn" value="PROP_VALUE" />
     </bean>

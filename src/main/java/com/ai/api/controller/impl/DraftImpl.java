@@ -242,6 +242,9 @@ public class DraftImpl implements Draft {
 				@PathVariable("userId") String userId,
 				@PathVariable("draftId") String draftId,
 				@RequestBody List<InspectionProductBookingBean> draftProductsList) {
+			//ddddd
+
+
 			// TODO Auto-generated method stub
 			for(InspectionProductBookingBean each : draftProductsList) {
 				try {
