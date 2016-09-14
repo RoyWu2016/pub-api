@@ -3,7 +3,13 @@ package com.ai.api.controller.impl;
 
 import java.util.List;
 
-import com.ai.commons.StringUtils;
+import com.ai.api.controller.Draft;
+import com.ai.api.service.DraftService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
+import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,14 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.ai.api.controller.Draft;
-import com.ai.api.service.DraftService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.order.draft.DraftOrder;
-import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
-import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
 /***************************************************************************
  * <PRE>
@@ -136,13 +134,13 @@ public class DraftImpl implements Draft {
     @Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/draft/{draftId}/product", method = RequestMethod.POST)
-    public ResponseEntity<String> addProduct(@PathVariable("userId")String userId,
+    public ResponseEntity<InspectionProductBookingBean> addProduct(@PathVariable("userId")String userId,
                                                @PathVariable("draftId") String draftId) {
         try {
-            String productId = draftService.addProduct(userId, draftId);
-            if(StringUtils.isNotBlank(productId)){
-                return new ResponseEntity<>("{productId:"+productId+"}",HttpStatus.OK);
-            }
+            InspectionProductBookingBean product = draftService.addProduct(userId, draftId);
+	        if(null != product) {
+		        return new ResponseEntity<>(product, HttpStatus.OK);
+	        }
         } catch (Exception e) {
             e.printStackTrace();
         }
