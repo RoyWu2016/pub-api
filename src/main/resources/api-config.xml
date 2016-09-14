@@ -41,7 +41,8 @@
           p:psiServiceUrl="${inspection.service.url}"
           p:redisPassword="${redis.password}"
           p:redisPort="${redis.port}"
-          p:redisHost="${redis.host}" />
+          p:redisHost="${redis.host}"
+          p:aimsServiceBaseUrl="${aims.service.base.url}" />
 
     <bean id="redisUtil" class="com.ai.api.util.RedisUtil" >
         <property name="serviceConfig" ref="serviceConfig"/>

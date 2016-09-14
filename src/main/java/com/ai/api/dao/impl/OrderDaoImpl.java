@@ -7,10 +7,26 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.http.client.utils.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.OrderDao;
+import com.ai.api.util.AIUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
@@ -18,13 +34,6 @@ import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 /***************************************************************************
  * <PRE>
@@ -250,21 +259,35 @@ public class OrderDaoImpl implements OrderDao {
 		return null;
 		
 	}
-<<<<<<< HEAD
 	
 	@Override
 	public List<SimpleOrderSearchBean> searchOrders(String userId, String compId, String orderStatus, String pageSize, String pageNumber, String direction) {
 		
 		RestTemplate restTemplate = new RestTemplate();
 		List<SimpleOrderSearchBean> orderSearchList = new ArrayList<SimpleOrderSearchBean>();
+		List<OrderMaster> orders = new ArrayList<OrderMaster>();
 		//int total = 0;
 		//PageBean<SimpleOrderSearchBean> pageBeanList = new PageBean<SimpleOrderSearchBean>();
 		
 		try {
 			AIUtil.addRestTemplateMessageConverter(restTemplate);
-			orderSearchList = Arrays.asList(restTemplate.getForObject(
+			orders = Arrays.asList(restTemplate.getForObject(
 					buildTestSearchCriteria(userId, compId, orderStatus, pageSize, pageNumber, direction, config.getAimsServiceBaseUrl() + "/api/ordermanagement/search").build().encode().toUri(), 
-					SimpleOrderSearchBean[].class));
+					OrderMaster[].class));
+			
+			for(OrderMaster order: orders) {
+				SimpleOrderSearchBean orderSearch = new SimpleOrderSearchBean();
+				orderSearch.setOrderId(order.getId());
+				orderSearch.setSupplierName(order.getSupplier().getCompanyName());
+				orderSearch.setServiceType("LT");
+				orderSearch.setServiceTypeText("LT");
+				orderSearch.setPoNumbers(order.getClientPONo());
+				orderSearch.setStatus(order.getOrderStatus());
+				orderSearch.setStatusText(order.getOrderStatus());
+				orderSearch.setBookingDate("Pending".equalsIgnoreCase(order.getOrderStatus()) ? DateUtils.formatDate(order.getUpdateTime(), "MM/dd/yyyy") : null );
+				orderSearch.setProductNames(order.getDescription());
+				orderSearchList.add(orderSearch);
+			}			
 		} catch (Exception ex) {
 			logger.error("Exception", ex);
 			ex.printStackTrace();
@@ -284,7 +307,5 @@ public class OrderDaoImpl implements OrderDao {
 		
 		return builder;
 	}
-=======
->>>>>>> 982691bb76abb4d2a71e0ea34998c4e26eac4c53
 
 }

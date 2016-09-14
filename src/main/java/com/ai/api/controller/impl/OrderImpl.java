@@ -6,16 +6,11 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ai.api.controller.Order;
-import com.ai.api.service.OrderService;
-import com.ai.api.service.UserService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.order.SimpleOrderSearchBean;
-import com.ai.commons.beans.psi.InspectionBookingBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +22,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ai.api.controller.Order;
+import com.ai.api.service.OrderService;
+import com.ai.api.service.UserService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
+import com.ai.commons.beans.psi.InspectionBookingBean;
 
 /***************************************************************************
  * <PRE>
@@ -197,18 +199,26 @@ public class OrderImpl implements Order {
 													   @RequestParam(value = "status", required = false, defaultValue="") String orderStatus,
 													   @RequestParam(value = "page-size", required = false , defaultValue="20") String pageSize,
 													   @RequestParam(value = "page", required = false , defaultValue="1") String pageNumber) {
+		
+		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
 		try {
-			List<SimpleOrderSearchBean> ordersList = orderService.searchOrders(userId, serviceType,
-					startDate, endDate, keyword, orderStatus,pageSize, pageNumber);
-			if (ordersList != null) {
+			if(!"Log out".equalsIgnoreCase(orderStatus)) {
+				ordersList = orderService.searchOrders(userId, serviceType,
+						startDate, endDate, keyword, orderStatus,pageSize, pageNumber);
+			} else {
+				ordersList = orderService.searchOrders(userId, orderStatus, pageSize, pageNumber);
+			}
+
+/*			if (ordersList != null) {
 				return new ResponseEntity<>(ordersList, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
+			}*/
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		return new ResponseEntity<List<SimpleOrderSearchBean>>(ordersList, HttpStatus.OK);
 	}
 	
 	
