@@ -200,7 +200,7 @@ public class OrderImpl implements Order {
 		try {
 			List<SimpleOrderSearchBean> ordersList = orderService.searchOrders(userId, serviceType,
 					startDate, endDate, keyword, orderStatus,pageSize, pageNumber);
-			if (ordersList != null && ordersList.size() > 0) {
+			if (ordersList != null) {
 				return new ResponseEntity<>(ordersList, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
