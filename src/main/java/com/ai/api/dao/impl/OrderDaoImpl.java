@@ -16,7 +16,6 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
