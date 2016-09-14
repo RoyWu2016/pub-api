@@ -106,6 +106,8 @@ public class DraftImpl implements Draft {
             InspectionBookingBean draft = draftService.getDraft(userId, draftId);
 			if(null!=draft) {
 				return new ResponseEntity<>(draft, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
 			logger.error("get draft error: " + ExceptionUtils.getFullStackTrace(e));
@@ -199,7 +201,7 @@ public class DraftImpl implements Draft {
 			if(null != newDraft) {
 				return new ResponseEntity<>(newDraft, HttpStatus.OK);
 			}else {
-				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
 			logger.error("calculate Pricing error: " + ExceptionUtils.getFullStackTrace(e));
@@ -222,8 +224,10 @@ public class DraftImpl implements Draft {
 			try {
 				List<DraftOrder> draftList = draftService.searchDraft(userId, serviceType, startDate, endDate, keyword, pageNumber, pageSize);
 				if (null!=draftList&&draftList.size()>0) {
-                    return new ResponseEntity<List<DraftOrder>>(draftList, HttpStatus.OK);
-                }
+                    return new ResponseEntity<>(draftList, HttpStatus.OK);
+                } else {
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
 			} catch (Exception e) {
 				logger.error("get draft search error: " + ExceptionUtils.getFullStackTrace(e));
 			}
