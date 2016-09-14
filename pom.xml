@@ -180,14 +180,6 @@
             <artifactId>quartz</artifactId>
             <version>${quartz.version}</version>
         </dependency>
-
-		<!-- AIMS-service-model -->
-		<dependency>
-			<groupId>com.ai.aims.services</groupId>
-			<artifactId>AIMS-services-model</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
     </dependencies>
 
     <repositories>

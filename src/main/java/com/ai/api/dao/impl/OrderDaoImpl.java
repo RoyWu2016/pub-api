@@ -263,40 +263,15 @@ public class OrderDaoImpl implements OrderDao {
 	public List<SimpleOrderSearchBean> searchOrders(String userId, String compId, String orderStatus, String pageSize, String pageNumber, String direction) {
 		
 		RestTemplate restTemplate = new RestTemplate();
-		List<OrderMaster> orders = new ArrayList<OrderMaster>();
 		List<SimpleOrderSearchBean> orderSearchList = new ArrayList<SimpleOrderSearchBean>();
 		//int total = 0;
 		//PageBean<SimpleOrderSearchBean> pageBeanList = new PageBean<SimpleOrderSearchBean>();
 		
 		try {
 			AIUtil.addRestTemplateMessageConverter(restTemplate);
-			orders = Arrays.asList(restTemplate.getForObject(
+			orderSearchList = Arrays.asList(restTemplate.getForObject(
 					buildTestSearchCriteria(userId, compId, orderStatus, pageSize, pageNumber, direction, config.getAimsServiceBaseUrl() + "/api/ordermanagement/search").build().encode().toUri(), 
-					OrderMaster[].class));
-
-/*			if(!orders.isEmpty()) {
-				total = restTemplate.getForObject(
-						buildTestSearchCriteria(userId, compId, orderStatus, pageSize, pageNumber, direction, "http://202.66.128.138:8093/AIMS-services-api/api/ordermanagement/count/total").build().encode().toUri(), 
-						Integer.class);				
-			}*/
-			
-			//int totalPages = total / Integer.parseInt(pageSize);
-			
-			for(OrderMaster order: orders) {
-				SimpleOrderSearchBean orderSearch = new SimpleOrderSearchBean();
-				orderSearch.setOrderId(order.getId());
-				orderSearch.setSupplierName(order.getSupplier().getCompanyName());
-				orderSearch.setServiceType("inspection");
-				orderSearch.setServiceTypeText("Inspection");
-				orderSearch.setPoNumbers(order.getClientPONo());
-				orderSearch.setStatus(order.getOrderStatus());
-				orderSearch.setStatusText(order.getOrderStatus());
-				orderSearchList.add(orderSearch);
-			}
-/*			pageBeanList.setPageItems(orderSearchList);
-			pageBeanList.setPageNo(Integer.parseInt(pageNumber));			
-			pageBeanList.setTotalPageNum( totalPages == 0 ? totalPages : totalPages + 1  );
-			pageBeanList.setTotalSize(Long.parseLong(pageSize));*/
+					SimpleOrderSearchBean[].class));
 		} catch (Exception ex) {
 			logger.error("Exception", ex);
 			ex.printStackTrace();
