@@ -6,7 +6,6 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,6 @@ import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
-
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -257,15 +255,9 @@ public class OrderImpl implements Order {
 													   @RequestParam(value = "orderStatus", required = false, defaultValue="") String orderStatus,
 													   @RequestParam(value = "page-size", required = false , defaultValue="20") String pageSize,
 													   @RequestParam(value = "page", required = false , defaultValue="1") String pageNumber) {
-		List<SimpleOrderSearchBean> OrdersList = new ArrayList<SimpleOrderSearchBean>();
 		try {
-			if(!"completed".equalsIgnoreCase(orderStatus)) {
-				OrdersList = orderService.searchOrders(userId, serviceType,
-						startDate, endDate, keyword, orderStatus,pageSize, pageNumber);
-			} else {
-				OrdersList = orderService.searchOrders(userId, "Log out", pageSize, pageNumber, "desc");
-			}
-
+			List<SimpleOrderSearchBean> OrdersList = orderService.searchOrders(userId, serviceType,
+					startDate, endDate, keyword, orderStatus,pageSize, pageNumber);
 			return new ResponseEntity<List<SimpleOrderSearchBean>>(OrdersList, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
