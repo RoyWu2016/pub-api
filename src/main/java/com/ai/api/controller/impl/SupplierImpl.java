@@ -64,6 +64,8 @@ public class SupplierImpl implements Supplier {
             }catch (Exception e) {
                 logger.error("", e);
             }
+        } else {
+	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -80,7 +82,7 @@ public class SupplierImpl implements Supplier {
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
         }else{
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

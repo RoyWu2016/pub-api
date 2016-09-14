@@ -61,7 +61,7 @@ public class ChecklistImpl implements Checklist {
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class ChecklistImpl implements Checklist {
 		if(result!=null){
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -131,7 +131,7 @@ public class ChecklistImpl implements Checklist {
 		if(result!=null){
             return new ResponseEntity<>(result,HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 	}
 
@@ -163,7 +163,7 @@ public class ChecklistImpl implements Checklist {
         if(b){
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 	}
 
