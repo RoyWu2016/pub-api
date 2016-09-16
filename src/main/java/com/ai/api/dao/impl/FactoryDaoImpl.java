@@ -269,5 +269,24 @@ public class FactoryDaoImpl implements FactoryDao {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 	}
+
+	@Override
+	public String createSupplier(SupplierDetailBean supplierDetailBean) throws IOException, AIException {
+		// TODO Auto-generated method stub
+		String url = config.getFactoryServiceUrl() + "/saveSupplierOnly";
+		LOGGER.info("createSupplier url: " + url);
+		try {
+			ClientFactoryBean clientFactoryBean = convertToClientFactoryBean(supplierDetailBean);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, clientFactoryBean);
+			if (result.getStatusCode() == HttpStatus.OK.value() &&result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return JsonUtil.mapToObject(result.getResponseString(), String.class);
+			}else {
+				LOGGER.error("create Supplier from factory service error: " + result.getStatusCode() +", " + result.getResponseString());
+			}
+		} catch (IOException e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
 }
 

@@ -19,4 +19,6 @@ public interface FactoryDao {
 
     boolean updateSupplierDetailInfo(SupplierDetailBean supplierDetailBean) throws IOException, AIException;
     boolean deleteSuppliers(String supplierIds) throws IOException, AIException;
+    
+    String createSupplier(SupplierDetailBean supplierDetailBean) throws IOException, AIException;
 }
