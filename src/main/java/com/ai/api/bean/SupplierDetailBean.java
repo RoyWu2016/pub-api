@@ -4,13 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 /**
  * Created by Administrator on 2016/6/27 0027.
  */
-
-@JsonIgnoreProperties({"id", "chineseName", "nearestOffice", "website", "salesTurnover", "noOfEmployees", "accessMaps", "qualityDocs"})
 public class SupplierDetailBean implements Serializable {
 
     private String id;
