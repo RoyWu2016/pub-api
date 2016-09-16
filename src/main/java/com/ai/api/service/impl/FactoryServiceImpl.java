@@ -47,5 +47,11 @@ public class FactoryServiceImpl implements FactoryService {
         return factoryDao.deleteSuppliers(supplierIds);
     }
 
+	@Override
+	public String createSupplier(SupplierDetailBean supplierDetailBean) throws IOException, AIException {
+		// TODO Auto-generated method stub
+		return factoryDao.createSupplier(supplierDetailBean);
+	}
+
 
 }
