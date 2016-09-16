@@ -120,12 +120,17 @@ public class SupplierImpl implements Supplier {
     @Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/supplier", method = RequestMethod.POST)
-    public ResponseEntity<String> createSupplier(
+    public ResponseEntity<SupplierDetailBean> createSupplier(
     		@PathVariable("userId") String userId,
     		@RequestBody SupplierDetailBean supplierDetailBean) throws IOException, AIException {
     	String supplierId = factoryService.createSupplier(supplierDetailBean);
     	if(null != supplierId) {
-    		return new ResponseEntity<>(HttpStatus.OK); 
+    		SupplierDetailBean result = factoryService.getUserSupplierDetailInfoById(userId, supplierId);
+    		if(null == result) {
+    			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+    		}else {
+    			return new ResponseEntity<>(result, HttpStatus.OK);
+    		}
     	}else {
     		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
     	}

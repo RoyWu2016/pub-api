@@ -21,5 +21,5 @@ public interface Supplier {
     ResponseEntity<Boolean> deleteSuppliers(String userId,String supplierIds)
             throws IOException, AIException;
     
-    ResponseEntity<String> createSupplier(String userId,SupplierDetailBean supplierDetailBean) throws IOException, AIException;
+    ResponseEntity<SupplierDetailBean> createSupplier(String userId,SupplierDetailBean supplierDetailBean) throws IOException, AIException;
 }
