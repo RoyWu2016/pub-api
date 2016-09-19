@@ -137,7 +137,7 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/paramter/textile-product-categories", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/textile-product-categories", method = RequestMethod.GET)
 	public ResponseEntity<List<ClassifiedBean>> getTextileProductCategories() {
 		// TODO Auto-generated method stub
 		logger.info("get getTextileProductCategory");
