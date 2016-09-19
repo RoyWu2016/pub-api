@@ -12,6 +12,7 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
+import com.ai.commons.beans.params.ClassifiedBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,5 +133,19 @@ public class ParameterImpl implements Parameter {
 			logger.error("TestSampleSizeList not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/paramter/textile-product-categories", method = RequestMethod.GET)
+	public ResponseEntity<List<ClassifiedBean>> getTextileProductCategories() {
+		// TODO Auto-generated method stub
+		logger.info("get getTextileProductCategory");
+		List<ClassifiedBean> result = parameterService.getTextileProductCategories();
+		if(result==null){
+			logger.error("getTextileProductCategory not found");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 }
