@@ -188,6 +188,7 @@ public class ParameterDaoImpl implements ParameterDao {
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
 		}else {
+			resultMap.put("CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO", priceNoList);
 			LOGGER.info("success getTestSampleSizeList CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO from redis");
 		}
 		
@@ -214,6 +215,7 @@ public class ParameterDaoImpl implements ParameterDao {
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
 		}else {
+			resultMap.put("CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL", sampleLevelList);
 			LOGGER.info("success getTestSampleSizeList CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL from redis");
 		}
 		
@@ -240,6 +242,7 @@ public class ParameterDaoImpl implements ParameterDao {
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
 		}else {
+			resultMap.put("CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL", fabricLevelList);
 			LOGGER.info("success getTestSampleSizeList CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL from redis");
 		}
 		
