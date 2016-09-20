@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -28,7 +30,6 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.APIFileService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.fileservice.FileMetaBean;
-import com.ai.dto.JsonResponse;
 
 /***************************************************************************
  * <PRE>
@@ -55,11 +56,9 @@ public class FileAPIImpl implements FileAPI {
 
 	@Autowired
 	private APIFileService myFileService;
-	
+
 	@Autowired
 	private ServiceConfig serviceConfig;
-
-
 
 	@Override
 	@TokenSecured
@@ -104,7 +103,7 @@ public class FileAPIImpl implements FileAPI {
 	public ResponseEntity<FileMetaBean> uploadFile(@PathVariable("userId") String userId,
 			@PathVariable("docType") String docType, @PathVariable("sourceId") String sourceId,
 			MultipartHttpServletRequest request, HttpServletResponse response) throws IOException {
-		
+
 		String bucket = ConstMap.bucketMap.get(docType.toUpperCase());
 		FileMetaBean bean = new FileMetaBean();
 		try {
@@ -151,6 +150,28 @@ public class FileAPIImpl implements FileAPI {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("Error in update", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/files/{srcId}", method = RequestMethod.GET)
+	public ResponseEntity<List<FileMetaBean>> getFilesList(
+			@PathVariable("userId") String userId,
+			@PathVariable("srcId") String srcId, 
+			@RequestParam(value = "docType", required = false) String docType) throws IOException {
+		// TODO Auto-generated method stub
+		List<FileMetaBean> result = null;
+		try{
+			result = myFileService.getFileService().getFileInfoBySrcIdAndFileType(srcId, docType);
+			if(null != result) {
+				return new ResponseEntity<>(result,HttpStatus.OK);
+			}else {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}catch (Exception e) {
+			logger.error("Error in getFilesList", e);
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
