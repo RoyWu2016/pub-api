@@ -7,10 +7,10 @@ import org.springframework.http.ResponseEntity;
 
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
+import com.ai.api.bean.TextileProductCategoryBean;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
-import com.ai.commons.beans.params.ClassifiedBean;
 
 /**
  * Created by Henry Yue on 2016/6/21 0021.
@@ -31,5 +31,5 @@ public interface Parameter {
 
     ResponseEntity<Map<String, Object>> getProductTypeList();
     
-    ResponseEntity<List<ClassifiedBean>> getTextileProductCategories() ;
+    ResponseEntity<List<TextileProductCategoryBean>> getTextileProductCategories() ;
 }
