@@ -7,7 +7,6 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +29,7 @@ import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
+import com.ai.commons.beans.params.ClassifiedBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -116,35 +116,6 @@ public class ParameterDaoImpl implements ParameterDao {
 			LOGGER.info("success getProductFamilyList from redis");
 		}
 
-		// try {
-		// String jsonString = RedisUtil.get("productFamilyListCache");
-		// productFamilyList = JSON.parseArray(jsonString,
-		// ProductFamilyDtoBean.class);
-		// if (productFamilyList.size()>0){
-		// LOGGER.info("success getProductFamilyList from redis");
-		// return productFamilyList;
-		// }
-		// }catch (Exception e){
-		// LOGGER.error("error getting productFamilyList from redis",e);
-		// }
-		// String SysProductFamilyBeanURL = config.getParamServiceUrl()
-		// +"/p/list-product-family";
-		// GetRequest request7 =
-		// GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
-		// try{
-		// ServiceCallResult result = HttpUtil.issueGetRequest(request7);
-		// productFamilyList =
-		// JSON.parseArray(result.getResponseString(),ProductFamilyDtoBean.class);
-		// }catch(IOException e){
-		// LOGGER.error(ExceptionUtils.getStackTrace(e));
-		// }
-		// try {
-		// LOGGER.info("saving productFamilyListCache");
-		// RedisUtil.set("productFamilyListCache",JSON.toJSONString(productFamilyList));
-		// }catch (Exception e){
-		// LOGGER.error("error saving productFamilyListCache ",e);
-		// }
-
 		return productFamilyList;
 	}
 
@@ -177,21 +148,6 @@ public class ParameterDaoImpl implements ParameterDao {
 			LOGGER.info("success getCountryList from redis");
 		}
 		return countryList;
-
-		// List<String> countryList = new ArrayList<>();
-		// String SysProductFamilyBeanURL = config.getParamServiceUrl()
-		// +"/p/list-country";
-		// GetRequest request =
-		// GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
-		// try{
-		// ServiceCallResult result = HttpUtil.issueGetRequest(request);
-		// countryList =
-		// JSON.parseArray(result.getResponseString(),String.class);
-		//
-		// }catch(IOException e){
-		// LOGGER.error(ExceptionUtils.getStackTrace(e));
-		// }
-		// return countryList;
 	}
 
 	@Override
@@ -232,6 +188,7 @@ public class ParameterDaoImpl implements ParameterDao {
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
 		}else {
+			resultMap.put("CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO", priceNoList);
 			LOGGER.info("success getTestSampleSizeList CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO from redis");
 		}
 		
@@ -258,6 +215,7 @@ public class ParameterDaoImpl implements ParameterDao {
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
 		}else {
+			resultMap.put("CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL", sampleLevelList);
 			LOGGER.info("success getTestSampleSizeList CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL from redis");
 		}
 		
@@ -284,45 +242,11 @@ public class ParameterDaoImpl implements ParameterDao {
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
 		}else {
+			resultMap.put("CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL", fabricLevelList);
 			LOGGER.info("success getTestSampleSizeList CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL from redis");
 		}
 		
 		return resultMap;
-		
-		
-		
-//		String baseUrl = config.getParamServiceUrl() + "/systemconfig/classified/list/";
-//		Map<String, List<ChecklistTestSampleSizeBean>> resultMap = new HashMap<>();
-//		
-//		try {
-//			String url = baseUrl + "CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO";
-//			GetRequest request = GetRequest.newInstance().setUrl(url);
-//			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-//			JSONObject object = JSONObject.parseObject(result.getResponseString());
-//			Object arrayStr = object.get("content");
-//			List<ChecklistTestSampleSizeBean> list = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
-//			resultMap.put("CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO", list);
-//
-//			url = baseUrl + "CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL";
-//			request = GetRequest.newInstance().setUrl(url);
-//			result = HttpUtil.issueGetRequest(request);
-//			object = JSONObject.parseObject(result.getResponseString());
-//			arrayStr = object.get("content");
-//			list = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
-//			resultMap.put("CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL", list);
-//
-//			url = baseUrl + "CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL";
-//			request = GetRequest.newInstance().setUrl(url);
-//			result = HttpUtil.issueGetRequest(request);
-//			object = JSONObject.parseObject(result.getResponseString());
-//			arrayStr = object.get("content");
-//			list = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
-//			resultMap.put("CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL", list);
-//
-//		} catch (IOException e) {
-//			LOGGER.error(ExceptionUtils.getStackTrace(e));
-//		}
-//		return resultMap;
 	}
 
 	@Override
@@ -356,22 +280,6 @@ public class ParameterDaoImpl implements ParameterDao {
 			LOGGER.info("success getChecklistPublicTestList from redis");
 		}
 		return checklistPublicTestList;
-		
-//		String url = config.getChecklistServiceUrl() + "/ws/publicAPI/tests";
-//		try {
-//			LOGGER.info("Get! url : " + url);
-//			GetRequest request = GetRequest.newInstance().setUrl(url);
-//			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-//			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-//				return JSON.parseArray(result.getResponseString(), CKLTestVO.class);
-//			} else {
-//				LOGGER.error("getChecklistPublicTestList from checklist-service error: " + result.getStatusCode() + ", "
-//						+ result.getResponseString());
-//			}
-//		} catch (IOException e) {
-//			LOGGER.error(ExceptionUtils.getStackTrace(e));
-//		}
-//		return null;
 	}
 
 	@Override
@@ -405,22 +313,6 @@ public class ParameterDaoImpl implements ParameterDao {
 			LOGGER.info("success getChecklistPublicDefectList from redis");
 		}
 		return checklistPublicDefectList;
-		
-//		String url = config.getChecklistServiceUrl() + "/ws/publicAPI/defects";
-//		try {
-//			LOGGER.info("Get! url : " + url);
-//			GetRequest request = GetRequest.newInstance().setUrl(url);
-//			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-//			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-//				return JSON.parseArray(result.getResponseString(), CKLDefectVO.class);
-//			} else {
-//				LOGGER.error("getChecklistPublicDefectList from checklist-service error: " + result.getStatusCode()
-//						+ ", " + result.getResponseString());
-//			}
-//		} catch (IOException e) {
-//			LOGGER.error(ExceptionUtils.getStackTrace(e));
-//		}
-//		return null;
 	}
 
 	@Override
@@ -452,18 +344,37 @@ public class ParameterDaoImpl implements ParameterDao {
 			LOGGER.info("success getProductTypeList from redis");
 		}
 		return proTypeList;
+	}
 
-		// try {
-		// String url = config.getParamServiceUrl() + "/p/list-product-type";
-		// GetRequest request = GetRequest.newInstance().setUrl(url);
-		// ServiceCallResult result = HttpUtil.issueGetRequest(request);
-		// List<SysProductTypeBean> productTypeList =
-		// JSON.parseArray(result.getResponseString(),SysProductTypeBean.class);
-		// return productTypeList;
-		// } catch (IOException e) {
-		// LOGGER.error(ExceptionUtils.getStackTrace(e));
-		// }
-		// return null;
+	@Override
+	public List<ClassifiedBean> getTextileProductCategories() {
+		// TODO Auto-generated method stub
+		List<ClassifiedBean> proTypeList = null ;
+		LOGGER.info("try to getTextileProductCategory from redis ...");
+		String jsonStringTextileProductCategory = RedisUtil.hget("textileProductCategoryCache","TEXTILE_PRODUCT_CATEGORIES");
+		proTypeList = JSON.parseArray(jsonStringTextileProductCategory, ClassifiedBean.class);
+		if(null == proTypeList) {
+			String baseUrl = config.getParamServiceUrl() + "/systemconfig/classified/list/TEXTILE_PRODUCT_CATEGORIES";
+			GetRequest request = GetRequest.newInstance().setUrl(baseUrl);
+			try {
+				LOGGER.info("send for request: " + baseUrl);
+				ServiceCallResult result = HttpUtil.issueGetRequest(request);
+				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					JSONObject object = JSONObject.parseObject(result.getResponseString());
+					Object arrayStr = object.get("content");
+					proTypeList = JSON.parseArray(arrayStr + "", ClassifiedBean.class);
+					
+					LOGGER.info("saving getTextileProductCategory");
+					RedisUtil.set("textileProductCategoryCache", JSON.toJSONString(proTypeList),RedisUtil.HOUR * 24);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
+			LOGGER.info("success getProductTypeList from redis");
+		}
+		return proTypeList;
 	}
 
 }
