@@ -54,4 +54,6 @@ public interface ParameterDao {
 	List<SysProductTypeBean> getProductTypeList();
 	
 	List<ClassifiedBean> getTextileProductCategories();
+	
+	List<ClassifiedBean> getAiOffices();
 }
