@@ -175,7 +175,7 @@ public class ParameterDaoImpl implements ParameterDao {
 					JSONObject object = JSONObject.parseObject(result.getResponseString());
 					Object arrayStr = object.get("content");
 					priceNoList = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
-					resultMap.put("CHECKLIST.TEST_SAMPLE_LEVEL_BY_PIECES_NO", priceNoList);
+					resultMap.put("CHECKLISTS.TEST_SAMPLE_LEVEL_BY_PIECES_NO", priceNoList);
 					
 					LOGGER.info("saving priceNoList CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO");
 					RedisUtil.hset("testSampleSizeListCache","CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO",JSON.toJSONString(priceNoList),RedisUtil.HOUR * 24);
@@ -188,7 +188,7 @@ public class ParameterDaoImpl implements ParameterDao {
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
 		}else {
-			resultMap.put("CHECKLIST.TEST_SAMPLE_LEVEL_BY_PIECES_NO", priceNoList);
+			resultMap.put("CHECKLISTS.TEST_SAMPLE_LEVEL_BY_PIECES_NO", priceNoList);
 			LOGGER.info("success getTestSampleSizeList CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO from redis");
 		}
 		
@@ -202,7 +202,7 @@ public class ParameterDaoImpl implements ParameterDao {
 					JSONObject object = JSONObject.parseObject(result.getResponseString());
 					Object arrayStr = object.get("content");
 					sampleLevelList = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
-					resultMap.put("CHECKLIST.TEST_SAMPLE_LEVEL_BY_LEVEL", sampleLevelList);
+					resultMap.put("CHECKLISTS.TEST_SAMPLE_LEVEL_BY_LEVEL", sampleLevelList);
 					
 					LOGGER.info("saving priceNoList CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL");
 					RedisUtil.hset("testSampleSizeListCache","CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL",JSON.toJSONString(sampleLevelList),RedisUtil.HOUR * 24);
@@ -215,7 +215,7 @@ public class ParameterDaoImpl implements ParameterDao {
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
 		}else {
-			resultMap.put("CHECKLIST.TEST_SAMPLE_LEVEL_BY_LEVEL", sampleLevelList);
+			resultMap.put("CHECKLISTS.TEST_SAMPLE_LEVEL_BY_LEVEL", sampleLevelList);
 			LOGGER.info("success getTestSampleSizeList CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL from redis");
 		}
 		
@@ -229,7 +229,7 @@ public class ParameterDaoImpl implements ParameterDao {
 					JSONObject object = JSONObject.parseObject(result.getResponseString());
 					Object arrayStr = object.get("content");
 					fabricLevelList = JSON.parseArray(arrayStr + "", ChecklistTestSampleSizeBean.class);
-					resultMap.put("CHECKLIST.TEST_FABRIC_SAMPLE_LEVEL", fabricLevelList);
+					resultMap.put("CHECKLISTS.TEST_FABRIC_SAMPLE_LEVEL", fabricLevelList);
 					
 					LOGGER.info("saving priceNoList CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL");
 					RedisUtil.hset("testSampleSizeListCache","CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL",JSON.toJSONString(fabricLevelList),RedisUtil.HOUR * 24);
@@ -242,7 +242,7 @@ public class ParameterDaoImpl implements ParameterDao {
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
 		}else {
-			resultMap.put("CHECKLIST.TEST_FABRIC_SAMPLE_LEVEL", fabricLevelList);
+			resultMap.put("CHECKLISTS.TEST_FABRIC_SAMPLE_LEVEL", fabricLevelList);
 			LOGGER.info("success getTestSampleSizeList CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL from redis");
 		}
 		
