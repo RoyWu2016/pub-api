@@ -45,7 +45,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             logger.info("getting client from DB ... userName:"+userName);
             GeneralUserBean client = userDao.getClientUser(userName);
 //            logger.info("client-----userId-[ "+client.getUserId()+"] pw-["+client.getPassword()+"]");
-            if (client != null && client.getUserId() != null && pwdMd5.equals(client.getPassword())) {
+            if (client != null && client.getUserId() != null && pwdMd5.equalsIgnoreCase(client.getPassword())) {
                 //Generate the token based on the User
                 TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(), client.getUserId(), IDGenerator.uuid());
                 if (tokenSession != null) {
@@ -69,7 +69,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             logger.info("getting employee from DB ... userName:"+userName);
             UserForToken user = userDao.getEmployeeUser(userName);
             logger.info("employee-----userId-[ "+user.getUserId()+"] pw-["+user.getPassword()+"]");
-            if (null != user.getUserId() && pwdMd5.equals(user.getPassword())){
+            if (null != user.getUserId() && pwdMd5.equalsIgnoreCase(user.getPassword())){
                 //Generate the token based on the User
                 TokenSession tokenSession = tokenJWTDao.generateToken(user.getLogin(), user.getUserId(), IDGenerator.uuid());
                 if (tokenSession != null) {
