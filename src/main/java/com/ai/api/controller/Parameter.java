@@ -3,6 +3,7 @@ package com.ai.api.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.ai.api.bean.ChecklistSampleSize;
 import org.springframework.http.ResponseEntity;
 
 import com.ai.api.bean.ProductCategoryDtoBean;
@@ -23,7 +24,7 @@ public interface Parameter {
 
 	ResponseEntity<List<String>> getCountryList();
 
-	ResponseEntity<Map<String,List<ChecklistTestSampleSizeBean>>> getTestSampleSizeList();
+	ResponseEntity<List<ChecklistSampleSize>> getTestSampleSizeList();
 
     ResponseEntity<List<CKLTestVO>> getChecklistPublicTestList();
 
