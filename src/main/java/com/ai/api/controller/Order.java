@@ -12,7 +12,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
@@ -59,6 +58,6 @@ public interface Order {
     
     ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(String userId, String serviceType,String startDate, String endDate, String keyWord, String orderStatus, String pageNumber, String pageSize);
 
-	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, @RequestBody OrderMaster orderMaster);
+	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, String userId, OrderMaster orderMaster);
 
 }

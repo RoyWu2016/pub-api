@@ -6,26 +6,36 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
+import io.swagger.annotations.ApiOperation;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
+import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.Order;
 import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
+import com.ai.api.util.AIUtil;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
@@ -61,6 +71,10 @@ public class OrderImpl implements Order {
 	@Autowired
 	OrderService orderService;
 
+	@Autowired
+	@Qualifier("serviceConfig")
+	private ServiceConfig config;
+	
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}", method = RequestMethod.DELETE)
@@ -212,6 +226,25 @@ public class OrderImpl implements Order {
 		}
 	}
 	
-	
-
+	@ApiOperation(value = "Order Add API",		
+	        produces = "application/json",
+		    response = OrderMaster.class,
+		    httpMethod = "POST")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/orders", method = RequestMethod.POST)
+	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, @PathVariable String userId, @RequestBody OrderMaster orderMaster) {
+		RestTemplate restTemplate = new RestTemplate();
+		OrderMaster orderMasterObj = null;
+		try {
+			AIUtil.addRestTemplateMessageConverter(restTemplate);
+			String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/").append(userId).toString();
+			orderMaster.setStatus("Draft");
+	        orderMasterObj = restTemplate.postForObject(url, orderMaster, OrderMaster.class, request);
+		} catch (Exception e) {
+			logger.error("create order error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<OrderMaster>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<OrderMaster>(orderMasterObj, HttpStatus.OK);
+	}
 }
