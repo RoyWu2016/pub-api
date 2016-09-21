@@ -247,4 +247,23 @@ public class OrderImpl implements Order {
 		}
 		return new ResponseEntity<OrderMaster>(orderMasterObj, HttpStatus.OK);
 	}
+	
+	@Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/orders/list", method = RequestMethod.GET)
+	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(@PathVariable("userId")String userId, 
+			@RequestParam(value = "serviceType", required = false , defaultValue="") String serviceType, 
+			@RequestParam(value = "orderStatus", required = false , defaultValue="") String orderStatus, 
+			@RequestParam(value = "pageNo", required = false , defaultValue="1") Integer pageNumber, 
+			@RequestParam(value = "pageSize", required = false , defaultValue="20") Integer pageSize) {
+		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
+		try {
+			ordersList = orderService.searchOrders(userId, serviceType, orderStatus, pageSize.toString(), pageNumber.toString());
+			//if not data found, just return 200 with empty list
+			return new ResponseEntity<List<SimpleOrderSearchBean>>(ordersList, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

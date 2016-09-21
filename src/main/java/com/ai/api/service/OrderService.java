@@ -51,4 +51,6 @@ public interface OrderService {
     InspectionBookingBean saveOrderByDraft(String userId, String draftId);
     
     List<SimpleOrderSearchBean> searchOrders(String userId, String serviceType,String startDate, String endDate, String keyWord, String orderStatus, String pageSize, String pageNumber)  throws IOException, AIException;
+    
+    public List<SimpleOrderSearchBean> searchOrders(String userId, String serviceType, String orderStatus, String pageSize, String pageNumber)  throws IOException, AIException;
 }
