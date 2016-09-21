@@ -200,11 +200,8 @@ public class OrderImpl implements Order {
 		try {
 			List<SimpleOrderSearchBean> ordersList = orderService.searchOrders(userId, serviceType,
 					startDate, endDate, keyword, orderStatus,pageSize, pageNumber);
-			if (ordersList != null) {
-				return new ResponseEntity<>(ordersList, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
+			//if not data found, just return 200 with empty list
+			return new ResponseEntity<>(ordersList, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

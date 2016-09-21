@@ -224,11 +224,8 @@ public class DraftImpl implements Draft {
 	  
 			try {
 				List<DraftOrder> draftList = draftService.searchDraft(userId, serviceType, startDate, endDate, keyword, pageNumber, pageSize);
-				if (null!=draftList&&draftList.size()>0) {
-                    return new ResponseEntity<>(draftList, HttpStatus.OK);
-                } else {
-					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-				}
+				//if not data found, just return 200 with empty list
+				return new ResponseEntity<>(draftList, HttpStatus.OK);
 			} catch (Exception e) {
 				logger.error("get draft search error: " + ExceptionUtils.getFullStackTrace(e));
 			}
