@@ -18,6 +18,7 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.DraftService;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.order.draft.DraftStepBean;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
@@ -190,6 +191,12 @@ public class DraftServiceImpl implements DraftService {
 			companyId = user.getCompany().getId();
 		}
 		return draftDao.searchDraft(userId, companyId, parentId, serviceType, startDate, endDate, keyWord, pageSize, pageNumber);
+	}
+
+	@Override
+	public boolean saveDraftStep(String userId, String draftId, List<DraftStepBean> draftSteps) throws Exception {
+		// TODO Auto-generated method stub
+		return draftDao.saveDraftStep(userId, draftId, draftSteps);
 	}
 }
 

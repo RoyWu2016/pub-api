@@ -20,6 +20,7 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.order.draft.DraftStepBean;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
@@ -322,6 +323,29 @@ public class DraftDaoImpl implements DraftDao {
 		
 		return null;
 		
+	}
+
+
+	@Override
+	public boolean saveDraftStep(String userId, String draftId, List<DraftStepBean> draftSteps) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+		url.append("/draft/api/updateDraftStep?draftId=");
+		url.append(draftId);
+		 try {
+			logger.info("into saveDraftStep and request url: " + url.toString());
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftSteps);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return true;
+			}else {
+				logger.error("saveDraftStep from PSI error: " + result.getStatusCode() + ", " + result.getResponseString());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			logger.error(ExceptionUtils.getStackTrace(e));
+			e.printStackTrace();
+		}
+		return false;
 	}
 }
 

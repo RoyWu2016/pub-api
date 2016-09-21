@@ -8,6 +8,7 @@ import com.ai.api.controller.Draft;
 import com.ai.api.service.DraftService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.order.draft.DraftStepBean;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
@@ -263,7 +264,7 @@ public class DraftImpl implements Draft {
 					}
 					needTodeleteProductIdList.removeAll(inputProductIdList);
 					
-					for(String id :needTodeleteProductIdList) {
+					for(String id : needTodeleteProductIdList) {
 						logger.debug("Deleting the product id: " + id);
 						if(!draftService.deleteProduct(userId, id)) {
 							return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -286,6 +287,28 @@ public class DraftImpl implements Draft {
 				}
 			}
 			return new ResponseEntity<>(HttpStatus.OK);
+		}
+
+		@Override
+	    @TokenSecured
+	    @RequestMapping(value = "/user/{userId}/draft/{draftId}/step", method = RequestMethod.PUT)
+		public ResponseEntity<Boolean> saveDraftStep(
+								@PathVariable("userId") String userId,
+								@PathVariable("draftId") String draftId,
+								@RequestBody List<DraftStepBean> draftSteps) {
+			// TODO Auto-generated method stub
+			try {
+				boolean result = draftService.saveDraftStep(userId, draftId, draftSteps);
+				if(result) {
+					return new ResponseEntity<>(HttpStatus.OK);
+				}else {
+					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
 		}
 		
 }
