@@ -197,7 +197,7 @@ public class ParameterImpl implements Parameter {
 		    response = OfficeMaster.class,
 		    httpMethod = "GET")
 	@TokenSecured
-	@RequestMapping(value = "/parameter/offices", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/lt-offices", method = RequestMethod.GET)
 	public ResponseEntity<List<OfficeMaster>> searchOffice() {
 		RestTemplate restTemplate = new RestTemplate();
 		List<OfficeMaster> offices = new ArrayList<OfficeMaster>();
@@ -217,7 +217,7 @@ public class ParameterImpl implements Parameter {
 		    response = ProgramMaster.class,
 		    httpMethod = "GET")
 	@TokenSecured
-	@RequestMapping(value = "/parameter/programs", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/lt-programs", method = RequestMethod.GET)
 	public ResponseEntity<List<ProgramMaster>> searchPrograms() {
 		RestTemplate restTemplate = new RestTemplate();
 		List<ProgramMaster> programs = new ArrayList<ProgramMaster>();
