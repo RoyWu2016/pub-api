@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.order.draft.DraftStepBean;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
@@ -51,5 +52,7 @@ public interface DraftService {
 			String samplingLevel,String measurementSamplingSize) throws Exception;
 	
 	 List<DraftOrder> searchDraft(String userId, String serviceType,String startDate, String endDate, String keyWord, String pageNumber, String pageSize)  throws IOException, AIException;
+	 
+	boolean saveDraftStep(String userId,String draftId,List<DraftStepBean> draftSteps) throws Exception;
 }
 
