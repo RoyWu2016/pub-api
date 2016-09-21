@@ -239,7 +239,7 @@ public class OrderImpl implements Order {
 		try {
 			AIUtil.addRestTemplateMessageConverter(restTemplate);
 			String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/").append(userId).toString();
-			orderMaster.setStatus("Draft");
+			orderMaster.setOrderStatus("Draft");
 	        orderMasterObj = restTemplate.postForObject(url, orderMaster, OrderMaster.class, request);
 		} catch (Exception e) {
 			logger.error("create order error: " + ExceptionUtils.getFullStackTrace(e));
