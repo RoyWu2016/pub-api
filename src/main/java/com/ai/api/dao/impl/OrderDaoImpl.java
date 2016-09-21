@@ -7,26 +7,18 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.http.client.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.OrderDao;
-import com.ai.api.util.AIUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
@@ -259,7 +251,7 @@ public class OrderDaoImpl implements OrderDao {
 		return null;
 		
 	}
-	
+/*	
 	@Override
 	public List<SimpleOrderSearchBean> searchOrders(String userId, String compId, String orderStatus, String pageSize, String pageNumber, String direction) {
 		
@@ -306,6 +298,6 @@ public class OrderDaoImpl implements OrderDao {
 			builder.queryParam("clientId", compId.trim());
 		
 		return builder;
-	}
+	}*/
 
 }

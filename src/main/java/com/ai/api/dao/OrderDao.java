@@ -45,6 +45,4 @@ public interface OrderDao {
     InspectionBookingBean saveOrderByDraft(String userId, String draftId,String companyId,String parentId);
     
     List<SimpleOrderSearchBean> searchOrders(String userId, String compId, String parentId,  String serviceType, String startDate, String endDate, String keyWord,  String orderStatus, String pageSize, String pageNumber);
-    
-    public List<SimpleOrderSearchBean> searchOrders(String userId, String compId, String orderStatus, String pageSize, String pageNumber, String direction);
 }
