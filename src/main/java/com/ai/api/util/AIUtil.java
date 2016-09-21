@@ -6,18 +6,14 @@
  ***************************************************************************/
 package com.ai.api.util;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
-import com.ai.api.bean.InspectionDraftBean;
-import com.ai.api.bean.InspectionDraftProductBean;
 import com.ai.commons.beans.customer.CompanyEntireBean;
 import com.ai.commons.beans.customer.ExtraBean;
+<<<<<<< HEAD
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.order.Draft;
 import com.ai.commons.beans.order.draft.DraftOrder;
@@ -30,6 +26,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+=======
+>>>>>>> bb41d612d266c9de2befcae3cb475d3fdb64d622
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,20 +61,6 @@ public class AIUtil {
 	protected static Logger logger = LoggerFactory.getLogger(AIUtil.class);
 
 
-	public static String getUserBusinessUnit(GeneralUserViewBean user, ExtraBean extra) {
-		if (extra.getIsChb() != null && extra.getIsChb().equalsIgnoreCase("Yes")) {
-			return "CHB";
-		} else if (extra.getIsFI() != null && extra.getIsFI().equalsIgnoreCase("Yes")) {
-			return "AFI";
-		} else if (user.getSettingBean().getBusinessUnitText() != null &&
-				user.getSettingBean().getBusinessUnitText().equals("AG")) {
-			return "AG";
-		} else {
-			return "AI";
-		}
-
-	}
-
 	public static String getCompanyBusinessUnit(CompanyEntireBean companyEntire, ExtraBean extra) {
 		if (extra.getIsChb() != null && extra.getIsChb().equalsIgnoreCase("Yes")) {
 			return "CHB";
@@ -103,6 +87,7 @@ public class AIUtil {
 		return null;
 	}
 
+<<<<<<< HEAD
 	public static InspectionDraftBean convertPSIDraftBeanToAPIDraftBean(Draft psiDraft) throws IOException {
 		DraftOrder d = psiDraft.getDraftOrder();
 		ObjectMapper mapper = new ObjectMapper();
@@ -178,4 +163,6 @@ public class AIUtil {
 		restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
 	    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 	}	
+=======
+>>>>>>> bb41d612d266c9de2befcae3cb475d3fdb64d622
 }

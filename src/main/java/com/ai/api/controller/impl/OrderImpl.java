@@ -202,23 +202,14 @@ public class OrderImpl implements Order {
 		
 		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
 		try {
-			if(!"Log out".equalsIgnoreCase(orderStatus)) {
-				ordersList = orderService.searchOrders(userId, serviceType,
-						startDate, endDate, keyword, orderStatus,pageSize, pageNumber);
-			} else {
-				ordersList = orderService.searchOrders(userId, orderStatus, pageSize, pageNumber);
-			}
-
-/*			if (ordersList != null) {
-				return new ResponseEntity<>(ordersList, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}*/
+			ordersList = orderService.searchOrders(userId, serviceType,
+					startDate, endDate, keyword, orderStatus,pageSize, pageNumber);
+			//if not data found, just return 200 with empty list
+			return new ResponseEntity<>(ordersList, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<List<SimpleOrderSearchBean>>(ordersList, HttpStatus.OK);
 	}
 	
 	

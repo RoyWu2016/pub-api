@@ -42,7 +42,8 @@
           p:redisPassword="${redis.password}"
           p:redisPort="${redis.port}"
           p:redisHost="${redis.host}"
-          p:aimsServiceBaseUrl="${aims.service.base.url}" />
+          p:aimsServiceBaseUrl="${aims.service.base.url}"
+          p:programServiceBaseUrl="${program.service.base.url}" />
 
     <bean id="redisUtil" class="com.ai.api.util.RedisUtil" >
         <property name="serviceConfig" ref="serviceConfig"/>
