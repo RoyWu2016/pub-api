@@ -140,7 +140,7 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/textile-product-categories", method = RequestMethod.GET)
-	public ResponseEntity<List<TextileProductCategoryBean>> getTextileProductCategories() {
+	public ResponseEntity<List<LabelBean>> getTextileProductCategories() {
 		// TODO Auto-generated method stub
 		logger.info("get getTextileProductCategory");
 		List<ClassifiedBean> result = parameterService.getTextileProductCategories();
@@ -148,9 +148,9 @@ public class ParameterImpl implements Parameter {
 			logger.error("getTextileProductCategory not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		List<TextileProductCategoryBean> list = new ArrayList<TextileProductCategoryBean>();
+		List<LabelBean> list = new ArrayList<LabelBean>();
 		for(ClassifiedBean each : result) {
-			TextileProductCategoryBean bean = new TextileProductCategoryBean();
+			LabelBean bean = new LabelBean();
 			bean.setLabel(each.getKey());
 			bean.setValue(each.getValue());
 			
@@ -176,4 +176,26 @@ public class ParameterImpl implements Parameter {
         }
         return list;
     }
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/ai-offices", method = RequestMethod.GET)
+	public ResponseEntity<List<LabelBean>> getAiOffices() {
+		// TODO Auto-generated method stub
+		logger.info("get getAiOffices");
+		List<ClassifiedBean> result = parameterService.getAiOffices();
+		if(result==null){
+			logger.error("getAiOffices not found");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		List<LabelBean> list = new ArrayList<LabelBean>();
+		for(ClassifiedBean each : result) {
+			LabelBean bean = new LabelBean();
+			bean.setLabel(each.getKey());
+			bean.setValue(each.getValue());
+			
+			list.add(bean);
+		}
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
 }

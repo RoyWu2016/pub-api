@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
-import com.ai.api.bean.TextileProductCategoryBean;
+import com.ai.api.bean.LabelBean;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
@@ -32,5 +32,7 @@ public interface Parameter {
 
     ResponseEntity<Map<String, Object>> getProductTypeList();
     
-    ResponseEntity<List<TextileProductCategoryBean>> getTextileProductCategories() ;
+    ResponseEntity<List<LabelBean>> getTextileProductCategories();
+    
+    ResponseEntity<List<LabelBean>> getAiOffices();
 }
