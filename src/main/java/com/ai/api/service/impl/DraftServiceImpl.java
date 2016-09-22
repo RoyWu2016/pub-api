@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.ai.api.bean.UserBean;
+import com.ai.api.bean.DropdownListOptionBean;
 import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.dao.DraftDao;
 import com.ai.api.exception.AIException;
@@ -67,7 +67,7 @@ public class DraftServiceImpl implements DraftService {
 	public boolean deleteDraftFromPsi(String userId, String draftIds) throws Exception {
 		String companyId = "null";
 		String parentId = "null";
-		UserBean user = userService.getCustById(userId);
+		DropdownListOptionBean user = userService.getCustById(userId);
 		if (null!=user){
 			parentId = user.getCompany().getParentCompanyId();
 			if (parentId == null) parentId = "";
@@ -79,7 +79,7 @@ public class DraftServiceImpl implements DraftService {
 	@Override
 	public InspectionBookingBean createDraft(String userId, String serviceType) throws Exception{
 
-		UserBean userBean = userService.getCustById(userId);
+		DropdownListOptionBean userBean = userService.getCustById(userId);
 		String parentId = userBean.getCompany().getParentCompanyId();
 		if (parentId == null) parentId = "";
 		return draftDao.createDraft(userId, userBean.getCompany().getId(),
@@ -90,7 +90,7 @@ public class DraftServiceImpl implements DraftService {
 	public InspectionBookingBean createDraftFromPreviousOrder(String userId, String orderId) throws Exception{
 		String companyId = "null";
 		String parentId = "null";
-		UserBean user = userService.getCustById(userId);
+		DropdownListOptionBean user = userService.getCustById(userId);
 		if (null!=user){
 			parentId = user.getCompany().getParentCompanyId();
 			if (parentId == null) parentId = "";
@@ -103,7 +103,7 @@ public class DraftServiceImpl implements DraftService {
 	public InspectionBookingBean getDraft(String userId, String draftId) throws Exception {
 		String companyId = "null";
 		String parentId = "null";
-		UserBean user = userService.getCustById(userId);
+		DropdownListOptionBean user = userService.getCustById(userId);
 		if (null!=user){
 			parentId = user.getCompany().getParentCompanyId();
 			if (parentId == null) parentId = "";
@@ -116,7 +116,7 @@ public class DraftServiceImpl implements DraftService {
 	public boolean saveDraft(String userId,InspectionBookingBean draft) throws Exception {
 		String companyId = "null";
 		String parentId = "null";
-		UserBean user = userService.getCustById(userId);
+		DropdownListOptionBean user = userService.getCustById(userId);
 		if (null!=user){
 			parentId = user.getCompany().getParentCompanyId();
 			if (parentId == null) parentId = "";
@@ -129,7 +129,7 @@ public class DraftServiceImpl implements DraftService {
 	public InspectionProductBookingBean addProduct(String userId,String draftId) throws Exception {
 		String companyId = "null";
 		String parentId = "null";
-		UserBean user = userService.getCustById(userId);
+		DropdownListOptionBean user = userService.getCustById(userId);
 		if (null!=user){
 			parentId = user.getCompany().getParentCompanyId();
 			if (parentId == null) parentId = "";
@@ -142,7 +142,7 @@ public class DraftServiceImpl implements DraftService {
 	public boolean saveProduct(String userId,InspectionProductBookingBean draftProduct) throws Exception {
 		String companyId = "null";
 		String parentId = "null";
-		UserBean user = userService.getCustById(userId);
+		DropdownListOptionBean user = userService.getCustById(userId);
 		if (null!=user){
 			parentId = user.getCompany().getParentCompanyId();
 			if (parentId == null) parentId = "";
@@ -155,7 +155,7 @@ public class DraftServiceImpl implements DraftService {
 	public boolean deleteProduct(String userId,String productId) throws Exception {
 		String companyId = "null";
 		String parentId = "null";
-		UserBean user = userService.getCustById(userId);
+		DropdownListOptionBean user = userService.getCustById(userId);
 		if (null!=user){
 			parentId = user.getCompany().getParentCompanyId();
 			if (parentId == null) parentId = "";
@@ -168,7 +168,7 @@ public class DraftServiceImpl implements DraftService {
 	public OrderPriceMandayViewBean calculatePricing(String userId, String draftId,
 			String samplingLevel,String measurementSamplingSize) throws Exception {
 		// TODO Auto-generated method stub
-		UserBean userBean = userService.getCustById(userId);
+		DropdownListOptionBean userBean = userService.getCustById(userId);
 		String parentId = "null";
 		String companyId = "null";
 		if(null != userBean) {
@@ -184,7 +184,7 @@ public class DraftServiceImpl implements DraftService {
 			String keyWord, String pageNumber, String pageSize) throws IOException, AIException {
 		String companyId = "null";
 		String parentId = "null";
-		UserBean user = userService.getCustById(userId);
+		DropdownListOptionBean user = userService.getCustById(userId);
 		if (null!=user){
 			parentId = user.getCompany().getParentCompanyId();
 			if (parentId == null) parentId = "";
