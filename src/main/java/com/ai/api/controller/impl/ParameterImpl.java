@@ -1,22 +1,33 @@
 package com.ai.api.controller.impl;
 
+import io.swagger.annotations.ApiOperation;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ai.aims.services.model.OfficeMaster;
+import com.ai.aims.services.model.ProgramMaster;
 import com.ai.api.bean.*;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
+import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.Parameter;
 import com.ai.api.service.ParameterService;
+import com.ai.api.util.AIUtil;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
@@ -36,6 +47,10 @@ public class ParameterImpl implements Parameter {
     @Autowired
     ParameterService parameterService;
 
+	@Autowired
+	@Qualifier("serviceConfig")
+	private ServiceConfig config;
+	
     @Override
     @TokenSecured
     @RequestMapping(value = "/parameter/product-categories", method = RequestMethod.GET)
@@ -177,6 +192,46 @@ public class ParameterImpl implements Parameter {
         return list;
     }
 
+	@ApiOperation(value = "Search Office API",		
+	        produces = "application/json",
+		    response = OfficeMaster.class,
+		    httpMethod = "GET")
+	@TokenSecured
+	@RequestMapping(value = "/parameter/lt-offices", method = RequestMethod.GET)
+	public ResponseEntity<List<OfficeMaster>> searchOffice() {
+		RestTemplate restTemplate = new RestTemplate();
+		List<OfficeMaster> offices = new ArrayList<OfficeMaster>();
+		try {
+			AIUtil.addRestTemplateMessageConverter(restTemplate);
+			String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/office/search/all").toString();
+			offices = Arrays.asList(restTemplate.getForObject(url, OfficeMaster[].class));
+		} catch (Exception e) {
+			logger.error("search office error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<List<OfficeMaster>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<List<OfficeMaster>>(offices, HttpStatus.OK);
+	}	
+	
+	@ApiOperation(value = "Search Program API",		
+	        produces = "application/json",
+		    response = ProgramMaster.class,
+		    httpMethod = "GET")
+	@TokenSecured
+	@RequestMapping(value = "/parameter/lt-programs", method = RequestMethod.GET)
+	public ResponseEntity<List<ProgramMaster>> searchPrograms() {
+		RestTemplate restTemplate = new RestTemplate();
+		List<ProgramMaster> programs = new ArrayList<ProgramMaster>();
+		try {
+			AIUtil.addRestTemplateMessageConverter(restTemplate);
+			String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/program/search/all").toString();
+			programs = Arrays.asList(restTemplate.getForObject(url, ProgramMaster[].class));
+		} catch (Exception e) {
+			logger.error("search office error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<List<ProgramMaster>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<List<ProgramMaster>>(programs, HttpStatus.OK);
+	}
+	
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/ai-offices", method = RequestMethod.GET)

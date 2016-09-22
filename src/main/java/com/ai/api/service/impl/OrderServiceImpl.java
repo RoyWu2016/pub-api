@@ -7,21 +7,24 @@
 package com.ai.api.service.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import com.ai.api.bean.UserBean;
 import com.ai.api.dao.OrderDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
-import com.ai.commons.beans.legacy.order.OrderCancelBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import com.google.common.collect.Lists;
 
 /***************************************************************************
  *<PRE>
@@ -152,6 +155,40 @@ public class OrderServiceImpl implements OrderService {
 		}
 		return orderDao.searchOrders(userId, companyId, parentId, serviceType, startDate, endDate, keyWord, orderStatus, pageSize, pageNumber);
 	}
-
-
+	
+	@Override
+	public List<SimpleOrderSearchBean> searchOrders(String userId, String serviceType, String orderStatus, String pageSize, String pageNumber)  throws IOException, AIException {
+		String companyId = "";
+		String parentId = "";
+		List<SimpleOrderSearchBean> orderSearchList = new ArrayList<SimpleOrderSearchBean>();
+		UserBean user = userService.getCustById(userId);
+		if (null!=user){
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null) parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		if(StringUtils.stripToEmpty(serviceType).isEmpty()) {
+			orderSearchList = searchAllOrders(userId, companyId, parentId,  serviceType, null, null, null,  orderStatus, pageSize, pageNumber);	
+		}
+		
+		return orderSearchList;
+	}
+	
+	private List<SimpleOrderSearchBean> searchAllOrders(String userId, String companyId, String parentId,  String serviceType, String startDate, String endDate, String keyWord,  String orderStatus, String pageSize, String pageNumber) {
+		List<SimpleOrderSearchBean> orderSearchList = new ArrayList<SimpleOrderSearchBean>();
+		
+		orderSearchList = searchPSIOrders(userId, companyId, parentId, serviceType, startDate, endDate, keyWord, orderStatus, pageSize, pageNumber);
+		orderSearchList.addAll(searchLTOrders(companyId, orderStatus, pageSize, pageNumber, "desc"));
+		return orderSearchList;
+	}
+	
+	private List<SimpleOrderSearchBean> searchLTOrders(String companyId, String orderStatus, String pageSize, String pageNumber, String direction) {
+		return orderDao.searchLTOrders(companyId, orderStatus, pageSize, pageNumber, direction);
+	}
+	
+	private List<SimpleOrderSearchBean> searchPSIOrders(String userId, String compId, String parentId,  String serviceType, String startDate, String endDate, String keyWord,  String orderStatus, String pageSize, String pageNumber) {
+		List<SimpleOrderSearchBean> orderSearchList = new ArrayList<SimpleOrderSearchBean>();
+		orderSearchList = orderDao.searchOrders(userId, compId, parentId, serviceType, startDate, endDate, keyWord, orderStatus, pageSize, pageNumber);
+		return null != orderSearchList ? orderSearchList : new ArrayList<SimpleOrderSearchBean>();
+	}
 }
