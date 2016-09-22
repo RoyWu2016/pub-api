@@ -31,4 +31,6 @@ public interface ParameterService {
     List<SysProductTypeBean> getProductTypeList();
     
     List<ClassifiedBean> getTextileProductCategories();
+    
+    List<ClassifiedBean> getAiOffices();
 }

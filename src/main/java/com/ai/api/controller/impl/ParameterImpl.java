@@ -155,7 +155,7 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/textile-product-categories", method = RequestMethod.GET)
-	public ResponseEntity<List<TextileProductCategoryBean>> getTextileProductCategories() {
+	public ResponseEntity<List<DropdownListOptionBean>> getTextileProductCategories() {
 		// TODO Auto-generated method stub
 		logger.info("get getTextileProductCategory");
 		List<ClassifiedBean> result = parameterService.getTextileProductCategories();
@@ -163,9 +163,9 @@ public class ParameterImpl implements Parameter {
 			logger.error("getTextileProductCategory not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		List<TextileProductCategoryBean> list = new ArrayList<TextileProductCategoryBean>();
+		List<DropdownListOptionBean> list = new ArrayList<DropdownListOptionBean>();
 		for(ClassifiedBean each : result) {
-			TextileProductCategoryBean bean = new TextileProductCategoryBean();
+			DropdownListOptionBean bean = new DropdownListOptionBean();
 			bean.setLabel(each.getKey());
 			bean.setValue(each.getValue());
 			
@@ -191,7 +191,7 @@ public class ParameterImpl implements Parameter {
         }
         return list;
     }
-	
+
 	@ApiOperation(value = "Search Office API",		
 	        produces = "application/json",
 		    response = OfficeMaster.class,
@@ -230,5 +230,27 @@ public class ParameterImpl implements Parameter {
 			return new ResponseEntity<List<ProgramMaster>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<List<ProgramMaster>>(programs, HttpStatus.OK);
+	}
+	
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/ai-offices", method = RequestMethod.GET)
+	public ResponseEntity<List<DropdownListOptionBean>> getAiOffices() {
+		// TODO Auto-generated method stub
+		logger.info("get getAiOffices");
+		List<ClassifiedBean> result = parameterService.getAiOffices();
+		if(result==null){
+			logger.error("getAiOffices not found");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		List<DropdownListOptionBean> list = new ArrayList<DropdownListOptionBean>();
+		for(ClassifiedBean each : result) {
+			DropdownListOptionBean bean = new DropdownListOptionBean();
+			bean.setLabel(each.getKey());
+			bean.setValue(each.getValue());
+			
+			list.add(bean);
+		}
+		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 }

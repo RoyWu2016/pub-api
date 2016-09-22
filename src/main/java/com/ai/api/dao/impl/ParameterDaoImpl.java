@@ -377,4 +377,35 @@ public class ParameterDaoImpl implements ParameterDao {
 		return proTypeList;
 	}
 
+	@Override
+	public List<ClassifiedBean> getAiOffices() {
+		// TODO Auto-generated method stub
+		List<ClassifiedBean> proTypeList = null ;
+		LOGGER.info("try to getAiOffices from redis ...");
+		String jsonStringTextileProductCategory = RedisUtil.hget("aiOfficesCache","AI_OFFICE");
+		proTypeList = JSON.parseArray(jsonStringTextileProductCategory, ClassifiedBean.class);
+		if(null == proTypeList) {
+			String baseUrl = config.getParamServiceUrl() + "/systemconfig/classified/list/AI_OFFICE";
+			GetRequest request = GetRequest.newInstance().setUrl(baseUrl);
+			try {
+				LOGGER.info("send for request: " + baseUrl);
+				ServiceCallResult result = HttpUtil.issueGetRequest(request);
+				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					JSONObject object = JSONObject.parseObject(result.getResponseString());
+					Object arrayStr = object.get("content");
+					proTypeList = JSON.parseArray(arrayStr + "", ClassifiedBean.class);
+					
+					LOGGER.info("saving getAiOffices");
+					RedisUtil.set("aiOfficesCache", JSON.toJSONString(proTypeList),RedisUtil.HOUR * 24);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
+			LOGGER.info("success getAiOffices from redis");
+		}
+		return proTypeList;
+	}
+
 }
