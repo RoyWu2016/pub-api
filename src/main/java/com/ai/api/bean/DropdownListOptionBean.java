@@ -2,10 +2,10 @@ package com.ai.api.bean;
 
 import java.io.Serializable;
 
-public class TextileProductCategoryBean implements Serializable {
+public class DropdownListOptionBean implements Serializable {
 
 	/**
-	 * 
+	 * created by RoyWu 2016/09/21
 	 */
 	private static final long serialVersionUID = 1L;
 	

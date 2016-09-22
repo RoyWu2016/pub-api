@@ -68,4 +68,10 @@ public class ParameterServiceImpl implements ParameterService {
 		// TODO Auto-generated method stub
 		return paramDao.getTextileProductCategories();
 	}
+
+	@Override
+	public List<ClassifiedBean> getAiOffices() {
+		// TODO Auto-generated method stub
+		return paramDao.getAiOffices();
+	}
 }
