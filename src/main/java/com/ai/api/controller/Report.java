@@ -1,5 +1,7 @@
 package com.ai.api.controller;
 
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
@@ -14,6 +16,7 @@ import java.util.List;
  */
 public interface Report {
     ResponseEntity<List<ReportSearchResultBean>> getUserReportsByCriteria(String userId,String orderTypeArray,Integer pageNumber,String archived,String starts,String ends,String keywords);
+    ResponseEntity<PageBean<ClientReportSearchBean>> getPSIReports(String userId,String startDate,String endDate,String keywords,Integer pageNumber,Integer pageSize);
     ResponseEntity<String> forwardReports(String userId,String ids,ReportsForwardingBean reportsForwardingBean);
     ResponseEntity<String> undoDecision(String userId,String id);
     ResponseEntity<ReportCertificateBean> getApprovalCertificate(String userId, String reportId, String certType, String reference);

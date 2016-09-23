@@ -17,6 +17,17 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import com.ai.api.bean.AqlAndSamplingSizeBean;
 import com.ai.api.bean.BillingBean;
 import com.ai.api.bean.BookingPreferenceBean;
@@ -74,16 +85,6 @@ import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import com.alibaba.fastjson.JSON;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /***************************************************************************
  * <PRE>
@@ -880,5 +881,4 @@ public class UserServiceImpl implements UserService {
 	public boolean logPaymentAction(String userId, PaymentActionLogBean logBean){
 		return customerDao.logPaymentAction(userId, logBean);
 	}
-
 }

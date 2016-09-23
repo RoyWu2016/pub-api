@@ -9,9 +9,12 @@ package com.ai.api.controller;
 import java.util.List;
 import java.util.Map;
 
-import com.ai.commons.beans.legacy.order.OrderCancelBean;
-import com.ai.commons.beans.order.SimpleOrderSearchBean;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.ResponseEntity;
+
+import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
 
 /***************************************************************************
  *<PRE>
@@ -53,6 +56,10 @@ public interface Order {
 
     ResponseEntity<Map<String, Object>> saveOrderByDraft(String userId,String draftId,String orderId);
     
-    ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(String userId, String serviceType,String startDate, String endDate, String keyWord, String orderStatus, String pageNumber, String pageSize);
+    ResponseEntity<List<OrderSearchBean>> searchOrders(String userId, String serviceType,String startDate, String endDate, String keyWord, String orderStatus, String pageNumber, String pageSize);
+
+	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, String userId, OrderMaster orderMaster);
+	
+	public ResponseEntity<List<OrderSearchBean>> searchOrders(String userId, String serviceType, String orderStatus, Integer pageNumber, Integer pageSize);
 
 }

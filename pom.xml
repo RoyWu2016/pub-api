@@ -31,6 +31,7 @@
         <fastjson.version>1.2.13</fastjson.version>
         <commons-net.version>3.5</commons-net.version>
         <quartz.version>2.2.1</quartz.version>
+        <aims.service.model.version>1.0-SNAPSHOT</aims.service.model.version>
     </properties>
 
 
@@ -180,8 +181,11 @@
             <artifactId>quartz</artifactId>
             <version>${quartz.version}</version>
         </dependency>
-
-
+		<dependency>
+			<groupId>com.ai.aims.services</groupId>
+			<artifactId>AIMS-services-model</artifactId>
+			<version>${aims.service.model.version}</version>
+		</dependency>        
     </dependencies>
 
     <repositories>
