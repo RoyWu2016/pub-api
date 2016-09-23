@@ -5,8 +5,9 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import com.ai.api.bean.InspectionDraftProductBean;
 import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.order.draft.DraftStepBean;
+import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
@@ -40,17 +41,19 @@ public interface Draft {
 
 	ResponseEntity<Boolean> saveDraft(String userId,String draftId,InspectionBookingBean draft);
 
-    ResponseEntity<Boolean> addProduct( String userId,String draftId);
+    ResponseEntity<InspectionProductBookingBean> addProduct( String userId,String draftId);
 
     ResponseEntity<Boolean> saveProduct(String userId,String draftId,String productId,InspectionProductBookingBean draftProduct);
 
     ResponseEntity<Boolean> deleteProduct( String userId,String draftId,String productId);
     
-	ResponseEntity<InspectionBookingBean> calculatePricing(String userId, String draftId, 
+	ResponseEntity<OrderPriceMandayViewBean> calculatePricing(String userId, String draftId, 
 			String samplingLevel,String measurementSamplingSize);
 	
 	 ResponseEntity<List<DraftOrder>> searchDraft(String userId, String serviceType,String startDate, String endDate, String keyWord, String pageNumber, String pageSize);
 	 
 	ResponseEntity<Boolean> saveProducts(String userId,String draftId,List<InspectionProductBookingBean> draftProductsList);
+	
+	ResponseEntity<Boolean> saveDraftStep(String userId,String draftId,List<DraftStepBean> draftSteps);
 }
 

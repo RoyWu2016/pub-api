@@ -10,6 +10,7 @@ import com.ai.api.service.ParameterService;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
+import com.ai.commons.beans.params.ClassifiedBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -61,4 +62,16 @@ public class ParameterServiceImpl implements ParameterService {
     public List<SysProductTypeBean> getProductTypeList(){
         return paramDao.getProductTypeList();
     }
+
+	@Override
+	public List<ClassifiedBean> getTextileProductCategories() {
+		// TODO Auto-generated method stub
+		return paramDao.getTextileProductCategories();
+	}
+
+	@Override
+	public List<ClassifiedBean> getAiOffices() {
+		// TODO Auto-generated method stub
+		return paramDao.getAiOffices();
+	}
 }

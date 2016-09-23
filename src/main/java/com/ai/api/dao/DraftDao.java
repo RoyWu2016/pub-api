@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.order.draft.DraftStepBean;
+import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
@@ -30,27 +32,29 @@ public interface DraftDao {
 
 	boolean deleteDrafts(Map<String,String> params);
 
-	boolean deleteDraftsFromPsi(String userId, String draftIds);
+	boolean deleteDraftsFromPsi(String userId,String compId, String parentId, String draftIds);
 
     InspectionBookingBean createDraft(String userId, String compId, String parentId, String serviceTypeStrValue);
 
     InspectionBookingBean createDraftFromPreviousOrder(String userId, String companyId, String parentId, String orderId);
 
-    InspectionBookingBean getDraft(String userId, String draftId);
+    InspectionBookingBean getDraft(String userId,String compId, String parentId, String draftId);
 
-	boolean saveDraft(String userId,InspectionBookingBean draft);
+	boolean saveDraft(String userId,String companyId,String parentId,InspectionBookingBean draft);
 
-    boolean addProduct(String userId,String draftId);
+    InspectionProductBookingBean addProduct(String userId,String companyId,String parentId,String draftId);
 
-    boolean saveProduct(String userId,InspectionProductBookingBean draftProduct);
+    boolean saveProduct(String userId,String companyId,String parentId,InspectionProductBookingBean draftProduct);
 
-    boolean deleteProduct(String userId,String productId);
+    boolean deleteProduct(String userId,String companyId,String parentId,String productId);
     
-	InspectionBookingBean calculatePricing(
+    OrderPriceMandayViewBean calculatePricing(
 			String userId, String companyId, 
 			String parentId,String draftId,
 			String samplingLevel,String measurementSamplingSize);
 	
 	 List<DraftOrder> searchDraft(String userId, String compId, String parentId,  String serviceType, String startDate, String endDate, String keyWord, String pageSize, String pageNumber);
+	 
+	boolean saveDraftStep(String userId, String draftId, List<DraftStepBean> draftSteps);
 }
 

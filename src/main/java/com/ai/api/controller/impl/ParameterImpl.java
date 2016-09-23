@@ -1,18 +1,11 @@
 package com.ai.api.controller.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ai.api.bean.ProductCategoryDtoBean;
-import com.ai.api.bean.ProductFamilyDtoBean;
-import com.ai.api.controller.Parameter;
-import com.ai.api.service.ParameterService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.checklist.vo.CKLDefectVO;
-import com.ai.commons.beans.checklist.vo.CKLTestVO;
-import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
-import com.ai.commons.beans.params.product.SysProductTypeBean;
+import com.ai.api.bean.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +14,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ai.api.controller.Parameter;
+import com.ai.api.service.ParameterService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.checklist.vo.CKLDefectVO;
+import com.ai.commons.beans.checklist.vo.CKLTestVO;
+import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
+import com.ai.commons.beans.params.ClassifiedBean;
+import com.ai.commons.beans.params.product.SysProductTypeBean;
 
 /**
  * Created by Administrator on 2016/6/21 0021.
@@ -79,14 +81,15 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/checklist-test-sample-size-list", method = RequestMethod.GET)
-	public ResponseEntity<Map<String,List<ChecklistTestSampleSizeBean>>> getTestSampleSizeList() {
+	public ResponseEntity<List<ChecklistSampleSize>> getTestSampleSizeList() {
 
-		Map<String,List<ChecklistTestSampleSizeBean>> result = parameterService.getTestSampleSizeList();
+		Map<String,List<ChecklistTestSampleSizeBean>> resultMap = parameterService.getTestSampleSizeList();
 
-		if(result==null){
+		if(resultMap==null){
 			logger.error("TestSampleSizeList not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+		List<ChecklistSampleSize> result =this.changeMap2Bean(resultMap);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
@@ -132,5 +135,67 @@ public class ParameterImpl implements Parameter {
 			logger.error("TestSampleSizeList not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/textile-product-categories", method = RequestMethod.GET)
+	public ResponseEntity<List<DropdownListOptionBean>> getTextileProductCategories() {
+		// TODO Auto-generated method stub
+		logger.info("get getTextileProductCategory");
+		List<ClassifiedBean> result = parameterService.getTextileProductCategories();
+		if(result==null){
+			logger.error("getTextileProductCategory not found");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		List<DropdownListOptionBean> list = new ArrayList<DropdownListOptionBean>();
+		for(ClassifiedBean each : result) {
+			DropdownListOptionBean bean = new DropdownListOptionBean();
+			bean.setLabel(each.getKey());
+			bean.setValue(each.getValue());
+			
+			list.add(bean);
+		}
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+
+	private List<ChecklistSampleSize> changeMap2Bean(Map<String,List<ChecklistTestSampleSizeBean>> map){
+	    List<ChecklistSampleSize> list = new ArrayList<ChecklistSampleSize>();
+        for (Map.Entry<String, List<ChecklistTestSampleSizeBean>> entry:map.entrySet()){
+            ChecklistSampleSize bean = new ChecklistSampleSize();
+            bean.setLabel(entry.getKey());
+            List<ChecklistSampleSizeChildren> children = new ArrayList<>();
+            for (ChecklistTestSampleSizeBean b:entry.getValue()){
+                ChecklistSampleSizeChildren child = new ChecklistSampleSizeChildren();
+                child.setValue(b.getValue());
+                child.setLabel(b.getText());
+                children.add(child);
+            }
+            bean.setChildren(children);
+            list.add(bean);
+        }
+        return list;
+    }
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/ai-offices", method = RequestMethod.GET)
+	public ResponseEntity<List<DropdownListOptionBean>> getAiOffices() {
+		// TODO Auto-generated method stub
+		logger.info("get getAiOffices");
+		List<ClassifiedBean> result = parameterService.getAiOffices();
+		if(result==null){
+			logger.error("getAiOffices not found");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		List<DropdownListOptionBean> list = new ArrayList<DropdownListOptionBean>();
+		for(ClassifiedBean each : result) {
+			DropdownListOptionBean bean = new DropdownListOptionBean();
+			bean.setLabel(each.getKey());
+			bean.setValue(each.getValue());
+			
+			list.add(bean);
+		}
+		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 }

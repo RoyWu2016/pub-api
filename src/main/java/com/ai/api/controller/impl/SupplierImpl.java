@@ -2,7 +2,22 @@ package com.ai.api.controller.impl;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.api.bean.SupplierDetailBean;
 import com.ai.api.bean.legacy.FactorySearchBean;
@@ -11,12 +26,6 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.FactoryService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.supplier.SupplierSearchResultBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by Administrator on 2016/6/29 0029.
@@ -64,6 +73,8 @@ public class SupplierImpl implements Supplier {
             }catch (Exception e) {
                 logger.error("", e);
             }
+        } else {
+	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -80,7 +91,7 @@ public class SupplierImpl implements Supplier {
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
         }else{
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -113,6 +124,28 @@ public class SupplierImpl implements Supplier {
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/supplier", method = RequestMethod.POST)
+    public ResponseEntity<SupplierDetailBean> createSupplier(
+    		@PathVariable("userId") String userId,
+    		@RequestBody SupplierDetailBean supplierDetailBean) throws IOException, AIException {
+    	if(null != supplierDetailBean && ("").equals(supplierDetailBean.getUserId())) {
+    		supplierDetailBean.setUserId(userId);
+    	}
+    	String supplierId = factoryService.createSupplier(supplierDetailBean);
+    	if(null != supplierId) {
+    		SupplierDetailBean result = factoryService.getUserSupplierDetailInfoById(userId, supplierId);
+    		if(null == result) {
+    			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+    		}else {
+    			return new ResponseEntity<>(result, HttpStatus.OK);
+    		}
+    	}else {
+    		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+    	}
     }
 
 }

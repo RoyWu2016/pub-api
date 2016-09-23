@@ -14,6 +14,7 @@ import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
+import com.ai.commons.beans.params.ClassifiedBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 
 /***************************************************************************
@@ -51,4 +52,8 @@ public interface ParameterDao {
     List<CKLDefectVO> getChecklistPublicDefectList();
 
 	List<SysProductTypeBean> getProductTypeList();
+	
+	List<ClassifiedBean> getTextileProductCategories();
+	
+	List<ClassifiedBean> getAiOffices();
 }

@@ -1,13 +1,15 @@
 
 package com.ai.api.controller.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.ai.api.bean.InspectionDraftProductBean;
 import com.ai.api.controller.Draft;
 import com.ai.api.service.DraftService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.order.draft.DraftStepBean;
+import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -71,11 +73,13 @@ public class DraftImpl implements Draft {
 	                                                       @RequestParam("serviceType") String serviceType) {
 		try {
             InspectionBookingBean newDraft = draftService.createDraft(userId, serviceType);
-			return new ResponseEntity<>(newDraft, HttpStatus.OK);
+            if (null!=newDraft) {
+                return new ResponseEntity<>(newDraft, HttpStatus.OK);
+            }
 		} catch (Exception e) {
 			logger.error("create draft error: " + ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override
@@ -85,11 +89,13 @@ public class DraftImpl implements Draft {
 																			  @PathVariable("orderId") String orderId) {
 		try {
 			InspectionBookingBean newDraft = draftService.createDraftFromPreviousOrder(userId, orderId);
-			return new ResponseEntity<>(newDraft, HttpStatus.OK);
+            if (null!=newDraft) {
+                return new ResponseEntity<>(newDraft, HttpStatus.OK);
+            }
 		} catch (Exception e) {
 			logger.error("create draft from previous order error: " + ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override
@@ -100,11 +106,15 @@ public class DraftImpl implements Draft {
 
 		try {
             InspectionBookingBean draft = draftService.getDraft(userId, draftId);
-			return new ResponseEntity<>(draft, HttpStatus.OK);
+			if(null!=draft) {
+				return new ResponseEntity<>(draft, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
 		} catch (Exception e) {
 			logger.error("get draft error: " + ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override
@@ -128,13 +138,13 @@ public class DraftImpl implements Draft {
     @Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/draft/{draftId}/product", method = RequestMethod.POST)
-    public ResponseEntity<Boolean> addProduct(@PathVariable("userId")String userId,
+    public ResponseEntity<InspectionProductBookingBean> addProduct(@PathVariable("userId")String userId,
                                                @PathVariable("draftId") String draftId) {
         try {
-            boolean result = draftService.addProduct(userId, draftId);
-            if(result){
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
+            InspectionProductBookingBean product = draftService.addProduct(userId, draftId);
+	        if(null != product) {
+		        return new ResponseEntity<>(product, HttpStatus.OK);
+	        }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -182,15 +192,19 @@ public class DraftImpl implements Draft {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/draft/{draftId}/sampling-level/{samplingLevel}/price", 
 			method = RequestMethod.GET)
-	public ResponseEntity<InspectionBookingBean> calculatePricing(
+	public ResponseEntity<OrderPriceMandayViewBean> calculatePricing(
 			@PathVariable("userId") String userId,
 			@PathVariable("draftId") String draftId, 
 			@PathVariable("samplingLevel") String samplingLevel,
-			@RequestParam("measurementSamplingSize") String measurementSamplingSize) {
+			@RequestParam(value = "measurementSamplingSize", required = false ,defaultValue="") String measurementSamplingSize) {
 		// TODO Auto-generated method stub
 		try {
-			InspectionBookingBean newDraft = draftService.calculatePricing(userId, draftId,samplingLevel, measurementSamplingSize);
-			return new ResponseEntity<>(newDraft, HttpStatus.OK);
+			OrderPriceMandayViewBean newDraft = draftService.calculatePricing(userId, draftId,samplingLevel, measurementSamplingSize);
+			if(null != newDraft) {
+				return new ResponseEntity<>(newDraft, HttpStatus.OK);
+			}else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
 		} catch (Exception e) {
 			logger.error("calculate Pricing error: " + ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -211,11 +225,12 @@ public class DraftImpl implements Draft {
 	  
 			try {
 				List<DraftOrder> draftList = draftService.searchDraft(userId, serviceType, startDate, endDate, keyword, pageNumber, pageSize);
-				return new ResponseEntity<List<DraftOrder>>(draftList, HttpStatus.OK);
+				//if not data found, just return 200 with empty list
+				return new ResponseEntity<>(draftList, HttpStatus.OK);
 			} catch (Exception e) {
 				logger.error("get draft search error: " + ExceptionUtils.getFullStackTrace(e));
-				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			
 		}
 
@@ -226,7 +241,41 @@ public class DraftImpl implements Draft {
 				@PathVariable("userId") String userId,
 				@PathVariable("draftId") String draftId,
 				@RequestBody List<InspectionProductBookingBean> draftProductsList) {
+			//ddddd
+
+
 			// TODO Auto-generated method stub
+			try {
+				logger.info("Checking what non-duplicate product id should be delete before update multiple products: ");
+				InspectionBookingBean draft = draftService.getDraft(userId, draftId);
+				if(null == draft) {
+					 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+				List<InspectionProductBookingBean> list = draft.getProducts();
+				if(list.size() > draftProductsList.size()) {
+					
+					List<String> needTodeleteProductIdList = new ArrayList<String>();
+					List<String> inputProductIdList = new ArrayList<String>();
+					for(InspectionProductBookingBean each : list) {
+						needTodeleteProductIdList.add(each.getDraftProductId());
+					}
+					for(InspectionProductBookingBean each : draftProductsList) {
+						inputProductIdList.add(each.getDraftProductId());
+					}
+					needTodeleteProductIdList.removeAll(inputProductIdList);
+					
+					for(String id : needTodeleteProductIdList) {
+						logger.debug("Deleting the product id: " + id);
+						if(!draftService.deleteProduct(userId, id)) {
+							return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			for(InspectionProductBookingBean each : draftProductsList) {
 				try {
 					boolean result = draftService.saveProduct(userId, each);
@@ -239,6 +288,29 @@ public class DraftImpl implements Draft {
 			}
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
+
+		@Override
+	    @TokenSecured
+	    @RequestMapping(value = "/user/{userId}/draft/{draftId}/step", method = RequestMethod.PUT)
+		public ResponseEntity<Boolean> saveDraftStep(
+								@PathVariable("userId") String userId,
+								@PathVariable("draftId") String draftId,
+								@RequestBody List<DraftStepBean> draftSteps) {
+			// TODO Auto-generated method stub
+			try {
+				boolean result = draftService.saveDraftStep(userId, draftId, draftSteps);
+				if(result) {
+					return new ResponseEntity<>(HttpStatus.OK);
+				}else {
+					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
 }
 
  
