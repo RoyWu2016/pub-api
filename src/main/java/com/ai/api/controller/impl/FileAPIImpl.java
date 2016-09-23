@@ -164,7 +164,7 @@ public class FileAPIImpl implements FileAPI {
 		// TODO Auto-generated method stub
 		List<FileMetaBean> result = null;
 		try{
-			//result = myFileService.getFileService().getFileInfoBySrcIdAndFileType(srcId, docType);
+			result = myFileService.getFileService().getFileInfoBySrcIdAndFileType(srcId, docType);
 			if(null != result) {
 				return new ResponseEntity<>(result,HttpStatus.OK);
 			}else {
