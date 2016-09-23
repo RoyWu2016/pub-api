@@ -1,5 +1,8 @@
 package com.ai.api.service;
 
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
@@ -14,6 +17,7 @@ import java.util.List;
  */
 public interface ReportService {
     List<ReportSearchResultBean> getUserReportsByCriteria(ReportSearchCriteriaBean criteria);
+    PageBean<ClientReportSearchBean> getPSIReports(String useId, PageParamBean paramBean);
     boolean forwardReports(ReportsForwardingBean reportsForwardingBean);
     boolean undoDecision(String userId,String reportDetailId);
     ReportCertificateBean getApprovalCertificate(String reportId, String userId, String certType, String reference);

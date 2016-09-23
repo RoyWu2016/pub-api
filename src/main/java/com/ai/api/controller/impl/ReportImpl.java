@@ -1,15 +1,17 @@
 package com.ai.api.controller.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.controller.Report;
 import com.ai.api.service.ReportService;
+import com.ai.commons.DateUtils;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
@@ -76,6 +78,42 @@ public class ReportImpl implements Report {
         criteriaBean.setEndDate(ends);
 
         List<ReportSearchResultBean> result = reportService.getUserReportsByCriteria(criteriaBean);
+        if(result!=null){
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/psi-reports", method = RequestMethod.GET)
+    public ResponseEntity<PageBean<ClientReportSearchBean>> getPSIReports (@PathVariable("userId") String userId,
+                                                                         @RequestParam(value = "start",required = false) String startDate,
+                                                                         @RequestParam(value = "end",required = false) String endDate,
+                                                                         @RequestParam(value = "keyword",required = false) String keywords,
+                                                                         @RequestParam(value = "page",required = false) Integer pageNumber,
+                                                                         @RequestParam(value = "page-size",required = false) Integer pageSize) {
+        PageParamBean paramBean = new PageParamBean();
+        if (null!=pageNumber&&pageNumber>0)paramBean.setPageNo(pageNumber);
+        if (null!=pageSize&&pageSize>0)paramBean.setPageSize(pageSize);
+        Map<String, String[]> criterias = new HashMap<String, String[]>();
+        Date now = Calendar.getInstance().getTime();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -30);
+        String[] inspectionDate = new String[]{DateUtils.date2String(cal.getTime(),DateUtils.Format.AI_DATE_FORMAT_JSON.getValue())+" - "+DateUtils.date2String(now,DateUtils.Format.AI_DATE_FORMAT_JSON.getValue())};
+        if (null!=startDate&&null!=endDate){
+            inspectionDate = new String[]{startDate+" - "+endDate};
+        }
+        String[] orderOrPo = new String[]{keywords};
+        criterias.put("ORDERNO-PONUMBER",orderOrPo);
+        criterias.put("INSPECTION_DATE",inspectionDate);
+        paramBean.setCriterias(criterias);
+        List<String> item = new ArrayList<String>();
+        item.add("inspectionDate");
+        paramBean.setOrderItems(item);
+
+        PageBean<ClientReportSearchBean> result = reportService.getPSIReports(userId,paramBean);
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
