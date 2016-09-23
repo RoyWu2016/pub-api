@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +16,16 @@ import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.GetRequest;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
 import com.ai.commons.beans.report.api.ReportCertificateBean;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
@@ -63,6 +68,32 @@ public class ReportDaoImpl implements ReportDao {
                         ", " + result.getResponseString());
             }
 
+        } catch (IOException e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+        return null;
+    }
+
+    @Override
+    public PageBean<ClientReportSearchBean> getPSIReports(String userId, PageParamBean paramBean) {
+        String url = config.getPsiServiceUrl() + "/report/api/report-list";
+        String paramStr = JSON.toJSONString(paramBean);
+        try {
+            url = url+"?userId="+userId+"&companyId=companyIdNull&parentId=parentIdNull&param="+URLEncoder.encode(paramStr,"UTF-8");
+            GetRequest request = GetRequest.newInstance().setUrl(url);
+            logger.info("get!!! Url:"+url );
+            ServiceCallResult result = HttpUtil.issueGetRequest(request);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                JSONObject jsonObject = JSON.parseObject(result.getResponseString());
+                String reportStr = jsonObject.getString("");
+                List<ClientReportSearchBean> reportSearchBeanList = JSON.parseArray(reportStr,ClientReportSearchBean.class);
+                PageBean<ClientReportSearchBean> pageBean= JSON.parseObject(result.getResponseString(),PageBean.class);
+                pageBean.setPageItems(reportSearchBeanList);
+                return pageBean;
+            } else {
+                logger.error("get psi-reports from psi-service error: " + result.getStatusCode() +
+                        ", " + result.getResponseString());
+            }
         } catch (IOException e) {
             logger.error(ExceptionUtils.getStackTrace(e));
         }
