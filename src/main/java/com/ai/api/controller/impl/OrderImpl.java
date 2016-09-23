@@ -6,27 +6,39 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ai.api.controller.Order;
-import com.ai.api.service.OrderService;
-import com.ai.api.service.UserService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.order.SimpleOrderSearchBean;
-import com.ai.commons.beans.psi.InspectionBookingBean;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.controller.Order;
+import com.ai.api.service.OrderService;
+import com.ai.api.service.UserService;
+import com.ai.api.util.AIUtil;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.psi.InspectionBookingBean;
+
+import io.swagger.annotations.ApiOperation;
 
 /***************************************************************************
  * <PRE>
@@ -58,6 +70,10 @@ public class OrderImpl implements Order {
 
 	@Autowired
 	OrderService orderService;
+
+	@Autowired
+	@Qualifier("serviceConfig")
+	private ServiceConfig config;
 
 	@Override
 	@TokenSecured
@@ -189,7 +205,7 @@ public class OrderImpl implements Order {
 	@Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/psi-orders", method = RequestMethod.GET)
-	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(@PathVariable("userId")String userId,
+	public ResponseEntity<List<OrderSearchBean>> searchOrders(@PathVariable("userId")String userId,
 													   @RequestParam(value = "service-type", required = false , defaultValue="") String serviceType,
 													   @RequestParam(value = "start", required = false, defaultValue="") String startDate,
 													   @RequestParam(value = "end", required = false , defaultValue="") String endDate,
@@ -197,8 +213,9 @@ public class OrderImpl implements Order {
 													   @RequestParam(value = "status", required = false, defaultValue="") String orderStatus,
 													   @RequestParam(value = "page-size", required = false , defaultValue="20") String pageSize,
 													   @RequestParam(value = "page", required = false , defaultValue="1") String pageNumber) {
+		List<OrderSearchBean> ordersList = new ArrayList<OrderSearchBean>();
 		try {
-			List<SimpleOrderSearchBean> ordersList = orderService.searchOrders(userId, serviceType,
+			ordersList = orderService.searchOrders(userId, serviceType,
 					startDate, endDate, keyword, orderStatus,pageSize, pageNumber);
 			//if not data found, just return 200 with empty list
 			return new ResponseEntity<>(ordersList, HttpStatus.OK);
@@ -208,6 +225,44 @@ public class OrderImpl implements Order {
 		}
 	}
 	
+	@ApiOperation(value = "Order Add API",		
+	        produces = "application/json",
+		    response = OrderMaster.class,
+		    httpMethod = "POST")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/orders", method = RequestMethod.POST)
+	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, @PathVariable String userId, @RequestBody OrderMaster orderMaster) {
+		RestTemplate restTemplate = new RestTemplate();
+		OrderMaster orderMasterObj = null;
+		try {
+			AIUtil.addRestTemplateMessageConverter(restTemplate);
+			String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/").append(userId).toString();
+			orderMaster.setOrderStatus("Draft");
+	        orderMasterObj = restTemplate.postForObject(url, orderMaster, OrderMaster.class, request);
+		} catch (Exception e) {
+			logger.error("create order error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<OrderMaster>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<OrderMaster>(orderMasterObj, HttpStatus.OK);
+	}
 	
-
+	@Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/orders/list", method = RequestMethod.GET)
+	public ResponseEntity<List<OrderSearchBean>> searchOrders(@PathVariable("userId")String userId, 
+			@RequestParam(value = "serviceType", required = false , defaultValue="") String serviceType, 
+			@RequestParam(value = "orderStatus", required = false , defaultValue="") String orderStatus, 
+			@RequestParam(value = "pageNo", required = false , defaultValue="1") Integer pageNumber, 
+			@RequestParam(value = "pageSize", required = false , defaultValue="20") Integer pageSize) {
+		List<OrderSearchBean> ordersList = new ArrayList<OrderSearchBean>();
+		try {
+			ordersList = orderService.searchOrders(userId, serviceType, orderStatus, pageSize.toString(), pageNumber.toString());
+			//if not data found, just return 200 with empty list
+			return new ResponseEntity<List<OrderSearchBean>>(ordersList, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

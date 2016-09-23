@@ -273,6 +273,7 @@ public class DraftDaoImpl implements DraftDao {
 		try {
 			logger.info("Invoking: " + url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,new HashMap<>());
+			
 			if (result.getStatusCode() == HttpStatus.OK.value() 
 					&& result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return JsonUtil.mapToObject(result.getResponseString(), OrderPriceMandayViewBean.class);

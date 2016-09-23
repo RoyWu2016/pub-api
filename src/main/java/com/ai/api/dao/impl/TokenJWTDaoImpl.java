@@ -6,11 +6,6 @@ import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ai.api.util.RedisUtil;
-import com.ai.commons.IDGenerator;
-import com.ai.commons.StringUtils;
-import com.ai.commons.beans.user.TokenSession;
-import com.alibaba.fastjson.JSON;
 import org.jose4j.jwe.ContentEncryptionAlgorithmIdentifiers;
 import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
@@ -26,6 +21,12 @@ import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import com.ai.api.util.RedisUtil;
+import com.ai.commons.IDGenerator;
+import com.ai.commons.StringUtils;
+import com.ai.commons.beans.user.TokenSession;
+import com.alibaba.fastjson.JSON;
 
 /***************************************************************************
  * <PRE>
@@ -56,6 +57,9 @@ public class TokenJWTDaoImpl {
     private static final String AES_KEY_PATH = "/usr/local/tomcat_8080/conf/sso-sig/server-token.aes";
     private static final String ECC_PRIV_KEY_PATH = "/usr/local/tomcat_8080/conf/sso-sig/server-sig.ecc";
     private static final String ECC_PUB_KEY_PATH = "/usr/local/tomcat_8080/conf/sso-sig/server-sig.ecc.pub";
+/*    private static final String AES_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-token.aes";
+    private static final String ECC_PRIV_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc";
+    private static final String ECC_PUB_KEY_PATH = "/usr/local/tomcat7_8091/conf/sso-sig/server-sig.ecc.pub";*/
     
 //    private static final String AES_KEY_PATH = "D:/AllProjects/AI-Projects/server-token.aes";
 //    private static final String ECC_PRIV_KEY_PATH = "D:/AllProjects/AI-Projects/server-sig.ecc";
