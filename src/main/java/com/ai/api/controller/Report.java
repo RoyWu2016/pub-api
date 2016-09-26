@@ -15,7 +15,6 @@ import java.util.List;
  * Created by Henry Yue on 2016/7/25.
  */
 public interface Report {
-    ResponseEntity<List<ReportSearchResultBean>> getUserReportsByCriteria(String userId,String orderTypeArray,Integer pageNumber,String archived,String starts,String ends,String keywords);
     ResponseEntity<PageBean<ClientReportSearchBean>> getPSIReports(String userId,String startDate,String endDate,String keywords,Integer pageNumber,Integer pageSize);
     ResponseEntity<String> forwardReports(String userId,String ids,ReportsForwardingBean reportsForwardingBean);
     ResponseEntity<String> undoDecision(String userId,String id);

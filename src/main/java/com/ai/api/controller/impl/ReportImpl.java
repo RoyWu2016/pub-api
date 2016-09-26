@@ -41,52 +41,6 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/reports", method = RequestMethod.GET)
-    public ResponseEntity<List<ReportSearchResultBean>> getUserReportsByCriteria(@PathVariable("userId") String userId,
-                                                                                 @RequestParam(value = "types",required = false) String orderTypeArray,
-                                                                                 @RequestParam(value = "page",required = false) Integer pageNumber,
-                                                                                 @RequestParam(value = "archived",required = false) String archived,
-                                                                                 @RequestParam(value = "start",required = false) String starts,
-                                                                                 @RequestParam(value = "end",required = false) String ends,
-                                                                                 @RequestParam(value = "keyword",required = false) String keywords) {
-
-        ReportSearchCriteriaBean criteriaBean = new ReportSearchCriteriaBean();
-        if(pageNumber==null){
-            pageNumber = 1;
-        }
-        criteriaBean.setPageNumber(pageNumber);
-        criteriaBean.setKeywords(keywords);
-        criteriaBean.setUserID(userId);
-
-        if(archived==null){
-            criteriaBean.setArchived(false);
-        } else {
-            criteriaBean.setArchived(Boolean.valueOf(archived));
-        }
-
-	    ArrayList<String> typeList = new ArrayList<String>();
-	    if(orderTypeArray==null || orderTypeArray.equals("")){
-            String[] allTypes = {"psi","lt","ipc","dupro","clc","ma","pm","ea","stra","ctpat"};
-            Collections.addAll(typeList, allTypes);
-	    }else{
-		    String[] types = orderTypeArray.split(",");
-		    Collections.addAll(typeList, types);
-	    }
-	    criteriaBean.setServiceTypes(typeList);
-
-        criteriaBean.setStartDate(starts);
-        criteriaBean.setEndDate(ends);
-
-        List<ReportSearchResultBean> result = reportService.getUserReportsByCriteria(criteriaBean);
-        if(result!=null){
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    @TokenSecured
     @RequestMapping(value = "/user/{userId}/psi-reports", method = RequestMethod.GET)
     public ResponseEntity<PageBean<ClientReportSearchBean>> getPSIReports (@PathVariable("userId") String userId,
                                                                          @RequestParam(value = "start",required = false) String startDate,

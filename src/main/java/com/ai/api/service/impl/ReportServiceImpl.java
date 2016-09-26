@@ -43,15 +43,6 @@ public class ReportServiceImpl implements ReportService {
     private UserService userService;
 
     @Override
-    public List<ReportSearchResultBean> getUserReportsByCriteria(ReportSearchCriteriaBean criteria){
-        if(criteria.getLogin()==null){
-            String login = userService.getLoginByUserId(criteria.getUserID());//customerDao.getGeneralUser(criteria.getUserID()).getLogin();
-            criteria.setLogin(login);
-        }
-        return reportDao.getUserReportsByCriteria(criteria);
-    }
-
-    @Override
     public PageBean<ClientReportSearchBean> getPSIReports(String useId, PageParamBean paramBean){
         return reportDao.getPSIReports(useId,paramBean);
     }
