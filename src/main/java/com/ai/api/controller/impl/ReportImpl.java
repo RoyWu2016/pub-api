@@ -11,6 +11,7 @@ import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
@@ -107,14 +108,13 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/report/{reportId}/certificate/{certType}", method = RequestMethod.GET)
-    public ResponseEntity<ReportCertificateBean> getApprovalCertificate(@PathVariable("userId") String userId,
-                                               @PathVariable("reportId") String reportId,
-                                               @PathVariable("certType") String certType,
-                                               @RequestParam(value = "reference",required = false) String reference){
-        ReportCertificateBean reportCertificateBean = reportService.getApprovalCertificate(reportId,userId,certType,reference);
-        if(null!=reportCertificateBean){
-            return new ResponseEntity<>(reportCertificateBean,HttpStatus.OK);
+    @RequestMapping(value = "/user/{userId}/report/{productId}/certificate/{certType}", method = RequestMethod.GET)
+    public ResponseEntity<ApprovalCertificateBean> getApprovalCertificate(@PathVariable("userId") String userId,
+                                                                          @PathVariable("productId") String productId,
+                                                                          @PathVariable("certType") String certType){
+        ApprovalCertificateBean approvalCertificateBean = reportService.getApprovalCertificate(userId,productId,certType);
+        if(null!=approvalCertificateBean){
+            return new ResponseEntity<>(approvalCertificateBean,HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
