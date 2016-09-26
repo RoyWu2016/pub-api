@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.OrderDao;
 import com.ai.api.util.AIUtil;
@@ -261,10 +262,10 @@ public class OrderDaoImpl implements OrderDao {
 	}
 	
 	@Override
-	public List<SimpleOrderSearchBean> searchLTOrders(String compId, String orderStatus, String pageSize, String pageNumber, String direction) {
+	public List<OrderSearchBean> searchLTOrders(String compId, String orderStatus, String pageSize, String pageNumber, String direction) {
 		
 		RestTemplate restTemplate = new RestTemplate();
-		List<SimpleOrderSearchBean> orderSearchList = new ArrayList<SimpleOrderSearchBean>();
+		List<OrderSearchBean> orderSearchList = new ArrayList<OrderSearchBean>();
 		List<OrderMaster> orders = new ArrayList<OrderMaster>();
 
 		try {
@@ -274,7 +275,7 @@ public class OrderDaoImpl implements OrderDao {
 					OrderMaster[].class));
 			
 			for(OrderMaster order: orders) {
-				SimpleOrderSearchBean orderSearch = new SimpleOrderSearchBean();
+				OrderSearchBean orderSearch = new OrderSearchBean();
 				orderSearch.setOrderId(order.getId());
 				orderSearch.setSupplierName(StringUtils.stripToEmpty(order.getSupplier().getCompanyName()));
 				orderSearch.setServiceType("LT");

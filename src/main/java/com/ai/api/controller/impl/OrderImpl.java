@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.Order;
 import com.ai.api.service.OrderService;
@@ -250,17 +251,17 @@ public class OrderImpl implements Order {
 	
 	@Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/orders/list", method = RequestMethod.GET)
-	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(@PathVariable("userId")String userId, 
+    @RequestMapping(value = "/user/{userId}/lt-orders/list", method = RequestMethod.GET)
+	public ResponseEntity<List<OrderSearchBean>> searchLTOrders(@PathVariable("userId")String userId, 
 			@RequestParam(value = "serviceType", required = false , defaultValue="") String serviceType, 
 			@RequestParam(value = "orderStatus", required = false , defaultValue="") String orderStatus, 
 			@RequestParam(value = "pageNo", required = false , defaultValue="1") Integer pageNumber, 
 			@RequestParam(value = "pageSize", required = false , defaultValue="20") Integer pageSize) {
-		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
+		List<OrderSearchBean> ordersList = new ArrayList<OrderSearchBean>();
 		try {
-			ordersList = orderService.searchOrders(userId, serviceType, orderStatus, pageSize.toString(), pageNumber.toString());
+			ordersList = orderService.searchLTOrders(userId, serviceType, orderStatus, pageSize.toString(), pageNumber.toString());
 			//if not data found, just return 200 with empty list
-			return new ResponseEntity<List<SimpleOrderSearchBean>>(ordersList, HttpStatus.OK);
+			return new ResponseEntity<List<OrderSearchBean>>(ordersList, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

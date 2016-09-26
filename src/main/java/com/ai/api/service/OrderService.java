@@ -9,6 +9,7 @@ package com.ai.api.service;
 import java.io.IOException;
 import java.util.List;
 
+import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
@@ -52,5 +53,5 @@ public interface OrderService {
     
     List<SimpleOrderSearchBean> searchOrders(String userId, String serviceType,String startDate, String endDate, String keyWord, String orderStatus, String pageSize, String pageNumber)  throws IOException, AIException;
     
-    public List<SimpleOrderSearchBean> searchOrders(String userId, String serviceType, String orderStatus, String pageSize, String pageNumber)  throws IOException, AIException;
+    public List<OrderSearchBean> searchLTOrders(String userId, String serviceType, String orderStatus, String pageSize, String pageNumber)  throws IOException, AIException;
 }

@@ -8,6 +8,7 @@ package com.ai.api.dao;
 
 import java.util.List;
 
+import com.ai.api.bean.OrderSearchBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 
@@ -46,5 +47,5 @@ public interface OrderDao {
     
     List<SimpleOrderSearchBean> searchOrders(String userId, String compId, String parentId,  String serviceType, String startDate, String endDate, String keyWord,  String orderStatus, String pageSize, String pageNumber);
     
-    public List<SimpleOrderSearchBean> searchLTOrders(String compId, String orderStatus, String pageSize, String pageNumber, String direction);
+    public List<OrderSearchBean> searchLTOrders(String compId, String orderStatus, String pageSize, String pageNumber, String direction);
 }
