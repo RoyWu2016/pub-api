@@ -6,7 +6,10 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
+import io.swagger.annotations.ApiOperation;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +30,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ai.aims.services.model.OrderMaster;
+import com.ai.aims.services.model.TagTestMap;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.Order;
@@ -38,8 +43,6 @@ import com.ai.api.util.AIUtil;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
-
-import io.swagger.annotations.ApiOperation;
 
 /***************************************************************************
  * <PRE>
@@ -266,5 +269,43 @@ public class OrderImpl implements Order {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	@Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/lt-tests/list", method = RequestMethod.GET)
+	public ResponseEntity<List<TagTestMap>> searchLTTests(@PathVariable("userId") String userId, 
+			@RequestParam(value = "countryName", required = false ) List<String> countryName, 
+			@RequestParam(value = "productCategory", required = false) List<String> productCategory, 
+			@RequestParam(value = "keywords", required = false) List<String> keywords, 
+			@RequestParam(value = "pageNo", required = false , defaultValue="1") Integer pageNumber, 
+			@RequestParam(value = "pageSize", required = false , defaultValue="20") Integer pageSize) {
+		RestTemplate restTemplate = new RestTemplate();
+		List<TagTestMap> tests = new ArrayList<TagTestMap>();
+		try {
+			AIUtil.addRestTemplateMessageConverter(restTemplate);
+			String url = new StringBuilder("http://localhost:8080/AIMS-services-api").append("/tag/search/tests").toString();
+			
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+			        .queryParam("page", pageNumber - 1)
+			        .queryParam("size", pageSize)
+			        .queryParam("direction", "desc" );	
+			
+			if(null != countryName && !countryName.isEmpty()) {
+				builder.queryParam("countryName", countryName);
+			}
+			if(null != productCategory && !productCategory.isEmpty()) {
+				builder.queryParam("productCategory", productCategory);
+			}
+			if(null != keywords && !keywords.isEmpty()) {
+				builder.queryParam("testName", keywords);
+			}
+			
+			tests = Arrays.asList(restTemplate.getForObject(builder.build().encode().toUri(), TagTestMap[].class));
+		} catch (Exception e) {
+			logger.error("error fetching tests: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<List<TagTestMap>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<List<TagTestMap>>(tests, HttpStatus.OK);		
 	}
 }

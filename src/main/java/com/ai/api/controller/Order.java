@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
 import com.ai.aims.services.model.OrderMaster;
+import com.ai.aims.services.model.TagTestMap;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 
@@ -62,5 +63,7 @@ public interface Order {
 	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, String userId, OrderMaster orderMaster);
 	
 	public ResponseEntity<List<OrderSearchBean>> searchLTOrders(String userId, String serviceType, String orderStatus, Integer pageNumber, Integer pageSize);
+	
+	public ResponseEntity<List<TagTestMap>> searchLTTests(String userId, List<String> countryName, List<String> productCategory, List<String> keywords, Integer pageNumber, Integer pageSize);
 
 }
