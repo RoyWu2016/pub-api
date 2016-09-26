@@ -233,7 +233,7 @@ public class OrderImpl implements Order {
 		    httpMethod = "POST")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/orders", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/lt-orders", method = RequestMethod.POST)
 	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, @PathVariable String userId, @RequestBody OrderMaster orderMaster) {
 		RestTemplate restTemplate = new RestTemplate();
 		OrderMaster orderMasterObj = null;
