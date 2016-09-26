@@ -63,7 +63,7 @@ public class ReportDaoImpl implements ReportDao {
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 JSONObject jsonObject = JSON.parseObject(result.getResponseString());
-                String reportStr = jsonObject.getString("");
+                String reportStr = jsonObject.getString("pageItems");
                 List<ClientReportSearchBean> reportSearchBeanList = JSON.parseArray(reportStr,ClientReportSearchBean.class);
                 PageBean<ClientReportSearchBean> pageBean= JSON.parseObject(result.getResponseString(),PageBean.class);
                 pageBean.setPageItems(reportSearchBeanList);
