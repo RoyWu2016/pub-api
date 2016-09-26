@@ -93,7 +93,7 @@ public class ChecklistImpl implements Checklist {
 		String result = checklistService.createChecklist(userId,checklistVO);
 		if(result!=null){
 			logger.info("create result : "+result);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(result,HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
