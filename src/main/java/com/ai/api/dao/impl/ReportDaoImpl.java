@@ -53,28 +53,6 @@ public class ReportDaoImpl implements ReportDao {
     private ServiceConfig config;
 
     @Override
-    public List<ReportSearchResultBean> getUserReportsByCriteria(ReportSearchCriteriaBean criteria) {
-        String url = config.getMwServiceUrl() + "/service/report/search";
-        try {
-            ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
-            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-
-                return JsonUtil.mapToObject(result.getResponseString(),
-                        new TypeReference<List<ReportSearchResultBean>>() {
-                        });
-
-            } else {
-                logger.error("get reports from middleware error: " + result.getStatusCode() +
-                        ", " + result.getResponseString());
-            }
-
-        } catch (IOException e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-        }
-        return null;
-    }
-
-    @Override
     public PageBean<ClientReportSearchBean> getPSIReports(String userId, PageParamBean paramBean) {
         String url = config.getPsiServiceUrl() + "/report/api/report-list";
         String paramStr = JSON.toJSONString(paramBean);
@@ -85,7 +63,7 @@ public class ReportDaoImpl implements ReportDao {
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 JSONObject jsonObject = JSON.parseObject(result.getResponseString());
-                String reportStr = jsonObject.getString("");
+                String reportStr = jsonObject.getString("pageItems");
                 List<ClientReportSearchBean> reportSearchBeanList = JSON.parseArray(reportStr,ClientReportSearchBean.class);
                 PageBean<ClientReportSearchBean> pageBean= JSON.parseObject(result.getResponseString(),PageBean.class);
                 pageBean.setPageItems(reportSearchBeanList);

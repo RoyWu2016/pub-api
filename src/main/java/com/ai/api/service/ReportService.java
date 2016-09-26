@@ -16,7 +16,6 @@ import java.util.List;
  * Created by yan on 2016/7/25.
  */
 public interface ReportService {
-    List<ReportSearchResultBean> getUserReportsByCriteria(ReportSearchCriteriaBean criteria);
     PageBean<ClientReportSearchBean> getPSIReports(String useId, PageParamBean paramBean);
     boolean forwardReports(ReportsForwardingBean reportsForwardingBean);
     boolean undoDecision(String userId,String reportDetailId);
