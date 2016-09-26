@@ -1,15 +1,17 @@
 package com.ai.api.controller.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.controller.Report;
 import com.ai.api.service.ReportService;
+import com.ai.commons.DateUtils;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
@@ -39,43 +41,33 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/reports", method = RequestMethod.GET)
-    public ResponseEntity<List<ReportSearchResultBean>> getUserReportsByCriteria(@PathVariable("userId") String userId,
-                                                                                 @RequestParam(value = "types",required = false) String orderTypeArray,
-                                                                                 @RequestParam(value = "page",required = false) Integer pageNumber,
-                                                                                 @RequestParam(value = "archived",required = false) String archived,
-                                                                                 @RequestParam(value = "start",required = false) String starts,
-                                                                                 @RequestParam(value = "end",required = false) String ends,
-                                                                                 @RequestParam(value = "keyword",required = false) String keywords) {
-
-        ReportSearchCriteriaBean criteriaBean = new ReportSearchCriteriaBean();
-        if(pageNumber==null){
-            pageNumber = 1;
+    @RequestMapping(value = "/user/{userId}/psi-reports", method = RequestMethod.GET)
+    public ResponseEntity<PageBean<ClientReportSearchBean>> getPSIReports (@PathVariable("userId") String userId,
+                                                                         @RequestParam(value = "start",required = false) String startDate,
+                                                                         @RequestParam(value = "end",required = false) String endDate,
+                                                                         @RequestParam(value = "keyword",required = false) String keywords,
+                                                                         @RequestParam(value = "page",required = false) Integer pageNumber,
+                                                                         @RequestParam(value = "page-size",required = false) Integer pageSize) {
+        PageParamBean paramBean = new PageParamBean();
+        if (null!=pageNumber&&pageNumber>0)paramBean.setPageNo(pageNumber);
+        if (null!=pageSize&&pageSize>0)paramBean.setPageSize(pageSize);
+        Map<String, String[]> criterias = new HashMap<String, String[]>();
+        if (null!=startDate&&null!=endDate){
+            String[] inspectionDate = new String[]{startDate+" - "+endDate};
+            criterias.put("INSPECTION_DATE",inspectionDate);
         }
-        criteriaBean.setPageNumber(pageNumber);
-        criteriaBean.setKeywords(keywords);
-        criteriaBean.setUserID(userId);
-
-        if(archived==null){
-            criteriaBean.setArchived(false);
-        } else {
-            criteriaBean.setArchived(Boolean.valueOf(archived));
+        if (StringUtils.isNotBlank(keywords)) {
+            String[] orderOrPo = new String[]{keywords};
+            criterias.put("ORDERNO-PONUMBER", orderOrPo);
         }
+        if (criterias.size()>0) {
+            paramBean.setCriterias(criterias);
+        }
+        List<String> item = new ArrayList<String>();
+        item.add("inspectionDate");
+        paramBean.setOrderItems(item);
 
-	    ArrayList<String> typeList = new ArrayList<String>();
-	    if(orderTypeArray==null || orderTypeArray.equals("")){
-            String[] allTypes = {"psi","lt","ipc","dupro","clc","ma","pm","ea","stra","ctpat"};
-            Collections.addAll(typeList, allTypes);
-	    }else{
-		    String[] types = orderTypeArray.split(",");
-		    Collections.addAll(typeList, types);
-	    }
-	    criteriaBean.setServiceTypes(typeList);
-
-        criteriaBean.setStartDate(starts);
-        criteriaBean.setEndDate(ends);
-
-        List<ReportSearchResultBean> result = reportService.getUserReportsByCriteria(criteriaBean);
+        PageBean<ClientReportSearchBean> result = reportService.getPSIReports(userId,paramBean);
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {

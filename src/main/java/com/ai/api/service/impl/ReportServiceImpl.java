@@ -4,6 +4,9 @@ import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ReportDao;
 import com.ai.api.service.ReportService;
 import com.ai.api.service.UserService;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
@@ -40,12 +43,8 @@ public class ReportServiceImpl implements ReportService {
     private UserService userService;
 
     @Override
-    public List<ReportSearchResultBean> getUserReportsByCriteria(ReportSearchCriteriaBean criteria){
-        if(criteria.getLogin()==null){
-            String login = userService.getLoginByUserId(criteria.getUserID());//customerDao.getGeneralUser(criteria.getUserID()).getLogin();
-            criteria.setLogin(login);
-        }
-        return reportDao.getUserReportsByCriteria(criteria);
+    public PageBean<ClientReportSearchBean> getPSIReports(String useId, PageParamBean paramBean){
+        return reportDao.getPSIReports(useId,paramBean);
     }
 
     @Override

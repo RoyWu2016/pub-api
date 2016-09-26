@@ -33,6 +33,7 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 
 /***************************************************************************
@@ -222,7 +223,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
 	@Override
-	public List<OrderSearchBean> searchOrders(String userId, String compId, String parentId, String serviceType,
+	public List<SimpleOrderSearchBean> searchOrders(String userId, String compId, String parentId, String serviceType,
 			String startDate, String endDate, String keyWord, String orderStatus, String pageSize, String pageNumber) {
 		try {
 
@@ -243,7 +244,7 @@ public class OrderDaoImpl implements OrderDao {
 				ServiceCallResult result = HttpUtil.issueGetRequest(request);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					@SuppressWarnings("unchecked")
-					PageBean<OrderSearchBean> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
+					PageBean<SimpleOrderSearchBean> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
 					
 					return pageBeanList.getPageItems();
 

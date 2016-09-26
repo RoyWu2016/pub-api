@@ -9,6 +9,7 @@ package com.ai.api.dao;
 import java.util.List;
 
 import com.ai.api.bean.OrderSearchBean;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 
 /***************************************************************************
@@ -44,7 +45,7 @@ public interface OrderDao {
     InspectionBookingBean editOrder(String userId, String orderId,String companyId,String parentId);
     InspectionBookingBean saveOrderByDraft(String userId, String draftId,String companyId,String parentId);
     
-    List<OrderSearchBean> searchOrders(String userId, String compId, String parentId,  String serviceType, String startDate, String endDate, String keyWord,  String orderStatus, String pageSize, String pageNumber);
+    List<SimpleOrderSearchBean> searchOrders(String userId, String compId, String parentId,  String serviceType, String startDate, String endDate, String keyWord,  String orderStatus, String pageSize, String pageNumber);
     
     public List<OrderSearchBean> searchLTOrders(String compId, String orderStatus, String pageSize, String pageNumber, String direction);
 }
