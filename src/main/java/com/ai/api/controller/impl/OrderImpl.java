@@ -6,8 +6,6 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
-import io.swagger.annotations.ApiOperation;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +38,8 @@ import com.ai.api.util.AIUtil;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+
+import io.swagger.annotations.ApiOperation;
 
 /***************************************************************************
  * <PRE>
@@ -233,7 +233,7 @@ public class OrderImpl implements Order {
 		    httpMethod = "POST")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/orders", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/lt-orders", method = RequestMethod.POST)
 	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, @PathVariable String userId, @RequestBody OrderMaster orderMaster) {
 		RestTemplate restTemplate = new RestTemplate();
 		OrderMaster orderMasterObj = null;
