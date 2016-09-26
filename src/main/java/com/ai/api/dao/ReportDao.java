@@ -2,6 +2,7 @@ package com.ai.api.dao;
 
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
@@ -19,7 +20,7 @@ public interface ReportDao {
     PageBean<ClientReportSearchBean> getPSIReports(String userId, PageParamBean paramBean);
     boolean forwardReports(ReportsForwardingBean reportsForwardingBean);
     boolean undoDecision(String login,String reportDetailId);
-    ReportCertificateBean getApprovalCertificate(String reportId, String login, String certType, String reference);
+    ApprovalCertificateBean getApprovalCertificate(String userId, String companyId, String parentId,String productId, String certType);
     boolean confirmApprovalCertificate(ReportCertificateBean reportCertificateBean,String login);
     List<String> getUserReportPdfInfo(String userId, String login, String reportId);
     InputStream downloadPDF(String reportId, String fileName);
