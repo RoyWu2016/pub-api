@@ -4,6 +4,7 @@ package com.ai.api.controller.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ai.api.bean.InspectionDraftProductsAndStepBean;
 import com.ai.api.controller.Draft;
 import com.ai.api.service.DraftService;
 import com.ai.commons.annotation.TokenSecured;
@@ -240,7 +241,7 @@ public class DraftImpl implements Draft {
 		public ResponseEntity<Boolean> saveProducts(
 				@PathVariable("userId") String userId,
 				@PathVariable("draftId") String draftId,
-				@RequestBody List<InspectionProductBookingBean> draftProductsList) {
+				@RequestBody InspectionDraftProductsAndStepBean inspectionDraftProductsAndStepBean) {
 			// TODO Auto-generated method stub
 			try {
 				logger.info("Checking what non-duplicate product id should be delete before update multiple products: ");
@@ -249,14 +250,14 @@ public class DraftImpl implements Draft {
 					 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 				List<InspectionProductBookingBean> list = draft.getProducts();
-				if(list.size() > draftProductsList.size()) {
+				if(list.size() > inspectionDraftProductsAndStepBean.getDraftProductsList().size()) {
 					
 					List<String> needTodeleteProductIdList = new ArrayList<String>();
 					List<String> inputProductIdList = new ArrayList<String>();
 					for(InspectionProductBookingBean each : list) {
 						needTodeleteProductIdList.add(each.getDraftProductId());
 					}
-					for(InspectionProductBookingBean each : draftProductsList) {
+					for(InspectionProductBookingBean each : inspectionDraftProductsAndStepBean.getDraftProductsList()) {
 						inputProductIdList.add(each.getDraftProductId());
 					}
 					needTodeleteProductIdList.removeAll(inputProductIdList);
@@ -273,7 +274,7 @@ public class DraftImpl implements Draft {
 				e.printStackTrace();
 			}
 			
-			for(InspectionProductBookingBean each : draftProductsList) {
+			for(InspectionProductBookingBean each : inspectionDraftProductsAndStepBean.getDraftProductsList()) {
 				try {
 					boolean result = draftService.saveProduct(userId, each);
 					if(!result){
@@ -282,6 +283,15 @@ public class DraftImpl implements Draft {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			}
+			try {
+				boolean result = draftService.saveDraftStep(userId, draftId, inspectionDraftProductsAndStepBean.getDraftSteps());
+				if(!result) {
+					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			return new ResponseEntity<>(HttpStatus.OK);
 		}

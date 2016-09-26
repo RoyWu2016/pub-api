@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
+import com.ai.api.bean.InspectionDraftProductsAndStepBean;
 import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.order.draft.DraftStepBean;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
@@ -52,7 +53,7 @@ public interface Draft {
 	
 	 ResponseEntity<List<DraftOrder>> searchDraft(String userId, String serviceType,String startDate, String endDate, String keyWord, String pageNumber, String pageSize);
 	 
-	ResponseEntity<Boolean> saveProducts(String userId,String draftId,List<InspectionProductBookingBean> draftProductsList);
+	ResponseEntity<Boolean> saveProducts(String userId,String draftId,InspectionDraftProductsAndStepBean draftProductsList);
 	
 	ResponseEntity<Boolean> saveDraftStep(String userId,String draftId,List<DraftStepBean> draftSteps);
 }
