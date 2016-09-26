@@ -11,6 +11,7 @@ import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
@@ -41,52 +42,6 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/reports", method = RequestMethod.GET)
-    public ResponseEntity<List<ReportSearchResultBean>> getUserReportsByCriteria(@PathVariable("userId") String userId,
-                                                                                 @RequestParam(value = "types",required = false) String orderTypeArray,
-                                                                                 @RequestParam(value = "page",required = false) Integer pageNumber,
-                                                                                 @RequestParam(value = "archived",required = false) String archived,
-                                                                                 @RequestParam(value = "start",required = false) String starts,
-                                                                                 @RequestParam(value = "end",required = false) String ends,
-                                                                                 @RequestParam(value = "keyword",required = false) String keywords) {
-
-        ReportSearchCriteriaBean criteriaBean = new ReportSearchCriteriaBean();
-        if(pageNumber==null){
-            pageNumber = 1;
-        }
-        criteriaBean.setPageNumber(pageNumber);
-        criteriaBean.setKeywords(keywords);
-        criteriaBean.setUserID(userId);
-
-        if(archived==null){
-            criteriaBean.setArchived(false);
-        } else {
-            criteriaBean.setArchived(Boolean.valueOf(archived));
-        }
-
-	    ArrayList<String> typeList = new ArrayList<String>();
-	    if(orderTypeArray==null || orderTypeArray.equals("")){
-            String[] allTypes = {"psi","lt","ipc","dupro","clc","ma","pm","ea","stra","ctpat"};
-            Collections.addAll(typeList, allTypes);
-	    }else{
-		    String[] types = orderTypeArray.split(",");
-		    Collections.addAll(typeList, types);
-	    }
-	    criteriaBean.setServiceTypes(typeList);
-
-        criteriaBean.setStartDate(starts);
-        criteriaBean.setEndDate(ends);
-
-        List<ReportSearchResultBean> result = reportService.getUserReportsByCriteria(criteriaBean);
-        if(result!=null){
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    @TokenSecured
     @RequestMapping(value = "/user/{userId}/psi-reports", method = RequestMethod.GET)
     public ResponseEntity<PageBean<ClientReportSearchBean>> getPSIReports (@PathVariable("userId") String userId,
                                                                          @RequestParam(value = "start",required = false) String startDate,
@@ -98,17 +53,17 @@ public class ReportImpl implements Report {
         if (null!=pageNumber&&pageNumber>0)paramBean.setPageNo(pageNumber);
         if (null!=pageSize&&pageSize>0)paramBean.setPageSize(pageSize);
         Map<String, String[]> criterias = new HashMap<String, String[]>();
-        Date now = Calendar.getInstance().getTime();
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, -30);
-        String[] inspectionDate = new String[]{DateUtils.date2String(cal.getTime(),DateUtils.Format.AI_DATE_FORMAT_JSON.getValue())+" - "+DateUtils.date2String(now,DateUtils.Format.AI_DATE_FORMAT_JSON.getValue())};
         if (null!=startDate&&null!=endDate){
-            inspectionDate = new String[]{startDate+" - "+endDate};
+            String[] inspectionDate = new String[]{startDate+" - "+endDate};
+            criterias.put("INSPECTION_DATE",inspectionDate);
         }
-        String[] orderOrPo = new String[]{keywords};
-        criterias.put("ORDERNO-PONUMBER",orderOrPo);
-        criterias.put("INSPECTION_DATE",inspectionDate);
-        paramBean.setCriterias(criterias);
+        if (StringUtils.isNotBlank(keywords)) {
+            String[] orderOrPo = new String[]{keywords};
+            criterias.put("ORDERNO-PONUMBER", orderOrPo);
+        }
+        if (criterias.size()>0) {
+            paramBean.setCriterias(criterias);
+        }
         List<String> item = new ArrayList<String>();
         item.add("inspectionDate");
         paramBean.setOrderItems(item);
@@ -153,14 +108,13 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/report/{reportId}/certificate/{certType}", method = RequestMethod.GET)
-    public ResponseEntity<ReportCertificateBean> getApprovalCertificate(@PathVariable("userId") String userId,
-                                               @PathVariable("reportId") String reportId,
-                                               @PathVariable("certType") String certType,
-                                               @RequestParam(value = "reference",required = false) String reference){
-        ReportCertificateBean reportCertificateBean = reportService.getApprovalCertificate(reportId,userId,certType,reference);
-        if(null!=reportCertificateBean){
-            return new ResponseEntity<>(reportCertificateBean,HttpStatus.OK);
+    @RequestMapping(value = "/user/{userId}/report/{productId}/certificate/{certType}", method = RequestMethod.GET)
+    public ResponseEntity<ApprovalCertificateBean> getApprovalCertificate(@PathVariable("userId") String userId,
+                                                                          @PathVariable("productId") String productId,
+                                                                          @PathVariable("certType") String certType){
+        ApprovalCertificateBean approvalCertificateBean = reportService.getApprovalCertificate(userId,productId,certType);
+        if(null!=approvalCertificateBean){
+            return new ResponseEntity<>(approvalCertificateBean,HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -17,14 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.dao.OrderDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
-import com.ai.api.bean.OrderSearchBean;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.google.common.collect.Lists;
 
 /***************************************************************************
  *<PRE>
@@ -143,7 +143,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 	@Override
-	public List<OrderSearchBean> searchOrders(String userId, String serviceType, String startDate, String endDate,
+	public List<SimpleOrderSearchBean> searchOrders(String userId, String serviceType, String startDate, String endDate,
 			String keyWord, String orderStatus, String pageSize, String pageNumber) throws IOException, AIException {
 		String companyId = "";
 		String parentId = "";
@@ -157,7 +157,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 	
 	@Override
-	public List<OrderSearchBean> searchOrders(String userId, String serviceType, String orderStatus, String pageSize, String pageNumber)  throws IOException, AIException {
+	public List<OrderSearchBean> searchLTOrders(String userId, String serviceType, String orderStatus, String pageSize, String pageNumber)  throws IOException, AIException {
 		String companyId = "";
 		String parentId = "";
 		List<OrderSearchBean> orderSearchList = new ArrayList<OrderSearchBean>();
@@ -177,18 +177,18 @@ public class OrderServiceImpl implements OrderService {
 	private List<OrderSearchBean> searchAllOrders(String userId, String companyId, String parentId,  String serviceType, String startDate, String endDate, String keyWord,  String orderStatus, String pageSize, String pageNumber) {
 		List<OrderSearchBean> orderSearchList = new ArrayList<OrderSearchBean>();
 		
-		orderSearchList = searchPSIOrders(userId, companyId, parentId, serviceType, startDate, endDate, keyWord, orderStatus, pageSize, pageNumber);
-		orderSearchList.addAll(searchLTOrders(companyId, orderStatus, pageSize, pageNumber, "desc"));
+		//orderSearchList = searchPSIOrders(userId, companyId, parentId, serviceType, startDate, endDate, keyWord, orderStatus, pageSize, pageNumber);
+		orderSearchList.addAll(searchLTOrdersList(companyId, orderStatus, pageSize, pageNumber, "desc"));
 		return orderSearchList;
 	}
 	
-	private List<OrderSearchBean> searchLTOrders(String companyId, String orderStatus, String pageSize, String pageNumber, String direction) {
+	private List<OrderSearchBean> searchLTOrdersList(String companyId, String orderStatus, String pageSize, String pageNumber, String direction) {
 		return orderDao.searchLTOrders(companyId, orderStatus, pageSize, pageNumber, direction);
 	}
 	
-	private List<OrderSearchBean> searchPSIOrders(String userId, String compId, String parentId,  String serviceType, String startDate, String endDate, String keyWord,  String orderStatus, String pageSize, String pageNumber) {
+/*	private List<OrderSearchBean> searchPSIOrders(String userId, String compId, String parentId,  String serviceType, String startDate, String endDate, String keyWord,  String orderStatus, String pageSize, String pageNumber) {
 		List<OrderSearchBean> orderSearchList = new ArrayList<OrderSearchBean>();
 		orderSearchList = orderDao.searchOrders(userId, compId, parentId, serviceType, startDate, endDate, keyWord, orderStatus, pageSize, pageNumber);
 		return null != orderSearchList ? orderSearchList : new ArrayList<OrderSearchBean>();
-	}
+	}*/
 }

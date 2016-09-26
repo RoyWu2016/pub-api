@@ -19,6 +19,7 @@ import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportSearchResultBean;
@@ -53,28 +54,6 @@ public class ReportDaoImpl implements ReportDao {
     private ServiceConfig config;
 
     @Override
-    public List<ReportSearchResultBean> getUserReportsByCriteria(ReportSearchCriteriaBean criteria) {
-        String url = config.getMwServiceUrl() + "/service/report/search";
-        try {
-            ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
-            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-
-                return JsonUtil.mapToObject(result.getResponseString(),
-                        new TypeReference<List<ReportSearchResultBean>>() {
-                        });
-
-            } else {
-                logger.error("get reports from middleware error: " + result.getStatusCode() +
-                        ", " + result.getResponseString());
-            }
-
-        } catch (IOException e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-        }
-        return null;
-    }
-
-    @Override
     public PageBean<ClientReportSearchBean> getPSIReports(String userId, PageParamBean paramBean) {
         String url = config.getPsiServiceUrl() + "/report/api/report-list";
         String paramStr = JSON.toJSONString(paramBean);
@@ -85,7 +64,7 @@ public class ReportDaoImpl implements ReportDao {
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 JSONObject jsonObject = JSON.parseObject(result.getResponseString());
-                String reportStr = jsonObject.getString("");
+                String reportStr = jsonObject.getString("pageItems");
                 List<ClientReportSearchBean> reportSearchBeanList = JSON.parseArray(reportStr,ClientReportSearchBean.class);
                 PageBean<ClientReportSearchBean> pageBean= JSON.parseObject(result.getResponseString(),PageBean.class);
                 pageBean.setPageItems(reportSearchBeanList);
@@ -140,20 +119,19 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public ReportCertificateBean getApprovalCertificate(String reportId, String login, String certType, String reference){
-        StringBuilder url = new StringBuilder(config.getMwServiceUrl() + "/service/report/");
+    public ApprovalCertificateBean getApprovalCertificate(String userId, String companyId, String parentId,String productId, String certType){
+        StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/report/api/approval-certificate/report/"+productId);
         try {
-            url = url.append(reportId+"/certificate?login="+login+"&certType="+certType);
-            if (StringUtils.isNotBlank(reference)){
-                url = url.append("&reference="+reference);
-            }
-            GetRequest request = GetRequest.newInstance().setUrl(url.toString());
+            url.append("?approveOrReject="+certType);
+            url.append("&userId="+userId);
+            url.append("&companyId="+companyId);
+            url.append("&parentId="+parentId);
             logger.info("get!!! Url:"+url );
-            ServiceCallResult result = HttpUtil.issueGetRequest(request);
+            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, certType);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                return JSON.parseObject(result.getResponseString(),ReportCertificateBean.class);
+                return JSON.parseObject(result.getResponseString(),ApprovalCertificateBean.class);
             } else {
-                logger.error("getApprovalCertificate from middleware error: " +
+                logger.error("getApprovalCertificate from psi-service error: " +
                         result.getStatusCode() +", " + result.getResponseString());
                 return null;
             }

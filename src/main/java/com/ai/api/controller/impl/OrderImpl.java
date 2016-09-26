@@ -36,6 +36,7 @@ import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 
 import io.swagger.annotations.ApiOperation;
@@ -205,7 +206,7 @@ public class OrderImpl implements Order {
 	@Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/psi-orders", method = RequestMethod.GET)
-	public ResponseEntity<List<OrderSearchBean>> searchOrders(@PathVariable("userId")String userId,
+	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(@PathVariable("userId")String userId,
 													   @RequestParam(value = "service-type", required = false , defaultValue="") String serviceType,
 													   @RequestParam(value = "start", required = false, defaultValue="") String startDate,
 													   @RequestParam(value = "end", required = false , defaultValue="") String endDate,
@@ -213,7 +214,8 @@ public class OrderImpl implements Order {
 													   @RequestParam(value = "status", required = false, defaultValue="") String orderStatus,
 													   @RequestParam(value = "page-size", required = false , defaultValue="20") String pageSize,
 													   @RequestParam(value = "page", required = false , defaultValue="1") String pageNumber) {
-		List<OrderSearchBean> ordersList = new ArrayList<OrderSearchBean>();
+		
+		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
 		try {
 			ordersList = orderService.searchOrders(userId, serviceType,
 					startDate, endDate, keyword, orderStatus,pageSize, pageNumber);
@@ -231,7 +233,7 @@ public class OrderImpl implements Order {
 		    httpMethod = "POST")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/orders", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/lt-orders", method = RequestMethod.POST)
 	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, @PathVariable String userId, @RequestBody OrderMaster orderMaster) {
 		RestTemplate restTemplate = new RestTemplate();
 		OrderMaster orderMasterObj = null;
@@ -249,15 +251,15 @@ public class OrderImpl implements Order {
 	
 	@Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/orders/list", method = RequestMethod.GET)
-	public ResponseEntity<List<OrderSearchBean>> searchOrders(@PathVariable("userId")String userId, 
+    @RequestMapping(value = "/user/{userId}/lt-orders/list", method = RequestMethod.GET)
+	public ResponseEntity<List<OrderSearchBean>> searchLTOrders(@PathVariable("userId")String userId, 
 			@RequestParam(value = "serviceType", required = false , defaultValue="") String serviceType, 
 			@RequestParam(value = "orderStatus", required = false , defaultValue="") String orderStatus, 
 			@RequestParam(value = "pageNo", required = false , defaultValue="1") Integer pageNumber, 
 			@RequestParam(value = "pageSize", required = false , defaultValue="20") Integer pageSize) {
 		List<OrderSearchBean> ordersList = new ArrayList<OrderSearchBean>();
 		try {
-			ordersList = orderService.searchOrders(userId, serviceType, orderStatus, pageSize.toString(), pageNumber.toString());
+			ordersList = orderService.searchLTOrders(userId, serviceType, orderStatus, pageSize.toString(), pageNumber.toString());
 			//if not data found, just return 200 with empty list
 			return new ResponseEntity<List<OrderSearchBean>>(ordersList, HttpStatus.OK);
 		} catch (Exception e) {

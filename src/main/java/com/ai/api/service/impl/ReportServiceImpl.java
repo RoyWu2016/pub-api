@@ -1,11 +1,13 @@
 package com.ai.api.service.impl;
 
+import com.ai.api.bean.UserBean;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ReportDao;
 import com.ai.api.service.ReportService;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
@@ -43,15 +45,6 @@ public class ReportServiceImpl implements ReportService {
     private UserService userService;
 
     @Override
-    public List<ReportSearchResultBean> getUserReportsByCriteria(ReportSearchCriteriaBean criteria){
-        if(criteria.getLogin()==null){
-            String login = userService.getLoginByUserId(criteria.getUserID());//customerDao.getGeneralUser(criteria.getUserID()).getLogin();
-            criteria.setLogin(login);
-        }
-        return reportDao.getUserReportsByCriteria(criteria);
-    }
-
-    @Override
     public PageBean<ClientReportSearchBean> getPSIReports(String useId, PageParamBean paramBean){
         return reportDao.getPSIReports(useId,paramBean);
     }
@@ -71,9 +64,21 @@ public class ReportServiceImpl implements ReportService {
         return reportDao.undoDecision(login,reportDetailId);
     }
     @Override
-    public ReportCertificateBean getApprovalCertificate(String reportId, String userId, String certType, String reference) {
-        String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
-        return reportDao.getApprovalCertificate(reportId,login,certType,reference);
+    public ApprovalCertificateBean getApprovalCertificate(String userId, String productId, String certType) {
+        String companyId = "";
+        String parentId = "";
+        UserBean user = null;
+        try {
+            user = userService.getCustById(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if (null!=user){
+            parentId = user.getCompany().getParentCompanyId();
+            if (parentId == null) parentId = "";
+            companyId = user.getCompany().getId();
+        }
+        return reportDao.getApprovalCertificate(userId,companyId,parentId,productId,certType);
     }
 
     @Override
