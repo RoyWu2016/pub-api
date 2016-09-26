@@ -52,17 +52,17 @@ public class ReportImpl implements Report {
         if (null!=pageNumber&&pageNumber>0)paramBean.setPageNo(pageNumber);
         if (null!=pageSize&&pageSize>0)paramBean.setPageSize(pageSize);
         Map<String, String[]> criterias = new HashMap<String, String[]>();
-        Date now = Calendar.getInstance().getTime();
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, -30);
-        String[] inspectionDate = new String[]{DateUtils.date2String(cal.getTime(),DateUtils.Format.AI_DATE_FORMAT_JSON.getValue())+" - "+DateUtils.date2String(now,DateUtils.Format.AI_DATE_FORMAT_JSON.getValue())};
         if (null!=startDate&&null!=endDate){
-            inspectionDate = new String[]{startDate+" - "+endDate};
+            String[] inspectionDate = new String[]{startDate+" - "+endDate};
+            criterias.put("INSPECTION_DATE",inspectionDate);
         }
-        String[] orderOrPo = new String[]{keywords};
-        criterias.put("ORDERNO-PONUMBER",orderOrPo);
-        criterias.put("INSPECTION_DATE",inspectionDate);
-        paramBean.setCriterias(criterias);
+        if (StringUtils.isNotBlank(keywords)) {
+            String[] orderOrPo = new String[]{keywords};
+            criterias.put("ORDERNO-PONUMBER", orderOrPo);
+        }
+        if (criterias.size()>0) {
+            paramBean.setCriterias(criterias);
+        }
         List<String> item = new ArrayList<String>();
         item.add("inspectionDate");
         paramBean.setOrderItems(item);
