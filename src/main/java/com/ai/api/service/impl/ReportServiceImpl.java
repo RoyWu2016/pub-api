@@ -1,7 +1,18 @@
 package com.ai.api.service.impl;
 
+import java.io.InputStream;
+import java.util.List;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.ai.api.bean.UserBean;
-import com.ai.api.dao.CustomerDao;
 import com.ai.api.dao.ReportDao;
 import com.ai.api.service.ReportService;
 import com.ai.api.service.UserService;
@@ -9,21 +20,8 @@ import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
-import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
-import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
-import com.ai.commons.beans.report.api.ReportCertificateBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
-import java.util.List;
 
 /**
  * Created by yan on 2016/7/25.
@@ -148,4 +146,25 @@ public class ReportServiceImpl implements ReportService {
         }
             return b;
         }
+
+	@Override
+	public ApprovalCertificateBean getReferenceApproveCertificate(String userId, String referenceId,String certType) {
+		// TODO Auto-generated method stub
+		String companyId = "";
+        String parentId = "";
+        UserBean user = null;
+        try {
+            user = userService.getCustById(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if (null!=user){
+            parentId = user.getCompany().getParentCompanyId();
+            if (parentId == null) {
+            	parentId = "";
+            }
+            companyId = user.getCompany().getId();
+        }
+		return reportDao.getReferenceApproveCertificate(userId,referenceId,companyId,parentId,certType);
+	}
 }
