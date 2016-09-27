@@ -1,16 +1,10 @@
 package com.ai.api.controller.impl;
 
-import io.swagger.annotations.ApiOperation;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.ai.aims.services.model.OfficeMaster;
-import com.ai.aims.services.model.ProgramMaster;
-import com.ai.api.bean.*;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -24,6 +18,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.ai.aims.services.model.OfficeMaster;
+import com.ai.aims.services.model.ProgramMaster;
+import com.ai.api.bean.ChecklistSampleSize;
+import com.ai.api.bean.ChecklistSampleSizeChildren;
+import com.ai.api.bean.DropdownListOptionBean;
+import com.ai.api.bean.ProductCategoryDtoBean;
+import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.Parameter;
 import com.ai.api.service.ParameterService;
@@ -33,7 +34,10 @@ import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import com.ai.commons.beans.params.ClassifiedBean;
+import com.ai.commons.beans.params.TextileCategoryBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
+
+import io.swagger.annotations.ApiOperation;
 
 /**
  * Created by Administrator on 2016/6/21 0021.
@@ -158,16 +162,16 @@ public class ParameterImpl implements Parameter {
 	public ResponseEntity<List<DropdownListOptionBean>> getTextileProductCategories() {
 		// TODO Auto-generated method stub
 		logger.info("get getTextileProductCategory");
-		List<ClassifiedBean> result = parameterService.getTextileProductCategories();
+		List<TextileCategoryBean> result = parameterService.getTextileProductCategories();
 		if(result==null){
 			logger.error("getTextileProductCategory not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		List<DropdownListOptionBean> list = new ArrayList<DropdownListOptionBean>();
-		for(ClassifiedBean each : result) {
+		for(TextileCategoryBean each : result) {
 			DropdownListOptionBean bean = new DropdownListOptionBean();
-			bean.setLabel(each.getKey());
-			bean.setValue(each.getValue());
+			bean.setLabel(each.getTextileCategory());
+			bean.setValue(each.getTextileCategory());
 			
 			list.add(bean);
 		}
