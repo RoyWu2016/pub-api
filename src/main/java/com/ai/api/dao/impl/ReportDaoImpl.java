@@ -5,29 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.dao.ReportDao;
-import com.ai.api.util.FTPUtil;
-import com.ai.commons.HttpUtil;
-import com.ai.commons.JsonUtil;
-import com.ai.commons.StringUtils;
-import com.ai.commons.beans.GetRequest;
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.PageParamBean;
-import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
-import com.ai.commons.beans.psi.report.ClientReportSearchBean;
-import com.ai.commons.beans.report.ReportSearchCriteriaBean;
-import com.ai.commons.beans.report.ReportSearchResultBean;
-import com.ai.commons.beans.report.ReportsForwardingBean;
-import com.ai.commons.beans.report.api.ReportCertificateBean;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -40,6 +19,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.dao.ReportDao;
+import com.ai.api.util.FTPUtil;
+import com.ai.commons.HttpUtil;
+import com.ai.commons.beans.GetRequest;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
+import com.ai.commons.beans.psi.report.ClientReportSearchBean;
+import com.ai.commons.beans.report.ReportSearchCriteriaBean;
+import com.ai.commons.beans.report.ReportsForwardingBean;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * Created by yan on 2016/7/25.
@@ -238,5 +232,29 @@ public class ReportDaoImpl implements ReportDao {
 		}
 		return null;
 
+	}
+
+	@Override
+	public ApprovalCertificateBean getReferenceApproveCertificate(String userId,String referenceId,String companyId,String parentId,String certType){
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/report/api/approval-certificate/reference/"+ referenceId);
+        try {
+            url.append("?approveOrReject=" + certType);
+            url.append("&userId=" + userId);
+            url.append("&companyId=" + companyId);
+            url.append("&parentId=" + parentId);
+            logger.info("post !!! Url:"+url );
+            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, certType);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                return JSON.parseObject(result.getResponseString(),ApprovalCertificateBean.class);
+            } else {
+                logger.error("getReferenceApproveCertificate from psi-service error: " +
+                        result.getStatusCode() +", " + result.getResponseString());
+                return null;
+            }
+        }catch (Exception e){
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+        return null;
 	}
 }
