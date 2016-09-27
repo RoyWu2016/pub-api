@@ -207,4 +207,19 @@ public class ReportImpl implements Report {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/report-reference/{referenceId}/undone", method = RequestMethod.PUT)
+	public ResponseEntity<Boolean> undoDecisionForReference(
+			@PathVariable("userId") String userId, 
+			@PathVariable("referenceId") String referenceId) {
+		// TODO Auto-generated method stub
+        boolean result = reportService.undoDecisionForReference(userId,referenceId);
+        if(result){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+	}
 }
