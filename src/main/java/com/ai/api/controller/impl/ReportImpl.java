@@ -188,4 +188,20 @@ public class ReportImpl implements Report {
 			return new ResponseEntity<>("no report pdf file found",HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/reference/{referenceId}/certificate/{certType}", method = RequestMethod.GET)
+	public ResponseEntity<ApprovalCertificateBean> getReferenceApproveCertificate(
+			@PathVariable("userId") String userId, 
+			@PathVariable("referenceId") String referenceId, 
+			@PathVariable("certType") String certType) {
+		// TODO Auto-generated method stub
+        ApprovalCertificateBean approvalCertificateBean = reportService.getReferenceApproveCertificate(userId,referenceId,certType);
+        if(null != approvalCertificateBean){
+            return new ResponseEntity<>(approvalCertificateBean,HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+	}
 }

@@ -1,17 +1,15 @@
 package com.ai.api.service;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
-import com.ai.commons.beans.report.ReportPdfFileInfoBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
-import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
-import com.ai.commons.beans.report.api.ReportCertificateBean;
-
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * Created by yan on 2016/7/25.
@@ -25,4 +23,5 @@ public interface ReportService {
     List<String> getUserReportPdfInfo(String userId, String reportId);
     boolean downloadPDF(String reportId,String fileName,HttpServletResponse httpResponse);
     boolean exportReports(ReportSearchCriteriaBean criteria,HttpServletResponse httpResponse);
+	ApprovalCertificateBean getReferenceApproveCertificate(String userId, String referenceId,String certType);
 }
