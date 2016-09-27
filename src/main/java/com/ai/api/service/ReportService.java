@@ -17,11 +17,11 @@ import com.ai.commons.beans.report.ReportsForwardingBean;
 public interface ReportService {
     PageBean<ClientReportSearchBean> getPSIReports(String useId, PageParamBean paramBean);
     boolean forwardReports(ReportsForwardingBean reportsForwardingBean);
-    boolean undoDecision(String userId,String reportDetailId);
     ApprovalCertificateBean getApprovalCertificate(String userId, String productId, String certType);
     boolean confirmApprovalCertificate(String userId,ApprovalCertificateBean cert);
     List<String> getUserReportPdfInfo(String userId, String reportId);
     boolean downloadPDF(String reportId,String fileName,HttpServletResponse httpResponse);
     boolean exportReports(ReportSearchCriteriaBean criteria,HttpServletResponse httpResponse);
 	ApprovalCertificateBean getReferenceApproveCertificate(String userId, String referenceId,String certType);
+	boolean undoDecisionForReport(String userId, String productId);
 }

@@ -55,12 +55,7 @@ public class ReportServiceImpl implements ReportService {
         }
         return reportDao.forwardReports(reportsForwardingBean);
     }
-
-    @Override
-    public boolean undoDecision(String userId,String reportDetailId){
-        String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
-        return reportDao.undoDecision(login,reportDetailId);
-    }
+    
     @Override
     public ApprovalCertificateBean getApprovalCertificate(String userId, String productId, String certType) {
         String companyId = "";
@@ -166,5 +161,26 @@ public class ReportServiceImpl implements ReportService {
             companyId = user.getCompany().getId();
         }
 		return reportDao.getReferenceApproveCertificate(userId,referenceId,companyId,parentId,certType);
+	}
+
+	@Override
+	public boolean undoDecisionForReport(String userId, String productId) {
+		// TODO Auto-generated method stub
+		String companyId = "";
+        String parentId = "";
+        UserBean user = null;
+        try {
+            user = userService.getCustById(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if (null!=user){
+            parentId = user.getCompany().getParentCompanyId();
+            if (parentId == null) {
+            	parentId = "";
+            }
+            companyId = user.getCompany().getId();
+        }
+		return reportDao.undoDecisionForReport(userId,productId,companyId,parentId);
 	}
 }

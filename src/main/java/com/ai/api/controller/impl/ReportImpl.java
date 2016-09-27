@@ -95,18 +95,6 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/report/{id}/undone", method = RequestMethod.PUT)
-    public ResponseEntity<String> undoDecision(@PathVariable("userId") String userId, @PathVariable("id") String id){
-        boolean b = reportService.undoDecision(userId,id);
-        if(b){
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    @TokenSecured
     @RequestMapping(value = "/user/{userId}/report/{productId}/certificate/{certType}", method = RequestMethod.GET)
     public ResponseEntity<ApprovalCertificateBean> getApprovalCertificate(@PathVariable("userId") String userId,
                                                                           @PathVariable("productId") String productId,
@@ -200,6 +188,21 @@ public class ReportImpl implements Report {
         ApprovalCertificateBean approvalCertificateBean = reportService.getReferenceApproveCertificate(userId,referenceId,certType);
         if(null != approvalCertificateBean){
             return new ResponseEntity<>(approvalCertificateBean,HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/report/{productId}/undone", method = RequestMethod.PUT)
+	public ResponseEntity<Boolean> undoDecisionForReport(
+			@PathVariable("userId") String userId, 
+			@PathVariable("productId") String productId) {
+		// TODO Auto-generated method stub
+        boolean result = reportService.undoDecisionForReport(userId,productId);
+        if(result){
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

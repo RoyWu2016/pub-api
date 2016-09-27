@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -78,27 +79,6 @@ public class ReportDaoImpl implements ReportDao {
         String url = config.getMwServiceUrl() + "/service/report/forward";
         try {
             ServiceCallResult result = HttpUtil.issuePostRequest(url, null, reportsForwardingBean);
-            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                return true;
-            } else {
-                logger.error("forward reports from middleware error: " + result.getStatusCode() +
-                        ", " + result.getResponseString());
-                return false;
-            }
-        }catch (Exception e){
-            logger.error(ExceptionUtils.getStackTrace(e));
-            return false;
-        }
-    }
-
-    @Override
-    public boolean undoDecision(String login,String reportDetailId){
-        String url = config.getMwServiceUrl() + "/service/report/undo";
-        try {
-            url = url+"/"+reportDetailId+"?login="+login;
-            GetRequest request = GetRequest.newInstance().setUrl(url);
-            logger.info("get!!! Url:"+url );
-            ServiceCallResult result = HttpUtil.issueGetRequest(request);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 return true;
             } else {
@@ -256,5 +236,28 @@ public class ReportDaoImpl implements ReportDao {
             logger.error(ExceptionUtils.getStackTrace(e));
         }
         return null;
+	}
+
+	@Override
+	public boolean undoDecisionForReport(String userId, String productId, String companyId, String parentId) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/report/api/undo-decision/report/"+ productId);
+        try {
+            url.append("?userId=" + userId);
+            url.append("&companyId=" + companyId);
+            url.append("&parentId=" + parentId);
+            logger.info("post !!! Url:"+url );
+            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,new HashMap<>());
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                return true;
+            } else {
+                logger.error("getReferenceApproveCertificate from psi-service error: " +
+                        result.getStatusCode() +", " + result.getResponseString());
+                return false;
+            }
+        }catch (Exception e){
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+        return false;
 	}
 }
