@@ -24,4 +24,5 @@ public interface Report {
 	ResponseEntity<String> exportReports(String userId,String starts,String ends,HttpServletResponse httpResponse);
 	ResponseEntity<ApprovalCertificateBean> getReferenceApproveCertificate(String userId,String referenceId, String certType);
 	ResponseEntity<Boolean> undoDecisionForReport(String userId,String productId);
+	ResponseEntity<Boolean> undoDecisionForReference(String userId,String referenceId);
 }

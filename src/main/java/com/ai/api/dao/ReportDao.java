@@ -23,4 +23,5 @@ public interface ReportDao {
     InputStream exportReports(ReportSearchCriteriaBean criteria);
 	ApprovalCertificateBean getReferenceApproveCertificate(String userId,String referenceId,String companyId,String parentId,String certType);
 	boolean undoDecisionForReport(String userId, String productId, String companyId, String parentId);
+	boolean undoDecisionForReference(String userId, String referenceId, String companyId, String parentId);
 }
