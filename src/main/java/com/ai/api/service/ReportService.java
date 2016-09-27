@@ -24,4 +24,5 @@ public interface ReportService {
     boolean downloadPDF(String reportId,String fileName,HttpServletResponse httpResponse);
     boolean exportReports(ReportSearchCriteriaBean criteria,HttpServletResponse httpResponse);
 	ApprovalCertificateBean getReferenceApproveCertificate(String userId, String referenceId,String certType);
+	boolean undoDecisionForReport(String userId, String productId);
 }

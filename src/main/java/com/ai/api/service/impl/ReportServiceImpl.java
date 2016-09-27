@@ -167,4 +167,25 @@ public class ReportServiceImpl implements ReportService {
         }
 		return reportDao.getReferenceApproveCertificate(userId,referenceId,companyId,parentId,certType);
 	}
+
+	@Override
+	public boolean undoDecisionForReport(String userId, String productId) {
+		// TODO Auto-generated method stub
+		String companyId = "";
+        String parentId = "";
+        UserBean user = null;
+        try {
+            user = userService.getCustById(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if (null!=user){
+            parentId = user.getCompany().getParentCompanyId();
+            if (parentId == null) {
+            	parentId = "";
+            }
+            companyId = user.getCompany().getId();
+        }
+		return reportDao.undoDecisionForReport(userId,productId,companyId,parentId);
+	}
 }
