@@ -82,9 +82,21 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public boolean confirmApprovalCertificate(String userId,ReportCertificateBean reportCertificateBean){
-        String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
-        return reportDao.confirmApprovalCertificate(reportCertificateBean,login);
+    public boolean confirmApprovalCertificate(String userId,ApprovalCertificateBean cert){
+        String companyId = "";
+        String parentId = "";
+        UserBean user = null;
+        try {
+            user = userService.getCustById(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if (null!=user){
+            parentId = user.getCompany().getParentCompanyId();
+            if (parentId == null) parentId = "";
+            companyId = user.getCompany().getId();
+        }
+        return reportDao.confirmApprovalCertificate(userId,companyId,parentId,cert);
     }
 
     @Override

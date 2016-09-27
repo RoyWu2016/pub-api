@@ -20,7 +20,7 @@ public interface Report {
     ResponseEntity<String> forwardReports(String userId,String ids,ReportsForwardingBean reportsForwardingBean);
     ResponseEntity<String> undoDecision(String userId,String id);
     ResponseEntity<ApprovalCertificateBean> getApprovalCertificate(String userId, String productId, String certType);
-    ResponseEntity<String> confirmApprovalCertificate(String userId,String reportId,ReportCertificateBean reportCertificateBean);
+    ResponseEntity<String> confirmApprovalCertificate(String userId,ApprovalCertificateBean cert);
     ResponseEntity<List<String>> getUserReportPdfInfo(String userId, String reportId);
     ResponseEntity<String> downloadPDF(String userId,String reportId,String fileName,HttpServletResponse httpResponse);
 	ResponseEntity<String> exportReports(String userId,String starts,String ends,HttpServletResponse httpResponse);
