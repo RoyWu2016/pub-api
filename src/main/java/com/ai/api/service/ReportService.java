@@ -21,7 +21,7 @@ public interface ReportService {
     boolean forwardReports(ReportsForwardingBean reportsForwardingBean);
     boolean undoDecision(String userId,String reportDetailId);
     ApprovalCertificateBean getApprovalCertificate(String userId, String productId, String certType);
-    boolean confirmApprovalCertificate(String userId,ReportCertificateBean reportCertificateBean);
+    boolean confirmApprovalCertificate(String userId,ApprovalCertificateBean cert);
     List<String> getUserReportPdfInfo(String userId, String reportId);
     boolean downloadPDF(String reportId,String fileName,HttpServletResponse httpResponse);
     boolean exportReports(ReportSearchCriteriaBean criteria,HttpServletResponse httpResponse);
