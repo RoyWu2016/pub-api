@@ -191,7 +191,7 @@ public class ReportImpl implements Report {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/reference/{referenceId}/certificate/{certType}", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/report-reference/{referenceId}/certificate/{certType}", method = RequestMethod.GET)
 	public ResponseEntity<ApprovalCertificateBean> getReferenceApproveCertificate(
 			@PathVariable("userId") String userId, 
 			@PathVariable("referenceId") String referenceId, 
