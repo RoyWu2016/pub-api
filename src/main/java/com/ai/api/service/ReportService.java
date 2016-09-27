@@ -24,4 +24,5 @@ public interface ReportService {
     boolean exportReports(ReportSearchCriteriaBean criteria,HttpServletResponse httpResponse);
 	ApprovalCertificateBean getReferenceApproveCertificate(String userId, String referenceId,String certType);
 	boolean undoDecisionForReport(String userId, String productId);
+	boolean undoDecisionForReference(String userId, String referenceId);
 }

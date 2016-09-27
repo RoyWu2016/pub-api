@@ -183,4 +183,25 @@ public class ReportServiceImpl implements ReportService {
         }
 		return reportDao.undoDecisionForReport(userId,productId,companyId,parentId);
 	}
+
+	@Override
+	public boolean undoDecisionForReference(String userId, String referenceId) {
+		// TODO Auto-generated method stub
+		String companyId = "";
+        String parentId = "";
+        UserBean user = null;
+        try {
+            user = userService.getCustById(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if (null!=user){
+            parentId = user.getCompany().getParentCompanyId();
+            if (parentId == null) {
+            	parentId = "";
+            }
+            companyId = user.getCompany().getId();
+        }
+		return reportDao.undoDecisionForReference(userId,referenceId,companyId,parentId);
+	}
 }
