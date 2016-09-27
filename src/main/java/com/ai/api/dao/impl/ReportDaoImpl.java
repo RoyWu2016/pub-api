@@ -93,27 +93,6 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public boolean undoDecision(String login,String reportDetailId){
-        String url = config.getMwServiceUrl() + "/service/report/undo";
-        try {
-            url = url+"/"+reportDetailId+"?login="+login;
-            GetRequest request = GetRequest.newInstance().setUrl(url);
-            logger.info("get!!! Url:"+url );
-            ServiceCallResult result = HttpUtil.issueGetRequest(request);
-            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                return true;
-            } else {
-                logger.error("forward reports from middleware error: " + result.getStatusCode() +
-                        ", " + result.getResponseString());
-                return false;
-            }
-        }catch (Exception e){
-            logger.error(ExceptionUtils.getStackTrace(e));
-            return false;
-        }
-    }
-
-    @Override
     public ApprovalCertificateBean getApprovalCertificate(String userId, String companyId, String parentId,String productId, String certType){
         StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/report/api/approval-certificate/report/"+productId);
         try {
