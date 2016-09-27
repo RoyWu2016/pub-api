@@ -55,12 +55,7 @@ public class ReportServiceImpl implements ReportService {
         }
         return reportDao.forwardReports(reportsForwardingBean);
     }
-
-    @Override
-    public boolean undoDecision(String userId,String reportDetailId){
-        String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
-        return reportDao.undoDecision(login,reportDetailId);
-    }
+    
     @Override
     public ApprovalCertificateBean getApprovalCertificate(String userId, String productId, String certType) {
         String companyId = "";

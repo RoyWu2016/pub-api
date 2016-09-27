@@ -17,7 +17,6 @@ import com.ai.commons.beans.report.ReportsForwardingBean;
 public interface ReportService {
     PageBean<ClientReportSearchBean> getPSIReports(String useId, PageParamBean paramBean);
     boolean forwardReports(ReportsForwardingBean reportsForwardingBean);
-    boolean undoDecision(String userId,String reportDetailId);
     ApprovalCertificateBean getApprovalCertificate(String userId, String productId, String certType);
     boolean confirmApprovalCertificate(String userId,ApprovalCertificateBean cert);
     List<String> getUserReportPdfInfo(String userId, String reportId);

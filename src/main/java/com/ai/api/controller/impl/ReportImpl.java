@@ -93,18 +93,6 @@ public class ReportImpl implements Report {
         }
     }
 
-//    @Override
-//    @TokenSecured
-//    @RequestMapping(value = "/user/{userId}/report/{id}/undone", method = RequestMethod.PUT)
-//    public ResponseEntity<String> undoDecision(@PathVariable("userId") String userId, @PathVariable("id") String id){
-//        boolean b = reportService.undoDecision(userId,id);
-//        if(b){
-//            return new ResponseEntity<>(HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
     @Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/report/{productId}/certificate/{certType}", method = RequestMethod.GET)
