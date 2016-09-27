@@ -136,11 +136,11 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/report/{reportId}/pdfInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{userId}/report/{productId}/pdfInfo", method = RequestMethod.GET)
     public ResponseEntity<List<String>> getUserReportPdfInfo(@PathVariable("userId") String userId,
-                                                                            @PathVariable("reportId") String reportId){
+                                                                            @PathVariable("productId") String productId){
 
-        List<String> result = reportService.getUserReportPdfInfo(userId, reportId);
+        List<String> result = reportService.getUserReportPdfInfo(userId, productId);
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
@@ -150,16 +150,16 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/report/{reportId}/filename/{fileName}/pdf", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{userId}/report/{productId}/filename/{fileName}/pdf", method = RequestMethod.GET)
     public ResponseEntity<String> downloadPDF(@PathVariable("userId") String userId,
-                                              @PathVariable("reportId") String reportId,
+                                              @PathVariable("productId") String productId,
                                               @PathVariable("fileName") String fileName,
                                               HttpServletResponse httpResponse) {
         logger.info("downloadPDF ...");
         logger.info("userId : "+userId);
-        logger.info("reportId : "+reportId);
+        logger.info("reportId : "+ productId);
         logger.info("fileName : "+fileName);
-        boolean b = reportService.downloadPDF(reportId,fileName,httpResponse);
+        boolean b = reportService.downloadPDF(productId,fileName,httpResponse);
         if(b){
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
