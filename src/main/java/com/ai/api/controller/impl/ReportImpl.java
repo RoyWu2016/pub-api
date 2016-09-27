@@ -11,6 +11,7 @@ import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.psi.ReportDetailBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
@@ -122,18 +123,12 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/report/{reportId}", method = RequestMethod.PUT)
-    public ResponseEntity<String> confirmApprovalCertificate(@PathVariable("userId") String userId, @PathVariable("reportId") String reportId,
-                                                 @RequestBody ReportCertificateBean reportCertificateBean) {
+    @RequestMapping(value = "/user/{userId}/report", method = RequestMethod.PUT)
+    public ResponseEntity<String> confirmApprovalCertificate(@PathVariable("userId") String userId,
+                                                 @RequestBody ApprovalCertificateBean cert) {
         logger.info("confirmApprovalCertificate ...");
-        logger.info(reportCertificateBean.toString());
-        ReportDetail reportDetail = reportCertificateBean.getReportDetail();
-        if (null==reportDetail) {
-            reportDetail = new ReportDetail();
-        }
-        reportDetail.setUuid(reportId);
-        reportCertificateBean.setReportDetail(reportDetail);
-        boolean b = reportService.confirmApprovalCertificate(userId,reportCertificateBean);
+        logger.info(cert.toString());
+        boolean b = reportService.confirmApprovalCertificate(userId,cert);
         if(b){
             return new ResponseEntity<>(HttpStatus.OK);
         } else {

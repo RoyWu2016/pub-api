@@ -126,7 +126,7 @@ public class ReportDaoImpl implements ReportDao {
             url.append("&userId="+userId);
             url.append("&companyId="+companyId);
             url.append("&parentId="+parentId);
-            logger.info("get!!! Url:"+url );
+            logger.info("post !!! Url:"+url );
             ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, certType);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 return JSON.parseObject(result.getResponseString(),ApprovalCertificateBean.class);
@@ -142,21 +142,18 @@ public class ReportDaoImpl implements ReportDao {
     }
 
     @Override
-    public boolean confirmApprovalCertificate(ReportCertificateBean reportCertificateBean,String login){
-        String url = config.getMwServiceUrl() + "/service/report/confirmApprovalCertificate";
+    public boolean confirmApprovalCertificate(String userId, String companyId, String parentId,ApprovalCertificateBean cert){
+        StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/report/api/confirm-approve-reject");
         try {
-            String jsonStr = JSON.toJSONString(reportCertificateBean);
-            Map<String,String> paramsMap = new HashMap<>();
-            paramsMap.put("login",login);
-            paramsMap.put("reportCertificateBean",jsonStr);
-            logger.info("POST URL:"+url);
-            logger.info("login : "+login);
-            logger.info("reportCertificateBean : "+reportCertificateBean.toString());
-            ServiceCallResult result = HttpUtil.issuePostRequest(url, null, paramsMap);
+            url.append("?userId="+userId);
+            url.append("&companyId="+companyId);
+            url.append("&parentId="+parentId);
+            logger.info("post !!! Url:"+url );
+            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, cert);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 return true;
             } else {
-                logger.error("confirmApprovalCertificate from middleware error: " + result.getStatusCode() +
+                logger.error("confirmApprovalCertificate from psi-service error: " + result.getStatusCode() +
                         ", " + result.getResponseString());
                 return false;
             }
