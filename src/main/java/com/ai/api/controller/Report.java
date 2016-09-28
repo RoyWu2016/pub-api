@@ -24,5 +24,5 @@ public interface Report {
 	ResponseEntity<ApprovalCertificateBean> getReferenceApproveCertificate(String userId,String referenceId, String certType);
 	ResponseEntity<Boolean> undoDecisionForReport(String userId,String productId);
 	ResponseEntity<Boolean> undoDecisionForReference(String userId,String referenceId);
-	ResponseEntity<String> clientForwardReport(String userId, String reportIds,ReportsForwardingBean reportsForwardingBean);
+	ResponseEntity<String> forwardReports(String userId, String reportIds,ReportsForwardingBean reportsForwardingBean);
 }
