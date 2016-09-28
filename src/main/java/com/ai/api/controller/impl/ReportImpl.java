@@ -124,7 +124,7 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/report/{productId}/pdfInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{userId}/report/{productId}/pdf-info", method = RequestMethod.GET)
     public ResponseEntity<List<String>> getUserReportPdfInfo(@PathVariable("userId") String userId,
                                                                             @PathVariable("productId") String productId){
 
