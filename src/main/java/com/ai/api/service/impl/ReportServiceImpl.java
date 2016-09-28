@@ -197,13 +197,13 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean) {
+	public boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean,String userId) {
 		// TODO Auto-generated method stub
 		String companyId = "";
         String parentId = "";
         UserBean user = null;
         try {
-            user = userService.getCustById(reportsForwardingBean.getUserId());
+            user = userService.getCustById(userId);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -213,10 +213,7 @@ public class ReportServiceImpl implements ReportService {
             	parentId = "";
             }
             companyId = user.getCompany().getId();
-            if(null == reportsForwardingBean.getLogin()) {
-            	reportsForwardingBean.setLogin(user.getLogin());
-            }
         }
-		return reportDao.clientForwardReport(reportsForwardingBean, companyId, parentId);
+		return reportDao.clientForwardReport(reportsForwardingBean, companyId, parentId,userId);
 	}
 }
