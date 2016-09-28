@@ -16,7 +16,6 @@ import com.ai.commons.beans.report.ReportsForwardingBean;
  */
 public interface Report {
     ResponseEntity<PageBean<ClientReportSearchBean>> getPSIReports(String userId,String startDate,String endDate,String keywords,Integer pageNumber,Integer pageSize);
-    ResponseEntity<String> forwardReports(String userId,String ids,ReportsForwardingBean reportsForwardingBean);
     ResponseEntity<ApprovalCertificateBean> getApprovalCertificate(String userId, String productId, String certType);
     ResponseEntity<String> confirmApprovalCertificate(String userId,ApprovalCertificateBean cert);
     ResponseEntity<List<String>> getUserReportPdfInfo(String userId, String reportId);
@@ -25,4 +24,5 @@ public interface Report {
 	ResponseEntity<ApprovalCertificateBean> getReferenceApproveCertificate(String userId,String referenceId, String certType);
 	ResponseEntity<Boolean> undoDecisionForReport(String userId,String productId);
 	ResponseEntity<Boolean> undoDecisionForReference(String userId,String referenceId);
+	ResponseEntity<String> clientForwardReport(String userId, String reportIds,ReportsForwardingBean reportsForwardingBean);
 }
