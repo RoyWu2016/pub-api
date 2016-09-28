@@ -24,5 +24,5 @@ public interface ReportService {
 	ApprovalCertificateBean getReferenceApproveCertificate(String userId, String referenceId,String certType);
 	boolean undoDecisionForReport(String userId, String productId);
 	boolean undoDecisionForReference(String userId, String referenceId);
-	boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean);
+	boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean, String userId);
 }

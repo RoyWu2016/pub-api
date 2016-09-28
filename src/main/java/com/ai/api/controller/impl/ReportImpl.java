@@ -216,9 +216,8 @@ public class ReportImpl implements Report {
         if (StringUtils.isBlank(reportsForwardingBean.getTo())){
             return new ResponseEntity<>("the field 'to' can not be null!",HttpStatus.BAD_REQUEST);
         }
-        reportsForwardingBean.setUserId(userId);
         reportsForwardingBean.setIds(reportIds);
-        boolean b = reportService.clientForwardReport(reportsForwardingBean);
+        boolean b = reportService.clientForwardReport(reportsForwardingBean,userId);
         if(b){
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
