@@ -79,24 +79,6 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/reports/{ids}/forwarded", method = RequestMethod.POST)
-    public ResponseEntity<String> forwardReports(@PathVariable("userId") String userId, @PathVariable("ids") String ids,
-                                                 @RequestBody ReportsForwardingBean reportsForwardingBean) {
-        if (StringUtils.isBlank(reportsForwardingBean.getTo())){
-            return new ResponseEntity<>("the field 'to' can not be null!",HttpStatus.BAD_REQUEST);
-        }
-        reportsForwardingBean.setUserId(userId);
-        reportsForwardingBean.setIds(ids);
-        boolean b = reportService.forwardReports(reportsForwardingBean);
-        if(b){
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    @TokenSecured
     @RequestMapping(value = "/user/{userId}/report/{productId}/certificate/{certType}", method = RequestMethod.GET)
     public ResponseEntity<ApprovalCertificateBean> getApprovalCertificate(@PathVariable("userId") String userId,
                                                                           @PathVariable("productId") String productId,
@@ -219,6 +201,27 @@ public class ReportImpl implements Report {
 		// TODO Auto-generated method stub
         boolean result = reportService.undoDecisionForReference(userId,referenceId);
         if(result){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+	}
+	
+  	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/reports/{reportIds}/forwarded", method = RequestMethod.POST)
+	public ResponseEntity<String> clientForwardReport(
+			@PathVariable("userId") String userId, 
+			@PathVariable("reportIds") String reportIds,
+			@RequestBody ReportsForwardingBean reportsForwardingBean) {
+		// TODO Auto-generated method stub
+        if (StringUtils.isBlank(reportsForwardingBean.getTo())){
+            return new ResponseEntity<>("the field 'to' can not be null!",HttpStatus.BAD_REQUEST);
+        }
+        reportsForwardingBean.setUserId(userId);
+        reportsForwardingBean.setIds(reportIds);
+        boolean b = reportService.clientForwardReport(reportsForwardingBean);
+        if(b){
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
