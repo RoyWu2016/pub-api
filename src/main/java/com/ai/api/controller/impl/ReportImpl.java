@@ -210,7 +210,7 @@ public class ReportImpl implements Report {
   	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/reports/{reportIds}/forwarded", method = RequestMethod.POST)
-	public ResponseEntity<String> clientForwardReport(
+	public ResponseEntity<String> forwardReports(
 			@PathVariable("userId") String userId, 
 			@PathVariable("reportIds") String reportIds,
 			@RequestBody ReportsForwardingBean reportsForwardingBean) {
