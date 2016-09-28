@@ -46,15 +46,6 @@ public class ReportServiceImpl implements ReportService {
     public PageBean<ClientReportSearchBean> getPSIReports(String useId, PageParamBean paramBean){
         return reportDao.getPSIReports(useId,paramBean);
     }
-
-    @Override
-    public boolean forwardReports(ReportsForwardingBean reportsForwardingBean){
-        if(reportsForwardingBean.getLogin()==null){
-            String login = userService.getLoginByUserId(reportsForwardingBean.getUserId());//customerDao.getGeneralUser(reportsForwardingBean.getUserId()).getLogin();
-            reportsForwardingBean.setLogin(login);
-        }
-        return reportDao.forwardReports(reportsForwardingBean);
-    }
     
     @Override
     public ApprovalCertificateBean getApprovalCertificate(String userId, String productId, String certType) {
@@ -203,5 +194,29 @@ public class ReportServiceImpl implements ReportService {
             companyId = user.getCompany().getId();
         }
 		return reportDao.undoDecisionForReference(userId,referenceId,companyId,parentId);
+	}
+
+	@Override
+	public boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean) {
+		// TODO Auto-generated method stub
+		String companyId = "";
+        String parentId = "";
+        UserBean user = null;
+        try {
+            user = userService.getCustById(reportsForwardingBean.getUserId());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if (null != user){
+            parentId = user.getCompany().getParentCompanyId();
+            if (parentId == null) {
+            	parentId = "";
+            }
+            companyId = user.getCompany().getId();
+            if(null == reportsForwardingBean.getLogin()) {
+            	reportsForwardingBean.setLogin(user.getLogin());
+            }
+        }
+		return reportDao.clientForwardReport(reportsForwardingBean, companyId, parentId);
 	}
 }

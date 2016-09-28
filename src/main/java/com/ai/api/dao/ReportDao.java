@@ -15,7 +15,6 @@ import com.ai.commons.beans.report.ReportsForwardingBean;
  */
 public interface ReportDao {
     PageBean<ClientReportSearchBean> getPSIReports(String userId, PageParamBean paramBean);
-    boolean forwardReports(ReportsForwardingBean reportsForwardingBean);
     ApprovalCertificateBean getApprovalCertificate(String userId, String companyId, String parentId,String productId, String certType);
     boolean confirmApprovalCertificate(String userId, String companyId, String parentId,ApprovalCertificateBean cert);
     List<String> getUserReportPdfInfo(String userId, String login, String reportId);
@@ -24,4 +23,5 @@ public interface ReportDao {
 	ApprovalCertificateBean getReferenceApproveCertificate(String userId,String referenceId,String companyId,String parentId,String certType);
 	boolean undoDecisionForReport(String userId, String productId, String companyId, String parentId);
 	boolean undoDecisionForReference(String userId, String referenceId, String companyId, String parentId);
+	boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean, String companyId, String parentId);
 }
