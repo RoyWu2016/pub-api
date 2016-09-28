@@ -153,9 +153,10 @@ public class ReportDaoImpl implements ReportDao {
 
     @Override
     public InputStream downloadPDF(String reportId,String fileName){
-        String url = config.getReportServiceUrl() + "/attachment/download-pdf/"+reportId+"?fileName=" + fileName;
         InputStream inputStream = null;
         try {
+	        String url = config.getReportServiceUrl() + "/attachment/download-pdf/" +
+			        reportId+"?fileName=" + URLEncoder.encode(fileName, "UTF-8");
             HttpClient httpclient = HttpClients.createDefault();
             HttpGet httpget = new HttpGet(url);
             HttpResponse response = httpclient.execute(httpget);
