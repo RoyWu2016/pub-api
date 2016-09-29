@@ -1,5 +1,7 @@
 package com.ai.api.controller.impl;
 
+import io.swagger.annotations.ApiOperation;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,8 +40,6 @@ import com.ai.commons.beans.params.ClassifiedBean;
 import com.ai.commons.beans.params.GeoCountryCallingCodeBean;
 import com.ai.commons.beans.params.TextileCategoryBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
-
-import io.swagger.annotations.ApiOperation;
 
 /**
  * Created by Administrator on 2016/6/21 0021.
@@ -212,18 +212,25 @@ public class ParameterImpl implements Parameter {
 		    httpMethod = "GET")
 	@TokenSecured
 	@RequestMapping(value = "/parameter/lt-offices", method = RequestMethod.GET)
-	public ResponseEntity<List<OfficeMaster>> searchOffice() {
+	public ResponseEntity<List<DropdownListOptionBean>> searchOffice() {
 		RestTemplate restTemplate = new RestTemplate();
 		List<OfficeMaster> offices = new ArrayList<OfficeMaster>();
+		List<DropdownListOptionBean> items = new ArrayList<DropdownListOptionBean>();
 		try {
 			AIUtil.addRestTemplateMessageConverter(restTemplate);
 			String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/office/search/all").toString();
 			offices = Arrays.asList(restTemplate.getForObject(url, OfficeMaster[].class));
+			for(OfficeMaster office : offices) {
+				DropdownListOptionBean item = new DropdownListOptionBean();
+				item.setLabel(office.getName());
+				item.setValue(office.getName());
+				items.add(item);
+			}
 		} catch (Exception e) {
 			logger.error("search office error: " + ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<List<OfficeMaster>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<List<DropdownListOptionBean>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<List<OfficeMaster>>(offices, HttpStatus.OK);
+		return new ResponseEntity<List<DropdownListOptionBean>>(items, HttpStatus.OK);
 	}	
 	
 	@ApiOperation(value = "Search Program API",		
@@ -232,18 +239,25 @@ public class ParameterImpl implements Parameter {
 		    httpMethod = "GET")
 	@TokenSecured
 	@RequestMapping(value = "/parameter/lt-programs", method = RequestMethod.GET)
-	public ResponseEntity<List<ProgramMaster>> searchPrograms() {
+	public ResponseEntity<List<DropdownListOptionBean>> searchPrograms() {
 		RestTemplate restTemplate = new RestTemplate();
 		List<ProgramMaster> programs = new ArrayList<ProgramMaster>();
+		List<DropdownListOptionBean> items = new ArrayList<DropdownListOptionBean>();
 		try {
 			AIUtil.addRestTemplateMessageConverter(restTemplate);
 			String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/program/search/all").toString();
 			programs = Arrays.asList(restTemplate.getForObject(url, ProgramMaster[].class));
+			for(ProgramMaster program : programs) {
+				DropdownListOptionBean item = new DropdownListOptionBean();
+				item.setLabel(program.getProgramName());
+				item.setValue(program.getId());
+				items.add(item);
+			}
 		} catch (Exception e) {
 			logger.error("search office error: " + ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<List<ProgramMaster>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<List<DropdownListOptionBean>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<List<ProgramMaster>>(programs, HttpStatus.OK);
+		return new ResponseEntity<List<DropdownListOptionBean>>(items, HttpStatus.OK);
 	}
 	
 	@Override

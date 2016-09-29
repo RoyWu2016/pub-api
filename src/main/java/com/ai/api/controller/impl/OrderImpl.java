@@ -284,7 +284,7 @@ public class OrderImpl implements Order {
 		List<TagTestMap> tests = new ArrayList<TagTestMap>();
 		try {
 			AIUtil.addRestTemplateMessageConverter(restTemplate);
-			String url = new StringBuilder("http://localhost:8080/AIMS-services-api").append("/tag/search/tests").toString();
+			String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/tag/search/tests").toString();
 			
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
 			        .queryParam("page", pageNumber - 1)
