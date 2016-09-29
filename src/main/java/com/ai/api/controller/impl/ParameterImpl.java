@@ -22,6 +22,7 @@ import com.ai.aims.services.model.OfficeMaster;
 import com.ai.aims.services.model.ProgramMaster;
 import com.ai.api.bean.ChecklistSampleSize;
 import com.ai.api.bean.ChecklistSampleSizeChildren;
+import com.ai.api.bean.CountryBean;
 import com.ai.api.bean.DropdownListOptionBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
@@ -34,6 +35,7 @@ import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import com.ai.commons.beans.params.ClassifiedBean;
+import com.ai.commons.beans.params.GeoCountryCallingCodeBean;
 import com.ai.commons.beans.params.TextileCategoryBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 
@@ -86,15 +88,23 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/countries", method = RequestMethod.GET)
-	public ResponseEntity<List<String>> getCountryList() {
+	public ResponseEntity<List<CountryBean>> getCountryList() {
 
-		List<String> result = parameterService.getCountryList();
-
+		List<GeoCountryCallingCodeBean> result = parameterService.getCountryList();
 		if(result==null){
 			logger.error("country list not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		List<CountryBean> countryBeanList = new ArrayList<CountryBean>();
+		for(GeoCountryCallingCodeBean each : result) {
+			CountryBean bean = new CountryBean();
+			bean.setCode(each.getCallingCode());
+			bean.setLabel(each.getCountry());
+			bean.setValue(each.getAbbreviation());
+			
+			countryBeanList.add(bean);
+		}
+		return new ResponseEntity<>(countryBeanList, HttpStatus.OK);
 	}
 
 	@Override

@@ -30,6 +30,7 @@ import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import com.ai.commons.beans.params.ClassifiedBean;
+import com.ai.commons.beans.params.GeoCountryCallingCodeBean;
 import com.ai.commons.beans.params.TextileCategoryBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 import com.alibaba.fastjson.JSON;
@@ -122,18 +123,19 @@ public class ParameterDaoImpl implements ParameterDao {
 
 	@Override
 	// @Cacheable(value="countryListCache", key="#root.methodName")
-	public List<String> getCountryList() {
-		List<String> countryList = null;
+	public List<GeoCountryCallingCodeBean> getCountryList() {
+		List<GeoCountryCallingCodeBean> countryList = null;
 		LOGGER.info("try to getCountryList from redis ...");
 		String jsonString = RedisUtil.get("countryListCache");
-		countryList = JSON.parseArray(jsonString, String.class);
+		countryList = JSON.parseArray(jsonString, GeoCountryCallingCodeBean.class);
 		if (null == countryList) {
-			String SysProductFamilyBeanURL = config.getParamServiceUrl() + "/p/list-country";
+			String SysProductFamilyBeanURL = config.getParamServiceUrl() + "/geography/calling-code/listAll";
+			LOGGER.info("requesting url: " + SysProductFamilyBeanURL.toString());
 			GetRequest request7 = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
 			try {
 				ServiceCallResult result = HttpUtil.issueGetRequest(request7);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-					countryList = JSON.parseArray(result.getResponseString(), String.class);
+					countryList = JSON.parseArray(result.getResponseString(), GeoCountryCallingCodeBean.class);
 					
 					LOGGER.info("saving getCountryList");
 					RedisUtil.set("countryListCache", JSON.toJSONString(countryList),RedisUtil.HOUR * 24);
