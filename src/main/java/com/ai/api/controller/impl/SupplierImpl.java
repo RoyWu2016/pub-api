@@ -150,7 +150,7 @@ public class SupplierImpl implements Supplier {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/order/{orderId}/supplier", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> supplierConfirmOrder(
+	public ResponseEntity<Boolean> supplierConfirm(
 			@PathVariable("userId") String userId, 
 			@PathVariable("orderId") String orderId,
 			@RequestParam("inspectionDate") String inspectionDateString,
