@@ -153,8 +153,8 @@ public class SupplierImpl implements Supplier {
 	public ResponseEntity<Boolean> supplierConfirmOrder(
 			@PathVariable("userId") String userId, 
 			@PathVariable("orderId") String orderId,
-			@RequestParam("inspectionDateString") String inspectionDateString,
-			@RequestParam("containReadyTime") String containReadyTime,
+			@RequestParam("inspectionDate") String inspectionDateString,
+			@RequestParam("containerReadyDate") String containReadyTime,
 			@RequestBody OrderFactoryBean orderFactoryBean) throws IOException, AIException {
 		if (factoryService.supplierConfirmOrder(orderId,inspectionDateString,containReadyTime,orderFactoryBean)) {
 			return new ResponseEntity<>(HttpStatus.OK);
