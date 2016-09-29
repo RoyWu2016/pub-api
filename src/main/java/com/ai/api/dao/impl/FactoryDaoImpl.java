@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import com.ai.api.bean.FileDetailBean;
 import com.ai.api.bean.SupplierContactInfoBean;
 import com.ai.api.bean.SupplierDetailBean;
-import com.ai.api.bean.UserBean;
 import com.ai.api.bean.legacy.AttachmentDocBean;
 import com.ai.api.bean.legacy.ClientFactoryBean;
 import com.ai.api.bean.legacy.FactorySearchBean;
@@ -30,6 +29,7 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
+import com.ai.commons.beans.psi.OrderFactoryBean;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
@@ -294,12 +294,35 @@ public class FactoryDaoImpl implements FactoryDao {
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return JsonUtil.mapToObject(result.getResponseString(), String.class);
 			} else {
-				LOGGER.error("create Supplier from factory service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+				LOGGER.error("create Supplier from factory service error: " + result.getStatusCode() + ", "+ result.getResponseString());
 			}
 		} catch (IOException e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
+	}
+
+	@Override
+	public boolean supplierConfirmOrder(String orderId, String inspectionDateString, String containReadyTime,
+			OrderFactoryBean orderFactoryBean) {
+		// TODO Auto-generated method stub
+		StringBuilder sbUrl = new StringBuilder(config.getPsiServiceUrl() + "/order/api/supplierConfirmOrder")
+		.append("?orderId=" + orderId)
+		.append("&inspectionDateString=" + inspectionDateString)
+		.append("&containReadyTime=" + containReadyTime);
+		
+		LOGGER.info("requesting url: " + sbUrl.toString());
+		try{
+			ServiceCallResult result = HttpUtil.issuePostRequest(sbUrl.toString(), null, orderFactoryBean);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return true;
+			} else {
+				LOGGER.error("supplierConfirmOrder factory service error: " + result.getStatusCode() + ", "+ result.getResponseString());
+			}
+		}catch (IOException e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		
+		return false;
 	}
 }
