@@ -15,6 +15,8 @@ import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import com.ai.commons.beans.params.ClassifiedBean;
+import com.ai.commons.beans.params.GeoCountryCallingCodeBean;
+import com.ai.commons.beans.params.TextileCategoryBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 
 /***************************************************************************
@@ -43,7 +45,7 @@ public interface ParameterDao {
 
 	List<ProductFamilyDtoBean> getProductFamilyList();
 
-	List<String> getCountryList();
+	List<GeoCountryCallingCodeBean> getCountryList();
 
 	Map<String,List<ChecklistTestSampleSizeBean>> getTestSampleSizeList();
 
@@ -53,7 +55,7 @@ public interface ParameterDao {
 
 	List<SysProductTypeBean> getProductTypeList();
 	
-	List<ClassifiedBean> getTextileProductCategories();
+	List<TextileCategoryBean> getTextileProductCategories();
 	
 	List<ClassifiedBean> getAiOffices();
 }

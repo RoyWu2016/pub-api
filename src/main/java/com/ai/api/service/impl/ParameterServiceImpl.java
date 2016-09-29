@@ -3,6 +3,10 @@ package com.ai.api.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.dao.ParameterDao;
@@ -11,11 +15,9 @@ import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import com.ai.commons.beans.params.ClassifiedBean;
+import com.ai.commons.beans.params.GeoCountryCallingCodeBean;
+import com.ai.commons.beans.params.TextileCategoryBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
 
 /**
  * Created by Administrator on 2016/6/21 0021.
@@ -39,7 +41,7 @@ public class ParameterServiceImpl implements ParameterService {
     }
 
 	@Override
-	public List<String>  getCountryList(){
+	public List<GeoCountryCallingCodeBean>  getCountryList(){
 		return paramDao.getCountryList();
 	}
 
@@ -64,7 +66,7 @@ public class ParameterServiceImpl implements ParameterService {
     }
 
 	@Override
-	public List<ClassifiedBean> getTextileProductCategories() {
+	public List<TextileCategoryBean> getTextileProductCategories() {
 		// TODO Auto-generated method stub
 		return paramDao.getTextileProductCategories();
 	}

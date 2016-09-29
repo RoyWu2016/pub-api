@@ -1,12 +1,14 @@
 package com.ai.api.controller.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.controller.Report;
 import com.ai.api.service.ReportService;
-import com.ai.commons.DateUtils;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.PageBean;
@@ -14,10 +16,7 @@ import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
-import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
-import com.ai.commons.beans.report.api.ReportCertificateBean;
-import com.ai.commons.beans.report.api.ReportDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,7 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/psi-reports", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{userId}/reports", method = RequestMethod.GET)
     public ResponseEntity<PageBean<ClientReportSearchBean>> getPSIReports (@PathVariable("userId") String userId,
                                                                          @RequestParam(value = "start",required = false) String startDate,
                                                                          @RequestParam(value = "end",required = false) String endDate,
@@ -78,36 +77,6 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/reports/{ids}/forwarded", method = RequestMethod.POST)
-    public ResponseEntity<String> forwardReports(@PathVariable("userId") String userId, @PathVariable("ids") String ids,
-                                                 @RequestBody ReportsForwardingBean reportsForwardingBean) {
-        if (StringUtils.isBlank(reportsForwardingBean.getTo())){
-            return new ResponseEntity<>("the field 'to' can not be null!",HttpStatus.BAD_REQUEST);
-        }
-        reportsForwardingBean.setUserId(userId);
-        reportsForwardingBean.setIds(ids);
-        boolean b = reportService.forwardReports(reportsForwardingBean);
-        if(b){
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    @TokenSecured
-    @RequestMapping(value = "/user/{userId}/report/{id}/undone", method = RequestMethod.PUT)
-    public ResponseEntity<String> undoDecision(@PathVariable("userId") String userId, @PathVariable("id") String id){
-        boolean b = reportService.undoDecision(userId,id);
-        if(b){
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    @TokenSecured
     @RequestMapping(value = "/user/{userId}/report/{productId}/certificate/{certType}", method = RequestMethod.GET)
     public ResponseEntity<ApprovalCertificateBean> getApprovalCertificate(@PathVariable("userId") String userId,
                                                                           @PathVariable("productId") String productId,
@@ -122,18 +91,12 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/report/{reportId}", method = RequestMethod.PUT)
-    public ResponseEntity<String> confirmApprovalCertificate(@PathVariable("userId") String userId, @PathVariable("reportId") String reportId,
-                                                 @RequestBody ReportCertificateBean reportCertificateBean) {
+    @RequestMapping(value = "/user/{userId}/report", method = RequestMethod.PUT)
+    public ResponseEntity<String> confirmApprovalCertificate(@PathVariable("userId") String userId,
+                                                 @RequestBody ApprovalCertificateBean cert) {
         logger.info("confirmApprovalCertificate ...");
-        logger.info(reportCertificateBean.toString());
-        ReportDetail reportDetail = reportCertificateBean.getReportDetail();
-        if (null==reportDetail) {
-            reportDetail = new ReportDetail();
-        }
-        reportDetail.setUuid(reportId);
-        reportCertificateBean.setReportDetail(reportDetail);
-        boolean b = reportService.confirmApprovalCertificate(userId,reportCertificateBean);
+        logger.info(cert.toString());
+        boolean b = reportService.confirmApprovalCertificate(userId,cert);
         if(b){
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
@@ -143,11 +106,11 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/report/{reportId}/pdfInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{userId}/report/{productId}/pdf-info", method = RequestMethod.GET)
     public ResponseEntity<List<String>> getUserReportPdfInfo(@PathVariable("userId") String userId,
-                                                                            @PathVariable("reportId") String reportId){
+                                                                            @PathVariable("productId") String productId){
 
-        List<String> result = reportService.getUserReportPdfInfo(userId, reportId);
+        List<String> result = reportService.getUserReportPdfInfo(userId, productId);
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
@@ -157,16 +120,16 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/report/{reportId}/filename/{fileName}/pdf", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{userId}/report/{productId}/filename/{fileName}/pdf", method = RequestMethod.GET)
     public ResponseEntity<String> downloadPDF(@PathVariable("userId") String userId,
-                                              @PathVariable("reportId") String reportId,
+                                              @PathVariable("productId") String productId,
                                               @PathVariable("fileName") String fileName,
                                               HttpServletResponse httpResponse) {
         logger.info("downloadPDF ...");
         logger.info("userId : "+userId);
-        logger.info("reportId : "+reportId);
+        logger.info("reportId : "+ productId);
         logger.info("fileName : "+fileName);
-        boolean b = reportService.downloadPDF(reportId,fileName,httpResponse);
+        boolean b = reportService.downloadPDF(productId,fileName,httpResponse);
         if(b){
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
@@ -194,5 +157,71 @@ public class ReportImpl implements Report {
 		} else {
 			return new ResponseEntity<>("no report pdf file found",HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/report-reference/{referenceId}/certificate/{certType}", method = RequestMethod.GET)
+	public ResponseEntity<ApprovalCertificateBean> getReferenceApproveCertificate(
+			@PathVariable("userId") String userId, 
+			@PathVariable("referenceId") String referenceId, 
+			@PathVariable("certType") String certType) {
+		// TODO Auto-generated method stub
+        ApprovalCertificateBean approvalCertificateBean = reportService.getReferenceApproveCertificate(userId,referenceId,certType);
+        if(null != approvalCertificateBean){
+            return new ResponseEntity<>(approvalCertificateBean,HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/report/{productId}/undone", method = RequestMethod.PUT)
+	public ResponseEntity<Boolean> undoDecisionForReport(
+			@PathVariable("userId") String userId, 
+			@PathVariable("productId") String productId) {
+		// TODO Auto-generated method stub
+        boolean result = reportService.undoDecisionForReport(userId,productId);
+        if(result){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/report-reference/{referenceId}/undone", method = RequestMethod.PUT)
+	public ResponseEntity<Boolean> undoDecisionForReference(
+			@PathVariable("userId") String userId, 
+			@PathVariable("referenceId") String referenceId) {
+		// TODO Auto-generated method stub
+        boolean result = reportService.undoDecisionForReference(userId,referenceId);
+        if(result){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+	}
+	
+  	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/reports/{reportIds}/forwarded", method = RequestMethod.POST)
+	public ResponseEntity<String> forwardReports(
+			@PathVariable("userId") String userId, 
+			@PathVariable("reportIds") String reportIds,
+			@RequestBody ReportsForwardingBean reportsForwardingBean) {
+		// TODO Auto-generated method stub
+        if (StringUtils.isBlank(reportsForwardingBean.getTo())){
+            return new ResponseEntity<>("the field 'to' can not be null!",HttpStatus.BAD_REQUEST);
+        }
+        reportsForwardingBean.setIds(reportIds);
+        boolean b = reportService.clientForwardReport(reportsForwardingBean,userId);
+        if(b){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 	}
 }

@@ -30,6 +30,8 @@ import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import com.ai.commons.beans.params.ClassifiedBean;
+import com.ai.commons.beans.params.GeoCountryCallingCodeBean;
+import com.ai.commons.beans.params.TextileCategoryBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -121,18 +123,19 @@ public class ParameterDaoImpl implements ParameterDao {
 
 	@Override
 	// @Cacheable(value="countryListCache", key="#root.methodName")
-	public List<String> getCountryList() {
-		List<String> countryList = null;
+	public List<GeoCountryCallingCodeBean> getCountryList() {
+		List<GeoCountryCallingCodeBean> countryList = null;
 		LOGGER.info("try to getCountryList from redis ...");
 		String jsonString = RedisUtil.get("countryListCache");
-		countryList = JSON.parseArray(jsonString, String.class);
+		countryList = JSON.parseArray(jsonString, GeoCountryCallingCodeBean.class);
 		if (null == countryList) {
-			String SysProductFamilyBeanURL = config.getParamServiceUrl() + "/p/list-country";
+			String SysProductFamilyBeanURL = config.getParamServiceUrl() + "/geography/calling-code/listAll";
+			LOGGER.info("requesting url: " + SysProductFamilyBeanURL.toString());
 			GetRequest request7 = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
 			try {
 				ServiceCallResult result = HttpUtil.issueGetRequest(request7);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-					countryList = JSON.parseArray(result.getResponseString(), String.class);
+					countryList = JSON.parseArray(result.getResponseString(), GeoCountryCallingCodeBean.class);
 					
 					LOGGER.info("saving getCountryList");
 					RedisUtil.set("countryListCache", JSON.toJSONString(countryList),RedisUtil.HOUR * 24);
@@ -347,22 +350,25 @@ public class ParameterDaoImpl implements ParameterDao {
 	}
 
 	@Override
-	public List<ClassifiedBean> getTextileProductCategories() {
+	public List<TextileCategoryBean> getTextileProductCategories() {
 		// TODO Auto-generated method stub
-		List<ClassifiedBean> proTypeList = null ;
+		List<TextileCategoryBean> proTypeList = null ;
 		LOGGER.info("try to getTextileProductCategory from redis ...");
 		String jsonStringTextileProductCategory = RedisUtil.hget("textileProductCategoryCache","TEXTILE_PRODUCT_CATEGORIES");
-		proTypeList = JSON.parseArray(jsonStringTextileProductCategory, ClassifiedBean.class);
+		proTypeList = JSON.parseArray(jsonStringTextileProductCategory, TextileCategoryBean.class);
 		if(null == proTypeList) {
-			String baseUrl = config.getParamServiceUrl() + "/systemconfig/classified/list/TEXTILE_PRODUCT_CATEGORIES";
-			GetRequest request = GetRequest.newInstance().setUrl(baseUrl);
+			  StringBuilder url = new StringBuilder(config.getParamServiceUrl());
+			   url.append("/product/textileCategory/list?offset=").append(0)
+			   .append("&limit=").append(25)
+			   .append("&criteria=").append("%7B%7D") //"%7B%7D" = "{}";
+			   .append("&sort=").append("[TEXTILE_CATEGORY,ASC]");
 			try {
-				LOGGER.info("send for request: " + baseUrl);
-				ServiceCallResult result = HttpUtil.issueGetRequest(request);
+				LOGGER.info("send for request: " + url.toString());
+				ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					JSONObject object = JSONObject.parseObject(result.getResponseString());
 					Object arrayStr = object.get("content");
-					proTypeList = JSON.parseArray(arrayStr + "", ClassifiedBean.class);
+					proTypeList = JSON.parseArray(arrayStr + "", TextileCategoryBean.class);
 					
 					LOGGER.info("saving getTextileProductCategory");
 					RedisUtil.set("textileProductCategoryCache", JSON.toJSONString(proTypeList),RedisUtil.HOUR * 24);
