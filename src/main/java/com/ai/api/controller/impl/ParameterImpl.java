@@ -34,6 +34,7 @@ import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import com.ai.commons.beans.params.ClassifiedBean;
+import com.ai.commons.beans.params.TextileCategoryBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 
 import io.swagger.annotations.ApiOperation;
@@ -161,16 +162,16 @@ public class ParameterImpl implements Parameter {
 	public ResponseEntity<List<DropdownListOptionBean>> getTextileProductCategories() {
 		// TODO Auto-generated method stub
 		logger.info("get getTextileProductCategory");
-		List<ClassifiedBean> result = parameterService.getTextileProductCategories();
+		List<TextileCategoryBean> result = parameterService.getTextileProductCategories();
 		if(result==null){
 			logger.error("getTextileProductCategory not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		List<DropdownListOptionBean> list = new ArrayList<DropdownListOptionBean>();
-		for(ClassifiedBean each : result) {
+		for(TextileCategoryBean each : result) {
 			DropdownListOptionBean bean = new DropdownListOptionBean();
-			bean.setLabel(each.getKey());
-			bean.setValue(each.getValue());
+			bean.setLabel(each.getTextileCategory());
+			bean.setValue(each.getTextileCategory());
 			
 			list.add(bean);
 		}
