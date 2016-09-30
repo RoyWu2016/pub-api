@@ -3,15 +3,15 @@ package com.ai.api.controller;
 import java.util.List;
 import java.util.Map;
 
-import com.ai.api.bean.ChecklistSampleSize;
 import org.springframework.http.ResponseEntity;
 
+import com.ai.api.bean.ChecklistSampleSize;
+import com.ai.api.bean.CountryBean;
+import com.ai.api.bean.DropdownListOptionBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
-import com.ai.api.bean.DropdownListOptionBean;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
-import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 
 /**
  * Created by Henry Yue on 2016/6/21 0021.
@@ -22,7 +22,7 @@ public interface Parameter {
 
     ResponseEntity<List<ProductFamilyDtoBean>> getProductFamilyList();
 
-	ResponseEntity<List<String>> getCountryList();
+	ResponseEntity<List<CountryBean>> getCountryList();
 
 	ResponseEntity<List<ChecklistSampleSize>> getTestSampleSizeList();
 

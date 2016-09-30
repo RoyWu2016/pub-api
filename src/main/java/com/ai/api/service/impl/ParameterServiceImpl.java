@@ -15,6 +15,7 @@ import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import com.ai.commons.beans.params.ClassifiedBean;
+import com.ai.commons.beans.params.GeoCountryCallingCodeBean;
 import com.ai.commons.beans.params.TextileCategoryBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 
@@ -40,7 +41,7 @@ public class ParameterServiceImpl implements ParameterService {
     }
 
 	@Override
-	public List<String>  getCountryList(){
+	public List<GeoCountryCallingCodeBean>  getCountryList(){
 		return paramDao.getCountryList();
 	}
 
