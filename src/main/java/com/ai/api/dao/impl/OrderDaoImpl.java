@@ -184,7 +184,7 @@ public class OrderDaoImpl implements OrderDao {
             url.append("/order/api/editOrder?userId=").append(userId).
                     append("&companyId=").append(companyId).
                     append("&parentId=").append(parentId).
-                    append("&draftId=").append(orderId);
+                    append("&orderId=").append(orderId);
             logger.info("Get!!! url :"+url);
             GetRequest request = GetRequest.newInstance().setUrl(url.toString());
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
