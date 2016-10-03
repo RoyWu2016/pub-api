@@ -8,13 +8,9 @@ package com.ai.api.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.ResponseEntity;
 
-import com.ai.aims.services.model.OrderMaster;
 import com.ai.aims.services.model.TagTestMap;
-import com.ai.api.bean.OrderSearchBean;
 
 /***************************************************************************
  *<PRE>
@@ -22,7 +18,7 @@ import com.ai.api.bean.OrderSearchBean;
  *
  *  Package Name    : com.ai.api.controller.impl
  *
- *  File Name       : LTOrder.java
+ *  File Name       : LabTest.java
  *
  *  Creation Date   : Sep 3, 2016
  *
@@ -36,9 +32,8 @@ import com.ai.api.bean.OrderSearchBean;
  *</PRE>
  ***************************************************************************/
 
-public interface LTOrder {
+public interface LabTest {
 
-	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, String userId, OrderMaster orderMaster);
-	
-	public ResponseEntity<List<OrderSearchBean>> searchLTOrders(String userId, String serviceType, String orderStatus, Integer pageNumber, Integer pageSize);
+	public ResponseEntity<List<TagTestMap>> searchLTTests(String userId, List<String> countryName, List<String> productCategory, List<String> keywords, Integer pageNumber, Integer pageSize);
+
 }
