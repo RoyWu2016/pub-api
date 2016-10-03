@@ -9,13 +9,8 @@ package com.ai.api.controller;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.ResponseEntity;
 
-import com.ai.aims.services.model.OrderMaster;
-import com.ai.aims.services.model.TagTestMap;
-import com.ai.api.bean.OrderSearchBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 
 /***************************************************************************
@@ -59,11 +54,4 @@ public interface Order {
     ResponseEntity<Map<String, Object>> saveOrderByDraft(String userId,String draftId,String orderId);
     
     ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(String userId, String serviceType,String startDate, String endDate, String keyWord, String orderStatus, String pageNumber, String pageSize);
-
-	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, String userId, OrderMaster orderMaster);
-	
-	public ResponseEntity<List<OrderSearchBean>> searchLTOrders(String userId, String serviceType, String orderStatus, Integer pageNumber, Integer pageSize);
-	
-	public ResponseEntity<List<TagTestMap>> searchLTTests(String userId, List<String> countryName, List<String> productCategory, List<String> keywords, Integer pageNumber, Integer pageSize);
-
 }
