@@ -3,13 +3,16 @@ package com.ai.api.controller.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,7 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.APIFileService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.fileservice.FileMetaBean;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 /***************************************************************************
  * <PRE>
@@ -95,6 +99,25 @@ public class FileAPIImpl implements FileAPI {
 			output.write(buffer, 0, length);
 		}
 		return true;
+	}
+	
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/file/{fileId}base64", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, String>> getFileBase64(
+			@PathVariable("userId") String userId, 
+			@PathVariable("fileId") String fileId) throws IOException {
+		Map<String, String> result = new HashMap<String, String>();
+		InputStream inputStream = myFileService.getFileService().getFile(fileId);
+		String fileStr = null;
+		if(inputStream!=null) {
+			byte[] data = IOUtils.toByteArray(inputStream);
+			fileStr = Base64.encode(data);
+		}else{
+			fileStr = "";
+		}
+		result.put("base64", fileStr);
+		return new ResponseEntity<>(result,HttpStatus.OK);
 	}
 
 	@Override
