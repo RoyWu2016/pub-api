@@ -103,7 +103,7 @@ public class FileAPIImpl implements FileAPI {
 	
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/file/{fileId}base64", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/file/{fileId}/base64", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, String>> getFileBase64(
 			@PathVariable("userId") String userId, 
 			@PathVariable("fileId") String fileId) throws IOException {
