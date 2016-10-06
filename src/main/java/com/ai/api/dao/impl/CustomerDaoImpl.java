@@ -14,21 +14,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.dao.CustomerDao;
-import com.ai.commons.HttpUtil;
-import com.ai.commons.JsonUtil;
-import com.ai.commons.beans.GetRequest;
-import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.customer.GeneralUserViewBean;
-import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
-import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
-import com.ai.commons.beans.payment.PaymentSearchResultBean;
-import com.ai.commons.beans.payment.api.PaymentActionLogBean;
-import com.ai.commons.beans.user.GeneralUserBean;
-import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -47,6 +32,24 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.ai.api.bean.EmployeeBean;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.dao.CustomerDao;
+import com.ai.api.util.RedisUtil;
+import com.ai.commons.HttpUtil;
+import com.ai.commons.JsonUtil;
+import com.ai.commons.beans.GetRequest;
+import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.customer.GeneralUserViewBean;
+import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
+import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import com.ai.commons.beans.payment.api.PaymentActionLogBean;
+import com.ai.commons.beans.user.GeneralUserBean;
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /***************************************************************************
  * <PRE>
@@ -368,5 +371,39 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return false;
+	}
+
+	@Override
+	public EmployeeBean getEmployeeProfile(String employeeId) {
+		// TODO Auto-generated method stub
+		EmployeeBean generalUserBean = null;
+		LOGGER.info("try to getEmployeeProfile from redis ...");
+		String jsonString = RedisUtil.get("employeeCache");
+		if(null != jsonString) {
+			generalUserBean = JSON.parseObject(jsonString).toJavaObject(EmployeeBean.class);
+		}
+		StringBuilder sb = new StringBuilder("https://202.66.128.138:8491/user-service/user/" + employeeId);
+		GetRequest request = GetRequest.newInstance().setUrl(sb.toString());
+		try {
+			if(null == generalUserBean) {
+				logger.info("requesting url: " + sb.toString());
+				ServiceCallResult result = HttpUtil.issueGetRequest(request);
+				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					generalUserBean = JsonUtil.mapToObject(result.getResponseString(), EmployeeBean.class);
+					logger.info("saving employee into redis employee id: " + employeeId);
+					RedisUtil.set("employeeCache", JSON.toJSONString(generalUserBean),RedisUtil.HOUR * 2);
+					return generalUserBean;
+				}else {
+					logger.error("getEmployeeProfile from user-service error: " + result.getStatusCode() +", " + result.getResponseString());
+					return null;
+				}
+			}else {
+				logger.info("get employee from redis successfully employee id: " + employeeId);
+				return generalUserBean;
+			}
+		} catch (IOException e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
 	}
 }
