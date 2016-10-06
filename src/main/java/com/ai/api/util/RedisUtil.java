@@ -1,18 +1,16 @@
 package com.ai.api.util;
 
-import com.ai.api.config.ServiceConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.alibaba.fastjson.JSON;
-
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
+
+import com.ai.api.config.ServiceConfig;
+import com.alibaba.fastjson.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 /***************************************************************************
  * <PRE>
@@ -53,6 +51,7 @@ public class RedisUtil {
 	protected static ReentrantLock lockPool = new ReentrantLock();
 	protected static ReentrantLock lockJedis = new ReentrantLock();
 	public static final int HOUR = 60 * 60; //1 hours
+	public static final int MINUTE = 60; //1 minute
 
 	private static RedisUtil instance ;
 	//private static Jedis jedis;
