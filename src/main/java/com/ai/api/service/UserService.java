@@ -13,7 +13,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ai.api.bean.*;
+import com.ai.api.bean.BookingPreferenceBean;
+import com.ai.api.bean.CompanyBean;
+import com.ai.api.bean.CompanyLogoBean;
+import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.EmployeeBean;
+import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
@@ -81,6 +86,8 @@ public interface UserService {
     boolean logPaymentAction(String userId, PaymentActionLogBean logBean);
 
     String getLoginByUserId(String userId);
+
+    EmployeeBean getEmployeeProfile(String employeeId);
 
 //    String getCompanyIdByUserId(String userId)throws IOException, AIException;
 }
