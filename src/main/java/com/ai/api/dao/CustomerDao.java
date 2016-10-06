@@ -4,6 +4,9 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import com.ai.api.bean.EmployeeBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
@@ -12,7 +15,6 @@ import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.user.GeneralUserBean;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface CustomerDao {
 
@@ -43,4 +45,6 @@ public interface CustomerDao {
 	List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String login, String orders);
 
 	boolean logPaymentAction(String userId, PaymentActionLogBean logBean);
+
+	EmployeeBean getEmployeeProfile(String employeeId);
 }

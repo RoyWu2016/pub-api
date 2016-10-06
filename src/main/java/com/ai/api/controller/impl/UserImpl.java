@@ -11,17 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ai.api.bean.BookingPreferenceBean;
-import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.ContactInfoBean;
-import com.ai.api.bean.UserBean;
-import com.ai.api.controller.User;
-import com.ai.api.exception.AIException;
-import com.ai.api.service.UserService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +21,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ai.api.bean.BookingPreferenceBean;
+import com.ai.api.bean.CompanyBean;
+import com.ai.api.bean.CompanyLogoBean;
+import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.EmployeeBean;
+import com.ai.api.bean.UserBean;
+import com.ai.api.controller.User;
+import com.ai.api.exception.AIException;
+import com.ai.api.service.UserService;
+import com.ai.api.util.RedisUtil;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 
 /***************************************************************************
  * <PRE>
@@ -148,8 +151,7 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/password", method = RequestMethod.PUT)
-	public ResponseEntity<ServiceCallResult> updateUserPassword(@PathVariable("userId") String userId,
-	                                                            @RequestBody HashMap<String, String> pwdMap)
+	public ResponseEntity<ServiceCallResult> updateUserPassword(@PathVariable("userId") String userId,@RequestBody HashMap<String, String> pwdMap)
 			throws IOException, AIException {
 		System.out.println("Updating User password: " + userId);
 
@@ -229,6 +231,21 @@ public class UserImpl implements User {
 		logger.info("creating a new account . . . . . ");
 		if (userService.createNewAccount(clientInfoBean)) {
 			return new ResponseEntity<>(true, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/employee/{employeeId}", method = RequestMethod.GET)
+	public ResponseEntity<EmployeeBean> getEmployeeProfile(
+			@PathVariable("employeeId") String employeeId) throws IOException, AIException {
+		// TODO Auto-generated method stub
+		logger.info("getEmployeeProfile employeeId: " + employeeId);
+		EmployeeBean cust = userService.getEmployeeProfile(employeeId);
+		if (cust != null) {
+			return new ResponseEntity<>(cust, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

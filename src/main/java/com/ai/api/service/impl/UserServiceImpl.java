@@ -36,6 +36,7 @@ import com.ai.api.bean.CompanyLogoBean;
 import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.bean.CustomAQLBean;
 import com.ai.api.bean.CustomizedProductType;
+import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.MainBean;
 import com.ai.api.bean.MinQuantityToBeReadyBean;
 import com.ai.api.bean.MultiReferenceBean;
@@ -881,4 +882,11 @@ public class UserServiceImpl implements UserService {
 	public boolean logPaymentAction(String userId, PaymentActionLogBean logBean){
 		return customerDao.logPaymentAction(userId, logBean);
 	}
+
+	@Override
+	public EmployeeBean getEmployeeProfile(String employeeId) {
+		// TODO Auto-generated method stub
+		return customerDao.getEmployeeProfile(employeeId);
+	}
+
 }
