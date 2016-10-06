@@ -204,7 +204,8 @@ public class DraftImpl implements Draft {
 			if(null != newDraft) {
 				return new ResponseEntity<>(newDraft, HttpStatus.OK);
 			}else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				logger.error("can't get price for draft " + draftId);
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
 			logger.error("calculate Pricing error: " + ExceptionUtils.getFullStackTrace(e));
