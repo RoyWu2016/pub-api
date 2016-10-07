@@ -119,7 +119,7 @@ public class OrderImpl implements Order {
 				map.put("data", orderBean);
 				return new ResponseEntity<>(map, HttpStatus.OK);
 			} else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
 			logger.error("error in getOrderDetail",e);
