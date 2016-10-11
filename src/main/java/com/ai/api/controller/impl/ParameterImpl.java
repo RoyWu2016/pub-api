@@ -1,9 +1,12 @@
 package com.ai.api.controller.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -22,6 +25,7 @@ import com.ai.aims.services.model.OfficeMaster;
 import com.ai.aims.services.model.ProgramMaster;
 import com.ai.api.bean.ChecklistSampleSize;
 import com.ai.api.bean.ChecklistSampleSizeChildren;
+import com.ai.api.bean.ChinaTimeBean;
 import com.ai.api.bean.CountryBean;
 import com.ai.api.bean.DropdownListOptionBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
@@ -267,4 +271,21 @@ public class ParameterImpl implements Parameter {
 		}
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
+	
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/server-time", method = RequestMethod.GET)
+	public ResponseEntity<ChinaTimeBean> getChinaTime() {
+		// TODO Auto-generated method stub
+		ChinaTimeBean chinaTimeBean = new ChinaTimeBean();
+		Calendar cale = Calendar.getInstance();  
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss",Locale.ENGLISH);
+		int unitTimeStamp = (int) (System.currentTimeMillis()/1000);
+		chinaTimeBean.setDatetime(sdf.format(cale.getTime()));
+		chinaTimeBean.setTimezone("UTC+8");
+		chinaTimeBean.setUnixTimeStamp(unitTimeStamp);
+		
+		return new ResponseEntity<>(chinaTimeBean,HttpStatus.OK);
+	}
+	
 }

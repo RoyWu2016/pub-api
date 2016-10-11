@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 
 import com.ai.api.bean.ChecklistSampleSize;
+import com.ai.api.bean.ChinaTimeBean;
 import com.ai.api.bean.CountryBean;
 import com.ai.api.bean.DropdownListOptionBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
@@ -35,4 +36,6 @@ public interface Parameter {
     ResponseEntity<List<DropdownListOptionBean>> getTextileProductCategories();
     
     ResponseEntity<List<DropdownListOptionBean>> getAiOffices();
+
+	ResponseEntity<ChinaTimeBean> getChinaTime();
 }
