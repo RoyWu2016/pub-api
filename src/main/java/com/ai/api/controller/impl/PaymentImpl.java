@@ -68,7 +68,8 @@ public class PaymentImpl implements Payment {
 	                                                                    @RequestParam(value = "start",required = false) String start,
 	                                                                    @RequestParam(value = "end",required = false) String end,
 	                                                                    @RequestParam(value = "keyword",required = false) String keywords,
-	                                                                    @RequestParam(value = "page",required = false, defaultValue = "1") Integer page) {
+	                                                                    @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
+	                                                                    @RequestParam(value = "pagesize",required = false, defaultValue = "20") Integer pagesize) {
 		logger.info("get PaymentList----userId["+userId+"] | paid["+paid+"] | start["+start+"] | end["+end+"] | keyword["+keywords+"] | page["+page+"]");
 		Map<String, String[]> criterias = new HashMap<String, String[]>();
 		List<String> orderItems = new ArrayList<String>();
@@ -81,6 +82,7 @@ public class PaymentImpl implements Payment {
 		criteriaBean.setCriterias(criterias);
 		criteriaBean.setOrderItems(orderItems);
 		criteriaBean.setPageNo(page);
+		criteriaBean.setPageSize(pagesize);
 		try {
 			PageBean<PaymentSearchResultBean> result = userService.searchPaymentList(criteriaBean,userId,paid);
 			if(null != result) {
