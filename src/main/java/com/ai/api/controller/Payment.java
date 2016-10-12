@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 public interface Payment {
 	ResponseEntity<PageBean<PaymentSearchResultBean>> getPaymentList(String userId, String archived,
 	                                                             String start, String end,
-	                                                             String keywords, Integer page) throws IOException, AIException;
+	                                                             String keywords, Integer page,Integer pagesize) throws IOException, AIException;
 	ResponseEntity<String> createProformaInvoice(String userId, String orders);
 	ResponseEntity<Boolean> reissueProFormaInvoice(String userId,String orders);
 	ResponseEntity<List<GlobalPaymentInfoBean>> generateGlobalPayment(String userId, String orders);
