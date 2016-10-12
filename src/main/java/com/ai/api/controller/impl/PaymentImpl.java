@@ -64,19 +64,23 @@ public class PaymentImpl implements Payment {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/payments", method = RequestMethod.GET)
 	public ResponseEntity<PageBean<PaymentSearchResultBean>> getPaymentList(@PathVariable("userId") String userId,
-	                                                                    @RequestParam(value = "paid",required = false) String paid,
-	                                                                    @RequestParam(value = "start",required = false) String start,
-	                                                                    @RequestParam(value = "end",required = false) String end,
-	                                                                    @RequestParam(value = "keyword",required = false) String keywords,
+	                                                                    @RequestParam(value = "paid",required = false, defaultValue = "no") String paid,
+	                                                                    @RequestParam(value = "start",required = false, defaultValue = "") String start,
+	                                                                    @RequestParam(value = "end",required = false, defaultValue = "") String end,
+	                                                                    @RequestParam(value = "keyword",required = false, defaultValue = "") String keywords,
 	                                                                    @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
 	                                                                    @RequestParam(value = "pagesize",required = false, defaultValue = "20") Integer pagesize) {
 		logger.info("get PaymentList----userId["+userId+"] | paid["+paid+"] | start["+start+"] | end["+end+"] | keyword["+keywords+"] | page["+page+"]");
 		Map<String, String[]> criterias = new HashMap<String, String[]>();
 		List<String> orderItems = new ArrayList<String>();
 		orderItems.add("inspectionDate");
-		String inspectionPeriod = start + " - " + end;
-		criterias.put("CLIENT_REFERENCE", new String[]{keywords});
-		criterias.put("INSPECTION_DATE", new String[]{inspectionPeriod});
+		if (null != keywords && !"".equals(keywords)) {
+			criterias.put("CLIENT_REFERENCE", new String[] { keywords });
+		}
+		if (!("".equals(start) && "".equals(end))) {
+			String inspectionPeriod = start + " - " + end;
+			criterias.put("INSPECTION_DATE", new String[] { inspectionPeriod });
+		}
 		
 		PageParamBean criteriaBean = new PageParamBean();
 		criteriaBean.setCriterias(criterias);
