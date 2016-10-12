@@ -7,11 +7,12 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ai.api.bean.EmployeeBean;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
-import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.user.GeneralUserBean;
@@ -36,7 +37,7 @@ public interface CustomerDao {
 
 	boolean createNewAccount(ClientInfoBean clientInfoBean);
 
-	List<PaymentSearchResultBean> searchPaymentList(PaymentSearchCriteriaBean criteria) ;
+	PageBean<PaymentSearchResultBean> searchPaymentList(PageParamBean criteria, String userId, String parentId, String companyId, String paid) ;
 
 	String createProformaInvoice(String userId, String login, String orders);
 

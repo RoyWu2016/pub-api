@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.ai.api.exception.AIException;
+import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
@@ -33,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 public interface Payment {
-	ResponseEntity<List<PaymentSearchResultBean>> getPaymentList(String userId, String archived,
+	ResponseEntity<PageBean<PaymentSearchResultBean>> getPaymentList(String userId, String archived,
 	                                                             String start, String end,
 	                                                             String keywords, Integer page) throws IOException, AIException;
 	ResponseEntity<String> createProformaInvoice(String userId, String orders);
