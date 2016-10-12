@@ -62,6 +62,8 @@ import com.ai.api.util.AIUtil;
 import com.ai.api.util.BASE64DecodedMultipartFile;
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.StringUtils;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.ApproverBean;
 import com.ai.commons.beans.customer.CompanyEntireBean;
@@ -80,7 +82,6 @@ import com.ai.commons.beans.customer.RelevantCategoryInfoBean;
 import com.ai.commons.beans.customer.ReportCertificateBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
-import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.user.GeneralUserBean;
@@ -807,12 +808,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<PaymentSearchResultBean> searchPaymentList(PaymentSearchCriteriaBean criteria) throws IOException, AIException {
-		if (criteria.getLogin() == null) {
-			String login = this.getLoginByUserId(criteria.getUserID());//customerDao.getGeneralUser(criteria.getUserID()).getLogin();
-			criteria.setLogin(login);
+	public PageBean<PaymentSearchResultBean> searchPaymentList(PageParamBean criteria,String userId,String paid) throws IOException, AIException {
+		UserBean userBean = this.getCustById(userId);
+		String parentId = "";
+		String companyId = "";
+		if(null != userBean) {
+			parentId = userBean.getCompany().getParentCompanyId();
+			if (null == parentId) {
+				parentId = "";
+			}
+			companyId = userBean.getCompany().getId();
 		}
-		return customerDao.searchPaymentList(criteria);
+		return customerDao.searchPaymentList(criteria,userId,parentId,companyId,paid);
 	}
 
 	@Override

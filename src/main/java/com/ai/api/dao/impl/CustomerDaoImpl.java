@@ -8,6 +8,7 @@ package com.ai.api.dao.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,11 +41,12 @@ import com.ai.api.util.RedisUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
-import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.user.GeneralUserBean;
@@ -287,20 +289,27 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	}
 
 	@Override
-	public List<PaymentSearchResultBean> searchPaymentList(PaymentSearchCriteriaBean criteria) {
+	public PageBean<PaymentSearchResultBean> searchPaymentList(PageParamBean criteria,String userId,String parentId,String companyId,String paid) {
 		try {
-			String url = config.getMwServiceUrl() + "/service/payment/search";
-			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
+			StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/payment/api/search");
+			LOGGER.info("searchPaymentList json before encoding: " + JsonUtil.mapToJson(criteria));
+			String param = URLEncoder.encode(JsonUtil.mapToJson(criteria), "utf-8");
+			LOGGER.info("searchPaymentList json after encoding: " + param);
+			url.append("?userId=" + userId)
+			.append("&companyId=" + companyId)
+			.append("&parentId=" + parentId)
+			.append("&isPaid=" + paid)
+			.append("&param=" + param);
+			LOGGER.info("Requesting url: " + url.toString());
+			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return JSON.parseArray(result.getResponseString(),PaymentSearchResultBean.class);
-
+				return JSON.parseObject(result.getResponseString(),PageBean.class);
 			} else {
-				logger.error("searchPaymentList from middleware error: " + result.getStatusCode() + ", " + result.getResponseString());
+				logger.error("searchPaymentList from psi error: " + result.getStatusCode() + ", " + result.getResponseString());
 			}
 		}catch (Exception e){
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
-
 		return null;
 	}
 

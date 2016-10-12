@@ -1,21 +1,12 @@
 package com.ai.api.controller.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.ai.api.controller.Payment;
-import com.ai.api.service.PaymentService;
-import com.ai.api.service.UserService;
-import com.ai.commons.StringUtils;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
-import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
-import com.ai.commons.beans.payment.PaymentSearchResultBean;
-import com.ai.commons.beans.payment.api.PaymentActionLogBean;
-import com.ai.commons.beans.payment.api.PaymentItemParamBean;
-import com.ai.commons.beans.payment.api.PaypalInfoBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +18,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ai.api.controller.Payment;
+import com.ai.api.service.PaymentService;
+import com.ai.api.service.UserService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import com.ai.commons.beans.payment.api.PaymentActionLogBean;
+import com.ai.commons.beans.payment.api.PaymentItemParamBean;
+import com.ai.commons.beans.payment.api.PaypalInfoBean;
 
 /***************************************************************************
  * <PRE>
@@ -60,45 +63,33 @@ public class PaymentImpl implements Payment {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/payments", method = RequestMethod.GET)
-	public ResponseEntity<List<PaymentSearchResultBean>> getPaymentList(@PathVariable("userId") String userId,
+	public ResponseEntity<PageBean<PaymentSearchResultBean>> getPaymentList(@PathVariable("userId") String userId,
 	                                                                    @RequestParam(value = "paid",required = false) String paid,
 	                                                                    @RequestParam(value = "start",required = false) String start,
 	                                                                    @RequestParam(value = "end",required = false) String end,
 	                                                                    @RequestParam(value = "keyword",required = false) String keywords,
-	                                                                    @RequestParam(value = "page",required = false) Integer page) {
+	                                                                    @RequestParam(value = "page",required = false, defaultValue = "1") Integer page) {
 		logger.info("get PaymentList----userId["+userId+"] | paid["+paid+"] | start["+start+"] | end["+end+"] | keyword["+keywords+"] | page["+page+"]");
-		List<PaymentSearchResultBean> resultList = new ArrayList<>();
-		boolean b = false;
+		Map<String, String[]> criterias = new HashMap<String, String[]>();
+		List<String> orderItems = new ArrayList<String>();
+		orderItems.add("inspectionDate");
+		String inspectionPeriod = start + " - " + end;
+		criterias.put("CLIENT_REFERENCE", new String[]{keywords});
+		criterias.put("INSPECTION_DATE", new String[]{inspectionPeriod});
+		
+		PageParamBean criteriaBean = new PageParamBean();
+		criteriaBean.setCriterias(criterias);
+		criteriaBean.setOrderItems(orderItems);
+		criteriaBean.setPageNo(page);
 		try {
-			PaymentSearchCriteriaBean criteriaBean = new PaymentSearchCriteriaBean();
-			criteriaBean.setPaid(false);
-			try {
-				if (!StringUtils.isBlank(paid) && paid.equals("true")) {
-					criteriaBean.setPaid(true);
-				}
-
-				if (page == null) {
-					page = 1;
-				}
-				criteriaBean.setPageNumber(page);
-				criteriaBean.setKeywords(keywords);
-				criteriaBean.setStartDate(start);
-				criteriaBean.setEndDate(end);
-				criteriaBean.setUserID(userId);
-
-			} catch (Exception e) {
-				logger.error("", e);
+			PageBean<PaymentSearchResultBean> result = userService.searchPaymentList(criteriaBean,userId,paid);
+			if(null != result) {
+				return new ResponseEntity<>(result, HttpStatus.OK);
 			}
-			resultList = userService.searchPaymentList(criteriaBean);
-			b=true;
 		}catch (Exception e){
-			logger.error("", e);
+			logger.error("getPaymentList error: ", e);
 		}
-		if (b){
-			return new ResponseEntity<>(resultList, HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override

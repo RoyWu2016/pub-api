@@ -20,10 +20,11 @@ import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
-import com.ai.commons.beans.payment.PaymentSearchCriteriaBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 
@@ -71,7 +72,7 @@ public interface UserService {
 
     boolean createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
 
-	List<PaymentSearchResultBean> searchPaymentList(PaymentSearchCriteriaBean criteria) throws IOException, AIException;
+	PageBean<PaymentSearchResultBean> searchPaymentList(PageParamBean criteria, String userId, String paid) throws IOException, AIException;
 
     String getCompanyLogo(String companyId);
 
