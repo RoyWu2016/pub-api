@@ -75,7 +75,11 @@ public class PaymentImpl implements Payment {
 		List<String> orderItems = new ArrayList<String>();
 		orderItems.add("inspectionDate");
 		String inspectionPeriod = start + " - " + end;
-		criterias.put("CLIENT_REFERENCE", new String[]{keywords});
+		if(null == keywords || "".equals(keywords)) {
+			criterias.put("CLIENT_REFERENCE", new String[]{""});
+		}else {
+			criterias.put("CLIENT_REFERENCE", new String[]{keywords});
+		}
 		criterias.put("INSPECTION_DATE", new String[]{inspectionPeriod});
 		
 		PageParamBean criteriaBean = new PageParamBean();
