@@ -17,7 +17,6 @@ import com.ai.api.dao.SSOUserServiceDao;
 import com.ai.api.service.AuthenticationService;
 import com.ai.api.service.SSOUserService;
 import com.ai.api.service.UserService;
-import com.ai.api.util.RedisUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ServiceCallResult;
@@ -139,7 +138,7 @@ public class AuthenticationImpl implements Authentication {
 		ServiceCallResult result = ssoUserService.removeAPIToken(request, response);
 		logger.info("remove token result: "+result.getResponseString());
 		logger.info("removed employee profile from redis");
-		RedisUtil.del("employeeCache");
+//		RedisUtil.del("employeeCache");
 		return mapper.writeValueAsString(result);
 	}
 	
