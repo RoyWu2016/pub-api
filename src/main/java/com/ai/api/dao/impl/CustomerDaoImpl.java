@@ -387,7 +387,8 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 		// TODO Auto-generated method stub
 		EmployeeBean generalUserBean = null;
 		LOGGER.info("try to getEmployeeProfile from redis ...");
-		String jsonString = RedisUtil.get("employeeCache");
+//		String jsonString = RedisUtil.get("employeeCache");
+		String jsonString = RedisUtil.hget("employeeCache",employeeId);
 		if(null != jsonString) {
 			generalUserBean = JSON.parseObject(jsonString).toJavaObject(EmployeeBean.class);
 		}
@@ -400,7 +401,8 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					generalUserBean = JsonUtil.mapToObject(result.getResponseString(), EmployeeBean.class);
 					logger.info("saving employee into redis employee id: " + employeeId);
-					RedisUtil.set("employeeCache", JSON.toJSONString(generalUserBean),RedisUtil.HOUR * 2);
+					RedisUtil.hset("employeeCache",employeeId, JSON.toJSONString(generalUserBean),RedisUtil.HOUR * 2);
+//					RedisUtil.set("employeeCache", JSON.toJSONString(generalUserBean),RedisUtil.HOUR * 2);
 					return generalUserBean;
 				}else {
 					logger.error("getEmployeeProfile from user-service error: " + result.getStatusCode() +", " + result.getResponseString());
