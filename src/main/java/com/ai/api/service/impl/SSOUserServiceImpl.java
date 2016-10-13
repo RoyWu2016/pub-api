@@ -10,6 +10,7 @@ import com.ai.api.dao.SSOUserServiceDao;
 import com.ai.api.dao.impl.TokenJWTDaoImpl;
 import com.ai.api.service.SSOUserService;
 import com.ai.api.service.UserService;
+import com.ai.api.util.RedisUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.beans.ServiceCallResult;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -76,6 +77,7 @@ public class SSOUserServiceImpl implements SSOUserService {
 				JwtClaims claims = tokenJWTDao.getClaimsByJWT(token);
 				tokenJWTDao.removePublicAPIToken((String)claims.getClaimValue("sessId"));
 				userService.removeUserProfileCache((String)claims.getClaimValue("userId"));
+				RedisUtil.hdel("employeeCache",(String)claims.getClaimValue("userId"));
 				result.setStatusCode(HttpServletResponse.SC_OK);
 				result.setReasonPhase("Token removed.");
 				result.setResponseString("Token removed");
