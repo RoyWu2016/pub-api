@@ -15,6 +15,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.commons.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -399,6 +400,10 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 				logger.info("requesting url: " + sb.toString());
 				ServiceCallResult result = HttpUtil.issueGetRequest(request);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+					if ( StringUtils.isBlank(result.getResponseString())){
+						logger.error("getEmployeeProfile from user-service response 200  but EmployeeBean is null");
+						return null;
+					}
 					generalUserBean = JsonUtil.mapToObject(result.getResponseString(), EmployeeBean.class);
 					logger.info("saving employee into redis employee id: " + employeeId);
 					RedisUtil.hset("employeeCache",employeeId, JSON.toJSONString(generalUserBean),RedisUtil.HOUR * 2);
