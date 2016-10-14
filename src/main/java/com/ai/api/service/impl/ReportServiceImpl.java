@@ -256,7 +256,8 @@ public class ReportServiceImpl implements ReportService {
 		}
 		
 		int itemsRow = (int) result.getTotalSize();
-		for(int rowid=11;rowid<10+itemsRow;rowid++) {
+		int k = 0;
+		for(int rowid=11;rowid<11+itemsRow;rowid++) {
 			row = sheet.createRow(rowid);
 			for(int cellid=0;cellid<9;cellid++) {
 				cell = row.createCell(cellid);
@@ -266,17 +267,18 @@ public class ReportServiceImpl implements ReportService {
 				logger.info(lists);
 				List<ClientReportSearchBean> list = JsonUtil.mapToObject(lists, new TypeReference<List<ClientReportSearchBean>>(){});
 				switch (cellid){
-				case 0: cell.setCellValue(list.get(rowid-11).getServiceTypeText());break;
-				case 1: cell.setCellValue(list.get(rowid-11).getProductName());break;
-				case 2: cell.setCellValue(list.get(rowid-11).getProdReference());break;
-				case 3: cell.setCellValue(list.get(rowid-11).getPoNumber());break;
-				case 4: cell.setCellValue(list.get(rowid-11).getInspectionDateMMMFormat());break;
-				case 5: cell.setCellValue(list.get(rowid-11).getSupplierName());break;
-				case 6: cell.setCellValue(list.get(rowid-11).getOverrallResult());break;
-				case 7: cell.setCellValue(list.get(rowid-11).getStatus());break;
-				case 8: cell.setCellValue(list.get(rowid-11).getOrderNumber());break;
+				case 0: cell.setCellValue(list.get(k).getServiceTypeText());break;
+				case 1: cell.setCellValue(list.get(k).getProductName());break;
+				case 2: cell.setCellValue(list.get(k).getProdReference());break;
+				case 3: cell.setCellValue(list.get(k).getPoNumber());break;
+				case 4: cell.setCellValue(list.get(k).getInspectionDateMMMFormat());break;
+				case 5: cell.setCellValue(list.get(k).getSupplierName());break;
+				case 6: cell.setCellValue(list.get(k).getOverrallResult());break;
+				case 7: cell.setCellValue(list.get(k).getStatus());break;
+				case 8: cell.setCellValue(list.get(k).getOrderNumber());break;
 				}
 			}
+			k++;
 		}
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
