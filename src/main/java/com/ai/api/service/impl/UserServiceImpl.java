@@ -349,6 +349,18 @@ public class UserServiceImpl implements UserService {
         } else {
             multiReferenceBean.setClientCanApproveRejectIndividualProductReferences(false);
         }
+        multiReferenceBean.setAskNumberOfReferences(multiRefBookingBean.getAskNumberOfReferences());
+        multiReferenceBean.setNumberOfRefPerProduct(multiRefBookingBean.getNumberOfRefPerProduct());
+        multiReferenceBean.setNumberOfRefPerReport(multiRefBookingBean.getNumberOfRefPerReport());
+        multiReferenceBean.setNumberOfRefPerMd(multiRefBookingBean.getNumberOfRefPerMd());
+        multiReferenceBean.setNumberOfPcsPerRef(multiRefBookingBean.getNumberOfPcsPerRef());
+        multiReferenceBean.setNumberOfReportPerMd(multiRefBookingBean.getNumberOfReportPerMd());
+        multiReferenceBean.setClcNumberOfReports(multiRefBookingBean.getClcNumberOfReports());
+        multiReferenceBean.setClcNumberOfContainer(multiRefBookingBean.getClcNumberOfContainer());
+        multiReferenceBean.setPeoCalculation(multiRefBookingBean.getPeoCalculation());
+        multiReferenceBean.setContainerRate(multiRefBookingBean.getContainerRate());
+        multiReferenceBean.setShowRefResultOnline(multiRefBookingBean.getShowRefResultOnline());
+
         bookingbean.setMultiReference(multiReferenceBean);
 
         MinQuantityToBeReadyBean[] minQuantityToBeReadyBean = new MinQuantityToBeReadyBean[5];

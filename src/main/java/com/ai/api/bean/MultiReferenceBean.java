@@ -8,6 +8,17 @@ import java.io.Serializable;
 public class MultiReferenceBean implements Serializable {
 
     private boolean clientCanApproveRejectIndividualProductReferences;
+    private String askNumberOfReferences;
+    private int numberOfRefPerProduct;
+    private int numberOfRefPerReport;
+    private int numberOfRefPerMd;
+    private int numberOfPcsPerRef;
+    private int numberOfReportPerMd;
+    private int clcNumberOfReports;
+    private int clcNumberOfContainer;
+    private String peoCalculation;
+    private int containerRate;
+    private String showRefResultOnline;
 
     public MultiReferenceBean() { }
 
@@ -17,5 +28,93 @@ public class MultiReferenceBean implements Serializable {
 
     public void setClientCanApproveRejectIndividualProductReferences(boolean clientCanApproveRejectIndividualProductReferences) {
         this.clientCanApproveRejectIndividualProductReferences = clientCanApproveRejectIndividualProductReferences;
+    }
+
+    public String getAskNumberOfReferences() {
+        return askNumberOfReferences;
+    }
+
+    public void setAskNumberOfReferences(String askNumberOfReferences) {
+        this.askNumberOfReferences = askNumberOfReferences;
+    }
+
+    public int getNumberOfRefPerProduct() {
+        return numberOfRefPerProduct;
+    }
+
+    public void setNumberOfRefPerProduct(int numberOfRefPerProduct) {
+        this.numberOfRefPerProduct = numberOfRefPerProduct;
+    }
+
+    public int getNumberOfRefPerReport() {
+        return numberOfRefPerReport;
+    }
+
+    public void setNumberOfRefPerReport(int numberOfRefPerReport) {
+        this.numberOfRefPerReport = numberOfRefPerReport;
+    }
+
+    public int getNumberOfRefPerMd() {
+        return numberOfRefPerMd;
+    }
+
+    public void setNumberOfRefPerMd(int numberOfRefPerMd) {
+        this.numberOfRefPerMd = numberOfRefPerMd;
+    }
+
+    public int getNumberOfPcsPerRef() {
+        return numberOfPcsPerRef;
+    }
+
+    public void setNumberOfPcsPerRef(int numberOfPcsPerRef) {
+        this.numberOfPcsPerRef = numberOfPcsPerRef;
+    }
+
+    public int getNumberOfReportPerMd() {
+        return numberOfReportPerMd;
+    }
+
+    public void setNumberOfReportPerMd(int numberOfReportPerMd) {
+        this.numberOfReportPerMd = numberOfReportPerMd;
+    }
+
+    public int getClcNumberOfReports() {
+        return clcNumberOfReports;
+    }
+
+    public void setClcNumberOfReports(int clcNumberOfReports) {
+        this.clcNumberOfReports = clcNumberOfReports;
+    }
+
+    public int getClcNumberOfContainer() {
+        return clcNumberOfContainer;
+    }
+
+    public void setClcNumberOfContainer(int clcNumberOfContainer) {
+        this.clcNumberOfContainer = clcNumberOfContainer;
+    }
+
+    public String getPeoCalculation() {
+        return peoCalculation;
+    }
+
+    public void setPeoCalculation(String peoCalculation) {
+        this.peoCalculation = peoCalculation;
+    }
+
+    public int getContainerRate() {
+        return containerRate;
+    }
+
+    public void setContainerRate(int containerRate) {
+        this.containerRate = containerRate;
+    }
+
+    public String getShowRefResultOnline() {
+        return showRefResultOnline;
+    }
+
+    public void setShowRefResultOnline(String showRefResultOnline) {
+        this.showRefResultOnline = showRefResultOnline;
     }
 }
