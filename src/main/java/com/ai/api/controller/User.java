@@ -11,13 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.http.ResponseEntity;
 
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
 import com.ai.api.bean.ContactInfoBean;
-import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ServiceCallResult;
@@ -72,5 +72,5 @@ public interface User {
 
 	ResponseEntity<String> updateCompanyLogo(String userId, String companyId, CompanyLogoBean logoBean);
 	
-	ResponseEntity<EmployeeBean> getEmployeeProfile(String employeeId) throws IOException, AIException;
+	ResponseEntity<JSONObject> getEmployeeProfile(String employeeId) throws IOException, AIException;
 }
