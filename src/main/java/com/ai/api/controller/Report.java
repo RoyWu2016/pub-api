@@ -1,6 +1,7 @@
 package com.ai.api.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,7 +21,7 @@ public interface Report {
     ResponseEntity<String> confirmApprovalCertificate(String userId,ApprovalCertificateBean cert);
     ResponseEntity<List<String>> getUserReportPdfInfo(String userId, String reportId);
     ResponseEntity<String> downloadPDF(String userId,String reportId,String fileName,HttpServletResponse httpResponse);
-	ResponseEntity<String> exportReports(String userId,String starts,String ends,HttpServletResponse httpResponse);
+	ResponseEntity<Map<String, String>> exportReports(String userId,String starts,String ends,HttpServletResponse httpResponse);
 	ResponseEntity<ApprovalCertificateBean> getReferenceApproveCertificate(String userId,String referenceId, String certType);
 	ResponseEntity<Boolean> undoDecisionForReport(String userId,String productId);
 	ResponseEntity<Boolean> undoDecisionForReference(String userId,String referenceId);

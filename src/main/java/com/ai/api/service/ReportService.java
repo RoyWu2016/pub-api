@@ -1,5 +1,6 @@
 package com.ai.api.service;
 
+import java.io.InputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -8,7 +9,6 @@ import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
-import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
 
 /**
@@ -20,7 +20,7 @@ public interface ReportService {
     boolean confirmApprovalCertificate(String userId,ApprovalCertificateBean cert);
     List<String> getUserReportPdfInfo(String userId, String reportId);
     boolean downloadPDF(String reportId,String fileName,HttpServletResponse httpResponse);
-    boolean exportReports(ReportSearchCriteriaBean criteria,HttpServletResponse httpResponse);
+    InputStream exportReports(String userId, PageParamBean criteriaBean, String inspectionPeriod);
 	ApprovalCertificateBean getReferenceApproveCertificate(String userId, String referenceId,String certType);
 	boolean undoDecisionForReport(String userId, String productId);
 	boolean undoDecisionForReference(String userId, String referenceId);
