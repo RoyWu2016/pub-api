@@ -45,7 +45,7 @@ import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 
 public interface User {
 
-	ResponseEntity<UserBean> getUserProfileByLogin(String login) throws IOException, AIException;
+	ResponseEntity<UserBean> getUserProfile(String login) throws IOException, AIException;
 
 	ResponseEntity<UserBean> updateUserProfileCompany(String userId, CompanyBean newComp) throws IOException, AIException;
 

@@ -67,7 +67,7 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
-	public ResponseEntity<UserBean> getUserProfileByLogin(@PathVariable("userId") String userId)
+	public ResponseEntity<UserBean> getUserProfile(@PathVariable("userId") String userId)
 			throws IOException, AIException {
 		logger.info("......start getting user profile.......");
 		UserBean cust = null;
