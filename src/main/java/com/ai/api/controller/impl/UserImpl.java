@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,6 @@ import com.ai.api.bean.UserBean;
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
-import com.ai.api.util.RedisUtil;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
@@ -239,13 +240,25 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/employee/{employeeId}", method = RequestMethod.GET)
-	public ResponseEntity<EmployeeBean> getEmployeeProfile(
+	public ResponseEntity<JSONObject> getEmployeeProfile(
 			@PathVariable("employeeId") String employeeId) throws IOException, AIException {
 		// TODO Auto-generated method stub
 		logger.info("getEmployeeProfile employeeId: " + employeeId);
 		EmployeeBean cust = userService.getEmployeeProfile(employeeId);
 		if (cust != null) {
-			return new ResponseEntity<>(cust, HttpStatus.OK);
+			JSONObject object = JSON.parseObject(JSON.toJSONString(cust));
+			object.remove("joinDate");
+			object.remove("password");
+			object.remove("createTime");
+			object.remove("updateTime");
+			object.remove("criteriaStatusList");
+			object.remove("criteriaDepartmentIdList");
+			object.remove("criteriaGroupIdList");
+			object.remove("criteriaRoleIdList");
+			object.remove("reportTos");
+			object.remove("modifiedBy");
+			object.remove("modifiedDate");
+			return new ResponseEntity<>(object, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
