@@ -120,6 +120,8 @@ public class CompanyDaoImpl implements CompanyDao {
 			ServiceCallResult result = HttpUtil.issuePostRequest(contactBeanURL, null, newContact);
 			if (result.getResponseString().equalsIgnoreCase("true")) {
 				return true;
+			}else {
+				LOGGER.info("update CompanyContact fail! error from customerService :"+result.getResponseString()+" || code:"+result.getStatusCode());
 			}
 		} catch (IOException e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));

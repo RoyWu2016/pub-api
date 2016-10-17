@@ -2,12 +2,14 @@ package com.ai.api.controller.impl;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
+import com.ai.api.service.OrderService;
+import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.userservice.common.util.MD5;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,9 @@ public class SupplierImpl implements Supplier {
 
 	@Autowired
 	FactoryService factoryService;
+
+    @Autowired
+    OrderService orderService;
 
 	@Override
 	@TokenSecured
@@ -162,6 +167,34 @@ public class SupplierImpl implements Supplier {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
+	}
+
+	@Override
+	@RequestMapping(value = "/order/{orderId}/supplier", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> getSupplierConfirm(@PathVariable("orderId") String orderId,
+																  @RequestParam("password")String password) {
+		try {
+			logger.info("getSupplierConfirm ...");
+			logger.info("orderId:"+orderId);
+			InspectionBookingBean orderBean = orderService.getOrderDetail("nullUserId", orderId);
+			if (orderBean != null) {
+                String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
+                String pw = MD5.toMD5(validateCode);
+                if (pw.equalsIgnoreCase(password)){
+                    String newPW = DigestUtils.shaHex(password);
+                    JSONObject object = JSON.parseObject(JSON.toJSONString(orderBean));
+                    object.put("updateConfirmSupplierPwd",newPW);
+                    return new ResponseEntity<>(object, HttpStatus.OK);
+                }
+                logger.info("incorrect pw !   ["+ password +"] || should be :"+password);
+			} else {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} catch (Exception e) {
+			logger.error("error in getSupplierConfirm",e);
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

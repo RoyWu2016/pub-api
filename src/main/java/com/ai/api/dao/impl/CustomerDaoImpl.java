@@ -124,8 +124,9 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			if (result.getStatusCode() == HttpStatus.OK.value() &&
 					result.getResponseString().isEmpty() &&
 					result.getReasonPhase().equalsIgnoreCase("OK")) {
-
 				return true;
+			}else {
+				logger.info("update user fail! error from customerService :"+result.getResponseString()+" || code:"+result.getStatusCode());
 			}
 		} catch (IOException e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));

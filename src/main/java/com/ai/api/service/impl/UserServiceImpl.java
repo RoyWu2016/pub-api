@@ -553,6 +553,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public UserBean updateUserBeanInCache(final String userId) {
+        logger.info("ready to update user in cache ! userId:  " + userId);
 		UserBean newUserBean = this.getUserBeanByService(userId);
 		RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(newUserBean),RedisUtil.HOUR * 2);
 		return newUserBean;

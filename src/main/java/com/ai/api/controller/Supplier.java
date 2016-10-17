@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.http.ResponseEntity;
 
 import com.ai.api.bean.SupplierDetailBean;
@@ -28,6 +29,8 @@ public interface Supplier {
 	ResponseEntity<SupplierDetailBean> createSupplier(String userId, SupplierDetailBean supplierDetailBean)
 			throws IOException, AIException;
 
-	ResponseEntity<Boolean> supplierConfirmOrder(String userId, String orderId, String inspectionDateString,
+	ResponseEntity<Boolean> supplierConfirm(String userId, String orderId, String inspectionDateString,
 			String containReadyTime, OrderFactoryBean orderFactoryBean) throws IOException, AIException;
+
+	ResponseEntity<JSONObject> getSupplierConfirm(String orderId,String password);
 }

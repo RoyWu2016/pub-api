@@ -88,7 +88,7 @@ public class UserImpl implements User {
 	public ResponseEntity<UserBean> updateUserProfileCompany(@PathVariable("userId") String userId,
 	                                                         @RequestBody CompanyBean newComp)
 			throws IOException, AIException {
-		System.out.println("updating company for user: " + userId);
+		logger.info("updating company for user: " + userId);
 		UserBean cust = userService.updateCompany(newComp, userId);
 		if (cust != null) {
 			return new ResponseEntity<>(cust, HttpStatus.OK);
@@ -103,7 +103,7 @@ public class UserImpl implements User {
 	public ResponseEntity<UserBean> updateUserProfileContact(@PathVariable("userId") String userId,
 	                                                         @RequestBody ContactInfoBean newContact)
 			throws IOException, AIException {
-		System.out.println("updating User contact " + userId);
+		logger.info("updating User contact " + userId);
 		UserBean cust = userService.updateContact(newContact, userId);
 		if (cust != null) {
 			return new ResponseEntity<>(cust, HttpStatus.OK);
@@ -119,7 +119,7 @@ public class UserImpl implements User {
 	public ResponseEntity<UserBean> updateUserBookingPreference(@PathVariable("userId") String userId,
 	                                                            @RequestBody BookingPreferenceBean newBookingPref)
 			throws IOException, AIException {
-		System.out.println("Updating User booking preference: " + userId);
+		logger.info("Updating User booking preference: " + userId);
 
 		UserBean cust = userService.updateBookingPreference(newBookingPref, userId);
 		if (cust != null) {
@@ -135,7 +135,7 @@ public class UserImpl implements User {
 	public ResponseEntity<UserBean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String userId,
 	                                                                        @RequestBody List<String> newPreferred)
 			throws IOException, AIException {
-		System.out.println("Updating User preferred product family: " + userId);
+		logger.info("Updating User preferred product family: " + userId);
 
 		UserBean cust = userService.updateBookingPreferredProductFamily(newPreferred, userId);
 		if (cust != null) {
@@ -150,7 +150,7 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}/password", method = RequestMethod.PUT)
 	public ResponseEntity<ServiceCallResult> updateUserPassword(@PathVariable("userId") String userId,@RequestBody HashMap<String, String> pwdMap)
 			throws IOException, AIException {
-		System.out.println("Updating User password: " + userId);
+		logger.info("Updating User password: " + userId);
 
 		ServiceCallResult result = userService.updateUserPassword(userId, pwdMap);
 
