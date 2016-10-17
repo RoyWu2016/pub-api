@@ -48,4 +48,6 @@ public interface CustomerDao {
 	boolean logPaymentAction(String userId, PaymentActionLogBean logBean);
 
 	EmployeeBean getEmployeeProfile(String employeeId);
+
+	boolean isACAUser(String login);
 }
