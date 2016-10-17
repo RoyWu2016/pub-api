@@ -908,4 +908,8 @@ public class UserServiceImpl implements UserService {
 		return customerDao.getEmployeeProfile(employeeId);
 	}
 
+    @Override
+    public boolean isACAUser(String login) {
+        return customerDao.isACAUser(login);
+    }
 }
