@@ -90,7 +90,7 @@ public interface UserService {
 
     EmployeeBean getEmployeeProfile(String employeeId);
 
-    boolean isACAUser(String login);
+    boolean isACAUser(String userId);
 
 //    String getCompanyIdByUserId(String userId)throws IOException, AIException;
 }

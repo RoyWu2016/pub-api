@@ -263,10 +263,9 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/is-aca-user", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> isACAUser(@PathVariable("userId") String userId,
-												@RequestParam("login") String login)throws IOException, AIException {
-		logger.info("check isACAUser login: " + login+" || userId:"+userId);
-		Boolean b= userService.isACAUser(login);
+	public ResponseEntity<JSONObject> isACAUser(@PathVariable("userId") String userId)throws IOException, AIException {
+		logger.info("check isACAUser userId:"+userId);
+		Boolean b= userService.isACAUser(userId);
 		JSONObject object = new JSONObject();
 		object.put("isACAUser",b);
 		return new ResponseEntity<>(object, HttpStatus.OK);

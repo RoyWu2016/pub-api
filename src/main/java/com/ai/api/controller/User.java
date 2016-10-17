@@ -74,5 +74,5 @@ public interface User {
 	
 	ResponseEntity<JSONObject> getEmployeeProfile(String employeeId) throws IOException, AIException;
 
-	ResponseEntity<JSONObject> isACAUser(String userId,String login)throws IOException, AIException;
+	ResponseEntity<JSONObject> isACAUser(String userId)throws IOException, AIException;
 }

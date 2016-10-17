@@ -909,7 +909,13 @@ public class UserServiceImpl implements UserService {
 	}
 
     @Override
-    public boolean isACAUser(String login) {
-        return customerDao.isACAUser(login);
+    public boolean isACAUser(String userId) {
+        try {
+            UserBean userBean = this.getCustById(userId);
+            return customerDao.isACAUser(userBean.getLogin());
+        }catch (Exception e){
+            logger.error("error occurred in checking ACA user!Can not find userBean by userId :"+userId);
+            return false;
+        }
     }
 }
