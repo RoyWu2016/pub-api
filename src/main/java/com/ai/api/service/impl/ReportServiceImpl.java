@@ -2,6 +2,8 @@ package com.ai.api.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -12,15 +14,21 @@ import java.util.Locale;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -30,6 +38,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.ai.api.bean.UserBean;
+import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.ReportDao;
 import com.ai.api.service.ReportService;
 import com.ai.api.service.UserService;
@@ -55,9 +64,9 @@ public class ReportServiceImpl implements ReportService {
 	@Qualifier("reportDao")
 	private ReportDao reportDao;
 
-	// @Autowired
-	// @Qualifier("customerDao")
-	// private CustomerDao customerDao;
+	@Autowired
+	@Qualifier("serviceConfig")
+	private ServiceConfig config;
 
 	@Autowired
 	@Qualifier("userService")
@@ -214,7 +223,7 @@ public class ReportServiceImpl implements ReportService {
 		tableCS.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
 		tableCS.setWrapText(true);
 
-		Sheet sheet = wb.createSheet("AI Orders List (2016-09-01 - 2016-10-01");
+		Sheet sheet = wb.createSheet("AI Orders List (" + inspectionPeriod + ")");
 		Row row = null;
 		for (i = 0; i <= 10; i++) {
 			row = sheet.createRow(i);
@@ -224,6 +233,24 @@ public class ReportServiceImpl implements ReportService {
 		}
 
 		sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 8));
+		
+//		String fileName = config.getExcleLoggoCommonSource() + File.separator + "logo.png";
+		String fileName = "E:" +  File.separator + "logo.png";
+		logger.info("fine the logo resource: " + fileName);
+		InputStream is = new FileInputStream(fileName);  
+    	byte[] bytes = IOUtils.toByteArray(is);  
+    	  
+    	int pictureIdx = wb.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);  
+    	  
+    	CreationHelper helper = wb.getCreationHelper();  
+    	Drawing drawing = sheet.createDrawingPatriarch();  
+    	ClientAnchor anchor = helper.createClientAnchor();  
+    	  
+    	anchor.setCol1(0);  
+    	anchor.setRow1(0);  
+    	
+    	Picture pict = drawing.createPicture(anchor, pictureIdx);  
+    	pict.resize();  
 
 		row = sheet.getRow(4);
 		Cell cell = row.createCell(0);
