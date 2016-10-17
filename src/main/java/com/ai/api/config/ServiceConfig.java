@@ -61,6 +61,8 @@ public class ServiceConfig {
     private String redisPassword;
     private String aimsServiceBaseUrl;
     private String programServiceBaseUrl;
+    
+    private String excleLoggoCommonSource;
 
     //    public String getBaseURL() {
 //        return baseURL;
@@ -69,6 +71,14 @@ public class ServiceConfig {
 //    public void setBaseURL(String baseURL) {
 //        this.baseURL = baseURL;
 //    }
+
+	public String getExcleLoggoCommonSource() {
+		return excleLoggoCommonSource;
+	}
+
+	public void setExcleLoggoCommonSource(String excleLoggoCommonSource) {
+		this.excleLoggoCommonSource = excleLoggoCommonSource;
+	}
 
 	public String getParamServiceUrl() {
 		return paramServiceUrl;

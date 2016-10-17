@@ -25,16 +25,18 @@ import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.ReportDao;
 import com.ai.api.util.FTPUtil;
 import com.ai.commons.HttpUtil;
+import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.payment.api.PaypalInfoBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
-import com.ai.commons.beans.report.ReportSearchCriteriaBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * Created by yan on 2016/7/25.
@@ -47,35 +49,6 @@ public class ReportDaoImpl implements ReportDao {
 	@Autowired
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
-
-	@Override
-	public PageBean<ClientReportSearchBean> getPSIReports(String userId, PageParamBean paramBean) {
-		String url = config.getPsiServiceUrl() + "/report/api/report-list";
-		String paramStr = JSON.toJSONString(paramBean);
-		try {
-			url = url + "?userId=" + userId + "&companyId=companyIdNull&parentId=parentIdNull&param="
-					+ URLEncoder.encode(paramStr, "UTF-8");
-			GetRequest request = GetRequest.newInstance().setUrl(url);
-			logger.info("get!!! Url:" + url);
-			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				JSONObject jsonObject = JSON.parseObject(result.getResponseString());
-				String reportStr = jsonObject.getString("pageItems");
-				List<ClientReportSearchBean> reportSearchBeanList = JSON.parseArray(reportStr,
-						ClientReportSearchBean.class);
-				PageBean<ClientReportSearchBean> pageBean = JSON.parseObject(result.getResponseString(),
-						PageBean.class);
-				pageBean.setPageItems(reportSearchBeanList);
-				return pageBean;
-			} else {
-				logger.error("get psi-reports from psi-service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
-			}
-		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-		}
-		return null;
-	}
 
 	@Override
 	public ApprovalCertificateBean getApprovalCertificate(String userId, String companyId, String parentId,
@@ -158,45 +131,25 @@ public class ReportDaoImpl implements ReportDao {
 	}
 
 	@Override
-	public InputStream exportReports(ReportSearchCriteriaBean criteria) {
-		String url = config.getMwServiceUrl() + "/service/report/export";
-		// String url = "http://127.0.0.1:8888/service/report/export";
+	public PageBean<ClientReportSearchBean> getPSIReports(String userId,String companyId,String parentId,PageParamBean criteria) {
+		// TODO Auto-generated method stub
 		try {
-			logger.info("post url:" + url);
-			logger.info(criteria.toString());
-			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
+			logger.info("getPSIReports json before encoding: " + JsonUtil.mapToJson(criteria));
+			String param = URLEncoder.encode(JsonUtil.mapToJson(criteria), "utf-8");
+			logger.info("getPSIReports json after encoding: " + param);
+			StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/report/api/report-list");
+			url.append("?userId=" + userId)
+			.append("&companyId=" + companyId)
+			.append("&parentId=" + parentId)
+			.append("&param=" + param);
+			logger.info("requesting !!! Url:" + url.toString());
+			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				logger.info("request OK!");
-				String remotePath = "/CACHE/";
-				String fileName = result.getResponseString();
-				// String host = config.getMwFTPHost();
-				String host = "";
-				int port = 21;
-				// String username = config.getMwFTPUsername();
-				// String password = config.getMwFTPPassword();
-				String username = "";
-				String password = "";
-				String tempPath = "/tmp/";
-				logger.info(remotePath);
-				logger.info(fileName);
-				logger.info(host + ":" + port);
-				logger.info(username + " || " + password);
-				logger.info(tempPath);
-				boolean b = FTPUtil.downloadFile(host, port, username, password, remotePath, fileName, tempPath);
-				if (b) {
-					logger.info("success download File to /tmp ");
-					File tempFile = new File(tempPath + fileName);
-					InputStream inputStream = new FileInputStream(tempFile);
-					return inputStream;
-				} else {
-					logger.error("ERROR! fail to download file from FTP server. ");
-					return null;
-				}
+				return JSON.parseObject(result.getResponseString(), PageBean.class);
 			} else {
-				logger.error("get reports from middleware error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+				logger.error("searchClientReports from psi-service error: " + result.getStatusCode() + ", "+ result.getResponseString());
 			}
-		} catch (IOException e) {
+		}catch(Exception e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
