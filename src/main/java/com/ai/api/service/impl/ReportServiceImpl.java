@@ -234,8 +234,8 @@ public class ReportServiceImpl implements ReportService {
 
 		sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 8));
 		
-//		String fileName = config.getExcleLoggoCommonSource() + File.separator + "logo.png";
-		String fileName = "E:" +  File.separator + "logo.png";
+		String fileName = config.getExcleLoggoCommonSource() + File.separator + "logo.png";
+//		String fileName = "E:" +  File.separator + "logo.png";
 		logger.info("fine the logo resource: " + fileName);
 		InputStream is = new FileInputStream(fileName);  
     	byte[] bytes = IOUtils.toByteArray(is);  
