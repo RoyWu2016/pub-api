@@ -1,5 +1,11 @@
 package com.ai.api.dao.impl;
 
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.security.Key;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.IDGenerator;
 import com.ai.commons.StringUtils;
@@ -19,16 +25,7 @@ import org.jose4j.jwt.consumer.NumericDateValidator;
 import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
-import java.security.Key;
-import java.util.HashMap;
-import java.util.Map;
 
 /***************************************************************************
  * <PRE>
@@ -70,7 +67,7 @@ public class TokenJWTDaoImpl {
 
 
 	//@CachePut(value = "publicAPIToken",key = "#sessionId")//create or update-----function will run every called
-	public TokenSession generateToken(final String login, final String userId, String sessionId){
+	public TokenSession generateToken(final String login, final String userId, String sessionId, final String userType){
 		TokenSession tokenSession = new TokenSession();
 		String jwt = null;
 		try {
@@ -80,7 +77,7 @@ public class TokenJWTDaoImpl {
 				tokenSession.setId(sessionId);
 			}
 			tokenSession.setUserId(userId);
-			String[] temp = this.innerEncryption(login, userId, tokenSession).split(seperator);
+			String[] temp = this.innerEncryption(login, userId, tokenSession, userType).split(seperator);
 			String innerJwt = temp[0];
 			jwt = this.outerEncryption(innerJwt);
 			tokenSession.setToken(jwt);
@@ -196,7 +193,7 @@ public class TokenJWTDaoImpl {
 
 
 
-    private String innerEncryption(final String login, final String userId, TokenSession sess) throws JoseException {
+    private String innerEncryption(final String login, final String userId, TokenSession sess, final String userType) throws JoseException {
         logger.info("JWT being sign...");
 
         // Create Claims to add to the token
@@ -213,6 +210,7 @@ public class TokenJWTDaoImpl {
         claims.setSubject(TOKEN_SUBJECT); // the subject/principal is whom the token is about
         claims.setClaim("userId", userId); // additional claims, store user id
         claims.setClaim("sessId", sess.getId()); // additional claims, store session id
+	    claims.setClaim("userType", userType); // additional claims, store user type, client/employee
 
 
         // Create a JsonWebSignature object.

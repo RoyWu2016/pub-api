@@ -6,6 +6,7 @@ import com.ai.api.bean.UserForToken;
 import com.ai.api.dao.UserDao;
 import com.ai.api.dao.impl.TokenJWTDaoImpl;
 import com.ai.api.service.AuthenticationService;
+import com.ai.commons.Consts;
 import com.ai.commons.IDGenerator;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.user.GeneralUserBean;
@@ -39,7 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public ServiceCallResult userLogin(String userName, String password, String userType) {
         logger.info("userLogin ... userName: " +userName + ", userType:" + userType);
         ServiceCallResult result = new ServiceCallResult();
-        if (userType.toLowerCase().equals("client")){
+        if (userType.toLowerCase().equals(Consts.Http.USER_TYPE_CLIENT)){
             String pwdMd5 = DigestUtils.shaHex(MD5.toMD5(password));
             logger.info("client-----pwdMd5 :"+pwdMd5);
             logger.info("getting client from DB ... userName:"+userName);
@@ -47,7 +48,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 //            logger.info("client-----userId-[ "+client.getUserId()+"] pw-["+client.getPassword()+"]");
             if (client != null && client.getUserId() != null && pwdMd5.equalsIgnoreCase(client.getPassword())) {
                 //Generate the token based on the User
-                TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(), client.getUserId(), IDGenerator.uuid());
+                TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(), client.getUserId(),
+		                IDGenerator.uuid(), userType);
                 if (tokenSession != null) {
                     String token = JSON.toJSONString(tokenSession);
                     result.setResponseString(token);
@@ -63,7 +65,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
                 result.setReasonPhase("The username and password doesn't match OR user not exist.");
             }
-        }else if(userType.toLowerCase().equals("employee")){
+        }else if(userType.toLowerCase().equals(Consts.Http.USER_TYPE_EMPLOYEE)){
             String pwdMd5 = MD5.toMD5(password);
 //            logger.info("employee-----pwdMd5 :"+pwdMd5);
             logger.info("getting employee from DB ... userName:"+userName);
@@ -71,7 +73,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             logger.info("employee-----userId-[ "+user.getUserId()+"] pw-["+user.getPassword()+"]");
             if (null != user.getUserId() && pwdMd5.equalsIgnoreCase(user.getPassword())){
                 //Generate the token based on the User
-                TokenSession tokenSession = tokenJWTDao.generateToken(user.getLogin(), user.getUserId(), IDGenerator.uuid());
+                TokenSession tokenSession = tokenJWTDao.generateToken(user.getLogin(), user.getUserId(),
+		                IDGenerator.uuid(), userType);
                 if (tokenSession != null) {
                     result.setResponseString(JSON.toJSONString(tokenSession));
                     result.setStatusCode(HttpServletResponse.SC_OK);

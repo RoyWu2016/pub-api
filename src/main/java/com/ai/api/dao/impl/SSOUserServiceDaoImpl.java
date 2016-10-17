@@ -163,7 +163,6 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
                 return result;
             }
 			if (!HttpUtil.validateRefreshTokenKey(request)) {
-
 				result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
 				result.setReasonPhase("Refresh key invalid.");
 				result.setResponseString("Please check your token refresh key.");
@@ -175,9 +174,11 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
             if (jwt != null) {
 	            JwtClaims claims = tokenJWTDao.getClaimsByJWT(jwt);
 	            TokenSession oldToken = tokenJWTDao.getTokenSessionFromRedis((String)claims.getClaimValue("sessId"));
+	            final String userType = (String) claims.getClaimValue("userType");
 	            TokenSession tokenSession = null;
 	            if (null!=oldToken){
-		            tokenSession = tokenJWTDao.generateToken("refresh",oldToken.getUserId(),oldToken.getId());
+		            tokenSession = tokenJWTDao.generateToken("refresh", oldToken.getUserId(),
+				            oldToken.getId(), userType);
 	            }
                 if (null==tokenSession) {
                     //not valid

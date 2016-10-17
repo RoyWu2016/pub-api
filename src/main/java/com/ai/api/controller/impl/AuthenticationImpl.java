@@ -6,8 +6,6 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
-import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,12 +15,12 @@ import com.ai.api.dao.SSOUserServiceDao;
 import com.ai.api.service.AuthenticationService;
 import com.ai.api.service.SSOUserService;
 import com.ai.api.service.UserService;
+import com.ai.commons.Consts;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ServiceCallResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +53,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthenticationImpl implements Authentication {
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationImpl.class);
-
-	public static final Set<String> userTypes = Sets.newHashSet("client", "employee");
 
 	@Autowired
 	SSOUserService ssoUserService;
@@ -91,7 +87,7 @@ public class AuthenticationImpl implements Authentication {
 			return mapper.writeValueAsString(result);
 		}
 
-		if (!userTypes.contains(userType)) {
+		if (! Consts.Http.USER_TYPES.contains(userType)) {
 			result.setStatusCode(HttpServletResponse.SC_FORBIDDEN);
 			result.setResponseString("");
 			result.setReasonPhase("wrong user type: " + userType);
