@@ -255,4 +255,5 @@ public class ReportImpl implements Report {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
 }
