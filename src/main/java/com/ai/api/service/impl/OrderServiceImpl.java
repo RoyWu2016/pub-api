@@ -10,7 +10,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -52,7 +51,6 @@ import com.ai.api.service.UserService;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /***************************************************************************
@@ -350,7 +348,7 @@ public class OrderServiceImpl implements OrderService {
 		}
 		
 		int rowid = 11;
-		String resultStr = list.toString();
+		String resultStr = JsonUtil.mapToJson(list);
 		List<SimpleOrderSearchBean> tempList = JsonUtil.mapToObject(resultStr, new TypeReference<List<SimpleOrderSearchBean>>(){});
 		for(SimpleOrderSearchBean each : tempList) {
 			row = sheet.createRow(rowid);
