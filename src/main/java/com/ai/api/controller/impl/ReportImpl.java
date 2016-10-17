@@ -1,24 +1,22 @@
 package com.ai.api.controller.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.controller.Report;
 import com.ai.api.service.ReportService;
-import com.ai.commons.DateUtils;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
-import com.ai.commons.beans.psi.ReportDetailBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportSearchCriteriaBean;
-import com.ai.commons.beans.report.ReportSearchResultBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
-import com.ai.commons.beans.report.api.ReportCertificateBean;
-import com.ai.commons.beans.report.api.ReportDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +41,7 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/psi-reports", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{userId}/reports", method = RequestMethod.GET)
     public ResponseEntity<PageBean<ClientReportSearchBean>> getPSIReports (@PathVariable("userId") String userId,
                                                                          @RequestParam(value = "start",required = false) String startDate,
                                                                          @RequestParam(value = "end",required = false) String endDate,
@@ -108,11 +106,11 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/report/{reportId}/pdfInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{userId}/report/{productId}/pdf-info", method = RequestMethod.GET)
     public ResponseEntity<List<String>> getUserReportPdfInfo(@PathVariable("userId") String userId,
-                                                                            @PathVariable("reportId") String reportId){
+                                                                            @PathVariable("productId") String productId){
 
-        List<String> result = reportService.getUserReportPdfInfo(userId, reportId);
+        List<String> result = reportService.getUserReportPdfInfo(userId, productId);
         if(result!=null){
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
@@ -122,16 +120,16 @@ public class ReportImpl implements Report {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/report/{reportId}/filename/{fileName}/pdf", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{userId}/report/{productId}/filename/{fileName}/pdf", method = RequestMethod.GET)
     public ResponseEntity<String> downloadPDF(@PathVariable("userId") String userId,
-                                              @PathVariable("reportId") String reportId,
+                                              @PathVariable("productId") String productId,
                                               @PathVariable("fileName") String fileName,
                                               HttpServletResponse httpResponse) {
         logger.info("downloadPDF ...");
         logger.info("userId : "+userId);
-        logger.info("reportId : "+reportId);
+        logger.info("reportId : "+ productId);
         logger.info("fileName : "+fileName);
-        boolean b = reportService.downloadPDF(reportId,fileName,httpResponse);
+        boolean b = reportService.downloadPDF(productId,fileName,httpResponse);
         if(b){
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
