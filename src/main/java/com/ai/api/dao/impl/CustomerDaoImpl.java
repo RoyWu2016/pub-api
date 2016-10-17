@@ -422,4 +422,28 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 		}
 		return null;
 	}
+
+	@Override
+	public boolean isACAUser(String login) {
+		StringBuilder url = new StringBuilder(config.getCustomerServiceUrl()).append("/customer-legacy/is-access-aca");
+		try {
+			if (StringUtils.isNotBlank(login)){
+				url = url.append("?login=").append(login);
+			}
+			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				LOGGER.info("Check if ACA Accessible login:"+login+" || result:"+result.getResponseString());
+				if(result.getResponseString().equalsIgnoreCase("true")) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+		} catch (IOException e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return false;
+	}
 }
