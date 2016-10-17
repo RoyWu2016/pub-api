@@ -6,13 +6,18 @@
  ***************************************************************************/
 package com.ai.api.controller.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +43,7 @@ import com.ai.api.util.AIUtil;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -223,6 +229,51 @@ public class OrderImpl implements Order {
 			return new ResponseEntity<>(ordersList, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/psi-orders-export", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, String>> exportOrders(@PathVariable("userId")String userId,
+													   @RequestParam(value = "service-type", required = false , defaultValue="") String serviceType,
+													   @RequestParam(value = "start", required = false, defaultValue="") String start,
+													   @RequestParam(value = "end", required = false , defaultValue="") String end,
+													   @RequestParam(value = "status", required = false, defaultValue="") String orderStatus) {
+		
+		Map<String, String> result = new HashMap<String,String>();
+		String inspectionPeriod = null;
+		if (!("".equals(start) && "".equals(end))) {
+			inspectionPeriod = start + " - " + end;
+		}else {
+			//get last 3 month
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar rightNow = Calendar.getInstance();
+			String endStr = sf.format(rightNow.getTime());
+			rightNow.add(Calendar.MONTH, -3);
+			String startStr = sf.format(rightNow.getTime());
+			
+			inspectionPeriod = startStr + " - " + endStr;
+		}
+		try {
+			InputStream inpurtStream = orderService.exportOrders(userId, serviceType,start, end, orderStatus,inspectionPeriod);
+			String fileStr = null;
+			if (inpurtStream != null) {
+				try {
+					byte[] data = IOUtils.toByteArray(inpurtStream);
+					fileStr = Base64.encode(data);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			result.put("xlsx_base64", fileStr);
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("export orders search error: " + ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
