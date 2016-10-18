@@ -553,6 +553,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public UserBean updateUserBeanInCache(final String userId) {
+        logger.info("ready to update user in cache ! userId:  " + userId);
 		UserBean newUserBean = this.getUserBeanByService(userId);
 		RedisUtil.hset("userBeanCache",userId,JSON.toJSONString(newUserBean),RedisUtil.HOUR * 2);
 		return newUserBean;
@@ -632,9 +633,10 @@ public class UserServiceImpl implements UserService {
 		//update general user and company contact
 		//return customerDao.updateGeneralUser(user) && companyDao.updateCompanyContact(compId, contact);
 		if (customerDao.updateGeneralUser(user) && companyDao.updateCompanyContact(compId, contact)){
-			logger.info("update contact finished for user:  " + userId);
+			logger.info("update contact in DB finished ! userId:  " + userId);
 			return this.updateUserBeanInCache(userId);
         }
+        logger.info("update contact fail !!!!!!");
 		return null;
 	}
 
