@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.UserBean;
+import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.OrderDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.OrderService;
@@ -82,9 +83,9 @@ public class OrderServiceImpl implements OrderService {
 	@Qualifier("orderDao")
 	private OrderDao orderDao;
 
-	// @Autowired
-	// @Qualifier("customerDao")
-	// private CustomerDao customerDao;
+	@Autowired
+	@Qualifier("serviceConfig")
+	private ServiceConfig config;
 
 	@Autowired
 	@Qualifier("userService")
@@ -300,8 +301,8 @@ public class OrderServiceImpl implements OrderService {
 
 		sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 8));
 		
-//		String fileName = config.getExcleLoggoCommonSource() + File.separator + "logo.png";
-		String fileName = "E:" +  File.separator + "logo.png";
+		String fileName = config.getExcleLoggoCommonSource() + File.separator + "logo.png";
+//		String fileName = "E:" +  File.separator + "logo.png";
 		logger.info("Found the logo resource: " + fileName);
 		InputStream is = new FileInputStream(fileName);  
     	byte[] bytes = IOUtils.toByteArray(is);  
