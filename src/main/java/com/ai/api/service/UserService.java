@@ -23,6 +23,7 @@ import com.ai.api.exception.AIException;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
@@ -91,6 +92,8 @@ public interface UserService {
     EmployeeBean getEmployeeProfile(String employeeId);
 
     boolean isACAUser(String userId);
+
+	DashboardBean getUserDashboard(String userId, String startDate, String endDate) throws IOException, AIException;
 
 //    String getCompanyIdByUserId(String userId)throws IOException, AIException;
 }

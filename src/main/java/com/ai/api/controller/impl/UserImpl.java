@@ -7,18 +7,23 @@
 package com.ai.api.controller.impl;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
@@ -31,7 +36,10 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 /***************************************************************************
  * <PRE>
@@ -58,7 +66,8 @@ public class UserImpl implements User {
 	private static final Logger logger = LoggerFactory.getLogger(UserImpl.class);
 
 	@Autowired
-	UserService userService;  //Service which will do all data retrieval/manipulation work
+	UserService userService; // Service which will do all data
+								// retrieval/manipulation work
 
 	@Override
 	@TokenSecured
@@ -86,8 +95,7 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/company", method = RequestMethod.PUT)
 	public ResponseEntity<UserBean> updateUserProfileCompany(@PathVariable("userId") String userId,
-	                                                         @RequestBody CompanyBean newComp)
-			throws IOException, AIException {
+			@RequestBody CompanyBean newComp) throws IOException, AIException {
 		logger.info("updating company for user: " + userId);
 		UserBean cust = userService.updateCompany(newComp, userId);
 		if (cust != null) {
@@ -101,8 +109,7 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/contact-info", method = RequestMethod.PUT)
 	public ResponseEntity<UserBean> updateUserProfileContact(@PathVariable("userId") String userId,
-	                                                         @RequestBody ContactInfoBean newContact)
-			throws IOException, AIException {
+			@RequestBody ContactInfoBean newContact) throws IOException, AIException {
 		logger.info("updating User contact " + userId);
 		UserBean cust = userService.updateContact(newContact, userId);
 		if (cust != null) {
@@ -112,13 +119,11 @@ public class UserImpl implements User {
 		}
 	}
 
-
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/preference/booking", method = RequestMethod.PUT)
 	public ResponseEntity<UserBean> updateUserBookingPreference(@PathVariable("userId") String userId,
-	                                                            @RequestBody BookingPreferenceBean newBookingPref)
-			throws IOException, AIException {
+			@RequestBody BookingPreferenceBean newBookingPref) throws IOException, AIException {
 		logger.info("Updating User booking preference: " + userId);
 
 		UserBean cust = userService.updateBookingPreference(newBookingPref, userId);
@@ -133,8 +138,7 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/preference/booking/preferred-product-families", method = RequestMethod.PUT)
 	public ResponseEntity<UserBean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String userId,
-	                                                                        @RequestBody List<String> newPreferred)
-			throws IOException, AIException {
+			@RequestBody List<String> newPreferred) throws IOException, AIException {
 		logger.info("Updating User preferred product family: " + userId);
 
 		UserBean cust = userService.updateBookingPreferredProductFamily(newPreferred, userId);
@@ -148,8 +152,8 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/password", method = RequestMethod.PUT)
-	public ResponseEntity<ServiceCallResult> updateUserPassword(@PathVariable("userId") String userId,@RequestBody HashMap<String, String> pwdMap)
-			throws IOException, AIException {
+	public ResponseEntity<ServiceCallResult> updateUserPassword(@PathVariable("userId") String userId,
+			@RequestBody HashMap<String, String> pwdMap) throws IOException, AIException {
 		logger.info("Updating User password: " + userId);
 
 		ServiceCallResult result = userService.updateUserPassword(userId, pwdMap);
@@ -166,15 +170,15 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, String>> getCompanyLogo(@PathVariable("userId") String userId,
-	                                             @PathVariable("companyId") String companyId) {
+			@PathVariable("companyId") String companyId) {
 		logger.info("get companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
 		Map<String, String> result = new HashMap<String, String>();
 		try {
 			String imageStr = userService.getCompanyLogo(companyId);
 			if (imageStr != null) {
-				result.put("image",imageStr);
+				result.put("image", imageStr);
 			} else {
-				result.put("image","");
+				result.put("image", "");
 			}
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} catch (Exception e) {
@@ -187,8 +191,7 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.POST)
 	public ResponseEntity<String> updateCompanyLogo(@PathVariable("userId") String userId,
-	                                                @PathVariable("companyId") String companyId,
-	                                                @RequestBody CompanyLogoBean logoBean) {
+			@PathVariable("companyId") String companyId, @RequestBody CompanyLogoBean logoBean) {
 		logger.info("update companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
 		boolean b = false;
 		try {
@@ -203,11 +206,11 @@ public class UserImpl implements User {
 		}
 	}
 
-
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.DELETE)
-	public ResponseEntity<String> deleteCompanyLogo(@PathVariable("userId") String userId, @PathVariable("companyId") String companyId) {
+	public ResponseEntity<String> deleteCompanyLogo(@PathVariable("userId") String userId,
+			@PathVariable("companyId") String companyId) {
 		logger.info("delete companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
 		boolean b = false;
 		try {
@@ -224,7 +227,8 @@ public class UserImpl implements User {
 
 	@Override
 	@RequestMapping(value = "/user", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> createNewAccount(@RequestBody ClientInfoBean clientInfoBean) throws IOException, AIException {
+	public ResponseEntity<Boolean> createNewAccount(@RequestBody ClientInfoBean clientInfoBean)
+			throws IOException, AIException {
 		logger.info("creating a new account . . . . . ");
 		if (userService.createNewAccount(clientInfoBean)) {
 			return new ResponseEntity<>(true, HttpStatus.OK);
@@ -236,8 +240,8 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/employee/{employeeId}", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> getEmployeeProfile(
-			@PathVariable("employeeId") String employeeId) throws IOException, AIException {
+	public ResponseEntity<JSONObject> getEmployeeProfile(@PathVariable("employeeId") String employeeId)
+			throws IOException, AIException {
 		// TODO Auto-generated method stub
 		logger.info("getEmployeeProfile employeeId: " + employeeId);
 		EmployeeBean cust = userService.getEmployeeProfile(employeeId);
@@ -263,12 +267,35 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/is-aca-user", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> isACAUser(@PathVariable("userId") String userId)throws IOException, AIException {
-		logger.info("check isACAUser userId:"+userId);
-		Boolean b= userService.isACAUser(userId);
+	public ResponseEntity<JSONObject> isACAUser(@PathVariable("userId") String userId) throws IOException, AIException {
+		logger.info("check isACAUser userId:" + userId);
+		Boolean b = userService.isACAUser(userId);
 		JSONObject object = new JSONObject();
-		object.put("isACAUser",b);
+		object.put("isACAUser", b);
 		return new ResponseEntity<>(object, HttpStatus.OK);
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/dashboard", method = RequestMethod.GET)
+	public ResponseEntity<DashboardBean> getUserDashboard(@PathVariable("userId") String userId,
+			@RequestParam(value = "startDate", required = false) String startDate,
+			@RequestParam(value = "endDate", required = false) String endDate) throws IOException, AIException {
+
+		if ("".equals(startDate) && "".equals(endDate)) {
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar rightNow = Calendar.getInstance();
+			endDate = sf.format(rightNow.getTime());
+			rightNow.add(Calendar.MONTH, -3);
+			startDate = sf.format(rightNow.getTime());
+		}
+
+		DashboardBean result = userService.getUserDashboard(userId, startDate, endDate);
+		if (null == result) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
 	}
 
 }
