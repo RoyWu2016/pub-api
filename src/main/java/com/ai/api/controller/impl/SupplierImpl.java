@@ -153,23 +153,6 @@ public class SupplierImpl implements Supplier {
 	}
 
 	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/order/{orderId}/supplier", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> supplierConfirm(
-			@PathVariable("userId") String userId, 
-			@PathVariable("orderId") String orderId,
-			@RequestParam("inspectionDate") String inspectionDateString,
-			@RequestParam("containerReadyDate") String containReadyTime,
-			@RequestBody OrderFactoryBean orderFactoryBean) throws IOException, AIException {
-		if (factoryService.supplierConfirmOrder(orderId,inspectionDateString,containReadyTime,orderFactoryBean)) {
-			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-	}
-
-	@Override
 	@RequestMapping(value = "/order/{orderId}/supplier", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> getSupplierConfirm(@PathVariable("orderId") String orderId,
 																  @RequestParam("password")String password) {
