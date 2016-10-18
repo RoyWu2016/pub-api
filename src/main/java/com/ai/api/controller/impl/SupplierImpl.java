@@ -186,12 +186,47 @@ public class SupplierImpl implements Supplier {
                     object.put("updateConfirmSupplierPwd",newPW);
                     return new ResponseEntity<>(object, HttpStatus.OK);
                 }
-                logger.info("incorrect pw !   ["+ password +"] || should be :"+password);
+                logger.info("incorrect pw !   ["+ password +"] || should be :"+pw);
 			} else {
 				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
 			logger.error("error in getSupplierConfirm",e);
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@Override
+	@RequestMapping(value = "/order/{orderId}/supplier", method = RequestMethod.PUT)
+	public ResponseEntity<Boolean> updateSupplierConfirm(@PathVariable("orderId") String orderId,
+															@RequestParam("password")String password,
+															@RequestParam("inspectionDate") String inspectionDateString,
+															@RequestParam("containerReadyDate") String containReadyTime,
+															@RequestBody OrderFactoryBean orderFactoryBean) {
+		try {
+			logger.info("updateSupplierConfirm ...");
+			logger.info("orderId:"+orderId);
+			InspectionBookingBean orderBean = orderService.getOrderDetail("nullUserId", orderId);
+			if (orderBean != null) {
+				String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
+				String pw = DigestUtils.shaHex(MD5.toMD5(validateCode));
+				if (pw.equalsIgnoreCase(password)){
+				    boolean b = factoryService.supplierConfirmOrder(orderId,inspectionDateString,containReadyTime,orderFactoryBean);
+					if (b) {
+                        logger.info("confirm succeed !");
+						return new ResponseEntity<>(HttpStatus.OK);
+					} else {
+						logger.info("failed confirming order !");
+						return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+					}
+				}
+				logger.info("incorrect pw !   ["+ password +"] || should be :"+pw);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			logger.info("can not get order by id:"+orderId);
+		} catch (Exception e) {
+			logger.error("error in updateSupplierConfirm",e);
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

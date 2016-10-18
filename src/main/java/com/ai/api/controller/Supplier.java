@@ -33,4 +33,9 @@ public interface Supplier {
 			String containReadyTime, OrderFactoryBean orderFactoryBean) throws IOException, AIException;
 
 	ResponseEntity<JSONObject> getSupplierConfirm(String orderId,String password);
+
+	ResponseEntity<Boolean> updateSupplierConfirm(String orderId,String password,
+                                                     String inspectionDateString,
+                                                     String containReadyTime,
+                                                     OrderFactoryBean orderFactoryBean);
 }
