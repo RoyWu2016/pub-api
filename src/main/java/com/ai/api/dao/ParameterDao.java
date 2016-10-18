@@ -49,9 +49,9 @@ public interface ParameterDao {
 
 	Map<String,List<ChecklistTestSampleSizeBean>> getTestSampleSizeList();
 
-	List<CKLTestVO> getChecklistPublicTestList();
+	List<CKLTestVO> getChecklistPublicTestList(boolean refresh);
 
-    List<CKLDefectVO> getChecklistPublicDefectList();
+    List<CKLDefectVO> getChecklistPublicDefectList(boolean refresh);
 
 	List<SysProductTypeBean> getProductTypeList();
 	
