@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.ai.api.bean.UserBean;
 import com.ai.api.service.OrderService;
+import com.ai.api.service.UserService;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.userservice.common.util.MD5;
 import com.alibaba.fastjson.JSON;
@@ -43,6 +45,9 @@ public class SupplierImpl implements Supplier {
 
     @Autowired
     OrderService orderService;
+
+	@Autowired
+	UserService userService;
 
 	@Override
 	@TokenSecured
@@ -184,6 +189,10 @@ public class SupplierImpl implements Supplier {
                     String newPW = DigestUtils.shaHex(password);
                     JSONObject object = JSON.parseObject(JSON.toJSONString(orderBean));
                     object.put("updateConfirmSupplierPwd",newPW);
+
+                    UserBean u = userService.getCustById(orderBean.getOrder().getOrderGeneralInfo().getUserId());
+                    object.put("userCompanyName",u.getCompany().getName());
+
                     return new ResponseEntity<>(object, HttpStatus.OK);
                 }
                 logger.info("incorrect pw !   ["+ password +"] || should be :"+pw);
