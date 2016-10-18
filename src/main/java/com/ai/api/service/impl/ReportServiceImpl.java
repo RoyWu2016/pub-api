@@ -45,12 +45,9 @@ import com.ai.api.service.UserService;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
-import com.ai.commons.beans.payment.api.PaypalInfoBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
@@ -223,7 +220,7 @@ public class ReportServiceImpl implements ReportService {
 		tableCS.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
 		tableCS.setWrapText(true);
 
-		Sheet sheet = wb.createSheet("AI Orders List (" + inspectionPeriod + ")");
+		Sheet sheet = wb.createSheet("AI Reports List (" + inspectionPeriod + ")");
 		Row row = null;
 		for (i = 0; i <= 10; i++) {
 			row = sheet.createRow(i);
@@ -234,9 +231,9 @@ public class ReportServiceImpl implements ReportService {
 
 		sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 8));
 		
-		String fileName = config.getExcleLoggoCommonSource() + File.separator + "logo.png";
-//		String fileName = "E:" +  File.separator + "logo.png";
-		logger.info("fine the logo resource: " + fileName);
+//		String fileName = config.getExcleLoggoCommonSource() + File.separator + "logo.png";
+		String fileName = "E:" +  File.separator + "logo.png";
+		logger.info("Found the logo resource: " + fileName);
 		InputStream is = new FileInputStream(fileName);  
     	byte[] bytes = IOUtils.toByteArray(is);  
     	  
@@ -255,7 +252,7 @@ public class ReportServiceImpl implements ReportService {
 		row = sheet.getRow(4);
 		Cell cell = row.createCell(0);
 		cell.setCellType(HSSFCell.CELL_TYPE_STRING);
-		cell.setCellValue("List of Orders from " + inspectionPeriod);
+		cell.setCellValue("List of Reports from " + inspectionPeriod);
 		cell.setCellStyle(tileCS);
 
 		row = sheet.getRow(6);
@@ -274,7 +271,7 @@ public class ReportServiceImpl implements ReportService {
 		String[] title = new String[] { "Type", "Product Name", "Product Ref / SKU", "P/O Number", "Report received on",
 				"Factory Name", "Result", "Status", "AI Rerence" };
 		row = sheet.createRow(10);
-		for (int k = 0; k < 9; k++) {
+		for (int k = 0; k < title.length; k++) {
 			cell = row.createCell(k);
 			cell.setCellStyle(tableHeadeCS);
 			cell.setCellType(HSSFCell.CELL_TYPE_STRING);
@@ -282,30 +279,28 @@ public class ReportServiceImpl implements ReportService {
 			sheet.autoSizeColumn((short) k);
 		}
 		
-		int itemsRow = (int) result.getTotalSize();
-		int k = 0;
-		for(int rowid=11;rowid<11+itemsRow;rowid++) {
+		String resultStr =  result.getPageItems().toString();
+		List<ClientReportSearchBean> list = JsonUtil.mapToObject(resultStr, new TypeReference<List<ClientReportSearchBean>>(){});
+		int rowid = 11;
+		for(ClientReportSearchBean each : list) {
 			row = sheet.createRow(rowid);
-			for(int cellid=0;cellid<9;cellid++) {
+			for(int cellid=0;cellid<title.length;cellid++) {
 				cell = row.createCell(cellid);
 				cell.setCellStyle(tableCS);
 				cell.setCellType(HSSFCell.CELL_TYPE_STRING);
-				String lists =  result.getPageItems().toString();
-				logger.info(lists);
-				List<ClientReportSearchBean> list = JsonUtil.mapToObject(lists, new TypeReference<List<ClientReportSearchBean>>(){});
 				switch (cellid){
-				case 0: cell.setCellValue(list.get(k).getServiceTypeText());break;
-				case 1: cell.setCellValue(list.get(k).getProductName());break;
-				case 2: cell.setCellValue(list.get(k).getProdReference());break;
-				case 3: cell.setCellValue(list.get(k).getPoNumber());break;
-				case 4: cell.setCellValue(list.get(k).getInspectionDateMMMFormat());break;
-				case 5: cell.setCellValue(list.get(k).getSupplierName());break;
-				case 6: cell.setCellValue(list.get(k).getOverrallResult());break;
-				case 7: cell.setCellValue(list.get(k).getStatus());break;
-				case 8: cell.setCellValue(list.get(k).getOrderNumber());break;
+				case 0: cell.setCellValue(each.getServiceTypeText());break;
+				case 1: cell.setCellValue(each.getProductName());break;
+				case 2: cell.setCellValue(each.getProdReference());break;
+				case 3: cell.setCellValue(each.getPoNumber());break;
+				case 4: cell.setCellValue(each.getInspectionDateMMMFormat());break;
+				case 5: cell.setCellValue(each.getSupplierName());break;
+				case 6: cell.setCellValue(each.getOverrallResult());break;
+				case 7: cell.setCellValue(each.getStatus());break;
+				case 8: cell.setCellValue(each.getOrderNumber());break;
 				}
 			}
-			k++;
+			rowid++;
 		}
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
