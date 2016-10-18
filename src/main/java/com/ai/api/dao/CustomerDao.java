@@ -10,6 +10,7 @@ import com.ai.api.bean.EmployeeBean;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
@@ -19,7 +20,7 @@ import com.ai.commons.beans.user.GeneralUserBean;
 
 public interface CustomerDao {
 
-//    String getCustomerIdByCustomerLogin(String login) throws AIException;
+	// String getCustomerIdByCustomerLogin(String login) throws AIException;
 
 	GeneralUserViewBean getGeneralUserViewBean(String customer_id);
 
@@ -27,7 +28,7 @@ public interface CustomerDao {
 
 	boolean updateGeneralUser(GeneralUserBean newUser);
 
-	ServiceCallResult updateGeneralUserPassword(String userId, HashMap<String,String> pwdMap);
+	ServiceCallResult updateGeneralUserPassword(String userId, HashMap<String, String> pwdMap);
 
 	InputStream getCompanyLogo(String companyId);
 
@@ -37,7 +38,8 @@ public interface CustomerDao {
 
 	boolean createNewAccount(ClientInfoBean clientInfoBean);
 
-	PageBean<PaymentSearchResultBean> searchPaymentList(PageParamBean criteria, String userId, String parentId, String companyId, String paid) ;
+	PageBean<PaymentSearchResultBean> searchPaymentList(PageParamBean criteria, String userId, String parentId,
+			String companyId, String paid);
 
 	String createProformaInvoice(String userId, String login, String orders);
 
@@ -50,4 +52,6 @@ public interface CustomerDao {
 	EmployeeBean getEmployeeProfile(String employeeId);
 
 	boolean isACAUser(String login);
+
+	DashboardBean getUserDashboard(String userId, String parentId, String companyId, String startDate, String endDate);
 }
