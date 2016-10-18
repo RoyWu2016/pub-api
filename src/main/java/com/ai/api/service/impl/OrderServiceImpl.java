@@ -278,6 +278,7 @@ public class OrderServiceImpl implements OrderService {
 		tableHeadeCS.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
 		tableHeadeCS.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
 		tableHeadeCS.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+		tableHeadeCS.setWrapText(true);
 		
 		CellStyle tableCS = wb.createCellStyle();
 		tableCS.setAlignment(CellStyle.ALIGN_CENTER);
@@ -292,7 +293,7 @@ public class OrderServiceImpl implements OrderService {
 		Row row = null;
 		for (i = 0; i <= 10; i++) {
 			row = sheet.createRow(i);
-			for (int j = 0; j < 9; j++) {
+			for (int j = 0; j < 12; j++) {
 				row.createCell(j).setCellStyle(tileCS);
 			}
 		}
@@ -344,7 +345,8 @@ public class OrderServiceImpl implements OrderService {
 			cell.setCellStyle(tableHeadeCS);
 			cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 			cell.setCellValue(title[k]);
-			sheet.autoSizeColumn((short) k);
+//			sheet.autoSizeColumn((short) k);
+			sheet.setDefaultColumnWidth(15);
 		}
 		
 		int rowid = 11;
