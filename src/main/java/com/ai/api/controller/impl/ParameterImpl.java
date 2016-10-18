@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -129,9 +130,10 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/public-tests", method = RequestMethod.GET)
-	public ResponseEntity<List<CKLTestVO>> getChecklistPublicTestList() {
+	public ResponseEntity<List<CKLTestVO>> getChecklistPublicTestList(
+			@RequestParam(value="refresh",defaultValue="false") boolean refresh) {
 		logger.info("get checklistPublicTests");
-		List<CKLTestVO> result = parameterService.getChecklistPublicTestList();
+		List<CKLTestVO> result = parameterService.getChecklistPublicTestList(refresh);
 
 		if(result==null){
 			logger.error("checklistTestList not found");
@@ -143,9 +145,10 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/public-defects", method = RequestMethod.GET)
-	public ResponseEntity<List<CKLDefectVO>> getChecklistPublicDefectList() {
+	public ResponseEntity<List<CKLDefectVO>> getChecklistPublicDefectList(
+			@RequestParam(value="refresh",defaultValue="false") boolean refresh) {
 		logger.info("get checklistPublicDefects");
-		List<CKLDefectVO> result = parameterService.getChecklistPublicDefectList();
+		List<CKLDefectVO> result = parameterService.getChecklistPublicDefectList(refresh);
 
 		if(result==null){
 			logger.error("checklistTestList not found");
