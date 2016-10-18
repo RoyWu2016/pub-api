@@ -51,13 +51,13 @@ public class ParameterServiceImpl implements ParameterService {
 	}
 
     @Override
-    public List<CKLTestVO> getChecklistPublicTestList(){
-        return paramDao.getChecklistPublicTestList();
+    public List<CKLTestVO> getChecklistPublicTestList(boolean refresh){
+        return paramDao.getChecklistPublicTestList(refresh);
     }
 
     @Override
-    public List<CKLDefectVO> getChecklistPublicDefectList(){
-        return paramDao.getChecklistPublicDefectList();
+    public List<CKLDefectVO> getChecklistPublicDefectList(boolean refresh){
+        return paramDao.getChecklistPublicDefectList(refresh);
     }
 
     @Override

@@ -254,12 +254,14 @@ public class ParameterDaoImpl implements ParameterDao {
 
 	@Override
 	// @Cacheable(value="checklistPublicTestListCache", key="#root.methodName")
-	public List<CKLTestVO> getChecklistPublicTestList() {
+	public List<CKLTestVO> getChecklistPublicTestList(boolean refresh) {
 		
 		List<CKLTestVO> checklistPublicTestList = null;
-		LOGGER.info("try to getChecklistPublicDefectList from redis ...");
-		String jsonString = RedisUtil.get("checklistPublicTestListCache");
-		checklistPublicTestList = JSON.parseArray(jsonString, CKLTestVO.class);
+		if(!refresh) {
+			LOGGER.info("try to getChecklistPublicDefectList from redis ...");
+			String jsonString = RedisUtil.get("checklistPublicTestListCache");
+			checklistPublicTestList = JSON.parseArray(jsonString, CKLTestVO.class);
+		}
 		if (null == checklistPublicTestList) {
 			String url = config.getChecklistServiceUrl() + "/ws/publicAPI/tests";
 			LOGGER.info("Get! url : " + url);
@@ -287,12 +289,14 @@ public class ParameterDaoImpl implements ParameterDao {
 
 	@Override
 	// @Cacheable(value="checklistPublicDefectListCache",key="#root.methodName")
-	public List<CKLDefectVO> getChecklistPublicDefectList() {
+	public List<CKLDefectVO> getChecklistPublicDefectList(boolean refresh) {
 		
-		List<CKLDefectVO> checklistPublicDefectList = null ;
-		LOGGER.info("try to getChecklistPublicDefectList from redis ...");
-		String jsonString = RedisUtil.get("checklistPublicDefectListCache");
-		checklistPublicDefectList = JSON.parseArray(jsonString, CKLDefectVO.class);
+		List<CKLDefectVO> checklistPublicDefectList = null;
+		if(!refresh) {
+			LOGGER.info("try to getChecklistPublicDefectList from redis ...");
+			String jsonString = RedisUtil.get("checklistPublicDefectListCache");
+			checklistPublicDefectList = JSON.parseArray(jsonString, CKLDefectVO.class);
+		}
 		if (null == checklistPublicDefectList) {
 			String url = config.getChecklistServiceUrl() + "/ws/publicAPI/defects";
 			LOGGER.info("Get! url : " + url);
