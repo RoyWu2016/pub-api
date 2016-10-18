@@ -294,7 +294,7 @@ public class ReportServiceImpl implements ReportService {
 				case 2: cell.setCellValue(each.getProdReference());break;
 				case 3: cell.setCellValue(each.getPoNumber());break;
 				case 4: cell.setCellValue(each.getInspectionDateMMMFormat());break;
-				case 5: cell.setCellValue(each.getSupplierName());break;
+				case 5: cell.setCellValue(each.getSupplierNames());break;
 				case 6: cell.setCellValue(each.getOverrallResult());break;
 				case 7: cell.setCellValue(each.getStatus());break;
 				case 8: cell.setCellValue(each.getOrderNumber());break;
