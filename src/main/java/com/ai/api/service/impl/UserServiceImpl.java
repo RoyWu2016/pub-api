@@ -162,8 +162,8 @@ public class UserServiceImpl implements UserService {
 		ProductFamilyBean productFamilyBean = companyEntireBean.getProductFamily();
 		QualityManualBean qualityManualBean = companyEntireBean.getQualityManual();
 
-		List<ProductCategoryDtoBean> productCategoryDtoBeanList = paramDao.getProductCategoryList();
-		List<ProductFamilyDtoBean> productFamilyDtoBeanList = paramDao.getProductFamilyList();
+		List<ProductCategoryDtoBean> productCategoryDtoBeanList = paramDao.getProductCategoryList(true);
+		List<ProductFamilyDtoBean> productFamilyDtoBeanList = paramDao.getProductFamilyList(true);
 
 		MultiRefBookingBean multiRefBookingBean = companyEntireBean.getMultiRefBooking();
 
@@ -717,7 +717,7 @@ public class UserServiceImpl implements UserService {
 
 		List<RelevantCategoryInfoBean> infos = new ArrayList<>();
 
-		List<ProductFamilyDtoBean> productFamilyDtoBeanList = paramDao.getProductFamilyList();
+		List<ProductFamilyDtoBean> productFamilyDtoBeanList = paramDao.getProductFamilyList(true);
 
 		int index = 1;
 		for (String familyID : newPreferred) {
@@ -924,9 +924,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public EmployeeBean getEmployeeProfile(String employeeId) {
+	public EmployeeBean getEmployeeProfile(String employeeId,boolean refresh) {
 		// TODO Auto-generated method stub
-		return customerDao.getEmployeeProfile(employeeId);
+		return customerDao.getEmployeeProfile(employeeId,refresh);
 	}
 
 	@Override

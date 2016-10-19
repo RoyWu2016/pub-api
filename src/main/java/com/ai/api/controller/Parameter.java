@@ -19,23 +19,23 @@ import com.ai.commons.beans.checklist.vo.CKLTestVO;
  */
 public interface Parameter {
 
-	ResponseEntity<List<ProductCategoryDtoBean>> getProductCategoryList();
-
-	ResponseEntity<List<ProductFamilyDtoBean>> getProductFamilyList();
-
-	ResponseEntity<List<CountryBean>> getCountryList();
-
-	ResponseEntity<List<ChecklistSampleSize>> getTestSampleSizeList();
-
-	ResponseEntity<Map<String, Object>> getProductTypeList();
-
-	ResponseEntity<List<DropdownListOptionBean>> getTextileProductCategories();
-
-	ResponseEntity<List<DropdownListOptionBean>> getAiOffices();
-
 	ResponseEntity<ChinaTimeBean> getChinaTime();
 
 	ResponseEntity<List<CKLTestVO>> getChecklistPublicTestList(boolean refresh);
 
 	ResponseEntity<List<CKLDefectVO>> getChecklistPublicDefectList(boolean refresh);
+
+	ResponseEntity<List<ProductCategoryDtoBean>> getProductCategoryList(boolean refresh);
+
+	ResponseEntity<List<ProductFamilyDtoBean>> getProductFamilyList(boolean refresh);
+
+	ResponseEntity<List<CountryBean>> getCountryList(boolean refresh);
+
+	ResponseEntity<List<ChecklistSampleSize>> getTestSampleSizeList(boolean refresh);
+
+	ResponseEntity<Map<String, Object>> getProductTypeList(boolean refresh);
+
+	ResponseEntity<List<DropdownListOptionBean>> getTextileProductCategories(boolean refresh);
+
+	ResponseEntity<List<DropdownListOptionBean>> getAiOffices(boolean refresh);
 }

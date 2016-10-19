@@ -72,13 +72,19 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
-	public ResponseEntity<UserBean> getUserProfile(@PathVariable("userId") String userId)
+	public ResponseEntity<UserBean> getUserProfile(@PathVariable("userId") String userId,
+			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh)
 			throws IOException, AIException {
 		logger.info("......start getting user profile.......");
 		UserBean cust = null;
 
 		try {
-			cust = userService.getCustById(userId);
+			if(refresh) {
+				cust = userService.getCustById(userId);
+			}else {
+				userService.removeUserProfileCache(userId);
+				cust = userService.getCustById(userId);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -240,11 +246,11 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/employee/{employeeId}", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> getEmployeeProfile(@PathVariable("employeeId") String employeeId)
-			throws IOException, AIException {
+	public ResponseEntity<JSONObject> getEmployeeProfile(@PathVariable("employeeId") String employeeId,
+			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) throws IOException, AIException {
 		// TODO Auto-generated method stub
 		logger.info("getEmployeeProfile employeeId: " + employeeId);
-		EmployeeBean cust = userService.getEmployeeProfile(employeeId);
+		EmployeeBean cust = userService.getEmployeeProfile(employeeId,refresh);
 		if (cust != null) {
 			JSONObject object = JSON.parseObject(JSON.toJSONString(cust));
 			object.remove("joinDate");

@@ -89,7 +89,7 @@ public interface UserService {
 
     String getLoginByUserId(String userId);
 
-    EmployeeBean getEmployeeProfile(String employeeId);
+    EmployeeBean getEmployeeProfile(String employeeId, boolean refresh);
 
     boolean isACAUser(String userId);
 
