@@ -9,6 +9,8 @@ package com.ai.api.dao.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,8 @@ import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
+import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -339,16 +343,25 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	}
 
 	@Override
-	public List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String login, String orders) {
+	public List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String parentId, String orders) {
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/payment/api/global-payment-list");
+		url.append("?parentId=" + parentId);
+		logger.info("requesting url: " + url.toString());
+		String[] ids = orders.split(",");
+		List<String> oderIds = new ArrayList<String>();
+		oderIds = Arrays.asList(ids);
 		try {
-			String url = config.getMwServiceUrl() + "/service/payment/globalPayment?userId=" + userId + "&login="
-					+ login + "&order_ids_array=" + orders;
-			GetRequest request = GetRequest.newInstance().setUrl(url);
-			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-			return JsonUtil.mapToObject(result.getResponseString(), new TypeReference<List<GlobalPaymentInfoBean>>() {
-			});
-		} catch (Exception e) {
-			LOGGER.error(ExceptionUtils.getStackTrace(e));
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, oderIds);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return JsonUtil.mapToObject(result.getResponseString(),
+						new TypeReference<List<GlobalPaymentInfoBean>>() {
+						});
+			} else {
+				logger.error("save draft error from psi service : " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+			}
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
