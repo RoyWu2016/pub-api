@@ -41,21 +41,21 @@ import com.ai.commons.beans.params.product.SysProductTypeBean;
 
 public interface ParameterDao {
 
-	List<ProductCategoryDtoBean> getProductCategoryList();
+	List<ProductCategoryDtoBean> getProductCategoryList(boolean refresh);
 
-	List<ProductFamilyDtoBean> getProductFamilyList();
+	List<ProductFamilyDtoBean> getProductFamilyList(boolean refresh);
 
-	List<GeoCountryCallingCodeBean> getCountryList();
+	List<GeoCountryCallingCodeBean> getCountryList(boolean refresh);
 
-	Map<String,List<ChecklistTestSampleSizeBean>> getTestSampleSizeList();
+	Map<String,List<ChecklistTestSampleSizeBean>> getTestSampleSizeList(boolean refresh);
 
 	List<CKLTestVO> getChecklistPublicTestList(boolean refresh);
 
     List<CKLDefectVO> getChecklistPublicDefectList(boolean refresh);
 
-	List<SysProductTypeBean> getProductTypeList();
+	List<SysProductTypeBean> getProductTypeList(boolean refresh);
 	
-	List<TextileCategoryBean> getTextileProductCategories();
+	List<TextileCategoryBean> getTextileProductCategories(boolean refresh);
 	
-	List<ClassifiedBean> getAiOffices();
+	List<ClassifiedBean> getAiOffices(boolean refresh);
 }

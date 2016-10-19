@@ -31,23 +31,23 @@ public class ParameterServiceImpl implements ParameterService {
     private ParameterDao paramDao;
 
     @Override
-    public List<ProductCategoryDtoBean> getProductCategoryList(){
-        return paramDao.getProductCategoryList();
+    public List<ProductCategoryDtoBean> getProductCategoryList(boolean refresh){
+        return paramDao.getProductCategoryList(refresh);
     }
 
     @Override
-    public List<ProductFamilyDtoBean>  getProductFamilyList(){
-        return paramDao.getProductFamilyList();
+    public List<ProductFamilyDtoBean>  getProductFamilyList(boolean refresh){
+        return paramDao.getProductFamilyList(refresh);
     }
 
 	@Override
-	public List<GeoCountryCallingCodeBean>  getCountryList(){
-		return paramDao.getCountryList();
+	public List<GeoCountryCallingCodeBean>  getCountryList(boolean refresh){
+		return paramDao.getCountryList(refresh);
 	}
 
 	@Override
-	public Map<String,List<ChecklistTestSampleSizeBean>> getTestSampleSizeList(){
-		return paramDao.getTestSampleSizeList();
+	public Map<String,List<ChecklistTestSampleSizeBean>> getTestSampleSizeList(boolean refresh){
+		return paramDao.getTestSampleSizeList(refresh);
 	}
 
     @Override
@@ -61,19 +61,20 @@ public class ParameterServiceImpl implements ParameterService {
     }
 
     @Override
-    public List<SysProductTypeBean> getProductTypeList(){
-        return paramDao.getProductTypeList();
+    public List<SysProductTypeBean> getProductTypeList(boolean refresh){
+        return paramDao.getProductTypeList(refresh);
     }
 
 	@Override
-	public List<TextileCategoryBean> getTextileProductCategories() {
+	public List<TextileCategoryBean> getTextileProductCategories(boolean refresh) {
 		// TODO Auto-generated method stub
-		return paramDao.getTextileProductCategories();
+		return paramDao.getTextileProductCategories(refresh);
 	}
 
 	@Override
-	public List<ClassifiedBean> getAiOffices() {
+	public List<ClassifiedBean> getAiOffices(boolean refresh) {
 		// TODO Auto-generated method stub
-		return paramDao.getAiOffices();
+		return paramDao.getAiOffices(refresh);
 	}
 }
+

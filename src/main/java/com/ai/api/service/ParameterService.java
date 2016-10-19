@@ -18,21 +18,22 @@ import com.ai.commons.beans.params.product.SysProductTypeBean;
  */
 public interface ParameterService {
 
-    List<ProductCategoryDtoBean> getProductCategoryList();
+	List<ProductCategoryDtoBean> getProductCategoryList(boolean refresh);
 
-    List<ProductFamilyDtoBean> getProductFamilyList();
+	List<GeoCountryCallingCodeBean> getCountryList(boolean refresh);
 
-	List<GeoCountryCallingCodeBean> getCountryList();
+	Map<String, List<ChecklistTestSampleSizeBean>> getTestSampleSizeList(boolean refresh);
 
-	Map<String,List<ChecklistTestSampleSizeBean>> getTestSampleSizeList();
+	List<CKLTestVO> getChecklistPublicTestList(boolean refresh);
 
-    List<CKLTestVO> getChecklistPublicTestList(boolean refresh);
+	List<CKLDefectVO> getChecklistPublicDefectList(boolean refresh);
 
-    List<CKLDefectVO> getChecklistPublicDefectList(boolean refresh);
+	List<SysProductTypeBean> getProductTypeList(boolean refresh);
 
-    List<SysProductTypeBean> getProductTypeList();
-    
-    List<TextileCategoryBean> getTextileProductCategories();
-    
-    List<ClassifiedBean> getAiOffices();
+	List<TextileCategoryBean> getTextileProductCategories(boolean refresh);
+
+	List<ClassifiedBean> getAiOffices(boolean refresh);
+
+	List<ProductFamilyDtoBean> getProductFamilyList(boolean refresh);
+
 }
