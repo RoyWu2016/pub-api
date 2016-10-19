@@ -64,12 +64,14 @@ public class ParameterDaoImpl implements ParameterDao {
 	private ServiceConfig config;
 
 	@Override
-	public List<ProductCategoryDtoBean> getProductCategoryList() {
+	public List<ProductCategoryDtoBean> getProductCategoryList(boolean refresh) {
 		// get it from redis
-		List<ProductCategoryDtoBean> productCategoryList;
-		LOGGER.info("try to getProductCategoryList from redis ...");
-		String jsonString = RedisUtil.get("productCategoryListCache");
-		productCategoryList = JSON.parseArray(jsonString, ProductCategoryDtoBean.class);
+		List<ProductCategoryDtoBean> productCategoryList = null;
+		if(!refresh) {
+			LOGGER.info("try to getProductCategoryList from redis ...");
+			String jsonString = RedisUtil.get("productCategoryListCache");
+			productCategoryList = JSON.parseArray(jsonString, ProductCategoryDtoBean.class);
+		}
 		if (productCategoryList == null) {
 			// get it from param-service
 			String SysProductCategoryURL = config.getParamServiceUrl() + "/p/list-product-category";
@@ -91,11 +93,13 @@ public class ParameterDaoImpl implements ParameterDao {
 
 	@Override
 	// @Cacheable(value="productFamilyListCache", key="#root.methodName")
-	public List<ProductFamilyDtoBean> getProductFamilyList() {
+	public List<ProductFamilyDtoBean> getProductFamilyList(boolean refresh) {
 		List<ProductFamilyDtoBean> productFamilyList = null;
-		LOGGER.info("try to getProductFamilyList from redis ...");
-		String jsonString = RedisUtil.get("productFamilyListCache");
-		productFamilyList = JSON.parseArray(jsonString, ProductFamilyDtoBean.class);
+		if(!refresh) {
+			LOGGER.info("try to getProductFamilyList from redis ...");
+			String jsonString = RedisUtil.get("productFamilyListCache");
+			productFamilyList = JSON.parseArray(jsonString, ProductFamilyDtoBean.class);
+		}
 		if (null == productFamilyList) {
 			String SysProductFamilyBeanURL = config.getParamServiceUrl() + "/p/list-product-family";
 			GetRequest request7 = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
@@ -123,11 +127,13 @@ public class ParameterDaoImpl implements ParameterDao {
 
 	@Override
 	// @Cacheable(value="countryListCache", key="#root.methodName")
-	public List<GeoCountryCallingCodeBean> getCountryList() {
+	public List<GeoCountryCallingCodeBean> getCountryList(boolean refresh) {
 		List<GeoCountryCallingCodeBean> countryList = null;
-		LOGGER.info("try to getCountryList from redis ...");
-		String jsonString = RedisUtil.get("countryListCache");
-		countryList = JSON.parseArray(jsonString, GeoCountryCallingCodeBean.class);
+		if(!refresh) {
+			LOGGER.info("try to getCountryList from redis ...");
+			String jsonString = RedisUtil.get("countryListCache");
+			countryList = JSON.parseArray(jsonString, GeoCountryCallingCodeBean.class);
+		}
 		if (null == countryList) {
 			String SysProductFamilyBeanURL = config.getParamServiceUrl() + "/geography/calling-code/listAll";
 			LOGGER.info("requesting url: " + SysProductFamilyBeanURL.toString());
@@ -155,18 +161,23 @@ public class ParameterDaoImpl implements ParameterDao {
 
 	@Override
 	// @Cacheable(value="testSampleSizeListCache", key="#root.methodName")
-	public Map<String, List<ChecklistTestSampleSizeBean>> getTestSampleSizeList() {
+	public Map<String, List<ChecklistTestSampleSizeBean>> getTestSampleSizeList(boolean refresh) {
 		String baseUrl = config.getParamServiceUrl() + "/systemconfig/classified/list/";
 		Map<String, List<ChecklistTestSampleSizeBean>> resultMap = new HashMap<>();
 		
-		LOGGER.info("try to getTestSampleSizeList from redis ...");
-		String jsonStringPriceNo = RedisUtil.hget("testSampleSizeListCache","CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO");
-		String jsonStringSampleLevel = RedisUtil.hget("testSampleSizeListCache","CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL");
-		String jsonStringFabricLevel = RedisUtil.hget("testSampleSizeListCache","CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL");
-		
-		List<ChecklistTestSampleSizeBean> priceNoList = JSON.parseArray(jsonStringPriceNo, ChecklistTestSampleSizeBean.class);
-		List<ChecklistTestSampleSizeBean> sampleLevelList = JSON.parseArray(jsonStringSampleLevel, ChecklistTestSampleSizeBean.class);
-		List<ChecklistTestSampleSizeBean> fabricLevelList = JSON.parseArray(jsonStringFabricLevel, ChecklistTestSampleSizeBean.class);
+		List<ChecklistTestSampleSizeBean> priceNoList = null;
+		List<ChecklistTestSampleSizeBean> sampleLevelList = null;
+		List<ChecklistTestSampleSizeBean> fabricLevelList = null;
+		if(!refresh) {
+			LOGGER.info("try to getTestSampleSizeList from redis ...");
+			String jsonStringPriceNo = RedisUtil.hget("testSampleSizeListCache","CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO");
+			String jsonStringSampleLevel = RedisUtil.hget("testSampleSizeListCache","CHECKLIST_TEST_SAMPLE_LEVEL_BY_LEVEL");
+			String jsonStringFabricLevel = RedisUtil.hget("testSampleSizeListCache","CHECKLIST_TEST_FABRIC_SAMPLE_LEVEL");
+			
+			priceNoList = JSON.parseArray(jsonStringPriceNo, ChecklistTestSampleSizeBean.class);
+			sampleLevelList = JSON.parseArray(jsonStringSampleLevel, ChecklistTestSampleSizeBean.class);
+			fabricLevelList = JSON.parseArray(jsonStringFabricLevel, ChecklistTestSampleSizeBean.class);
+		}
 		
 		if(null == priceNoList) {
 			String url = baseUrl + "CHECKLIST_TEST_SAMPLE_LEVEL_BY_PIECES_NO";
@@ -324,11 +335,13 @@ public class ParameterDaoImpl implements ParameterDao {
 
 	@Override
 	// @Cacheable(value="productTypeListCache", key="#root.methodName")
-	public List<SysProductTypeBean> getProductTypeList() {
+	public List<SysProductTypeBean> getProductTypeList(boolean refresh) {
 		List<SysProductTypeBean> proTypeList = null ;
-		LOGGER.info("try to getProductTypeList from redis ...");
-		String jsonString = RedisUtil.get("productTypeListCache");
-		proTypeList = JSON.parseArray(jsonString, SysProductTypeBean.class);
+		if(!refresh) {
+			LOGGER.info("try to getProductTypeList from redis ...");
+			String jsonString = RedisUtil.get("productTypeListCache");
+			proTypeList = JSON.parseArray(jsonString, SysProductTypeBean.class);
+		}
 		if (null ==  proTypeList) {
 			String url = config.getParamServiceUrl() + "/p/list-product-type";
 			GetRequest request = GetRequest.newInstance().setUrl(url);
@@ -354,12 +367,14 @@ public class ParameterDaoImpl implements ParameterDao {
 	}
 
 	@Override
-	public List<TextileCategoryBean> getTextileProductCategories() {
+	public List<TextileCategoryBean> getTextileProductCategories(boolean refresh) {
 		// TODO Auto-generated method stub
 		List<TextileCategoryBean> proTypeList = null ;
-		LOGGER.info("try to getTextileProductCategory from redis ...");
-		String jsonStringTextileProductCategory = RedisUtil.hget("textileProductCategoryCache","TEXTILE_PRODUCT_CATEGORIES");
-		proTypeList = JSON.parseArray(jsonStringTextileProductCategory, TextileCategoryBean.class);
+		if(!refresh) {
+			LOGGER.info("try to getTextileProductCategory from redis ...");
+			String jsonStringTextileProductCategory = RedisUtil.get("textileProductCategoryCache");
+			proTypeList = JSON.parseArray(jsonStringTextileProductCategory, TextileCategoryBean.class);
+		}
 		if(null == proTypeList) {
 			  StringBuilder url = new StringBuilder(config.getParamServiceUrl());
 			   url.append("/product/textileCategory/list?offset=").append(0)
@@ -388,12 +403,14 @@ public class ParameterDaoImpl implements ParameterDao {
 	}
 
 	@Override
-	public List<ClassifiedBean> getAiOffices() {
+	public List<ClassifiedBean> getAiOffices(boolean refresh) {
 		// TODO Auto-generated method stub
 		List<ClassifiedBean> proTypeList = null ;
-		LOGGER.info("try to getAiOffices from redis ...");
-		String jsonStringTextileProductCategory = RedisUtil.hget("aiOfficesCache","AI_OFFICE");
-		proTypeList = JSON.parseArray(jsonStringTextileProductCategory, ClassifiedBean.class);
+		if(!refresh) {
+			LOGGER.info("try to getAiOffices from redis ...");
+			String jsonStringTextileProductCategory = RedisUtil.get("aiOfficesCache");
+			proTypeList = JSON.parseArray(jsonStringTextileProductCategory, ClassifiedBean.class);
+		}
 		if(null == proTypeList) {
 			String baseUrl = config.getParamServiceUrl() + "/systemconfig/classified/list/AI_OFFICE";
 			GetRequest request = GetRequest.newInstance().setUrl(baseUrl);

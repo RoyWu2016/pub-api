@@ -371,14 +371,16 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	}
 
 	@Override
-	public EmployeeBean getEmployeeProfile(String employeeId) {
+	public EmployeeBean getEmployeeProfile(String employeeId,boolean refresh) {
 		// TODO Auto-generated method stub
 		EmployeeBean generalUserBean = null;
-		LOGGER.info("try to getEmployeeProfile from redis ...");
-		// String jsonString = RedisUtil.get("employeeCache");
-		String jsonString = RedisUtil.hget("employeeCache", employeeId);
-		if (null != jsonString) {
-			generalUserBean = JSON.parseObject(jsonString).toJavaObject(EmployeeBean.class);
+		if(!refresh) {
+			LOGGER.info("try to getEmployeeProfile from redis ...");
+			// String jsonString = RedisUtil.get("employeeCache");
+			String jsonString = RedisUtil.hget("employeeCache", employeeId);
+			if (null != jsonString) {
+				generalUserBean = JSON.parseObject(jsonString).toJavaObject(EmployeeBean.class);
+			}
 		}
 		StringBuilder sb = new StringBuilder("https://202.66.128.138:8491/user-service/user/" + employeeId);
 		GetRequest request = GetRequest.newInstance().setUrl(sb.toString());

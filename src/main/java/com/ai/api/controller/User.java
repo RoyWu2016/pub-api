@@ -46,8 +46,6 @@ import com.alibaba.fastjson.JSONObject;
 
 public interface User {
 
-	ResponseEntity<UserBean> getUserProfileByLogin(String login) throws IOException, AIException;
-
 	ResponseEntity<UserBean> updateUserProfileCompany(String userId, CompanyBean newComp)
 			throws IOException, AIException;
 
@@ -77,10 +75,12 @@ public interface User {
 
 	ResponseEntity<String> updateCompanyLogo(String userId, String companyId, CompanyLogoBean logoBean);
 
-	ResponseEntity<JSONObject> getEmployeeProfile(String employeeId) throws IOException, AIException;
-
 	ResponseEntity<JSONObject> isACAUser(String userId) throws IOException, AIException;
 
 	ResponseEntity<DashboardBean> getUserDashboard(String userId, String startDate, String endDate)
 			throws IOException, AIException;
+
+	ResponseEntity<JSONObject> getEmployeeProfile(String employeeId, boolean refresh) throws IOException, AIException;
+
+	ResponseEntity<UserBean> getUserProfile(String userId, boolean refresh) throws IOException, AIException;
 }
