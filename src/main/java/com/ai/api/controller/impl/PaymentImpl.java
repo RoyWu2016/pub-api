@@ -1,5 +1,6 @@
 package com.ai.api.controller.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.api.controller.Payment;
+import com.ai.api.exception.AIException;
 import com.ai.api.service.PaymentService;
 import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
@@ -49,7 +51,6 @@ import com.ai.commons.beans.payment.api.PaypalInfoBean;
  * </PRE>
  ***************************************************************************/
 
-
 @RestController
 public class PaymentImpl implements Payment {
 	private static final Logger logger = LoggerFactory.getLogger(PaymentImpl.class);
@@ -57,20 +58,21 @@ public class PaymentImpl implements Payment {
 	@Autowired
 	UserService userService;
 
-    @Autowired
-    PaymentService paymentService;
+	@Autowired
+	PaymentService paymentService;
 
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/payments", method = RequestMethod.GET)
 	public ResponseEntity<PageBean<PaymentSearchResultBean>> getPaymentList(@PathVariable("userId") String userId,
-	                                                                    @RequestParam(value = "paid",required = false, defaultValue = "no") String paid,
-	                                                                    @RequestParam(value = "start",required = false, defaultValue = "") String start,
-	                                                                    @RequestParam(value = "end",required = false, defaultValue = "") String end,
-	                                                                    @RequestParam(value = "keyword",required = false, defaultValue = "") String keywords,
-	                                                                    @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
-	                                                                    @RequestParam(value = "pagesize",required = false, defaultValue = "20") Integer pagesize) {
-		logger.info("get PaymentList----userId["+userId+"] | paid["+paid+"] | start["+start+"] | end["+end+"] | keyword["+keywords+"] | page["+page+"]");
+			@RequestParam(value = "paid", required = false, defaultValue = "no") String paid,
+			@RequestParam(value = "start", required = false, defaultValue = "") String start,
+			@RequestParam(value = "end", required = false, defaultValue = "") String end,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keywords,
+			@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+			@RequestParam(value = "pagesize", required = false, defaultValue = "20") Integer pagesize) {
+		logger.info("get PaymentList----userId[" + userId + "] | paid[" + paid + "] | start[" + start + "] | end[" + end
+				+ "] | keyword[" + keywords + "] | page[" + page + "]");
 		Map<String, String[]> criterias = new HashMap<String, String[]>();
 		List<String> orderItems = new ArrayList<String>();
 		orderItems.add("inspectionDate");
@@ -81,18 +83,18 @@ public class PaymentImpl implements Payment {
 			String inspectionPeriod = start + " - " + end;
 			criterias.put("INSPECTION_DATE", new String[] { inspectionPeriod });
 		}
-		
+
 		PageParamBean criteriaBean = new PageParamBean();
 		criteriaBean.setCriterias(criterias);
 		criteriaBean.setOrderItems(orderItems);
 		criteriaBean.setPageNo(page);
 		criteriaBean.setPageSize(pagesize);
 		try {
-			PageBean<PaymentSearchResultBean> result = userService.searchPaymentList(criteriaBean,userId,paid);
-			if(null != result) {
+			PageBean<PaymentSearchResultBean> result = userService.searchPaymentList(criteriaBean, userId, paid);
+			if (null != result) {
 				return new ResponseEntity<>(result, HttpStatus.OK);
 			}
-		}catch (Exception e){
+		} catch (Exception e) {
 			logger.error("getPaymentList error: ", e);
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -102,9 +104,9 @@ public class PaymentImpl implements Payment {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/proforma-invoice", method = RequestMethod.POST)
 	public ResponseEntity<String> createProformaInvoice(@PathVariable("userId") String userId,
-																		@RequestParam("orders") String orders){
+			@RequestParam("orders") String orders) {
 		String result = userService.createProformaInvoice(userId, orders);
-		if(result!=null){
+		if (result != null) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -115,9 +117,9 @@ public class PaymentImpl implements Payment {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/proforma-invoice", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> reissueProFormaInvoice(@PathVariable("userId") String userId,
-														@RequestParam("orders") String orders){
+			@RequestParam("orders") String orders) {
 		boolean result = userService.reissueProFormaInvoice(userId, orders);
-		if(result){
+		if (result) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -128,22 +130,26 @@ public class PaymentImpl implements Payment {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/global-payment", method = RequestMethod.GET)
 	public ResponseEntity<List<GlobalPaymentInfoBean>> generateGlobalPayment(@PathVariable("userId") String userId,
-																			  @RequestParam("orders") String orders){
-		List<GlobalPaymentInfoBean> result = userService.generateGlobalPayment(userId, orders);
-		if(result!=null){
-			return new ResponseEntity<>(result, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			@RequestParam("orders") String orders) {
+		try {
+			List<GlobalPaymentInfoBean> result = userService.generateGlobalPayment(userId, orders);
+			if (result != null) {
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			} 
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/payment-log", method = RequestMethod.POST)
 	public ResponseEntity<Boolean> logPaymentAction(@PathVariable("userId") String userId,
-													@RequestBody PaymentActionLogBean logBean){
+			@RequestBody PaymentActionLogBean logBean) {
 		boolean result = userService.logPaymentAction(userId, logBean);
-		if(result){
+		if (result) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -154,16 +160,15 @@ public class PaymentImpl implements Payment {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/proforma-invoice/{invoiceId}/pdf", method = RequestMethod.GET)
 	public ResponseEntity<String> downloadProformaInvoicePDF(@PathVariable("userId") String userId,
-															 @PathVariable("invoiceId") String invoiceId,
-                                                             HttpServletResponse httpResponse){
-        logger.info("downloadProformaInvoicePDF ... ");
-        logger.info("userId ："+userId);
-        logger.info("invoiceId : "+invoiceId);
-		boolean b = paymentService.downloadProformaInvoicePDF(userId,invoiceId,httpResponse);
-		if(b){
+			@PathVariable("invoiceId") String invoiceId, HttpServletResponse httpResponse) {
+		logger.info("downloadProformaInvoicePDF ... ");
+		logger.info("userId ：" + userId);
+		logger.info("invoiceId : " + invoiceId);
+		boolean b = paymentService.downloadProformaInvoicePDF(userId, invoiceId, httpResponse);
+		if (b) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>("no invoice pdf file found",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("no invoice pdf file found", HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -171,9 +176,9 @@ public class PaymentImpl implements Payment {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/payment", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> markAsPaid(@PathVariable("userId") String userId,
-											  @RequestBody PaymentItemParamBean paymentItemParamBean){
+			@RequestBody PaymentItemParamBean paymentItemParamBean) {
 		boolean result = paymentService.markAsPaid(userId, paymentItemParamBean);
-		if(result){
+		if (result) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -184,9 +189,9 @@ public class PaymentImpl implements Payment {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/paypal-payment", method = RequestMethod.GET)
 	public ResponseEntity<List<PaypalInfoBean>> getPaypalPayment(@PathVariable("userId") String userId,
-																	  @RequestParam("orders") String orders){
+			@RequestParam("orders") String orders) {
 		List<PaypalInfoBean> result = paymentService.getPaypalPayment(userId, orders);
-		if(result!=null){
+		if (result != null) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

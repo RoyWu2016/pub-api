@@ -83,7 +83,7 @@ public interface UserService {
 
     boolean reissueProFormaInvoice(String userId, String orders);
 
-    List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders);
+    List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders) throws IOException, AIException;
 
     boolean logPaymentAction(String userId, PaymentActionLogBean logBean);
 
