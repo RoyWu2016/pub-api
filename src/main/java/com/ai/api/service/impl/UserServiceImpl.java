@@ -866,9 +866,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders) {
-		String login = this.getLoginByUserId(userId);// customerDao.getGeneralUser(userId).getLogin();
-		return customerDao.generateGlobalPayment(userId, login, orders);
+	public List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders) throws IOException, AIException {
+		UserBean userBean = this.getCustById(userId);
+		String parentId = "";
+		if (null != userBean) {
+			parentId = userBean.getCompany().getParentCompanyId();
+			if (null == parentId) {
+				parentId = "";
+			}
+		}
+		return customerDao.generateGlobalPayment(userId, parentId, orders);
 	}
 
 	@Override
