@@ -122,17 +122,23 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 				//user can only reqeust resource belong to that user
 				final String tokenUserId = (String)claims.getClaimValue("userId");
 				final String userType = (String)claims.getClaimValue("userType");
+				LOGGER.info("userid: " + tokenUserId + ", usertype: " + userType);
+				LOGGER.info("requested url: " + requestedURL);
 
-				if (userType.equals(Consts.Http.USER_TYPE_CLIENT) &&
+				LOGGER.info("checking: " + Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX + tokenUserId );
+				if (userType != null && userType.equals(Consts.Http.USER_TYPE_CLIENT) &&
 						requestedURL.startsWith(Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX)) {
 					//need to check if user id in token is same as user id in reqeusted url
 					if (!requestedURL.startsWith(Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX + tokenUserId)) {
+						LOGGER.info("forbid to access:" + requestedURL);
 						//access forbidden
 						result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
 						result.setReasonPhase("Access of requested resource not allowed. ");
 						result.setResponseString("You can only access resource belong to you.");
 						return result;
 					}
+				} else {
+					LOGGER.info("let it go. " + requestedURL);
 				}
 
 				//check session in redis
