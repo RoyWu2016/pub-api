@@ -1,5 +1,8 @@
 package com.ai.api.service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ai.commons.beans.ServiceCallResult;
 
 /**
@@ -13,4 +16,6 @@ import com.ai.commons.beans.ServiceCallResult;
 public interface AuthenticationService {
 
     ServiceCallResult userLogin(String userName,String password,String userType);
+
+	ServiceCallResult removeAPIToken(HttpServletRequest request, HttpServletResponse response);
 }

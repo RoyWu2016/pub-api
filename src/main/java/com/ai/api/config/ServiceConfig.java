@@ -34,7 +34,7 @@ public class ServiceConfig {
 
 	private String paramServiceUrl;
 
-//	private String ssoUserServiceUrl;
+	private String ssoUserServiceUrl;
 
     private String factoryServiceUrl;
 
@@ -96,7 +96,6 @@ public class ServiceConfig {
         this.customerServiceUrl = customerServiceUrl;
     }
 
-	/*
 	public String getSsoUserServiceUrl() {
 		return ssoUserServiceUrl;
 	}
@@ -104,7 +103,6 @@ public class ServiceConfig {
 	public void setSsoUserServiceUrl(String ssoUserServiceUrl) {
 		this.ssoUserServiceUrl = ssoUserServiceUrl;
 	}
-	*/
 
     public String getFileServiceUrl() {
         return fileServiceUrl;
@@ -233,5 +231,27 @@ public class ServiceConfig {
 
 	public void setProgramServiceBaseUrl(String programServiceBaseUrl) {
 		this.programServiceBaseUrl = programServiceBaseUrl;
+	}
+
+	@Override
+	public String toString() {
+		return "ServiceConfig{" +
+				"customerServiceUrl='" + customerServiceUrl + '\'' +
+				", paramServiceUrl='" + paramServiceUrl + '\'' +
+				", ssoUserServiceUrl='" + ssoUserServiceUrl + '\'' +
+				", factoryServiceUrl='" + factoryServiceUrl + '\'' +
+				", fileServiceUrl='" + fileServiceUrl + '\'' +
+				", fileMaximumSize=" + fileMaximumSize +
+				", cacheRefreshInterval=" + cacheRefreshInterval +
+				", mwServiceUrl='" + mwServiceUrl + '\'' +
+				", checklistServiceUrl='" + checklistServiceUrl + '\'' +
+				", reportServiceUrl='" + reportServiceUrl + '\'' +
+				", psiServiceUrl='" + psiServiceUrl + '\'' +
+				", redisHost='" + redisHost + '\'' +
+				", redisPort='" + redisPort + '\'' +
+				", redisPassword='" + redisPassword + '\'' +
+				", aimsServiceBaseUrl='" + aimsServiceBaseUrl + '\'' +
+				", programServiceBaseUrl='" + programServiceBaseUrl + '\'' +
+				'}';
 	}
 }

@@ -35,11 +35,7 @@ import com.ai.commons.beans.ServiceCallResult;
 
 public interface SSOUserServiceDao {
 
-//	ServiceCallResult userLogin(String account, String password, String userType, String accessToken);
-
 	ServiceCallResult refreshAPIToken(HttpServletRequest request, HttpServletResponse response);
-
-	ServiceCallResult removeAPIToken(HttpServletRequest request, HttpServletResponse response);
 
 	ServiceCallResult verifyAPIToken(HttpServletRequest request, HttpServletResponse response);
 
