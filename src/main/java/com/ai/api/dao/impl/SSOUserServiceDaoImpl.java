@@ -125,11 +125,11 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 				LOGGER.info("userid: " + tokenUserId + ", usertype: " + userType);
 				LOGGER.info("requested url: " + requestedURL);
 
-				LOGGER.info("checking: " + Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX + tokenUserId );
+				LOGGER.info("checking: " + Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX + tokenUserId.toLowerCase() );
 				if (userType != null && userType.equals(Consts.Http.USER_TYPE_CLIENT) &&
 						requestedURL.startsWith(Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX)) {
 					//need to check if user id in token is same as user id in reqeusted url
-					if (!requestedURL.startsWith(Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX + tokenUserId)) {
+					if (!requestedURL.startsWith(Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX + tokenUserId.toLowerCase())) {
 						LOGGER.info("forbid to access:" + requestedURL);
 						//access forbidden
 						result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
