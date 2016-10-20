@@ -551,11 +551,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	// @CacheEvict(value = "userBeanCache", key = "#userId")
 	public void removeUserProfileCache(String userId) throws IOException, AIException {
-		logger.info("removing user profile ...");
-		logger.info("userId : " + userId);
+		logger.info("removing user profile, userId : " + userId);
 		RedisUtil.hdel("userBeanCache", userId);
+		logger.info("success removed!!");
+	}
+
+	@Override
+	public void removeEmployeeProfileCache(String userId) {
+		logger.info("removing employee profile, userId : " + userId);
+		RedisUtil.hdel("employeeCache", userId);
 		logger.info("success removed!!");
 	}
 
@@ -866,9 +871,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders) {
-		String login = this.getLoginByUserId(userId);// customerDao.getGeneralUser(userId).getLogin();
-		return customerDao.generateGlobalPayment(userId, login, orders);
+	public List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders)
+			throws IOException, AIException {
+		UserBean userBean = this.getCustById(userId);
+		String parentId = "";
+		if (null != userBean) {
+			parentId = userBean.getCompany().getParentCompanyId();
+			if (null == parentId) {
+				parentId = "";
+			}
+		}
+		return customerDao.generateGlobalPayment(userId, parentId, orders);
 	}
 
 	@Override
@@ -924,9 +937,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public EmployeeBean getEmployeeProfile(String employeeId,boolean refresh) {
+	public EmployeeBean getEmployeeProfile(String employeeId, boolean refresh) {
 		// TODO Auto-generated method stub
-		return customerDao.getEmployeeProfile(employeeId,refresh);
+		return customerDao.getEmployeeProfile(employeeId, refresh);
 	}
 
 	@Override

@@ -285,8 +285,8 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/dashboard", method = RequestMethod.GET)
 	public ResponseEntity<DashboardBean> getUserDashboard(@PathVariable("userId") String userId,
-			@RequestParam(value = "startDate", required = false) String startDate,
-			@RequestParam(value = "endDate", required = false) String endDate) throws IOException, AIException {
+			@RequestParam(value = "startDate", required = false,defaultValue="") String startDate,
+			@RequestParam(value = "endDate", required = false,defaultValue="") String endDate) throws IOException, AIException {
 
 		if ("".equals(startDate) && "".equals(endDate)) {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
