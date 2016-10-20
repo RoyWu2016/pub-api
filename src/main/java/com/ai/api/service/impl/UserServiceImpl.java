@@ -871,7 +871,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders) throws IOException, AIException {
+	public List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders)
+			throws IOException, AIException {
 		UserBean userBean = this.getCustById(userId);
 		String parentId = "";
 		if (null != userBean) {
@@ -936,9 +937,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public EmployeeBean getEmployeeProfile(String employeeId,boolean refresh) {
+	public EmployeeBean getEmployeeProfile(String employeeId, boolean refresh) {
 		// TODO Auto-generated method stub
-		return customerDao.getEmployeeProfile(employeeId,refresh);
+		return customerDao.getEmployeeProfile(employeeId, refresh);
 	}
 
 	@Override
