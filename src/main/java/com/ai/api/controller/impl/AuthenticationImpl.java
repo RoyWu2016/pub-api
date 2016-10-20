@@ -13,7 +13,6 @@ import com.ai.api.bean.LoginBean;
 import com.ai.api.controller.Authentication;
 import com.ai.api.dao.SSOUserServiceDao;
 import com.ai.api.service.AuthenticationService;
-import com.ai.api.service.SSOUserService;
 import com.ai.api.service.UserService;
 import com.ai.commons.Consts;
 import com.ai.commons.HttpUtil;
@@ -54,8 +53,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationImpl implements Authentication {
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationImpl.class);
 
-	@Autowired
-	SSOUserService ssoUserService;
 	@Autowired
 	SSOUserServiceDao ssoUserServiceDao;  //Service which will do all data retrieval/manipulation work
 
@@ -131,13 +128,12 @@ public class AuthenticationImpl implements Authentication {
 			throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
         logger.info("remove token ...........");
-		ServiceCallResult result = ssoUserService.removeAPIToken(request, response);
+		ServiceCallResult result = authenticationService.removeAPIToken(request, response);
 		logger.info("remove token result: "+result.getResponseString());
-		logger.info("removed employee profile from redis");
-//		RedisUtil.del("employeeCache");
 		return mapper.writeValueAsString(result);
 	}
-	
+
+	@Override
 	@RequestMapping(method = RequestMethod.GET, value = "/auth/verify-token")
 	@ResponseBody
 	public String verifyPublicAPIToken(HttpServletRequest request, HttpServletResponse response)

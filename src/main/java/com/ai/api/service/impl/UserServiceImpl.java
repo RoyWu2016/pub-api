@@ -544,12 +544,17 @@ public class UserServiceImpl implements UserService {
     }
 
 	@Override
-//	@CacheEvict(value = "userBeanCache", key = "#userId")
 	public void removeUserProfileCache(String userId) throws IOException, AIException {
-		logger.info("removing user profile ...");
-		logger.info("userId : " + userId);
-        RedisUtil.hdel("userBeanCache",userId);
+		logger.info("removing user profile, userId : " + userId);
+        RedisUtil.hdel("userBeanCache", userId);
         logger.info("success removed!!");
+	}
+
+	@Override
+	public void removeEmployeeProfileCache(String userId) {
+		logger.info("removing employee profile, userId : " + userId);
+		RedisUtil.hdel("employeeCache", userId);
+		logger.info("success removed!!");
 	}
 
 	public UserBean updateUserBeanInCache(final String userId) {
@@ -558,7 +563,6 @@ public class UserServiceImpl implements UserService {
 		return newUserBean;
 	}
 
-//	@Cacheable("userBeanCache")
 	@Override
 	public UserBean getCustById(String userId) throws IOException, AIException {
 		logger.info("try to get userBean from redis ...");

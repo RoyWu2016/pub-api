@@ -92,5 +92,7 @@ public interface UserService {
 
     boolean isACAUser(String userId);
 
+	void removeEmployeeProfileCache(String userId);
+
 //    String getCompanyIdByUserId(String userId)throws IOException, AIException;
 }
