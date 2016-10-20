@@ -551,11 +551,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	// @CacheEvict(value = "userBeanCache", key = "#userId")
 	public void removeUserProfileCache(String userId) throws IOException, AIException {
-		logger.info("removing user profile ...");
-		logger.info("userId : " + userId);
+		logger.info("removing user profile, userId : " + userId);
 		RedisUtil.hdel("userBeanCache", userId);
+		logger.info("success removed!!");
+	}
+
+	@Override
+	public void removeEmployeeProfileCache(String userId) {
+		logger.info("removing employee profile, userId : " + userId);
+		RedisUtil.hdel("employeeCache", userId);
 		logger.info("success removed!!");
 	}
 
