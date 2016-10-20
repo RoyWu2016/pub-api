@@ -88,7 +88,7 @@ public class OrderImpl implements Order {
 	public ResponseEntity<Boolean> cancelOrder(@PathVariable("userId") String userId,
 	                                           @PathVariable("orderId") String orderId,
 	                                           @RequestParam("reason") String reason,
-	                                           @RequestParam("reason_options") String reason_options
+	                                           @RequestParam(value = "reason_options",required = false) String reason_options
 	                                          ) {
 		try {
 			logger.info("cancelOrder ...");
