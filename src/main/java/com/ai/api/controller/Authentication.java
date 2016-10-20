@@ -6,8 +6,6 @@
  ***************************************************************************/
 package com.ai.api.controller;
 
-import java.util.HashMap;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -45,4 +43,6 @@ public interface Authentication {
 	String removeAPIToken(HttpServletRequest request, HttpServletResponse response)
 			throws JsonProcessingException;
 
+	String verifyPublicAPIToken(HttpServletRequest request, HttpServletResponse response)
+			throws JsonProcessingException;
 }

@@ -124,6 +124,7 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	@Override
 	public boolean updateGeneralUser(GeneralUserBean newUser) {
 		String url = config.getCustomerServiceUrl() + "/users/" + newUser.getUserId() + "/general-user";
+		System.out.println("xx: " + JSON.toJSONString(newUser ) );
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, newUser);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getResponseString().isEmpty()
@@ -395,7 +396,7 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 				generalUserBean = JSON.parseObject(jsonString).toJavaObject(EmployeeBean.class);
 			}
 		}
-		StringBuilder sb = new StringBuilder("https://202.66.128.138:8491/user-service/user/" + employeeId);
+		StringBuilder sb = new StringBuilder(config.getSsoUserServiceUrl() + "/user/" + employeeId);
 		GetRequest request = GetRequest.newInstance().setUrl(sb.toString());
 		try {
 			if (null == generalUserBean) {

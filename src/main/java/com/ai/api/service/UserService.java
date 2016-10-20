@@ -95,5 +95,7 @@ public interface UserService {
 
 	DashboardBean getUserDashboard(String userId, String startDate, String endDate) throws IOException, AIException;
 
+	void removeEmployeeProfileCache(String userId);
+
 //    String getCompanyIdByUserId(String userId)throws IOException, AIException;
 }
