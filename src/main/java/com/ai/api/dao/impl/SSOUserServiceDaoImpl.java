@@ -107,7 +107,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 	public ServiceCallResult verifyAPIToken(HttpServletRequest request, HttpServletResponse response) {
 		String authorization = request.getHeader("authorization");
 		String apiAccessToken = request.getHeader("ai-api-access-token");
-		String requestedURL = request.getHeader("requested-url");
+		String requestedURL = request.getHeader("requested-url").toLowerCase();
 		try {
 			//check api access token in header
 			ServiceCallResult result = checkAccessHeader(apiAccessToken);
@@ -124,9 +124,9 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 				final String userType = (String)claims.getClaimValue("userType");
 
 				if (userType.equals(Consts.Http.USER_TYPE_CLIENT) &&
-						requestedURL.startsWith(Consts.Http.apiUserResourceURLPrefix)) {
-					//need to check if user id in token is same as user id in the reqeust url
-					if (!requestedURL.startsWith(Consts.Http.apiUserResourceURLPrefix + tokenUserId)) {
+						requestedURL.startsWith(Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX)) {
+					//need to check if user id in token is same as user id in reqeusted url
+					if (!requestedURL.startsWith(Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX + tokenUserId)) {
 						//access forbidden
 						result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
 						result.setReasonPhase("Access of requested resource not allowed. ");
