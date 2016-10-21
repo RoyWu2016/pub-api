@@ -17,6 +17,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.api.bean.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -28,29 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.ai.api.bean.AqlAndSamplingSizeBean;
-import com.ai.api.bean.BillingBean;
-import com.ai.api.bean.BookingPreferenceBean;
-import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.ContactInfoBean;
-import com.ai.api.bean.CustomAQLBean;
-import com.ai.api.bean.CustomizedProductType;
-import com.ai.api.bean.EmployeeBean;
-import com.ai.api.bean.MainBean;
-import com.ai.api.bean.MinQuantityToBeReadyBean;
-import com.ai.api.bean.MultiReferenceBean;
-import com.ai.api.bean.PreferencesBean;
-import com.ai.api.bean.PreferredProductFamilies;
-import com.ai.api.bean.ProductCategoryDtoBean;
-import com.ai.api.bean.ProductFamilyDtoBean;
-import com.ai.api.bean.PublicProductType;
-import com.ai.api.bean.QualityManual;
-import com.ai.api.bean.ReportApproverBean;
-import com.ai.api.bean.ReportPreferenceBean;
-import com.ai.api.bean.ReportRejectCategoryBean;
-import com.ai.api.bean.ReportRejectCategoryReasonBean;
-import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.CompanyDao;
 import com.ai.api.dao.CustomerDao;
@@ -210,6 +188,11 @@ public class UserServiceImpl implements UserService {
 
 		user.setCompany(comp);
 
+		Payment payment = new Payment();
+		payment.setExpressBookingFee(companyEntireBean.getRate().getExpressFee());
+        payment.setOnlinePaymentTyep(companyEntireBean.getInvoicing().getOnlinePayStatus());
+		user.setPayment(payment);
+
 		// ------------Set ContactInfoBean Properties ----------------
 		ContactInfoBean contactInfoBean = new ContactInfoBean();
 
@@ -243,9 +226,9 @@ public class UserServiceImpl implements UserService {
 
 		if (mainSalutation.equals(billSalutation) && mainFamilyName.equals(billFamilyName)
 				&& mainGivenName.equals(billGivenName) && mainEmail.equals(billEmail)) {
-			billingBean.setIsSameAsMainContact("true");
+			billingBean.setSameAsMainContact(true);
 		} else {
-			billingBean.setIsSameAsMainContact("false");
+			billingBean.setSameAsMainContact(false);
 		}
 
 		contactInfoBean.setBilling(billingBean);
@@ -256,7 +239,7 @@ public class UserServiceImpl implements UserService {
 		PreferencesBean preferencesBean = new PreferencesBean();
 		BookingPreferenceBean bookingbean = new BookingPreferenceBean();
 
-		bookingbean.setUseQuickFormByDefault(extrabean.getIsDetailedBookingForm());
+		bookingbean.setUseQuickFormByDefault(extrabean.getIsDetailedBookingForm().equalsIgnoreCase("yes")?true:false);
 
 		String sendSampleToFactory = orderBookingBean.getSendSampleToFactory();
 		if (sendSampleToFactory != null && sendSampleToFactory.equalsIgnoreCase("Yes")) {
@@ -353,7 +336,7 @@ public class UserServiceImpl implements UserService {
 		} else {
 			multiReferenceBean.setClientCanApproveRejectIndividualProductReferences(false);
 		}
-		multiReferenceBean.setAskNumberOfReferences(multiRefBookingBean.getAskNumberOfReferences());
+		multiReferenceBean.setAskNumberOfReferences(multiRefBookingBean.getAskNumberOfReferences().equalsIgnoreCase("Yes")?true:false);
 		multiReferenceBean.setNumberOfRefPerProduct(multiRefBookingBean.getNumberOfRefPerProduct());
 		multiReferenceBean.setNumberOfRefPerReport(multiRefBookingBean.getNumberOfRefPerReport());
 		multiReferenceBean.setNumberOfRefPerMd(multiRefBookingBean.getNumberOfRefPerMd());
@@ -401,9 +384,9 @@ public class UserServiceImpl implements UserService {
 		AqlAndSamplingSizeBean aqlAndSamplingSizeBean = new AqlAndSamplingSizeBean();
 
 		if (orderBookingBean.getAllowChangeAql() != null && orderBookingBean.getAllowChangeAql().equals("1")) {
-			aqlAndSamplingSizeBean.setCanModify("true");
+			aqlAndSamplingSizeBean.setCanModify(true);
 		} else {
-			aqlAndSamplingSizeBean.setCanModify("false");
+			aqlAndSamplingSizeBean.setCanModify(false);
 		}
 
 		aqlAndSamplingSizeBean.setCustomDefaultSampleLevel(orderBookingBean.getCustomizedSampleLevel());
@@ -411,13 +394,13 @@ public class UserServiceImpl implements UserService {
 
 		if (orderBookingBean.getCustAqlLevel() != null && orderBookingBean.getCustAqlLevel().equalsIgnoreCase("yes")) { // .equals("yes"))
 																														// {
-			aqlAndSamplingSizeBean.setUseCustomAQL("true");
+			aqlAndSamplingSizeBean.setUseCustomAQL(true);
 			customAQLBean.setCriticalDefects(orderBookingBean.getCriticalDefects());
 			customAQLBean.setMajorDefects(orderBookingBean.getMajorDefects());
 			customAQLBean.setMinorDefects(orderBookingBean.getMinorDefects());
 			customAQLBean.setMaxMeasurementDefects(orderBookingBean.getMaxMeaDefects());
 		} else {
-			aqlAndSamplingSizeBean.setUseCustomAQL("false");
+			aqlAndSamplingSizeBean.setUseCustomAQL(false);
 			customAQLBean.setCriticalDefects(orderBookingBean.getCriticalDefects());
 			customAQLBean.setMajorDefects("0");
 			customAQLBean.setMinorDefects("0");
@@ -489,15 +472,15 @@ public class UserServiceImpl implements UserService {
 		ReportPreferenceBean reportPreferenceBean = new ReportPreferenceBean();
 		if (reportCertificateBean != null) {
 			reportPreferenceBean.setAttType(reportCertificateBean.getAttType());
-			reportPreferenceBean.setAllowReportApprover(reportCertificateBean.getAllowReportApprover());
+			reportPreferenceBean.setAllowReportApprover(reportCertificateBean.getAllowReportApprover().equalsIgnoreCase("Yes")?true:false);
 			reportPreferenceBean.setDisApproverName(reportCertificateBean.getDisApproverName());
 			reportPreferenceBean.setMaxReportSize(reportCertificateBean.getMaxReportSize());
 			reportPreferenceBean.setRejectReasonOther(reportCertificateBean.getRejectReasonOther());
 			reportPreferenceBean.setRejectReasonSortBy(reportCertificateBean.getRejectReasonSortBy());
 			reportPreferenceBean.setReportContactName(reportCertificateBean.getReportContactName());
-			reportPreferenceBean.setWithAttachment(reportCertificateBean.getWithAttachment());
+			reportPreferenceBean.setWithAttachment(reportCertificateBean.getWithAttachment().equalsIgnoreCase("Yes")?true:false);
 			reportPreferenceBean.setSendMailToSupplier(reportCertificateBean.getSendMailToSupplier());
-			reportPreferenceBean.setSameDayReport(reportCertificateBean.getSameDayReport());
+			reportPreferenceBean.setSameDayReport(reportCertificateBean.getSameDayReport().equalsIgnoreCase("Yes")?true:false);
 			reportPreferenceBean.setReportTemplate(reportCertificateBean.getReportTemplate());
 			List<ApproverBean> approverBeenList = reportCertificateBean.getApprovers();
 			if (approverBeenList != null) {
@@ -630,7 +613,7 @@ public class UserServiceImpl implements UserService {
 		// get contact bean
 		ContactBean contact = companyDao.getCompanyContact(compId);
 		contact.setMainPosition(newContact.getMain().getPosition());
-		if (newContact.getBilling().getIsSameAsMainContact().equalsIgnoreCase("true")) {
+		if (newContact.getBilling().isSameAsMainContact()) {
 			contact.setAccountingGender(newContact.getMain().getSalutation());
 			contact.setAccountingGivenName(newContact.getMain().getGivenName());
 			contact.setAccountingName(newContact.getMain().getFamilyName());
@@ -677,10 +660,10 @@ public class UserServiceImpl implements UserService {
 		booking.setClcPercentage(newBookingPref.getMinQuantityToBeReady()[3].getMinQty());
 		booking.setPmPercentage(newBookingPref.getMinQuantityToBeReady()[4].getMinQty());
 
-		booking.setAllowChangeAql(StringUtils.getOneZero(newBookingPref.getAqlAndSamplingSize().getCanModify()));
+		booking.setAllowChangeAql(newBookingPref.getAqlAndSamplingSize().isCanModify()? "1" : "0");
 		booking.setCustomizedSampleLevel(newBookingPref.getAqlAndSamplingSize().getCustomDefaultSampleLevel());
-		booking.setCustAqlLevel(StringUtils.getYesNo(newBookingPref.getAqlAndSamplingSize().getUseCustomAQL()));
-		if (newBookingPref.getAqlAndSamplingSize().getUseCustomAQL().equalsIgnoreCase("false")) {
+		booking.setCustAqlLevel(newBookingPref.getAqlAndSamplingSize().isUseCustomAQL()? "Yes" : "No");
+		if (!newBookingPref.getAqlAndSamplingSize().isUseCustomAQL()) {
 			booking.setCriticalDefects("");
 			booking.setMajorDefects("");
 			booking.setMinorDefects("");
@@ -694,7 +677,7 @@ public class UserServiceImpl implements UserService {
 
 		// get extra first
 		ExtraBean extra = companyDao.getCompanyExtra(compId);
-		extra.setIsDetailedBookingForm(StringUtils.getYesNo(newBookingPref.getUseQuickFormByDefault()));
+		extra.setIsDetailedBookingForm(newBookingPref.isUseQuickFormByDefault()?"Yes":"No");
 
 		// update order booking and extra
 		// return companyDao.updateCompanyExtra(compId, extra) &&
