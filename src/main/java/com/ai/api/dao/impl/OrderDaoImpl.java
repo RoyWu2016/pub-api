@@ -9,6 +9,7 @@ package com.ai.api.dao.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -118,10 +119,14 @@ public class OrderDaoImpl implements OrderDao {
 		try {
 			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 			url.append("/order/api/cancelOrder?userId=").append(userId)
-			.append("&orderId=").append(orderId)
-			.append("&reason=").append(reason)
-			.append("&reasonOption=").append(reason_options);
-			 ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,orderId);
+			.append("&orderId=").append(orderId);
+//			.append("&reason=").append(reason)
+//			.append("&reasonOption=").append(reason_options);
+			HashMap<String, String> data = new HashMap<>();
+			data.put("reason", reason);
+			data.put("reasonOption", reason_options);
+//			 ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,orderId);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, data);
 			 if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					return true;
 				} else {
