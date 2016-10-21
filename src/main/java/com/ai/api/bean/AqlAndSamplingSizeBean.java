@@ -8,19 +8,19 @@ import java.io.Serializable;
 public class AqlAndSamplingSizeBean implements Serializable {
 
 
-    private String canModify;
+    private boolean canModify;
 
     private String customDefaultSampleLevel;
 
-    private String useCustomAQL;
+    private boolean useCustomAQL;
 
     private CustomAQLBean customAQL;
 
-    public String getCanModify() {
+    public boolean isCanModify() {
         return canModify;
     }
 
-    public void setCanModify(String canModify) {
+    public void setCanModify(boolean canModify) {
         this.canModify = canModify;
     }
 
@@ -32,11 +32,11 @@ public class AqlAndSamplingSizeBean implements Serializable {
         this.customDefaultSampleLevel = customDefaultSampleLevel;
     }
 
-    public String getUseCustomAQL() {
+    public boolean isUseCustomAQL() {
         return useCustomAQL;
     }
 
-    public void setUseCustomAQL(String useCustomAQL) {
+    public void setUseCustomAQL(boolean useCustomAQL) {
         this.useCustomAQL = useCustomAQL;
     }
 
@@ -46,5 +46,15 @@ public class AqlAndSamplingSizeBean implements Serializable {
 
     public void setCustomAQL(CustomAQLBean customAQL) {
         this.customAQL = customAQL;
+    }
+
+    @Override
+    public String toString() {
+        return "AqlAndSamplingSizeBean{" +
+                "canModify=" + canModify +
+                ", customDefaultSampleLevel='" + customDefaultSampleLevel + '\'' +
+                ", useCustomAQL=" + useCustomAQL +
+                ", customAQL=" + customAQL +
+                '}';
     }
 }

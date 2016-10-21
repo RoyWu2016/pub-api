@@ -15,7 +15,7 @@ public class BillingBean implements Serializable {
 
     private String email;
 
-    private String isSameAsMainContact;
+    private boolean isSameAsMainContact;
 
     public String getSalutation() {
         return salutation;
@@ -49,11 +49,22 @@ public class BillingBean implements Serializable {
         this.email = email;
     }
 
-    public String getIsSameAsMainContact() {
+    public boolean isSameAsMainContact() {
         return isSameAsMainContact;
     }
 
-    public void setIsSameAsMainContact(String isSameAsMainContact) {
-        this.isSameAsMainContact = isSameAsMainContact;
+    public void setSameAsMainContact(boolean sameAsMainContact) {
+        isSameAsMainContact = sameAsMainContact;
+    }
+
+    @Override
+    public String toString() {
+        return "BillingBean{" +
+                "salutation='" + salutation + '\'' +
+                ", familyName='" + familyName + '\'' +
+                ", givenName='" + givenName + '\'' +
+                ", email='" + email + '\'' +
+                ", isSameAsMainContact=" + isSameAsMainContact +
+                '}';
     }
 }

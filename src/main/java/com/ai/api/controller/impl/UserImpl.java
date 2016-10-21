@@ -89,7 +89,7 @@ public class UserImpl implements User {
 			e.printStackTrace();
 		}
 		if (cust == null) {
-			System.out.println("User with id " + userId + " not found");
+			logger.info("User with id " + userId + " not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
