@@ -138,7 +138,7 @@ public class UserImplTest {
 		main.setMobileNumber(env.getProperty("mainContactMobileNumber"));
 
 		BillingBean billing = new BillingBean();
-		billing.setIsSameAsMainContact("true");
+		billing.setSameAsMainContact(true);
 
 		ContactInfoBean newContact = new ContactInfoBean();
 		newContact.setMain(main);
@@ -194,7 +194,7 @@ public class UserImplTest {
 	@Test
 	public void updateProfileBookingPreference() throws Exception {
 		BookingPreferenceBean newPref = new BookingPreferenceBean();
-		newPref.setUseQuickFormByDefault(env.getProperty("strFalse"));
+		newPref.setUseQuickFormByDefault(false);
 		newPref.setShouldSendRefSampleToFactory(Boolean.parseBoolean(env.getProperty("strTrue")));
 		newPref.setIsPoMandatory(Boolean.parseBoolean(env.getProperty("strTrue")));
 
@@ -227,9 +227,9 @@ public class UserImplTest {
 		newPref.setMinQuantityToBeReady(minQuantityToBeReadyBean);
 
 		AqlAndSamplingSizeBean aqlAndSamplingSizeBean = new AqlAndSamplingSizeBean();
-		aqlAndSamplingSizeBean.setCanModify(env.getProperty("strTrue"));
+		aqlAndSamplingSizeBean.setCanModify(true);
 		aqlAndSamplingSizeBean.setCustomDefaultSampleLevel("II");
-		aqlAndSamplingSizeBean.setUseCustomAQL(env.getProperty("strTrue"));
+		aqlAndSamplingSizeBean.setUseCustomAQL(true);
 		newPref.setAqlAndSamplingSize(aqlAndSamplingSizeBean);
 
 		CustomAQLBean aql = new CustomAQLBean();

@@ -8,7 +8,7 @@ import java.io.Serializable;
  */
 public class BookingPreferenceBean implements Serializable {
 
-	private String useQuickFormByDefault;
+	private boolean useQuickFormByDefault;
 
 	private boolean shouldSendRefSampleToFactory;
 
@@ -50,11 +50,11 @@ public class BookingPreferenceBean implements Serializable {
 
 	private QualityManual qualityManual;
 
-	public String getUseQuickFormByDefault() {
+	public boolean isUseQuickFormByDefault() {
 		return useQuickFormByDefault;
 	}
 
-	public void setUseQuickFormByDefault(String useQuickFormByDefault) {
+	public void setUseQuickFormByDefault(boolean useQuickFormByDefault) {
 		this.useQuickFormByDefault = useQuickFormByDefault;
 	}
 

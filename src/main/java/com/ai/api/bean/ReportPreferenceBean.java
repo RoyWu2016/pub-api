@@ -9,15 +9,15 @@ import java.util.List;
 public class ReportPreferenceBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String withAttachment;
+    private boolean withAttachment;
     private String attType;
     private String reportContactName;
     private String reportTemplate;
     private int maxReportSize;
     private String disApproverName;
     private String sendMailToSupplier;
-    private String sameDayReport;
-    private String allowReportApprover;
+    private boolean sameDayReport;
+    private boolean allowReportApprover;
     private List<ReportApproverBean> approvers;
     private List<ReportRejectCategoryBean> rejectCategories;
     private String rejectReasonSortBy;
@@ -25,11 +25,11 @@ public class ReportPreferenceBean implements Serializable {
 
     public ReportPreferenceBean(){}
 
-    public String getWithAttachment() {
+    public boolean isWithAttachment() {
         return withAttachment;
     }
 
-    public void setWithAttachment(String withAttachment) {
+    public void setWithAttachment(boolean withAttachment) {
         this.withAttachment = withAttachment;
     }
 
@@ -81,19 +81,19 @@ public class ReportPreferenceBean implements Serializable {
         this.sendMailToSupplier = sendMailToSupplier;
     }
 
-    public String getSameDayReport() {
+    public boolean isSameDayReport() {
         return sameDayReport;
     }
 
-    public void setSameDayReport(String sameDayReport) {
+    public void setSameDayReport(boolean sameDayReport) {
         this.sameDayReport = sameDayReport;
     }
 
-    public String getAllowReportApprover() {
+    public boolean isAllowReportApprover() {
         return allowReportApprover;
     }
 
-    public void setAllowReportApprover(String allowReportApprover) {
+    public void setAllowReportApprover(boolean allowReportApprover) {
         this.allowReportApprover = allowReportApprover;
     }
 
@@ -127,5 +127,24 @@ public class ReportPreferenceBean implements Serializable {
 
     public void setRejectReasonOther(String rejectReasonOther) {
         this.rejectReasonOther = rejectReasonOther;
+    }
+
+    @Override
+    public String toString() {
+        return "ReportPreferenceBean{" +
+                "withAttachment=" + withAttachment +
+                ", attType='" + attType + '\'' +
+                ", reportContactName='" + reportContactName + '\'' +
+                ", reportTemplate='" + reportTemplate + '\'' +
+                ", maxReportSize=" + maxReportSize +
+                ", disApproverName='" + disApproverName + '\'' +
+                ", sendMailToSupplier='" + sendMailToSupplier + '\'' +
+                ", sameDayReport=" + sameDayReport +
+                ", allowReportApprover=" + allowReportApprover +
+                ", approvers=" + approvers +
+                ", rejectCategories=" + rejectCategories +
+                ", rejectReasonSortBy='" + rejectReasonSortBy + '\'' +
+                ", rejectReasonOther='" + rejectReasonOther + '\'' +
+                '}';
     }
 }

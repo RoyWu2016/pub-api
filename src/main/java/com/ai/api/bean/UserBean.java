@@ -23,6 +23,8 @@ public class UserBean implements Serializable {
 
     private PreferencesBean preferences;
 
+    private Payment payment;
+
     public String getId() {
         return id;
     }
@@ -85,5 +87,28 @@ public class UserBean implements Serializable {
 
     public void setPreferences(PreferencesBean preferences) {
         this.preferences = preferences;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
+    @Override
+    public String toString() {
+        return "UserBean{" +
+                "id='" + id + '\'' +
+                ", login='" + login + '\'' +
+                ", sic='" + sic + '\'' +
+                ", status='" + status + '\'' +
+                ", businessUnit='" + businessUnit + '\'' +
+                ", company=" + company +
+                ", contacts=" + contacts +
+                ", preferences=" + preferences +
+                ", payment=" + payment +
+                '}';
     }
 }

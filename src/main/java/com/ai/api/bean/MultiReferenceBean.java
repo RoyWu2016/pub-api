@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class MultiReferenceBean implements Serializable {
 
     private boolean clientCanApproveRejectIndividualProductReferences;
-    private String askNumberOfReferences;
+    private boolean askNumberOfReferences;
     private int numberOfRefPerProduct;
     private int numberOfRefPerReport;
     private int numberOfRefPerMd;
@@ -30,11 +30,11 @@ public class MultiReferenceBean implements Serializable {
         this.clientCanApproveRejectIndividualProductReferences = clientCanApproveRejectIndividualProductReferences;
     }
 
-    public String getAskNumberOfReferences() {
+    public boolean isAskNumberOfReferences() {
         return askNumberOfReferences;
     }
 
-    public void setAskNumberOfReferences(String askNumberOfReferences) {
+    public void setAskNumberOfReferences(boolean askNumberOfReferences) {
         this.askNumberOfReferences = askNumberOfReferences;
     }
 
@@ -116,5 +116,23 @@ public class MultiReferenceBean implements Serializable {
 
     public void setShowRefResultOnline(String showRefResultOnline) {
         this.showRefResultOnline = showRefResultOnline;
+    }
+
+    @Override
+    public String toString() {
+        return "MultiReferenceBean{" +
+                "clientCanApproveRejectIndividualProductReferences=" + clientCanApproveRejectIndividualProductReferences +
+                ", askNumberOfReferences=" + askNumberOfReferences +
+                ", numberOfRefPerProduct=" + numberOfRefPerProduct +
+                ", numberOfRefPerReport=" + numberOfRefPerReport +
+                ", numberOfRefPerMd=" + numberOfRefPerMd +
+                ", numberOfPcsPerRef=" + numberOfPcsPerRef +
+                ", numberOfReportPerMd=" + numberOfReportPerMd +
+                ", clcNumberOfReports=" + clcNumberOfReports +
+                ", clcNumberOfContainer=" + clcNumberOfContainer +
+                ", peoCalculation='" + peoCalculation + '\'' +
+                ", containerRate=" + containerRate +
+                ", showRefResultOnline='" + showRefResultOnline + '\'' +
+                '}';
     }
 }
