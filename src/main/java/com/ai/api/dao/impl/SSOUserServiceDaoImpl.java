@@ -115,17 +115,17 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 				return result;
 			}
 			String token = this.getToken(authorization, response);
-			LOGGER.info("get token  :"+token);
+//			LOGGER.info("get token  :"+token);
 			if (token != null) {
 				JwtClaims claims = tokenJWTDao.getClaimsByJWT(token);
 
 				//user can only reqeust resource belong to that user
 				final String tokenUserId = (String)claims.getClaimValue("userId");
 				final String userType = (String)claims.getClaimValue("userType");
-				LOGGER.info("userid: " + tokenUserId + ", usertype: " + userType);
-				LOGGER.info("requested url: " + requestedURL);
+//				LOGGER.info("userid: " + tokenUserId + ", usertype: " + userType);
+//				LOGGER.info("requested url: " + requestedURL);
 
-				LOGGER.info("checking: " + Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX + tokenUserId.toLowerCase() );
+//				LOGGER.info("checking: " + Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX + tokenUserId.toLowerCase() );
 				if (userType != null && userType.equals(Consts.Http.USER_TYPE_CLIENT) &&
 						requestedURL.startsWith(Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX)) {
 					//need to check if user id in token is same as user id in reqeusted url
@@ -138,7 +138,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 						return result;
 					}
 				} else {
-					LOGGER.info("let it go. " + requestedURL);
+//					LOGGER.info("let it go. " + requestedURL);
 				}
 
 				//check session in redis
@@ -191,7 +191,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 			result.setResponseString("OK");
 			result.setReasonPhase("");
 		}
-		LOGGER.info("checkAccessHeader result :"+JSON.toJSONString(result));
+//		LOGGER.info("checkAccessHeader result :"+JSON.toJSONString(result));
 		return result;
 	}
 
