@@ -85,18 +85,18 @@ public class TokenJWTDaoImpl {
 			jwt = this.outerEncryption(innerJwt);
 			tokenSession.setToken(jwt);
 			tokenSession.setValidBefore(temp[1]);
-            logger.info("finished tokenSession generation. ");
+//            logger.info("finished tokenSession generation. ");
             String tokenStr = null;
             try{
                 tokenStr = JSON.toJSONString(tokenSession);
-                logger.info("success!! tokenSession ---->> String : "+tokenStr);
+//                logger.info("success!! tokenSession ---->> String : "+tokenStr);
             }catch (Exception e){
                 logger.error("error!! tokenSession can not be cast to String .");
             }
             if (StringUtils.isNotBlank(tokenStr)) {
-                logger.info("saving tokenSession to Redis for 1 week ...");
+//                logger.info("saving tokenSession to Redis for 1 week ...");
                 RedisUtil.hset(TOKENKEY, sessionId,tokenStr,RedisUtil.HOUR * 24 * 7);
-                logger.info("success!  saved!!!");
+//                logger.info("success!  saved!!!");
             }
 		}catch (Exception e){
 			logger.error("error generateToken",e);
@@ -107,7 +107,7 @@ public class TokenJWTDaoImpl {
 
 	public JwtClaims getClaimsByJWT(final String jwt){
 		Key key = this.retrieveKey(AES_KEY_PATH);
-		logger.info("get tokenId from jwt......");
+//		logger.info("get tokenId from jwt......");
 		JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder()
 				.setSkipAllValidators()
 				.setDecryptionKey(key)
@@ -122,13 +122,13 @@ public class TokenJWTDaoImpl {
 			tmpClaim = jwtContext.getJwtClaims();
 			String userId = (String) tmpClaim.getClaimValue("userId");
 			String sessionId = (String) tmpClaim.getClaimValue("sessId");
-			logger.info("getTokenByJWT userId:"+userId);
-			logger.info("getTokenByJWT sessionId:"+sessionId);
-			logger.info("getTokenByJWT jwt:"+jwt);
+//			logger.info("getTokenByJWT userId:"+userId);
+//			logger.info("getTokenByJWT sessionId:"+sessionId);
+//			logger.info("getTokenByJWT jwt:"+jwt);
 			session.setId(sessionId);
 			session.setUserId(userId);
 		}catch (Exception e){
-			logger.error("",e);
+			logger.error("get claim from token get error: ",e);
 		}
 		return tmpClaim;
 	}
@@ -159,7 +159,7 @@ public class TokenJWTDaoImpl {
 
     public boolean checkIfExpired(final String jwt) {
         Key key = this.retrieveKey(AES_KEY_PATH);
-        logger.info("check token expired......");
+//        logger.info("check token expired......");
         JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder()
                 .setSkipAllValidators()
                 .setDecryptionKey(key)
@@ -170,14 +170,14 @@ public class TokenJWTDaoImpl {
 	        JwtContext jwtContext = firstPassJwtConsumer.process(jwt);
             NumericDateValidator validator = new NumericDateValidator();
             if (validator.validate(jwtContext) != null) {
-                logger.info("Token expired now.");
+//                logger.info("Token expired now.");
                 return false;
             } else {
-	            logger.info("Token still alive. ");
+//	            logger.info("Token still alive. ");
                 return true;
             }
         }catch (Exception e){
-            logger.error("error!",e);
+            logger.error("check token if alive get error!", e);
         }
         return false;
     }
@@ -186,10 +186,10 @@ public class TokenJWTDaoImpl {
 
 
     private String innerEncryption(final String login, final String userId, TokenSession sess, final String userType) throws JoseException {
-        logger.info("JWT being sign...");
+//        logger.info("JWT being sign...");
 
         // Create Claims to add to the token
-        logger.info("JWT being configured with client account user specific claims");
+//        logger.info("JWT being configured with client account user specific claims");
 
         // Create the Claims, which will be the content of the JWT
         JwtClaims claims = new JwtClaims();
@@ -230,7 +230,7 @@ public class TokenJWTDaoImpl {
 
     private String outerEncryption(String innerJwt) throws JoseException {
         Key key = this.retrieveKey(AES_KEY_PATH);
-        logger.info("JWT being encrypted...");
+//        logger.info("JWT being encrypted...");
 
         // The outer JWT is a JWE
         JsonWebEncryption jwe = new JsonWebEncryption();

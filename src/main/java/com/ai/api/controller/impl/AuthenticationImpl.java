@@ -69,10 +69,10 @@ public class AuthenticationImpl implements Authentication {
 		logger.info("user login ......");
 		//user can be client or employee
 		String account = loginBean.getAccount();
+		//password should be in MD5 format
 		String password = loginBean.getPassword();
 		String userType = loginBean.getUserType();
         logger.info("account:"+account);
-//        logger.info("password:"+password);
         logger.info("userType:"+userType);
 		ServiceCallResult result = new ServiceCallResult();
 		ObjectMapper mapper = new ObjectMapper();
@@ -100,7 +100,6 @@ public class AuthenticationImpl implements Authentication {
 			result.setReasonPhase("AI API call token not present or invalid for login.");
 			return mapper.writeValueAsString(result);
 		}
-//		result = ssoUserServiceDao.userLogin(account, password, userType, HttpUtil.getPublicAPICallToken(request));
         logger.info("start to get user from DB --> verify pw --> generate tokenSession");
         result = authenticationService.userLogin(account,password,userType);
 		logger.info("user login result: "+result.getResponseString());

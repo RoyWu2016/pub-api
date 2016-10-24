@@ -14,7 +14,6 @@ import com.ai.commons.IDGenerator;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.user.GeneralUserBean;
 import com.ai.commons.beans.user.TokenSession;
-import com.ai.userservice.common.util.MD5;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -54,9 +53,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         logger.info("userLogin ... userName: " +userName + ", userType:" + userType);
         ServiceCallResult result = new ServiceCallResult();
         if (userType.toLowerCase().equals(Consts.Http.USER_TYPE_CLIENT)){
-            String pwdMd5 = DigestUtils.shaHex(MD5.toMD5(password));
-            logger.info("client-----pwdMd5 :"+pwdMd5);
-            logger.info("getting client from DB ... userName:"+userName);
+	        //password should be in MD5 format
+            String pwdMd5 = DigestUtils.shaHex(password);
+            logger.info("getting client from DB ... userName:"+userName + ", final pwd:" + pwdMd5);
 
             GeneralUserBean client = userDBDao.getClientUser(userName);
 //            logger.info("client-----userId-[ "+client.getUserId()+"] pw-["+client.getPassword()+"]");
@@ -80,12 +79,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 result.setReasonPhase("The username and password doesn't match OR user not exist.");
             }
         }else if(userType.toLowerCase().equals(Consts.Http.USER_TYPE_EMPLOYEE)){
-            String pwdMd5 = MD5.toMD5(password);
-//            logger.info("employee-----pwdMd5 :"+pwdMd5);
             logger.info("getting employee from DB ... userName:"+userName);
             UserForToken user = userDBDao.getEmployeeUser(userName);
-//            logger.info("employee-----userId-[ "+user.getUserId()+"] pw-["+user.getPassword()+"]");
-            if (null != user.getUserId() && pwdMd5.equalsIgnoreCase(user.getPassword())){
+            logger.info("employee-----userId-[ "+user.getUserId()+"] pw-["+user.getPassword()+"]");
+	        //password should be in MD5 format
+            if (null != user.getUserId() && password.equalsIgnoreCase(user.getPassword())){
                 //Generate the token based on the User
                 TokenSession tokenSession = tokenJWTDao.generateToken(user.getLogin(), user.getUserId(),
 		                IDGenerator.uuid(), userType);
