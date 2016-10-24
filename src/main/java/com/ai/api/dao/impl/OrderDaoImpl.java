@@ -72,7 +72,9 @@ public class OrderDaoImpl implements OrderDao {
 			logger.info("reason before: " + reason);
 			reason = URLEncoder.encode(reason, "UTF-8");
 			logger.info("reason after: " + reason);
-			reason_options = URLEncoder.encode(reason_options, "UTF-8");
+			if (reason_options != null ) {
+				reason_options = URLEncoder.encode(reason_options, "UTF-8");
+			}
 			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 			url.append("/order/api/cancelOrder?userId=").append(userId)
 			.append("&orderId=").append(orderId)
