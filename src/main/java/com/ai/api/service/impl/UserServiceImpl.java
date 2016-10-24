@@ -190,7 +190,7 @@ public class UserServiceImpl implements UserService {
 
 		Payment payment = new Payment();
 		payment.setExpressBookingFee(companyEntireBean.getRate().getExpressFee());
-        payment.setOnlinePaymentTyep(companyEntireBean.getInvoicing().getOnlinePayStatus());
+        payment.setOnlinePaymentType(companyEntireBean.getInvoicing().getOnlinePayStatus());
 		user.setPayment(payment);
 
 		// ------------Set ContactInfoBean Properties ----------------

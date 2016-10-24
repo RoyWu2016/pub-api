@@ -10,7 +10,7 @@ package com.ai.api.bean;
  */
 public class Payment {
     private int expressBookingFee;
-    private String onlinePaymentTyep;
+    private String onlinePaymentType;
 
     public int getExpressBookingFee() {
         return expressBookingFee;
@@ -20,19 +20,19 @@ public class Payment {
         this.expressBookingFee = expressBookingFee;
     }
 
-    public String getOnlinePaymentTyep() {
-        return onlinePaymentTyep;
+    public String getOnlinePaymentType() {
+        return onlinePaymentType;
     }
 
-    public void setOnlinePaymentTyep(String onlinePaymentTyep) {
-        this.onlinePaymentTyep = onlinePaymentTyep;
+    public void setOnlinePaymentType(String onlinePaymentType) {
+        this.onlinePaymentType = onlinePaymentType;
     }
 
     @Override
     public String toString() {
         return "Payment{" +
                 "expressBookingFee=" + expressBookingFee +
-                ", onlinePaymentTyep='" + onlinePaymentTyep + '\'' +
+                ", onlinePaymentType='" + onlinePaymentType + '\'' +
                 '}';
     }
 }
