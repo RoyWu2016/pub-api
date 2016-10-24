@@ -7,22 +7,10 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.http.client.utils.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
@@ -36,6 +24,17 @@ import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.http.client.utils.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /***************************************************************************
  * <PRE>
@@ -66,67 +65,22 @@ public class OrderDaoImpl implements OrderDao {
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
 
-	/*
-	@Override
-	public List<SimpleOrderBean> getOrdersByUserId(OrderSearchCriteriaBean criteria) {
-		String url = config.getMwServiceUrl() + "/service/order/search";
-		try {
-			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-
-				return JsonUtil.mapToObject(result.getResponseString(),
-						new TypeReference<List<SimpleOrderBean>>() {
-						});
-
-			} else {
-				logger.error("get orders from middleware error: " + result.getStatusCode() +
-						", " + result.getResponseString());
-			}
-
-		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-		}
-
-		return null;
-	}
-
-	@Override
-	public List<SimpleOrderBean> getDraftsByUserId(OrderSearchCriteriaBean criteria) {
-		String url = config.getMwServiceUrl() + "/service/draft/search";
-		try {
-			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, criteria);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-
-				return JsonUtil.mapToObject(result.getResponseString(),
-						new TypeReference<List<SimpleOrderBean>>() {
-						});
-
-			} else {
-				logger.error("get drafts from middleware error: " + result.getStatusCode() +
-						", " + result.getResponseString());
-			}
-
-		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-		}
-		return null;
-	}
-	*/
-
 	@Override
 	public Boolean cancelOrder(String userId, String orderId, String reason, String reason_options) {
 		
 		try {
+			logger.info("reason before: " + reason);
+			reason = URLEncoder.encode(reason, "UTF-8");
+			logger.info("reason after: " + reason);
+			reason_options = URLEncoder.encode(reason_options, "UTF-8");
 			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 			url.append("/order/api/cancelOrder?userId=").append(userId)
-			.append("&orderId=").append(orderId);
-//			.append("&reason=").append(reason)
-//			.append("&reasonOption=").append(reason_options);
-			HashMap<String, String> data = new HashMap<>();
-			data.put("reason", reason);
-			data.put("reasonOption", reason_options);
-//			 ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,orderId);
-			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, data);
+			.append("&orderId=").append(orderId)
+			.append("&reason=").append(reason)
+			.append("&reasonOption=").append(reason_options);
+			logger.info("Posting!!! url :" + url);
+
+			 ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,orderId);
 			 if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					return true;
 				} else {
