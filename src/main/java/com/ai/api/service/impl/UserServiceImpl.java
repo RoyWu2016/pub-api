@@ -564,7 +564,7 @@ public class UserServiceImpl implements UserService {
 			logger.info("success get userBean from redis.");
 			return user;
 		} else {
-			logger.error("can't find user " + userId + " in cache. Will get from customer service. ");
+			logger.info("can't find user " + userId + " in cache. Will get from customer service. ");
 			user = this.getUserBeanByService(userId);
 			logger.info("saving userBean to redis ...");
 			RedisUtil.hset("userBeanCache", userId, JSON.toJSONString(user), RedisUtil.MINUTE * 30);
