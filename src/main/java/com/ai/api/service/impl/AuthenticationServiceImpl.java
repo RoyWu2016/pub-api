@@ -56,9 +56,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	        //password should be in MD5 format
             String pwdMd5 = DigestUtils.shaHex(password);
             logger.info("getting client from DB ... userName:"+userName + ", final pwd:" + pwdMd5);
-
-            GeneralUserBean client = userDBDao.getClientUser(userName);
-//            logger.info("client-----userId-[ "+client.getUserId()+"] pw-["+client.getPassword()+"]");
+            GeneralUserBean client = null;
+            try {
+                client = userDBDao.getClientUser(userName);
+            }catch (Exception e){
+                logger.error("can not get client!",e);
+            }
             if (client.getUserId() != null && pwdMd5.equalsIgnoreCase(client.getPassword())) {
                 //Generate the token based on the User
                 TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(), client.getUserId(),
@@ -80,7 +83,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
         }else if(userType.toLowerCase().equals(Consts.Http.USER_TYPE_EMPLOYEE)){
             logger.info("getting employee from DB ... userName:"+userName);
-            UserForToken user = userDBDao.getEmployeeUser(userName);
+            UserForToken user = null;
+            try {
+                userDBDao.getEmployeeUser(userName);
+            }catch (Exception e){
+                logger.error("can not get user!",e);
+            }
             logger.info("employee-----userId-[ "+user.getUserId()+"] pw-["+user.getPassword()+"]");
 	        //password should be in MD5 format
             if (null != user.getUserId() && password.equalsIgnoreCase(user.getPassword())){
