@@ -62,7 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }catch (Exception e){
                 logger.error("can not get client!",e);
             }
-            if (client.getUserId() != null && pwdMd5.equalsIgnoreCase(client.getPassword())) {
+            if (null!=client && null!=client.getUserId() && pwdMd5.equalsIgnoreCase(client.getPassword())) {
                 //Generate the token based on the User
                 TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(), client.getUserId(),
 		                IDGenerator.uuid(), userType);
@@ -91,7 +91,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
             logger.info("employee-----userId-[ "+user.getUserId()+"] pw-["+user.getPassword()+"]");
 	        //password should be in MD5 format
-            if (null != user.getUserId() && password.equalsIgnoreCase(user.getPassword())){
+            if (null!=user && null != user.getUserId() && password.equalsIgnoreCase(user.getPassword())){
                 //Generate the token based on the User
                 TokenSession tokenSession = tokenJWTDao.generateToken(user.getLogin(), user.getUserId(),
 		                IDGenerator.uuid(), userType);
