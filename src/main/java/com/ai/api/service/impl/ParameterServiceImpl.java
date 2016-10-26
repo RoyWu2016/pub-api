@@ -1,8 +1,12 @@
 package com.ai.api.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import com.ai.api.bean.ChinaTimeBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -76,5 +80,18 @@ public class ParameterServiceImpl implements ParameterService {
 		// TODO Auto-generated method stub
 		return paramDao.getAiOffices(refresh);
 	}
+
+    @Override
+    public ChinaTimeBean getChinaTime() {
+
+        ChinaTimeBean chinaTimeBean = new ChinaTimeBean();
+        Calendar cale = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.ENGLISH);
+        int unitTimeStamp = (int) (System.currentTimeMillis() / 1000);
+        chinaTimeBean.setDatetime(sdf.format(cale.getTime()));
+        chinaTimeBean.setTimezone("UTC+8");
+        chinaTimeBean.setUnixTimeStamp(unitTimeStamp);
+        return chinaTimeBean;
+    }
 }
 

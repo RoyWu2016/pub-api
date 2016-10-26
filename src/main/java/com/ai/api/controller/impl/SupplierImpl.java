@@ -6,12 +6,14 @@ import java.util.*;
 
 import com.ai.api.bean.UserBean;
 import com.ai.api.service.OrderService;
+import com.ai.api.service.ParameterService;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.userservice.common.util.MD5;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +54,9 @@ public class SupplierImpl implements Supplier {
 
 	@Autowired
 	ApiCallResult callResult;
+
+	@Autowired
+	ParameterService parameterService;
 
 	@Override
 	@TokenSecured
@@ -174,11 +179,13 @@ public class SupplierImpl implements Supplier {
                 String pw = MD5.toMD5(validateCode);
                 if (pw.equalsIgnoreCase(password)){
                     String newPW = DigestUtils.shaHex(password);
-                    JSONObject object = JSON.parseObject(JSON.toJSONString(orderBean));
+                    JSONObject object = JSON.parseObject(JSON.toJSONString(orderBean, SerializerFeature.WriteMapNullValue));
                     object.put("updateConfirmSupplierPwd",newPW);
 
                     UserBean u = userService.getCustById(orderBean.getOrder().getOrderGeneralInfo().getUserId());
                     object.put("userCompanyName",u.getCompany().getName());
+
+                    object.put("ChinaDatetime",parameterService.getChinaTime().getDatetime());
 
 					callResult.setContent(object.toJSONString());
                     return new ResponseEntity<>(callResult, HttpStatus.OK);
