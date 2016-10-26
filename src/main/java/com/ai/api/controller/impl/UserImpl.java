@@ -331,6 +331,7 @@ public class UserImpl implements User {
 				return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR); 
 			}
 		}else {
+			result.setMessage("Unkonw error!");
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 		}
 	}
