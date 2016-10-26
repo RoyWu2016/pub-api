@@ -952,4 +952,11 @@ public class UserServiceImpl implements UserService {
 		}
 		return customerDao.getUserDashboard(userId, parentId, companyId, startDate, endDate);
 	}
+
+	@Override
+	public ServiceCallResult resetPassword(String userId, String login, String email) {
+		// TODO Auto-generated method stub
+		return customerDao.resetPassword(userId,userId,email);
+	}
+	
 }
