@@ -7,6 +7,7 @@ import java.util.*;
 import com.ai.api.bean.UserBean;
 import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.userservice.common.util.MD5;
 import com.alibaba.fastjson.JSON;
@@ -48,6 +49,9 @@ public class SupplierImpl implements Supplier {
 
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	ApiCallResult callResult;
 
 	@Override
 	@TokenSecured
@@ -159,14 +163,14 @@ public class SupplierImpl implements Supplier {
 
 	@Override
 	@RequestMapping(value = "/order/{orderId}/supplier", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> getSupplierConfirm(@PathVariable("orderId") String orderId,
+	public ResponseEntity<ApiCallResult> getSupplierConfirm(@PathVariable("orderId") String orderId,
 																  @RequestParam("password")String password) {
 		try {
 			logger.info("getSupplierConfirm ...");
 			logger.info("orderId:"+orderId);
 			InspectionBookingBean orderBean = orderService.getOrderDetail("nullUserId", orderId);
-			if (orderBean != null) {
-                String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
+			if (orderBean != null && orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode() != null) {
+				String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
                 String pw = MD5.toMD5(validateCode);
                 if (pw.equalsIgnoreCase(password)){
                     String newPW = DigestUtils.shaHex(password);
@@ -176,17 +180,19 @@ public class SupplierImpl implements Supplier {
                     UserBean u = userService.getCustById(orderBean.getOrder().getOrderGeneralInfo().getUserId());
                     object.put("userCompanyName",u.getCompany().getName());
 
-                    return new ResponseEntity<>(object, HttpStatus.OK);
+					callResult.setContent(object.toJSONString());
+                    return new ResponseEntity<>(callResult, HttpStatus.OK);
                 }
                 logger.info("incorrect pw !   ["+ password +"] || should be :"+pw);
 			} else {
+				callResult.setMessage("Get supplier confirm error!");
 				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
 			logger.error("error in getSupplierConfirm",e);
 			e.printStackTrace();
 		}
-		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override

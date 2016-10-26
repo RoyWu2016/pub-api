@@ -73,8 +73,8 @@
     <bean id="orderDao" class="com.ai.api.dao.impl.OrderDaoImpl"/>
     <bean id="featureDao" class="com.ai.api.dao.impl.FeatureDaoImpl"/>
     <bean id="reportDao" class="com.ai.api.dao.impl.ReportDaoImpl"/>
- 	
- 	
+    <bean id="callResult" class="com.ai.commons.beans.ApiCallResult"/>
+
     <bean id="cacheManager" class="com.ai.commons.cache.CacheManager" />
       
     
