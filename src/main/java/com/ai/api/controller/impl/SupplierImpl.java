@@ -178,16 +178,23 @@ public class SupplierImpl implements Supplier {
 				String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
                 String pw = MD5.toMD5(validateCode);
                 if (pw.equalsIgnoreCase(password)){
+                    JSONObject object = (JSONObject)JSON.toJSON(orderBean);
+
                     String newPW = DigestUtils.shaHex(password);
-                    JSONObject object = JSON.parseObject(JSON.toJSONString(orderBean, SerializerFeature.WriteMapNullValue));
                     object.put("updateConfirmSupplierPwd",newPW);
 
-                    UserBean u = userService.getCustById(orderBean.getOrder().getOrderGeneralInfo().getUserId());
-                    object.put("userCompanyName",u.getCompany().getName());
+                    try {
+                        UserBean u=userService.getCustById(orderBean.getOrder().getOrderGeneralInfo().getUserId());
+                        object.put("userCompanyName",u.getCompany().getName());
 
-                    object.put("ChinaDatetime",parameterService.getChinaTime().getDatetime());
+                        object.put("ChinaDatetime",parameterService.getChinaTime().getDatetime());
+                        object.put("productCategoryList",parameterService.getProductCategoryList(false));
+                        object.put("productFamilyList",parameterService.getProductFamilyList(false));
+                    }catch (Exception e){
+                        logger.error("error occur while adding [userCompanyNameChinaDatetime productCategoryList productFamilyList] to result",e);
+                    }
 
-					callResult.setContent(object.toJSONString());
+					callResult.setContent(JSON.toJSONString(object,SerializerFeature.WriteMapNullValue));
                     return new ResponseEntity<>(callResult, HttpStatus.OK);
                 }
                 logger.info("incorrect pw !   ["+ password +"] || should be :"+pw);
@@ -197,6 +204,7 @@ public class SupplierImpl implements Supplier {
 			}
 		} catch (Exception e) {
 			logger.error("error in getSupplierConfirm",e);
+            callResult.setMessage("Internal service error.");
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
