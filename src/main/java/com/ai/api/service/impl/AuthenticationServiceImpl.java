@@ -92,11 +92,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             logger.info("getting employee from DB ... userName:"+userName);
             UserForToken user = null;
             try {
-                userDBDao.getEmployeeUser(userName);
+                user = userDBDao.getEmployeeUser(userName);
             }catch (Exception e){
                 logger.error("can not get user!",e);
             }
-            logger.info("employee-----userId-[ "+user.getUserId()+"] pw-["+user.getPassword()+"]");
+//            logger.info("employee-----userId-[ "+user.getUserId()+"] pw-["+user.getPassword()+"]");
 	        //password should be in MD5 format
             if (null!=user && null != user.getUserId() && password.equalsIgnoreCase(user.getPassword())){
                 //Generate the token based on the User
