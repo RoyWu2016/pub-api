@@ -34,7 +34,9 @@ import com.ai.api.bean.UserBean;
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
+import com.ai.commons.JsonUtil;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
@@ -73,15 +75,14 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
 	public ResponseEntity<UserBean> getUserProfile(@PathVariable("userId") String userId,
-			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh)
-			throws IOException, AIException {
+			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) throws IOException, AIException {
 		logger.info("......start getting user profile.......");
 		UserBean cust = null;
 
 		try {
-			if(refresh) {
+			if (refresh) {
 				cust = userService.getCustById(userId);
-			}else {
+			} else {
 				userService.removeUserProfileCache(userId);
 				cust = userService.getCustById(userId);
 			}
@@ -250,7 +251,7 @@ public class UserImpl implements User {
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) throws IOException, AIException {
 		// TODO Auto-generated method stub
 		logger.info("getEmployeeProfile employeeId: " + employeeId);
-		EmployeeBean cust = userService.getEmployeeProfile(employeeId,refresh);
+		EmployeeBean cust = userService.getEmployeeProfile(employeeId, refresh);
 		if (cust != null) {
 			JSONObject object = JSON.parseObject(JSON.toJSONString(cust));
 			object.remove("joinDate");
@@ -285,8 +286,9 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/dashboard", method = RequestMethod.GET)
 	public ResponseEntity<DashboardBean> getUserDashboard(@PathVariable("userId") String userId,
-			@RequestParam(value = "startDate", required = false,defaultValue="") String startDate,
-			@RequestParam(value = "endDate", required = false,defaultValue="") String endDate) throws IOException, AIException {
+			@RequestParam(value = "startDate", required = false, defaultValue = "") String startDate,
+			@RequestParam(value = "endDate", required = false, defaultValue = "") String endDate)
+			throws IOException, AIException {
 
 		if ("".equals(startDate) && "".equals(endDate)) {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
@@ -301,6 +303,35 @@ public class UserImpl implements User {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		} else {
 			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/password-by-login-email", method = RequestMethod.PUT)
+	public ResponseEntity<ApiCallResult> resetPassword(@PathVariable("userId") String userId,
+			@RequestParam(value = "login", defaultValue="") String login, @RequestParam(value = "email",defaultValue="") String email) {
+		
+		ApiCallResult result = new ApiCallResult();
+		if("".equals(login) || "".equals(email)) {
+			result.setMessage("Login or email can not be empty!");
+			return new ResponseEntity<>(result,HttpStatus.BAD_REQUEST); 
+		}
+		
+		ServiceCallResult temp = userService.resetPassword(userId,login,email);
+		if(null != temp) {
+			if (temp.getStatusCode() == HttpStatus.OK.value() && temp.getReasonPhase().equalsIgnoreCase("OK")) {
+				result.setMessage(temp.getReasonPhase());
+				result.setContent(temp.getResponseString());
+				return new ResponseEntity<>(result,HttpStatus.OK); 
+			} else {
+				logger.error("resetPassword from customer-service error:" + temp.getStatusCode() + ", "+ temp.getResponseString());
+				result.setMessage(temp.getReasonPhase());
+				result.setContent(temp.getResponseString());
+				return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR); 
+			}
+		}else {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 		}
 	}
 

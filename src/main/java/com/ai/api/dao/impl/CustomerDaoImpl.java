@@ -8,6 +8,7 @@ package com.ai.api.dao.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -124,7 +125,7 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	@Override
 	public boolean updateGeneralUser(GeneralUserBean newUser) {
 		String url = config.getCustomerServiceUrl() + "/users/" + newUser.getUserId() + "/general-user";
-		System.out.println("xx: " + JSON.toJSONString(newUser ) );
+		System.out.println("xx: " + JSON.toJSONString(newUser));
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, newUser);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getResponseString().isEmpty()
@@ -385,10 +386,10 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	}
 
 	@Override
-	public EmployeeBean getEmployeeProfile(String employeeId,boolean refresh) {
+	public EmployeeBean getEmployeeProfile(String employeeId, boolean refresh) {
 		// TODO Auto-generated method stub
 		EmployeeBean generalUserBean = null;
-		if(!refresh) {
+		if (!refresh) {
 			LOGGER.info("try to getEmployeeProfile from redis ...");
 			// String jsonString = RedisUtil.get("employeeCache");
 			String jsonString = RedisUtil.hget("employeeCache", employeeId);
@@ -469,6 +470,25 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 						+ result.getResponseString());
 			}
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public ServiceCallResult resetPassword(String userId, String login, String email) {
+		// TODO Auto-generated method stub
+		try {
+			String emailCode = URLEncoder.encode(email, "UTF-8");
+			StringBuilder url = new StringBuilder(config.getCustomerServiceUrl() + "/get-lost-login-password-new");
+			url.append("?login=" + login).append("&email=" + emailCode);
+			LOGGER.info("requesting url: " + url.toString());
+			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			
+			return result;
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
