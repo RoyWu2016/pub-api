@@ -19,6 +19,7 @@ import com.ai.api.bean.CompanyLogoBean;
 import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
@@ -83,4 +84,6 @@ public interface User {
 	ResponseEntity<JSONObject> getEmployeeProfile(String employeeId, boolean refresh) throws IOException, AIException;
 
 	ResponseEntity<UserBean> getUserProfile(String userId, boolean refresh) throws IOException, AIException;
+
+	ResponseEntity<ApiCallResult> resetPassword(String userId, String login, String email);
 }

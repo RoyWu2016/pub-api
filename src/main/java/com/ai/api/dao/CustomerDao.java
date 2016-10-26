@@ -54,4 +54,6 @@ public interface CustomerDao {
 	boolean isACAUser(String login);
 
 	DashboardBean getUserDashboard(String userId, String parentId, String companyId, String startDate, String endDate);
+
+	ServiceCallResult resetPassword(String userId, String userId2, String email);
 }
