@@ -50,36 +50,43 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public ServiceCallResult userLogin(String userName, String password, String userType) {
-        logger.info("userLogin ... userName: " +userName + ", userType:" + userType);
+        logger.info("userLogin ... userName:{}, userType:{}" ,userName,userType);
         ServiceCallResult result = new ServiceCallResult();
         if (userType.toLowerCase().equals(Consts.Http.USER_TYPE_CLIENT)){
 	        //password should be in MD5 format
             String pwdMd5 = DigestUtils.shaHex(password);
-            logger.info("getting client from DB ... userName:"+userName + ", final pwd:" + pwdMd5);
+            logger.info("getting client from DB ... userName:"+userName);
             GeneralUserBean client = null;
             try {
                 client = userDBDao.getClientUser(userName);
             }catch (Exception e){
                 logger.error("can not get client!",e);
             }
-            if (null!=client && null!=client.getUserId() && pwdMd5.equalsIgnoreCase(client.getPassword())) {
-                //Generate the token based on the User
-                TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(), client.getUserId(),
-		                IDGenerator.uuid(), userType);
-                if (tokenSession != null) {
-                    String token = JSON.toJSONString(tokenSession);
-                    result.setResponseString(token);
-                    result.setStatusCode(HttpServletResponse.SC_OK);
-                    result.setReasonPhase("User credential verified and token generated.");
-                } else {
-                    result.setResponseString("");
-                    result.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                    result.setReasonPhase("Error occurred while generating token.");
+            if (null!=client && null!=client.getUserId()) {
+                if (password.equalsIgnoreCase(client.getPassword()) || pwdMd5.equalsIgnoreCase(client.getPassword())){
+                    //Generate the token based on the User
+                    TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(), client.getUserId(),
+                            IDGenerator.uuid(), userType);
+                    if (tokenSession != null) {
+                        String token = JSON.toJSONString(tokenSession);
+                        result.setResponseString(token);
+                        result.setStatusCode(HttpServletResponse.SC_OK);
+                        result.setReasonPhase("User credential verified and token generated.");
+                    } else {
+                        result.setResponseString("");
+                        result.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        result.setReasonPhase("Error occurred while generating token.");
+                    }
+                }else {
+                    logger.info("The username and password doesn't match! input-PW:{"+password+"},SHA-PW:{"+pwdMd5+"},DB-PW:{"+client.getPassword()+"}");
+                    result.setResponseString("The username and password doesn't match");
+                    result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+                    result.setReasonPhase("The username and password doesn't match.");
                 }
             }else {
-                result.setResponseString("The username and password doesn't match OR user not exist");
+                result.setResponseString("The user doesn't exist");
                 result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                result.setReasonPhase("The username and password doesn't match OR user not exist.");
+                result.setReasonPhase("The user doesn't exist.");
             }
         }else if(userType.toLowerCase().equals(Consts.Http.USER_TYPE_EMPLOYEE)){
             logger.info("getting employee from DB ... userName:"+userName);
@@ -105,9 +112,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     result.setReasonPhase("Error occurred while generating token.");
                 }
             }else {
-                result.setResponseString("The username and password doesn't match OR user not exist");
+                result.setResponseString("The username and password doesn't match or user doesn't exist");
                 result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                result.setReasonPhase("The username and password doesn't match OR user not exist.");
+                result.setReasonPhase("The username and password doesn't match or user doesn't exist.");
             }
         }else {
             logger.error("wrong user type got: " + userType);
