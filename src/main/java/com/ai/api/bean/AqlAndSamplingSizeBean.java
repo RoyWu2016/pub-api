@@ -8,15 +8,30 @@ import java.io.Serializable;
 public class AqlAndSamplingSizeBean implements Serializable {
 
 
-    private boolean canModify;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -903716730770653692L;
+
+	private boolean canModify;
 
     private String customDefaultSampleLevel;
 
     private boolean useCustomAQL;
 
     private CustomAQLBean customAQL;
+    
+    private String measurementSampleLevel;
 
-    public boolean isCanModify() {
+    public String getMeasurementSampleLevel() {
+		return measurementSampleLevel;
+	}
+
+	public void setMeasurementSampleLevel(String measurementSampleLevel) {
+		this.measurementSampleLevel = measurementSampleLevel;
+	}
+
+	public boolean isCanModify() {
         return canModify;
     }
 
@@ -55,6 +70,7 @@ public class AqlAndSamplingSizeBean implements Serializable {
                 ", customDefaultSampleLevel='" + customDefaultSampleLevel + '\'' +
                 ", useCustomAQL=" + useCustomAQL +
                 ", customAQL=" + customAQL +
+                ", measurementSampleLevel=" + measurementSampleLevel +
                 '}';
     }
 }
