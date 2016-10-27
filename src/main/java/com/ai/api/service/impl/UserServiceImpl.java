@@ -390,6 +390,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		aqlAndSamplingSizeBean.setCustomDefaultSampleLevel(orderBookingBean.getCustomizedSampleLevel());
+		aqlAndSamplingSizeBean.setMeasurementSampleLevel(orderBookingBean.getMeasurementSampleLevel());
 		CustomAQLBean customAQLBean = new CustomAQLBean();
 
 		if (orderBookingBean.getCustAqlLevel() != null && orderBookingBean.getCustAqlLevel().equalsIgnoreCase("yes")) { // .equals("yes"))

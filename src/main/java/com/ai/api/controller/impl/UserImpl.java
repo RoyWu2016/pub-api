@@ -34,7 +34,6 @@ import com.ai.api.bean.UserBean;
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
-import com.ai.commons.JsonUtil;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
@@ -80,7 +79,7 @@ public class UserImpl implements User {
 		UserBean cust = null;
 
 		try {
-			if (refresh) {
+			if (!refresh) {
 				cust = userService.getCustById(userId);
 			} else {
 				userService.removeUserProfileCache(userId);
