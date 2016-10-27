@@ -3,6 +3,7 @@ package com.ai.api.service;
 import java.util.List;
 import java.util.Map;
 
+import com.ai.api.bean.ChinaTimeBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
@@ -35,5 +36,7 @@ public interface ParameterService {
 	List<ClassifiedBean> getAiOffices(boolean refresh);
 
 	List<ProductFamilyDtoBean> getProductFamilyList(boolean refresh);
+
+	ChinaTimeBean getChinaTime();
 
 }

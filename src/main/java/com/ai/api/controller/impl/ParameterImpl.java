@@ -314,14 +314,7 @@ public class ParameterImpl implements Parameter {
 	@RequestMapping(value = "/parameter/server-time", method = RequestMethod.GET)
 	public ResponseEntity<ChinaTimeBean> getChinaTime() {
 		// TODO Auto-generated method stub
-		ChinaTimeBean chinaTimeBean = new ChinaTimeBean();
-		Calendar cale = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.ENGLISH);
-		int unitTimeStamp = (int) (System.currentTimeMillis() / 1000);
-		chinaTimeBean.setDatetime(sdf.format(cale.getTime()));
-		chinaTimeBean.setTimezone("UTC+8");
-		chinaTimeBean.setUnixTimeStamp(unitTimeStamp);
-
+		ChinaTimeBean chinaTimeBean = parameterService.getChinaTime();
 		return new ResponseEntity<>(chinaTimeBean, HttpStatus.OK);
 	}
 
