@@ -163,13 +163,14 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}/password", method = RequestMethod.PUT)
 	public ResponseEntity<ServiceCallResult> updateUserPassword(@PathVariable("userId") String userId,
 			@RequestBody HashMap<String, String> pwdMap) throws IOException, AIException {
-		logger.info("Updating User password: " + userId);
+		logger.info("Updating User password! userId: " + userId);
 
 		ServiceCallResult result = userService.updateUserPassword(userId, pwdMap);
 
 		if (result.getStatusCode() == HttpStatus.OK.value()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("update user password failed! error code :"+result.getStatusCode()+" || "+result.getResponseString());
 			return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
 		}
 
