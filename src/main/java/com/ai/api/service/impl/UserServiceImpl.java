@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.bean.*;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -333,10 +334,11 @@ public class UserServiceImpl implements UserService {
 		String approveReferences = multiRefBookingBean.getApproveReferences();
 		if (approveReferences != null && approveReferences.equalsIgnoreCase("Yes")) {
 			multiReferenceBean.setClientCanApproveRejectIndividualProductReferences(true);
+			multiReferenceBean.setAskNumberOfReferences(false);
 		} else {
 			multiReferenceBean.setClientCanApproveRejectIndividualProductReferences(false);
+			multiReferenceBean.setAskNumberOfReferences(multiRefBookingBean.getAskNumberOfReferences().equalsIgnoreCase("Yes")?true:false);
 		}
-		multiReferenceBean.setAskNumberOfReferences(multiRefBookingBean.getAskNumberOfReferences().equalsIgnoreCase("Yes")?true:false);
 		multiReferenceBean.setNumberOfRefPerProduct(multiRefBookingBean.getNumberOfRefPerProduct());
 		multiReferenceBean.setNumberOfRefPerReport(multiRefBookingBean.getNumberOfRefPerReport());
 		multiReferenceBean.setNumberOfRefPerMd(multiRefBookingBean.getNumberOfRefPerMd());
@@ -568,7 +570,7 @@ public class UserServiceImpl implements UserService {
 			logger.info("can't find user " + userId + " in cache. Will get from customer service. ");
 			user = this.getUserBeanByService(userId);
 			logger.info("saving userBean to redis ...");
-			RedisUtil.hset("userBeanCache", userId, JSON.toJSONString(user), RedisUtil.MINUTE * 30);
+			RedisUtil.hset("userBeanCache", userId, JSON.toJSONString(user, SerializerFeature.WriteMapNullValue), RedisUtil.MINUTE * 30);
 			logger.info("saving success !!!");
 			return user;
 		}
