@@ -39,6 +39,7 @@
           p:reportServiceUrl="${report.service.url}"
           p:fileMaximumSize="${file.service.total.file.size.limitation}"
           p:psiServiceUrl="${inspection.service.url}"
+          p:ssoUserServiceUrl="${user.service.lb.url}"
           p:redisPassword="${redis.password}"
           p:redisPort="${redis.port}"
           p:redisHost="${redis.host}"
