@@ -193,8 +193,7 @@ public class SupplierImpl implements Supplier {
                     }catch (Exception e){
                         logger.error("error occur while adding [userCompanyNameChinaDatetime productCategoryList productFamilyList] to result",e);
                     }
-
-					callResult.setContent(JSON.toJSONString(object,SerializerFeature.WriteMapNullValue));
+					callResult.setContent(object);
                     return new ResponseEntity<>(callResult, HttpStatus.OK);
                 }
                 logger.info("incorrect pw !   ["+ password +"] || should be :"+pw);
