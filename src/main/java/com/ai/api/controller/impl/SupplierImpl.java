@@ -13,7 +13,6 @@ import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.userservice.common.util.MD5;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +52,7 @@ public class SupplierImpl implements Supplier {
 	UserService userService;
 
 	@Autowired
-	ApiCallResult callResult;
+	ApiCallResult<JSONObject> callResult;
 
 	@Autowired
 	ParameterService parameterService;
@@ -168,8 +167,8 @@ public class SupplierImpl implements Supplier {
 
 	@Override
 	@RequestMapping(value = "/order/{orderId}/supplier", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getSupplierConfirm(@PathVariable("orderId") String orderId,
-																  @RequestParam("password")String password) {
+	public ResponseEntity<ApiCallResult<JSONObject>> getSupplierConfirm(@PathVariable("orderId") String orderId,
+	                                                                    @RequestParam("password") String password) {
 		try {
 			logger.info("getSupplierConfirm ...");
 			logger.info("orderId:"+orderId);

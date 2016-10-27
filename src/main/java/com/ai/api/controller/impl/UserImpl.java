@@ -70,6 +70,9 @@ public class UserImpl implements User {
 	UserService userService; // Service which will do all data
 								// retrieval/manipulation work
 
+	@Autowired
+	ApiCallResult<JSONObject> callResult;
+
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
@@ -308,30 +311,27 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/password-by-login-email", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> resetPassword(@PathVariable("userId") String userId,
+	public ResponseEntity<ApiCallResult<JSONObject>> resetPassword(@PathVariable("userId") String userId,
 			@RequestParam(value = "login", defaultValue="") String login, @RequestParam(value = "email",defaultValue="") String email) {
 		
-		ApiCallResult result = new ApiCallResult();
+
 		if("".equals(login) || "".equals(email)) {
-			result.setMessage("Login or email can not be empty!");
-			return new ResponseEntity<>(result,HttpStatus.BAD_REQUEST); 
+			callResult.setMessage("Login or email can not be empty!");
+			return new ResponseEntity<>(callResult, HttpStatus.BAD_REQUEST);
 		}
 		
 		ServiceCallResult temp = userService.resetPassword(userId,login,email);
 		if(null != temp) {
 			if (temp.getStatusCode() == HttpStatus.OK.value() && temp.getReasonPhase().equalsIgnoreCase("OK")) {
-				result.setMessage(temp.getReasonPhase());
-				result.setContent(temp.getResponseString());
-				return new ResponseEntity<>(result,HttpStatus.OK); 
+				return new ResponseEntity<>(callResult,HttpStatus.OK);
 			} else {
-				logger.error("resetPassword from customer-service error:" + temp.getStatusCode() + ", "+ temp.getResponseString());
-				result.setMessage(temp.getReasonPhase());
-				result.setContent(temp.getResponseString());
-				return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR); 
+				logger.error("Reset password get error:" + temp.getStatusCode() + ", "+ temp.getResponseString());
+				callResult.setMessage(temp.getReasonPhase());
+				return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}else {
-			result.setMessage("Unkonw error!");
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+			callResult.setMessage("Get null from internal service call.");
+			return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
