@@ -6,11 +6,14 @@ import java.util.*;
 
 import com.ai.api.bean.UserBean;
 import com.ai.api.service.OrderService;
+import com.ai.api.service.ParameterService;
 import com.ai.api.service.UserService;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.userservice.common.util.MD5;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +51,12 @@ public class SupplierImpl implements Supplier {
 
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	ApiCallResult callResult;
+
+	@Autowired
+	ParameterService parameterService;
 
 	@Override
 	@TokenSecured
@@ -158,52 +167,46 @@ public class SupplierImpl implements Supplier {
 	}
 
 	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/order/{orderId}/supplier", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> supplierConfirm(
-			@PathVariable("userId") String userId, 
-			@PathVariable("orderId") String orderId,
-			@RequestParam("inspectionDate") String inspectionDateString,
-			@RequestParam("containerReadyDate") String containReadyTime,
-			@RequestBody OrderFactoryBean orderFactoryBean) throws IOException, AIException {
-		if (factoryService.supplierConfirmOrder(orderId,inspectionDateString,containReadyTime,orderFactoryBean)) {
-			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-	}
-
-	@Override
 	@RequestMapping(value = "/order/{orderId}/supplier", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> getSupplierConfirm(@PathVariable("orderId") String orderId,
+	public ResponseEntity<ApiCallResult> getSupplierConfirm(@PathVariable("orderId") String orderId,
 																  @RequestParam("password")String password) {
 		try {
 			logger.info("getSupplierConfirm ...");
 			logger.info("orderId:"+orderId);
 			InspectionBookingBean orderBean = orderService.getOrderDetail("nullUserId", orderId);
-			if (orderBean != null) {
-                String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
+			if (orderBean != null && orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode() != null) {
+				String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
                 String pw = MD5.toMD5(validateCode);
                 if (pw.equalsIgnoreCase(password)){
+                    JSONObject object = (JSONObject)JSON.toJSON(orderBean);
+
                     String newPW = DigestUtils.shaHex(password);
-                    JSONObject object = JSON.parseObject(JSON.toJSONString(orderBean));
                     object.put("updateConfirmSupplierPwd",newPW);
 
-                    UserBean u = userService.getCustById(orderBean.getOrder().getOrderGeneralInfo().getUserId());
-                    object.put("userCompanyName",u.getCompany().getName());
+                    try {
+                        UserBean u=userService.getCustById(orderBean.getOrder().getOrderGeneralInfo().getUserId());
+                        object.put("userCompanyName",u.getCompany().getName());
 
-                    return new ResponseEntity<>(object, HttpStatus.OK);
+                        object.put("ChinaDatetime",parameterService.getChinaTime().getDatetime());
+                        object.put("productCategoryList",parameterService.getProductCategoryList(false));
+                        object.put("productFamilyList",parameterService.getProductFamilyList(false));
+                    }catch (Exception e){
+                        logger.error("error occur while adding [userCompanyNameChinaDatetime productCategoryList productFamilyList] to result",e);
+                    }
+					callResult.setContent(object);
+                    return new ResponseEntity<>(callResult, HttpStatus.OK);
                 }
                 logger.info("incorrect pw !   ["+ password +"] || should be :"+pw);
 			} else {
+				callResult.setMessage("Get supplier confirm error!");
 				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
 			logger.error("error in getSupplierConfirm",e);
+            callResult.setMessage("Internal service error.");
 			e.printStackTrace();
 		}
-		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override

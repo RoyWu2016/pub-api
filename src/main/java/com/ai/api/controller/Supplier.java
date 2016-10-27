@@ -4,13 +4,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSONObject;
-import org.springframework.http.ResponseEntity;
-
 import com.ai.api.bean.SupplierDetailBean;
 import com.ai.api.exception.AIException;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.psi.OrderFactoryBean;
 import com.ai.commons.beans.supplier.SupplierSearchResultBean;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Created by Administrator on 2016/6/29 0029.
@@ -29,10 +28,7 @@ public interface Supplier {
 	ResponseEntity<SupplierDetailBean> createSupplier(String userId, SupplierDetailBean supplierDetailBean)
 			throws IOException, AIException;
 
-	ResponseEntity<Boolean> supplierConfirm(String userId, String orderId, String inspectionDateString,
-			String containReadyTime, OrderFactoryBean orderFactoryBean) throws IOException, AIException;
-
-	ResponseEntity<JSONObject> getSupplierConfirm(String orderId,String password);
+	ResponseEntity<ApiCallResult> getSupplierConfirm(String orderId,String password);
 
 	ResponseEntity<Boolean> updateSupplierConfirm(String orderId,String password,
                                                      String inspectionDateString,
