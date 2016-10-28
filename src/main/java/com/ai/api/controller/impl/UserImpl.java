@@ -70,8 +70,8 @@ public class UserImpl implements User {
 	UserService userService; // Service which will do all data
 								// retrieval/manipulation work
 
-	@Autowired
-	ApiCallResult callResult;
+//	@Autowired
+//	ApiCallResult callResult;
 
 	@Override
 	@TokenSecured
@@ -315,7 +315,7 @@ public class UserImpl implements User {
 	public ResponseEntity<ApiCallResult> resetPassword(@PathVariable("userId") String userId,
 			@RequestParam(value = "login", defaultValue="") String login, @RequestParam(value = "email",defaultValue="") String email) {
 		
-
+		ApiCallResult callResult = new ApiCallResult();
 		if("".equals(login) || "".equals(email)) {
 			callResult.setMessage("Login or email can not be empty!");
 			return new ResponseEntity<>(callResult, HttpStatus.BAD_REQUEST);

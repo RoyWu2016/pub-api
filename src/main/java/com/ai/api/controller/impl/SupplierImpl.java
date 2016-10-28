@@ -2,17 +2,12 @@ package com.ai.api.controller.impl;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
-import com.ai.api.bean.UserBean;
-import com.ai.api.service.OrderService;
-import com.ai.api.service.ParameterService;
-import com.ai.api.service.UserService;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.userservice.common.util.MD5;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,13 +22,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.api.bean.SupplierDetailBean;
+import com.ai.api.bean.UserBean;
 import com.ai.api.bean.legacy.FactorySearchBean;
 import com.ai.api.controller.Supplier;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.FactoryService;
+import com.ai.api.service.OrderService;
+import com.ai.api.service.ParameterService;
+import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.OrderFactoryBean;
 import com.ai.commons.beans.supplier.SupplierSearchResultBean;
+import com.ai.userservice.common.util.MD5;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * Created by Administrator on 2016/6/29 0029.
@@ -51,8 +55,8 @@ public class SupplierImpl implements Supplier {
 	@Autowired
 	UserService userService;
 
-	@Autowired
-	ApiCallResult<JSONObject> callResult;
+//	@Autowired
+//	ApiCallResult<JSONObject> callResult;
 
 	@Autowired
 	ParameterService parameterService;
@@ -169,9 +173,10 @@ public class SupplierImpl implements Supplier {
 	@RequestMapping(value = "/order/{orderId}/supplier", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getSupplierConfirm(@PathVariable("orderId") String orderId,
 	                                                                    @RequestParam("password") String password) {
+		logger.info("getSupplierConfirm ...");
+		logger.info("orderId:"+orderId);
+		ApiCallResult callResult = new ApiCallResult();
 		try {
-			logger.info("getSupplierConfirm ...");
-			logger.info("orderId:"+orderId);
 			InspectionBookingBean orderBean = orderService.getOrderDetail("nullUserId", orderId);
 			if (orderBean != null && orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode() != null) {
 				String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
