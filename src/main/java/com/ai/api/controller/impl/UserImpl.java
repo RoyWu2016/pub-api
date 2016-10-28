@@ -71,7 +71,7 @@ public class UserImpl implements User {
 								// retrieval/manipulation work
 
 	@Autowired
-	ApiCallResult<JSONObject> callResult;
+	ApiCallResult callResult;
 
 	@Override
 	@TokenSecured
@@ -312,7 +312,7 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/password-by-login-email", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult<JSONObject>> resetPassword(@PathVariable("userId") String userId,
+	public ResponseEntity<ApiCallResult> resetPassword(@PathVariable("userId") String userId,
 			@RequestParam(value = "login", defaultValue="") String login, @RequestParam(value = "email",defaultValue="") String email) {
 		
 

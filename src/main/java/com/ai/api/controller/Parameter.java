@@ -12,7 +12,6 @@ import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -40,6 +39,6 @@ public interface Parameter {
 
 	ResponseEntity<List<DropdownListOptionBean>> getAiOffices(boolean refresh);
 
-	ResponseEntity<ApiCallResult<JSONObject>> getContinents(boolean refresh);
+	ResponseEntity<ApiCallResult> getContinents(boolean refresh);
 
 }

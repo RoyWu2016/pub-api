@@ -9,7 +9,6 @@ import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.psi.OrderFactoryBean;
 import com.ai.commons.beans.supplier.SupplierSearchResultBean;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -29,7 +28,7 @@ public interface Supplier {
 	ResponseEntity<SupplierDetailBean> createSupplier(String userId, SupplierDetailBean supplierDetailBean)
 			throws IOException, AIException;
 
-	ResponseEntity<ApiCallResult<JSONObject>> getSupplierConfirm(String orderId, String password);
+	ResponseEntity<ApiCallResult> getSupplierConfirm(String orderId, String password);
 
 	ResponseEntity<Boolean> updateSupplierConfirm(String orderId,String password,
                                                      String inspectionDateString,

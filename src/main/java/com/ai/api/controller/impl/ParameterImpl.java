@@ -31,7 +31,6 @@ import com.ai.commons.beans.params.GeoPlanetBean;
 import com.ai.commons.beans.params.TextileCategoryBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -66,7 +65,7 @@ public class ParameterImpl implements Parameter {
 	com.ai.commons.services.ParameterService commonParamService;
 
 	@Autowired
-	ApiCallResult<JSONObject> callResult;
+	ApiCallResult callResult;
 
 	@Override
 	@TokenSecured
@@ -325,13 +324,12 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/continents", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult<JSONObject>> getContinents(
+	public ResponseEntity<ApiCallResult> getContinents(
 		@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 
 		List<GeoPlanetBean> conts = commonParamService.listContinents();
 		if (conts != null && conts.size() > 0) {
-			JSONObject object = (JSONObject)JSON.toJSON(conts);
-			callResult.setContent(object);
+			callResult.setContent(conts);
 			return new ResponseEntity<>(callResult, HttpStatus.OK);
 		} else {
 			callResult.setMessage("Get continets list error!");
