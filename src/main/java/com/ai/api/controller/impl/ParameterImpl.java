@@ -1,26 +1,10 @@
 package com.ai.api.controller.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import com.ai.aims.services.model.OfficeMaster;
 import com.ai.aims.services.model.ProgramMaster;
@@ -37,16 +21,30 @@ import com.ai.api.service.ParameterService;
 import com.ai.api.util.AIUtil;
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
 import com.ai.commons.beans.params.ClassifiedBean;
 import com.ai.commons.beans.params.GeoCountryCallingCodeBean;
+import com.ai.commons.beans.params.GeoPlanetBean;
 import com.ai.commons.beans.params.TextileCategoryBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 import com.alibaba.fastjson.JSON;
-
+import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by Administrator on 2016/6/21 0021.
@@ -63,6 +61,12 @@ public class ParameterImpl implements Parameter {
 	@Autowired
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
+
+	@Autowired
+	com.ai.commons.services.ParameterService commonParamService;
+
+	@Autowired
+	ApiCallResult<JSONObject> callResult;
 
 	@Override
 	@TokenSecured
@@ -318,4 +322,20 @@ public class ParameterImpl implements Parameter {
 		return new ResponseEntity<>(chinaTimeBean, HttpStatus.OK);
 	}
 
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/continents", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult<JSONObject>> getContinents(
+		@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
+
+		List<GeoPlanetBean> conts = commonParamService.listContinents();
+		if (conts != null && conts.size() > 0) {
+			JSONObject object = (JSONObject)JSON.toJSON(conts);
+			callResult.setContent(object);
+			return new ResponseEntity<>(callResult, HttpStatus.OK);
+		} else {
+			callResult.setMessage("Get continets list error!");
+			return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

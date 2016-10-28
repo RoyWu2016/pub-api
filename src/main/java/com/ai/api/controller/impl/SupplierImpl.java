@@ -197,7 +197,7 @@ public class SupplierImpl implements Supplier {
                 }
                 logger.info("incorrect pw !   ["+ password +"] || should be :"+pw);
 			} else {
-				callResult.setMessage("Get supplier confirm error!");
+				callResult.setMessage("Get order error!");
 				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {

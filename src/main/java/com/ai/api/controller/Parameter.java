@@ -3,16 +3,17 @@ package com.ai.api.controller;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.ResponseEntity;
-
 import com.ai.api.bean.ChecklistSampleSize;
 import com.ai.api.bean.ChinaTimeBean;
 import com.ai.api.bean.CountryBean;
 import com.ai.api.bean.DropdownListOptionBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
+import com.alibaba.fastjson.JSONObject;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Created by Henry Yue on 2016/6/21 0021.
@@ -38,4 +39,7 @@ public interface Parameter {
 	ResponseEntity<List<DropdownListOptionBean>> getTextileProductCategories(boolean refresh);
 
 	ResponseEntity<List<DropdownListOptionBean>> getAiOffices(boolean refresh);
+
+	ResponseEntity<ApiCallResult<JSONObject>> getContinents(boolean refresh);
+
 }
