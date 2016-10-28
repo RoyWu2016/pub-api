@@ -1,10 +1,26 @@
 package com.ai.api.controller.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.ai.aims.services.model.OfficeMaster;
 import com.ai.aims.services.model.ProgramMaster;
@@ -31,24 +47,14 @@ import com.ai.commons.beans.params.GeoPlanetBean;
 import com.ai.commons.beans.params.TextileCategoryBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 import com.alibaba.fastjson.JSON;
+
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by Administrator on 2016/6/21 0021.
  */
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 @RestController
 public class ParameterImpl implements Parameter {
 
@@ -64,8 +70,8 @@ public class ParameterImpl implements Parameter {
 	@Autowired
 	com.ai.commons.services.ParameterService commonParamService;
 
-	@Autowired
-	ApiCallResult callResult;
+	// @Autowired
+	// ApiCallResult callResult;
 
 	@Override
 	@TokenSecured
@@ -229,29 +235,30 @@ public class ParameterImpl implements Parameter {
 	@RequestMapping(value = "/parameter/lt-offices", method = RequestMethod.GET)
 	public ResponseEntity<List<OfficeMaster>> searchOffice(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
-		List<OfficeMaster> proTypeList = null ;
-		if(!refresh) {
+		List<OfficeMaster> proTypeList = null;
+		if (!refresh) {
 			logger.info("try to search lt Office from redis ...");
 			String jsonStringTextileProductCategory = RedisUtil.get("ltOfficesCache");
 			proTypeList = JSON.parseArray(jsonStringTextileProductCategory, OfficeMaster.class);
 		}
-		if(null == proTypeList) {
+		if (null == proTypeList) {
 			logger.info("Can not find from redis search from aims service");
 			RestTemplate restTemplate = new RestTemplate();
 			try {
 				AIUtil.addRestTemplateMessageConverter(restTemplate);
-				String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/office/search/all").toString();
+				String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/office/search/all")
+						.toString();
 				proTypeList = Arrays.asList(restTemplate.getForObject(url, OfficeMaster[].class));
-				
+
 				logger.info("saving searchOffice");
-				RedisUtil.set("ltOfficesCache", JSON.toJSONString(proTypeList),RedisUtil.HOUR * 24);
-				
+				RedisUtil.set("ltOfficesCache", JSON.toJSONString(proTypeList), RedisUtil.HOUR * 24);
+
 				return new ResponseEntity<List<OfficeMaster>>(proTypeList, HttpStatus.OK);
 			} catch (Exception e) {
 				logger.error("search office error: " + ExceptionUtils.getFullStackTrace(e));
 				return new ResponseEntity<List<OfficeMaster>>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-		}else {
+		} else {
 			logger.info("get lt offices from redis successfully");
 			return new ResponseEntity<List<OfficeMaster>>(proTypeList, HttpStatus.OK);
 		}
@@ -263,27 +270,28 @@ public class ParameterImpl implements Parameter {
 	public ResponseEntity<List<ProgramMaster>> searchPrograms(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		List<ProgramMaster> programs = null;
-		if(!refresh) {
+		if (!refresh) {
 			logger.info("try to searchPrograms from redis ...");
 			String jsonStringTextileProductCategory = RedisUtil.get("ltProgramsCache");
 			programs = JSON.parseArray(jsonStringTextileProductCategory, ProgramMaster.class);
 		}
-		if(null == programs) {
+		if (null == programs) {
 			try {
 				RestTemplate restTemplate = new RestTemplate();
 				AIUtil.addRestTemplateMessageConverter(restTemplate);
-				String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/program/search/all").toString();
+				String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/program/search/all")
+						.toString();
 				programs = Arrays.asList(restTemplate.getForObject(url, ProgramMaster[].class));
-				
+
 				logger.info("saving searchPrograms");
-				RedisUtil.set("ltProgramsCache", JSON.toJSONString(programs),RedisUtil.HOUR * 24);
-				
+				RedisUtil.set("ltProgramsCache", JSON.toJSONString(programs), RedisUtil.HOUR * 24);
+
 				return new ResponseEntity<List<ProgramMaster>>(programs, HttpStatus.OK);
 			} catch (Exception e) {
 				logger.error("search Programs error: " + ExceptionUtils.getFullStackTrace(e));
 				return new ResponseEntity<List<ProgramMaster>>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-		}else {
+		} else {
 			logger.info("get lt programs from redis successfully");
 			return new ResponseEntity<List<ProgramMaster>>(programs, HttpStatus.OK);
 		}
@@ -325,15 +333,200 @@ public class ParameterImpl implements Parameter {
 	@TokenSecured
 	@RequestMapping(value = "/parameter/continents", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getContinents(
-		@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
-
-		List<GeoPlanetBean> conts = commonParamService.listContinents();
-		if (conts != null && conts.size() > 0) {
-			callResult.setContent(conts);
-			return new ResponseEntity<>(callResult, HttpStatus.OK);
+			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
+		logger.info("invoking: /parameter/continents?refresh=" + refresh);
+		ApiCallResult callResult = new ApiCallResult();
+		List<DropdownListOptionBean> result = null;
+		if (!refresh) {
+			logger.info("try to getContinents from redis ...");
+			String jsonString = RedisUtil.hget("geographyCache", "continents");
+			result = JSON.parseArray(jsonString, DropdownListOptionBean.class);
+		}
+		if (null == result) {
+			logger.info("Can not find from redis try to get from commonParamService...");
+			List<GeoPlanetBean> conts = commonParamService.listContinents();
+			List<DropdownListOptionBean> temp = new ArrayList<DropdownListOptionBean>();
+			if (conts != null) {
+				for (GeoPlanetBean each : conts) {
+					DropdownListOptionBean bean = new DropdownListOptionBean();
+					bean.setLabel(each.getName());
+					bean.setValue(each.getId());
+					temp.add(bean);
+				}
+				logger.info("saving getContinents into redis");
+				RedisUtil.hset("geographyCache", "continents", JSON.toJSONString(temp), RedisUtil.HOUR * 24);
+				callResult.setContent(temp);
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
+			} else {
+				callResult.setMessage("Get continets list error!");
+				return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 		} else {
-			callResult.setMessage("Get continets list error!");
-			return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.info("getContinents from redis successfully");
+			callResult.setContent(result);
+			return new ResponseEntity<>(callResult, HttpStatus.OK);
 		}
 	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/continent/{continentId}/countries", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> getCountriesByContinentId(
+			@PathVariable("continentId") String continentId,
+			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
+		// TODO Auto-generated method stub
+		logger.info("invoking: /parameter/continent/" + continentId + "/countries?refresh=" + refresh);
+		ApiCallResult callResult = new ApiCallResult();
+		List<DropdownListOptionBean> result = null;
+		if (!refresh) {
+			logger.info("try to getCountries from redis ...");
+			String jsonString = RedisUtil.hget("geographyCache", "countries");
+			result = JSON.parseArray(jsonString, DropdownListOptionBean.class);
+		}
+		if (null == result) {
+			logger.info("Can not find from redis try to get from commonParamService...");
+			List<GeoPlanetBean> conts = commonParamService.getCountriesOfContinent(continentId);
+			List<DropdownListOptionBean> temp = new ArrayList<DropdownListOptionBean>();
+			if (conts != null) {
+				for (GeoPlanetBean each : conts) {
+					DropdownListOptionBean bean = new DropdownListOptionBean();
+					bean.setLabel(each.getName());
+					bean.setValue(each.getId());
+					temp.add(bean);
+				}
+				logger.info("saving getContinents into redis");
+				RedisUtil.hset("geographyCache", "countries", JSON.toJSONString(temp), RedisUtil.HOUR * 24);
+				callResult.setContent(temp);
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
+			} else {
+				callResult.setMessage("Get country list error!");
+				return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			logger.info("getCountries from redis successfully");
+			callResult.setContent(result);
+			return new ResponseEntity<>(callResult, HttpStatus.OK);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/country/{countryId}/provinces", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> getProvincesByCountryId(@PathVariable("countryId") String countryId,
+			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
+		// TODO Auto-generated method stub
+		logger.info("invoking: /parameter/country/" + countryId + "/provinces?refresh=" + refresh);
+		ApiCallResult callResult = new ApiCallResult();
+		List<DropdownListOptionBean> result = null;
+		if (!refresh) {
+			logger.info("try to getProvinces from redis ...");
+			String jsonString = RedisUtil.hget("geographyCache", "provinces");
+			result = JSON.parseArray(jsonString, DropdownListOptionBean.class);
+		}
+		if (null == result) {
+			logger.info("Can not find from redis try to get from commonParamService...");
+			List<GeoPlanetBean> conts = commonParamService.getProvincesOfCountry(countryId);
+			List<DropdownListOptionBean> temp = new ArrayList<DropdownListOptionBean>();
+			if (conts != null) {
+				for (GeoPlanetBean each : conts) {
+					DropdownListOptionBean bean = new DropdownListOptionBean();
+					bean.setLabel(each.getName());
+					bean.setValue(each.getId());
+					temp.add(bean);
+				}
+				logger.info("saving getProvinces into redis");
+				RedisUtil.hset("geographyCache", "provinces", JSON.toJSONString(temp), RedisUtil.HOUR * 24);
+				callResult.setContent(temp);
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
+			} else {
+				callResult.setMessage("Get province list error!");
+				return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			logger.info("getProvinces from redis successfully");
+			callResult.setContent(result);
+			return new ResponseEntity<>(callResult, HttpStatus.OK);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/province/{provinceId}/cities", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> getCitiesByProvinceId(@PathVariable("provinceId") String provinceId,
+			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
+		// TODO Auto-generated method stub
+		logger.info("invoking: /parameter/province/" + provinceId + "/cities?refresh=" + refresh);
+		ApiCallResult callResult = new ApiCallResult();
+		List<DropdownListOptionBean> result = null;
+		if (!refresh) {
+			logger.info("try to getCitiesByProvincName from redis ...");
+			String jsonString = RedisUtil.hget("geographyCache", "cities");
+			result = JSON.parseArray(jsonString, DropdownListOptionBean.class);
+		}
+		if (null == result) {
+			logger.info("Can not find from redis try to get from commonParamService...");
+			List<GeoPlanetBean> conts = commonParamService.getCitiesOfProvince(provinceId);
+			List<DropdownListOptionBean> temp = new ArrayList<DropdownListOptionBean>();
+			if (conts != null) {
+				for (GeoPlanetBean each : conts) {
+					DropdownListOptionBean bean = new DropdownListOptionBean();
+					bean.setLabel(each.getName());
+					bean.setValue(each.getId());
+					temp.add(bean);
+				}
+				logger.info("saving getCitiesByProvincName into redis");
+				RedisUtil.hset("geographyCache", "cities", JSON.toJSONString(temp), RedisUtil.HOUR * 24);
+				callResult.setContent(temp);
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
+			} else {
+				callResult.setMessage("Get city list error!");
+				return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			logger.info("getCitiesByProvincName from redis successfully");
+			callResult.setContent(result);
+			return new ResponseEntity<>(callResult, HttpStatus.OK);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/country/{countryId}/cities", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> getCitiesByCountryId(@PathVariable("countryId") String countryId,
+			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
+		// TODO Auto-generated method stub
+		logger.info("invoking: /parameter/country/" + countryId + "/cities?refresh=" + refresh);
+		ApiCallResult callResult = new ApiCallResult();
+		List<DropdownListOptionBean> result = null;
+		if (!refresh) {
+			logger.info("try to getCitiesByCountryId from redis ...");
+			String jsonString = RedisUtil.hget("geographyCache", "cities");
+			result = JSON.parseArray(jsonString, DropdownListOptionBean.class);
+		}
+		if (null == result) {
+			logger.info("Can not find from redis try to get from commonParamService...");
+			List<GeoPlanetBean> conts = commonParamService.getCitiesOfCountry(countryId);
+			List<DropdownListOptionBean> temp = new ArrayList<DropdownListOptionBean>();
+			if (conts != null) {
+				for (GeoPlanetBean each : conts) {
+					DropdownListOptionBean bean = new DropdownListOptionBean();
+					bean.setLabel(each.getName());
+					bean.setValue(each.getId());
+					temp.add(bean);
+				}
+				logger.info("saving getCitiesByCountryId into redis");
+				RedisUtil.hset("geographyCache", "cities", JSON.toJSONString(temp), RedisUtil.HOUR * 24);
+				callResult.setContent(temp);
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
+			} else {
+				callResult.setMessage("Get city list error!");
+				return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			logger.info("getCitiesByCountryId from redis successfully");
+			callResult.setContent(result);
+			return new ResponseEntity<>(callResult, HttpStatus.OK);
+		}
+	}
+
 }
