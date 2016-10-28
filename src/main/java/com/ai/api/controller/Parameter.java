@@ -41,4 +41,13 @@ public interface Parameter {
 
 	ResponseEntity<ApiCallResult> getContinents(boolean refresh);
 
+	ResponseEntity<ApiCallResult> getCitiesByCountryId(String countryId, boolean refresh);
+
+	ResponseEntity<ApiCallResult> getProvincesByCountryId(String countryId, boolean refresh);
+
+	ResponseEntity<ApiCallResult> getCountriesByContinentId(String continentId, boolean refresh);
+
+	ResponseEntity<ApiCallResult> getCitiesByProvinceId(String provinceId, boolean refresh);
+
+
 }
