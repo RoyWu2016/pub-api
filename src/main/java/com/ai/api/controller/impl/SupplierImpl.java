@@ -167,7 +167,7 @@ public class SupplierImpl implements Supplier {
 
 	@Override
 	@RequestMapping(value = "/order/{orderId}/supplier", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult<JSONObject>> getSupplierConfirm(@PathVariable("orderId") String orderId,
+	public ResponseEntity<ApiCallResult> getSupplierConfirm(@PathVariable("orderId") String orderId,
 	                                                                    @RequestParam("password") String password) {
 		try {
 			logger.info("getSupplierConfirm ...");
