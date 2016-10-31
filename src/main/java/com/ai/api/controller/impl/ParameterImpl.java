@@ -1,7 +1,5 @@
 package com.ai.api.controller.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -330,7 +328,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	@TokenSecured
+//	@TokenSecured
 	@RequestMapping(value = "/parameter/continents", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getContinents(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
@@ -369,7 +367,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	@TokenSecured
+//	@TokenSecured
 	@RequestMapping(value = "/parameter/continent/{continentId}/countries", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getCountriesByContinentId(
 			@PathVariable("continentId") String continentId,
@@ -410,7 +408,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	@TokenSecured
+//	@TokenSecured
 	@RequestMapping(value = "/parameter/country/{countryId}/provinces", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getProvincesByCountryId(@PathVariable("countryId") String countryId,
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
@@ -450,7 +448,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	@TokenSecured
+//	@TokenSecured
 	@RequestMapping(value = "/parameter/province/{provinceId}/cities", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getCitiesByProvinceId(@PathVariable("provinceId") String provinceId,
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
@@ -490,7 +488,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	@TokenSecured
+//	@TokenSecured
 	@RequestMapping(value = "/parameter/country/{countryId}/cities", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getCitiesByCountryId(@PathVariable("countryId") String countryId,
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
