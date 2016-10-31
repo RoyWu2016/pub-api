@@ -368,7 +368,7 @@ public class ParameterImpl implements Parameter {
 	
 	@Override
 //	@TokenSecured
-	@RequestMapping(value = "/parameter/all-countries", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/countries", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getAllCountries(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		logger.info("invoking: /parameter/all-countries?refresh=" + refresh);
