@@ -337,7 +337,7 @@ public class ParameterImpl implements Parameter {
 		List<DropdownListOptionBean> result = null;
 		if (!refresh) {
 			logger.info("try to getContinents from redis ...");
-			String jsonString = RedisUtil.hget("geographyCache", "continents");
+			String jsonString = RedisUtil.get("continentCache");
 			result = JSON.parseArray(jsonString, DropdownListOptionBean.class);
 		}
 		if (null == result) {
@@ -352,7 +352,7 @@ public class ParameterImpl implements Parameter {
 					temp.add(bean);
 				}
 				logger.info("saving getContinents into redis");
-				RedisUtil.hset("geographyCache", "continents", JSON.toJSONString(temp), RedisUtil.HOUR * 24);
+				RedisUtil.set("continentCache", JSON.toJSONString(temp), RedisUtil.HOUR * 24);
 				callResult.setContent(temp);
 				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			} else {
@@ -361,6 +361,45 @@ public class ParameterImpl implements Parameter {
 			}
 		} else {
 			logger.info("getContinents from redis successfully");
+			callResult.setContent(result);
+			return new ResponseEntity<>(callResult, HttpStatus.OK);
+		}
+	}
+	
+	@Override
+//	@TokenSecured
+	@RequestMapping(value = "/parameter/all-countries", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> getAllCountries(
+			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
+		logger.info("invoking: /parameter/all-countries?refresh=" + refresh);
+		ApiCallResult callResult = new ApiCallResult();
+		List<DropdownListOptionBean> result = null;
+		if (!refresh) {
+			logger.info("try to getAllCountries from redis ...");
+			String jsonString = RedisUtil.get("allCountriesCache");
+			result = JSON.parseArray(jsonString, DropdownListOptionBean.class);
+		}
+		if (null == result) {
+			logger.info("Can not find from redis try to get from commonParamService...");
+			List<GeoPlanetBean> conts = commonParamService.getAllCountries();
+			List<DropdownListOptionBean> temp = new ArrayList<DropdownListOptionBean>();
+			if (conts != null) {
+				for (GeoPlanetBean each : conts) {
+					DropdownListOptionBean bean = new DropdownListOptionBean();
+					bean.setLabel(each.getName());
+					bean.setValue(each.getId());
+					temp.add(bean);
+				}
+				logger.info("saving getAllCountries into redis");
+				RedisUtil.set("allCountriesCache", JSON.toJSONString(temp), RedisUtil.HOUR * 24);
+				callResult.setContent(temp);
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
+			} else {
+				callResult.setMessage("Get getAllCountries list error!");
+				return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			logger.info("getAllCountries from redis successfully");
 			callResult.setContent(result);
 			return new ResponseEntity<>(callResult, HttpStatus.OK);
 		}
@@ -378,7 +417,7 @@ public class ParameterImpl implements Parameter {
 		List<DropdownListOptionBean> result = null;
 		if (!refresh) {
 			logger.info("try to getCountries from redis ...");
-			String jsonString = RedisUtil.hget("geographyCache", "countries");
+			String jsonString = RedisUtil.hget("countriesByContinentIdCache", continentId);
 			result = JSON.parseArray(jsonString, DropdownListOptionBean.class);
 		}
 		if (null == result) {
@@ -393,7 +432,7 @@ public class ParameterImpl implements Parameter {
 					temp.add(bean);
 				}
 				logger.info("saving getContinents into redis");
-				RedisUtil.hset("geographyCache", "countries", JSON.toJSONString(temp), RedisUtil.HOUR * 24);
+				RedisUtil.hset("countriesByContinentIdCache", continentId, JSON.toJSONString(temp), RedisUtil.HOUR * 24);
 				callResult.setContent(temp);
 				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			} else {
@@ -418,7 +457,7 @@ public class ParameterImpl implements Parameter {
 		List<DropdownListOptionBean> result = null;
 		if (!refresh) {
 			logger.info("try to getProvinces from redis ...");
-			String jsonString = RedisUtil.hget("geographyCache", "provinces");
+			String jsonString = RedisUtil.hget("provincesByCountryIdCache", countryId);
 			result = JSON.parseArray(jsonString, DropdownListOptionBean.class);
 		}
 		if (null == result) {
@@ -433,7 +472,7 @@ public class ParameterImpl implements Parameter {
 					temp.add(bean);
 				}
 				logger.info("saving getProvinces into redis");
-				RedisUtil.hset("geographyCache", "provinces", JSON.toJSONString(temp), RedisUtil.HOUR * 24);
+				RedisUtil.hset("provincesByCountryIdCache", countryId, JSON.toJSONString(temp), RedisUtil.HOUR * 24);
 				callResult.setContent(temp);
 				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			} else {
@@ -458,7 +497,7 @@ public class ParameterImpl implements Parameter {
 		List<DropdownListOptionBean> result = null;
 		if (!refresh) {
 			logger.info("try to getCitiesByProvincName from redis ...");
-			String jsonString = RedisUtil.hget("geographyCache", "cities");
+			String jsonString = RedisUtil.hget("citiesByProvinceIdCache", provinceId);
 			result = JSON.parseArray(jsonString, DropdownListOptionBean.class);
 		}
 		if (null == result) {
@@ -473,7 +512,7 @@ public class ParameterImpl implements Parameter {
 					temp.add(bean);
 				}
 				logger.info("saving getCitiesByProvincName into redis");
-				RedisUtil.hset("geographyCache", "cities", JSON.toJSONString(temp), RedisUtil.HOUR * 24);
+				RedisUtil.hset("citiesByProvinceIdCache", provinceId, JSON.toJSONString(temp), RedisUtil.HOUR * 24);
 				callResult.setContent(temp);
 				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			} else {
@@ -498,7 +537,7 @@ public class ParameterImpl implements Parameter {
 		List<DropdownListOptionBean> result = null;
 		if (!refresh) {
 			logger.info("try to getCitiesByCountryId from redis ...");
-			String jsonString = RedisUtil.hget("geographyCache", "cities");
+			String jsonString = RedisUtil.hget("citiesByCountryIdCache", countryId);
 			result = JSON.parseArray(jsonString, DropdownListOptionBean.class);
 		}
 		if (null == result) {
@@ -513,7 +552,7 @@ public class ParameterImpl implements Parameter {
 					temp.add(bean);
 				}
 				logger.info("saving getCitiesByCountryId into redis");
-				RedisUtil.hset("geographyCache", "cities", JSON.toJSONString(temp), RedisUtil.HOUR * 24);
+				RedisUtil.hset("citiesByCountryIdCache",countryId, JSON.toJSONString(temp), RedisUtil.HOUR * 24);
 				callResult.setContent(temp);
 				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			} else {
