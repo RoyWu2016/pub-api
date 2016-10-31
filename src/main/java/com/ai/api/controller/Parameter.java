@@ -49,5 +49,7 @@ public interface Parameter {
 
 	ResponseEntity<ApiCallResult> getCitiesByProvinceId(String provinceId, boolean refresh);
 
+	ResponseEntity<ApiCallResult> getAllCountries(boolean refresh);
+
 
 }
