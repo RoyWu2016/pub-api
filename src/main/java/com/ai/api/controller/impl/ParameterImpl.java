@@ -117,7 +117,7 @@ public class ParameterImpl implements Parameter {
 			CountryBean bean = new CountryBean();
 			bean.setCode(each.getCallingCode());
 			bean.setLabel(each.getCountry());
-			bean.setValue(each.getAbbreviation());
+			bean.setValue(each.getCountry());
 
 			countryBeanList.add(bean);
 		}
