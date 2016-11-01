@@ -665,6 +665,7 @@ public class UserServiceImpl implements UserService {
 
 		booking.setAllowChangeAql(newBookingPref.getAqlAndSamplingSize().isCanModify()? "1" : "0");
 		booking.setCustomizedSampleLevel(newBookingPref.getAqlAndSamplingSize().getCustomDefaultSampleLevel());
+		booking.setMeasurementSampleLevel(newBookingPref.getAqlAndSamplingSize().getMeasurementSampleLevel());
 		booking.setCustAqlLevel(newBookingPref.getAqlAndSamplingSize().isUseCustomAQL()? "Yes" : "No");
 		if (!newBookingPref.getAqlAndSamplingSize().isUseCustomAQL()) {
 			booking.setCriticalDefects("");
