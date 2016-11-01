@@ -106,7 +106,7 @@ public class ParameterImpl implements Parameter {
 	@RequestMapping(value = " /parameter/countries-with-calling-country-code", method = RequestMethod.GET)
 	public ResponseEntity<List<CountryBean>> getCountryList(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
-
+		logger.info("Get countries-with-calling-country-code ...");
 		List<GeoCountryCallingCodeBean> result = parameterService.getCountryList(refresh);
 		if (result == null) {
 			logger.error("country list not found");
@@ -116,6 +116,7 @@ public class ParameterImpl implements Parameter {
 		for (GeoCountryCallingCodeBean each : result) {
 			CountryBean bean = new CountryBean();
 			bean.setCode(each.getCallingCode());
+			bean.setIsoCode(each.getAbbreviation());
 			bean.setLabel(each.getCountry());
 			bean.setValue(each.getAbbreviation());
 
