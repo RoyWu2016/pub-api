@@ -197,6 +197,13 @@ public class SupplierImpl implements Supplier {
                     }catch (Exception e){
                         logger.error("error occur while adding [userCompanyNameChinaDatetime productCategoryList productFamilyList] to result",e);
                     }
+                    try{
+                        String str = orderBean.getOrder().getOrderSupplier().getSupplierProductLines();
+                        String[] strArray = str.split(";");
+                        object.getJSONObject("order").getJSONObject("orderSupplier").put("supplierProductLines",strArray);
+					}catch (Exception e){
+                        logger.error("change SupplierProductLines from String to Array failed! ",e);
+					}
 					callResult.setContent(object);
                     return new ResponseEntity<>(callResult, HttpStatus.OK);
                 }
