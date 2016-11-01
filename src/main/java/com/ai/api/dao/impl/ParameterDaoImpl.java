@@ -141,7 +141,9 @@ public class ParameterDaoImpl implements ParameterDao {
 			try {
 				ServiceCallResult result = HttpUtil.issueGetRequest(request7);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-					countryList = JSON.parseArray(result.getResponseString(), GeoCountryCallingCodeBean.class);
+					JSONObject object = JSONObject.parseObject(result.getResponseString());
+					Object arrayStr = object.get("content");
+					countryList = JSON.parseArray(arrayStr + "", GeoCountryCallingCodeBean.class);
 					
 					LOGGER.info("saving getCountryList");
 					RedisUtil.set("countryListCache", JSON.toJSONString(countryList),RedisUtil.HOUR * 24);
