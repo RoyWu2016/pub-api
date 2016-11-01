@@ -273,10 +273,14 @@ public class DraftDaoImpl implements DraftDao {
 		try {
 			logger.info("Invoking: " + url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,new HashMap<>());
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+			
+			if (result.getStatusCode() == HttpStatus.OK.value() 
+					&& result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return JsonUtil.mapToObject(result.getResponseString(), OrderPriceMandayViewBean.class);
 			} else {
-				logger.error("calculate Pricing error from psi service : " + result.getStatusCode() + ", "+ result.getResponseString());
+				logger.error("calculate Pricing error from psi service : " 
+						+ result.getStatusCode() + ", "
+						+ result.getResponseString());
 			}
 
 		} catch (IOException e) {

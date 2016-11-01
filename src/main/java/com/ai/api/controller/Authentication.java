@@ -45,4 +45,5 @@ public interface Authentication {
 
 	String verifyPublicAPIToken(HttpServletRequest request, HttpServletResponse response)
 			throws JsonProcessingException;
+
 }

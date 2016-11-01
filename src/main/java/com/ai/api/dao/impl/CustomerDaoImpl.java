@@ -18,6 +18,26 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.api.bean.EmployeeBean;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.dao.CustomerDao;
+import com.ai.api.util.RedisUtil;
+import com.ai.commons.HttpUtil;
+import com.ai.commons.JsonUtil;
+import com.ai.commons.StringUtils;
+import com.ai.commons.beans.GetRequest;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.customer.DashboardBean;
+import com.ai.commons.beans.customer.GeneralUserViewBean;
+import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import com.ai.commons.beans.payment.api.PaymentActionLogBean;
+import com.ai.commons.beans.user.GeneralUserBean;
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -36,29 +56,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.ai.api.bean.EmployeeBean;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.dao.CustomerDao;
-import com.ai.api.util.RedisUtil;
-import com.ai.commons.HttpUtil;
-import com.ai.commons.JsonUtil;
-import com.ai.commons.StringUtils;
-import com.ai.commons.beans.GetRequest;
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.PageParamBean;
-import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.customer.DashboardBean;
-import com.ai.commons.beans.customer.GeneralUserViewBean;
-import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
-import com.ai.commons.beans.payment.PaymentSearchResultBean;
-import com.ai.commons.beans.payment.api.PaymentActionLogBean;
-import com.ai.commons.beans.psi.InspectionProductBookingBean;
-import com.ai.commons.beans.psi.report.ClientReportSearchBean;
-import com.ai.commons.beans.user.GeneralUserBean;
-import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 /***************************************************************************
  * <PRE>

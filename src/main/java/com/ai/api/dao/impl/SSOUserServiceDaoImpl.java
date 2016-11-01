@@ -48,7 +48,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SSOUserServiceDaoImpl.class);
 
-    @Autowired
+	@Autowired
     private TokenJWTDaoImpl tokenJWTDao;
 
 	@Override
@@ -62,6 +62,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
                 return result;
             }
 			if (!HttpUtil.validateRefreshTokenKey(request)) {
+
 				result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
 				result.setReasonPhase("Refresh key invalid.");
 				result.setResponseString("Please check your token refresh key.");

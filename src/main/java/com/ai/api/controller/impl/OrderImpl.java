@@ -81,7 +81,7 @@ public class OrderImpl implements Order {
 	@Autowired
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
-	
+
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}", method = RequestMethod.DELETE)

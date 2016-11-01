@@ -35,6 +35,7 @@ import com.ai.commons.beans.psi.InspectionProductBookingBean;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
 /***************************************************************************
  *<PRE>
  *  Project Name    : api
@@ -160,5 +161,5 @@ public class AIUtil {
 	public static void setMessageConverters(RestTemplate restTemplate) {
 		restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
 	    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-	}	
+	}
 }

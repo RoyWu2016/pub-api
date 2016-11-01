@@ -131,7 +131,7 @@ public class AuthenticationImpl implements Authentication {
 		logger.info("remove token result: "+result.getResponseString());
 		return mapper.writeValueAsString(result);
 	}
-
+	
 	@Override
 	@RequestMapping(method = RequestMethod.GET, value = "/auth/verify-token")
 	@ResponseBody
