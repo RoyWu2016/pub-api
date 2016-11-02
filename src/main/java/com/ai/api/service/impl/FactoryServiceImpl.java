@@ -8,6 +8,7 @@ import com.ai.api.bean.legacy.FactorySearchBean;
 import com.ai.api.dao.FactoryDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.FactoryService;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.psi.OrderFactoryBean;
 
 import org.slf4j.Logger;
@@ -57,7 +58,7 @@ public class FactoryServiceImpl implements FactoryService {
 	}
 
 	@Override
-	public boolean supplierConfirmOrder(String orderId, String inspectionDateString, String containReadyTime,
+	public ApiCallResult supplierConfirmOrder(String orderId, String inspectionDateString, String containReadyTime,
 			OrderFactoryBean orderFactoryBean) {
 		// TODO Auto-generated method stub
 		return factoryDao.supplierConfirmOrder(orderId,inspectionDateString,containReadyTime,orderFactoryBean);

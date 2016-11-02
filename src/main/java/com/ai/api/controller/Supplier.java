@@ -30,12 +30,9 @@ public interface Supplier {
 
 	ResponseEntity<ApiCallResult> getSupplierConfirm(String orderId, String password);
 
-	ResponseEntity<Boolean> updateSupplierConfirm(String orderId,String password,
-                                                     String inspectionDateString,
-                                                     String containReadyTime,
-                                                     OrderFactoryBean orderFactoryBean);
-	ResponseEntity<ApiCallResult> updateSupplierDetailInfo(String orderId,
-														   String password ,
-														    SupplierDetailBean supplierDetailBean)
-			throws IOException, AIException ;
+	ResponseEntity<ApiCallResult> updateSupplierConfirm(String orderId, String password, String inspectionDateString,
+			String containReadyTime, OrderFactoryBean orderFactoryBean);
+
+	ResponseEntity<ApiCallResult> updateSupplierDetailInfo(String orderId, String password,
+			SupplierDetailBean supplierDetailBean) throws IOException, AIException;
 }
