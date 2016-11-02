@@ -20,17 +20,17 @@ public interface Supplier {
 	ResponseEntity<SupplierDetailBean> getUserSupplierDetailInfoById(String userId, String supplierId)
 			throws IOException, AIException;
 
-	ResponseEntity<Map<String, String>> updateUserSupplierDetailInfo(String userId, String supplierId,
+	ResponseEntity<ApiCallResult> updateUserSupplierDetailInfo(String userId, String supplierId,
 			SupplierDetailBean supplierDetailBean) throws IOException, AIException;
 
-	ResponseEntity<Boolean> deleteSuppliers(String userId, String supplierIds) throws IOException, AIException;
+	ResponseEntity<ApiCallResult> deleteSuppliers(String userId, String supplierIds) throws IOException, AIException;
 
 	ResponseEntity<SupplierDetailBean> createSupplier(String userId, SupplierDetailBean supplierDetailBean)
 			throws IOException, AIException;
 
 	ResponseEntity<ApiCallResult> getSupplierConfirm(String orderId, String password);
 
-	ResponseEntity<Boolean> updateSupplierConfirm(String orderId,String password,
+	ResponseEntity<ApiCallResult> updateSupplierConfirm(String orderId,String password,
                                                      String inspectionDateString,
                                                      String containReadyTime,
                                                      OrderFactoryBean orderFactoryBean);
