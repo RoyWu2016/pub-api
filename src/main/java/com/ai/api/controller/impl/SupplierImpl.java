@@ -122,29 +122,37 @@ public class SupplierImpl implements Supplier {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/supplier/{supplierId}", method = RequestMethod.PUT)
-	public ResponseEntity<Map<String, String>> updateUserSupplierDetailInfo(@PathVariable("userId") String userId,
+	public ResponseEntity<ApiCallResult> updateUserSupplierDetailInfo(@PathVariable("userId") String userId,
 			@PathVariable("supplierId") String supplierId, @RequestBody SupplierDetailBean supplierDetailBean)
 			throws IOException, AIException {
 		logger.info("updating supplier detail info for user: " + userId);
+        ApiCallResult callResult = new ApiCallResult();
 		// Map<String, String> result = new HashMap<String,String>();
 		if (factoryService.updateSupplierDetailInfo(supplierDetailBean)) {
 			// result.put("success","true");
-			return new ResponseEntity<>(HttpStatus.OK);
+            callResult.setContent(true);
+			return new ResponseEntity<>(callResult,HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            callResult.setContent(false);
+			return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/suppliers/{supplierIds}", method = RequestMethod.DELETE)
-	public ResponseEntity<Boolean> deleteSuppliers(@PathVariable("userId") String userId,
+	public ResponseEntity<ApiCallResult> deleteSuppliers(@PathVariable("userId") String userId,
 			@PathVariable("supplierIds") String supplierIds) throws IOException, AIException {
-		System.out.println("deleting supplier for user: " + userId);
+		logger.info("deleting supplier for user: " + userId);
+        ApiCallResult callResult = new ApiCallResult();
 		if (factoryService.deleteSuppliers(supplierIds)) {
-			return new ResponseEntity<>(HttpStatus.OK);
+            callResult.setMessage("success!");
+            callResult.setContent(true);
+			return new ResponseEntity<>(callResult,HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            callResult.setMessage("fail!");
+            callResult.setContent(false);
+			return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -229,33 +237,38 @@ public class SupplierImpl implements Supplier {
 															@RequestBody OrderFactoryBean orderFactoryBean) {
 		logger.info("updateSupplierConfirm ...");
 		logger.info("orderId:"+orderId);
-		ApiCallResult result = new ApiCallResult();
+		ApiCallResult callResult = new ApiCallResult();
 		InspectionBookingBean orderBean = orderService.getOrderDetail("nullUserId", orderId);
 		try {
 			if (orderBean != null) {
 				String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
 				String pw = DigestUtils.shaHex(MD5.toMD5(validateCode));
 				if (pw.equalsIgnoreCase(password)){
-					result = factoryService.supplierConfirmOrder(orderId,inspectionDateString,containReadyTime,orderFactoryBean);
-					if(null == result.getMessage()) {
-						return new ResponseEntity<>(result,HttpStatus.OK);
-					}else {
-						return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+                    callResult = factoryService.supplierConfirmOrder(orderId,inspectionDateString,containReadyTime,orderFactoryBean);
+					if(null == callResult.getMessage()) {
+						return new ResponseEntity<>(callResult,HttpStatus.OK);
+					} else {
+						logger.info("failed confirming order !");
+                        callResult.setMessage("confirm failed!");
+                        callResult.setContent(false);
+						return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
 					}
 				}
 				logger.info("incorrect pw !   ["+ password +"] || should be :"+pw);
-				result.setMessage("incorrect pw !   ["+ password +"] || should be :"+pw);
-				result.setContent(false);
-                return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+                callResult.setMessage("password not matched!");
+                callResult.setContent(false);
+                return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 			logger.info("can not get order by id:"+orderId);
-			result.setMessage("can not get order by id:"+orderId);
-			result.setContent(false);
+            callResult.setMessage("can not get order by id:"+orderId);
+            callResult.setContent(false);
 		} catch (Exception e) {
 			logger.error("error in updateSupplierConfirm",e);
+            callResult.setMessage("Error exception!");
+            callResult.setContent(false);
 			e.printStackTrace();
 		}
-		return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 
