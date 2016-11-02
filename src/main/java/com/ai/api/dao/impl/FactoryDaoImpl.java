@@ -26,10 +26,12 @@ import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.ai.commons.beans.psi.OrderFactoryBean;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
@@ -303,7 +305,7 @@ public class FactoryDaoImpl implements FactoryDao {
 	}
 
 	@Override
-	public boolean supplierConfirmOrder(String orderId, String inspectionDateString, String containReadyTime,
+	public ApiCallResult supplierConfirmOrder(String orderId, String inspectionDateString, String containReadyTime,
 			OrderFactoryBean orderFactoryBean) {
 		// TODO Auto-generated method stub
 		StringBuilder sbUrl = new StringBuilder(config.getPsiServiceUrl() + "/order/api/supplierConfirmOrder")
@@ -312,17 +314,26 @@ public class FactoryDaoImpl implements FactoryDao {
 		.append("&containReadyTime=" + containReadyTime);
 		
 		LOGGER.info("requesting url: " + sbUrl.toString());
+		ApiCallResult temp = new ApiCallResult();
 		try{
 			ServiceCallResult result = HttpUtil.issuePostRequest(sbUrl.toString(), null, orderFactoryBean);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return true;
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				return JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 			} else {
 				LOGGER.error("supplierConfirmOrder factory service error: " + result.getStatusCode() + ", "+ result.getResponseString());
+				temp.setMessage("supplierConfirmOrder factory service error: " + result.getStatusCode() + ", "+ result.getResponseString());
+				temp.setContent(false);
+				
+				return temp;
 			}
 		}catch (IOException e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
+			temp.setMessage(e.toString());
+			temp.setContent(false);
+			
+			return temp;
 		}
 		
-		return false;
 	}
 }
