@@ -326,10 +326,10 @@ public class DraftDaoImpl implements DraftDao {
 			   ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					@SuppressWarnings("unchecked")
-//					PageBean<DraftOrder> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
-					JSONObject object = JSONObject.parseObject(result.getResponseString());
-					Object arrayStr = object.get("content");
-					PageBean<DraftOrder> pageBeanList = JsonUtil.mapToObject(arrayStr + "", PageBean.class);
+					PageBean<DraftOrder> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
+//					JSONObject object = JSONObject.parseObject(result.getResponseString());
+//					Object arrayStr = object.get("content");
+//					PageBean<DraftOrder> pageBeanList = JsonUtil.mapToObject(arrayStr + "", PageBean.class);
 					
 					 return pageBeanList.getPageItems();
 

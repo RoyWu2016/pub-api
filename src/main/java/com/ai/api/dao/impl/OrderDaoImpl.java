@@ -221,10 +221,10 @@ public class OrderDaoImpl implements OrderDao {
 				ServiceCallResult result = HttpUtil.issueGetRequest(request);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					@SuppressWarnings("unchecked")
-//					PageBean<SimpleOrderSearchBean> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
-					JSONObject object = JSONObject.parseObject(result.getResponseString());
-					Object arrayStr = object.get("content");
-					PageBean<SimpleOrderSearchBean> pageBeanList = JsonUtil.mapToObject(arrayStr + "", PageBean.class);
+					PageBean<SimpleOrderSearchBean> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
+//					JSONObject object = JSONObject.parseObject(result.getResponseString());
+//					Object arrayStr = object.get("content");
+//					PageBean<SimpleOrderSearchBean> pageBeanList = JsonUtil.mapToObject(arrayStr + "", PageBean.class);
 					return pageBeanList.getPageItems();
 
 				} else {
