@@ -34,4 +34,8 @@ public interface Supplier {
                                                      String inspectionDateString,
                                                      String containReadyTime,
                                                      OrderFactoryBean orderFactoryBean);
+	ResponseEntity<ApiCallResult> updateSupplierDetailInfo(String orderId,
+														   String password ,
+														    SupplierDetailBean supplierDetailBean)
+			throws IOException, AIException ;
 }
