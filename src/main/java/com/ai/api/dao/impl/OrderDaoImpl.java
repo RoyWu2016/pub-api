@@ -24,6 +24,8 @@ import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.alibaba.fastjson.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.client.utils.DateUtils;
@@ -84,7 +86,9 @@ public class OrderDaoImpl implements OrderDao {
 
 			 ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,orderId);
 			 if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-					return true;
+					JSONObject object = JSONObject.parseObject(result.getResponseString());
+					Object arrayStr = object.get("content");
+					return JsonUtil.mapToObject(arrayStr + "", boolean.class);
 				} else {
 					logger.error("cancel Order error from psi service : " + result.getStatusCode() +
 							", " + result.getResponseString());
@@ -105,7 +109,10 @@ public class OrderDaoImpl implements OrderDao {
 			GetRequest request = GetRequest.newInstance().setUrl(url);
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")){
-				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", InspectionBookingBean.class);
+//				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
 			} else {
 				logger.error("getOrder error from psi service : " + result.getStatusCode() +
 						", " + result.getResponseString());
@@ -127,7 +134,10 @@ public class OrderDaoImpl implements OrderDao {
             logger.info("Post!!! url :"+url);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftId);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", InspectionBookingBean.class);
+//				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
 			} else {
 				logger.error("createOrderByDraft error from psi service : " + result.getStatusCode() +
 						", " + result.getResponseString());
@@ -150,7 +160,10 @@ public class OrderDaoImpl implements OrderDao {
             GetRequest request = GetRequest.newInstance().setUrl(url.toString());
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")){
-                return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", InspectionBookingBean.class);
+//                return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
             } else {
                 logger.error("editOrder error from psi service : " + result.getStatusCode() +
                         ", " + result.getResponseString());
@@ -172,7 +185,10 @@ public class OrderDaoImpl implements OrderDao {
             logger.info("Post!!! url :"+url);
             ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftId);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", InspectionBookingBean.class);
+//                return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
             } else {
                 logger.error("saveOrderByDraft error from psi service : " + result.getStatusCode() +
                         ", " + result.getResponseString());
@@ -205,8 +221,10 @@ public class OrderDaoImpl implements OrderDao {
 				ServiceCallResult result = HttpUtil.issueGetRequest(request);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					@SuppressWarnings("unchecked")
-					PageBean<SimpleOrderSearchBean> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
-					
+//					PageBean<SimpleOrderSearchBean> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
+					JSONObject object = JSONObject.parseObject(result.getResponseString());
+					Object arrayStr = object.get("content");
+					PageBean<SimpleOrderSearchBean> pageBeanList = JsonUtil.mapToObject(arrayStr + "", PageBean.class);
 					return pageBeanList.getPageItems();
 
 				} else {
