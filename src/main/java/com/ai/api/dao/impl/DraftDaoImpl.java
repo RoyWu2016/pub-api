@@ -24,6 +24,7 @@ import com.ai.commons.beans.order.draft.DraftStepBean;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
+import com.alibaba.fastjson.JSONObject;
 
 /***************************************************************************
  * <PRE>
@@ -59,7 +60,9 @@ public class DraftDaoImpl implements DraftDao {
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, params);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return true;
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", boolean.class);
 
 			} else {
 				logger.error("delete drafts from middleware error: " + result.getStatusCode() +
@@ -85,7 +88,9 @@ public class DraftDaoImpl implements DraftDao {
 			ServiceCallResult result = HttpUtil.issueDeleteRequest(url.toString(), null);
 
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK") && result.getResponseString().equals("true")) {
-				return true;
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", boolean.class);
 			} else {
 				logger.error("delete drafts from psi error: " + result.getStatusCode() +
 						", " + result.getResponseString());
@@ -109,7 +114,9 @@ public class DraftDaoImpl implements DraftDao {
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, new HashMap<>());
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr+"", InspectionBookingBean.class);
 			} else {
 				logger.error("create draft error from psi service : " + result.getStatusCode() +
 						", " + result.getResponseString());
@@ -132,7 +139,9 @@ public class DraftDaoImpl implements DraftDao {
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,orderId);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", InspectionBookingBean.class);
 			} else {
 				logger.error("createDraftFromPreviousOrder error from psi service : " + result.getStatusCode() +
 						", " + result.getResponseString());
@@ -151,7 +160,10 @@ public class DraftDaoImpl implements DraftDao {
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+//				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", InspectionBookingBean.class);
 			} else {
 				logger.error("create draft error from psi service : " + result.getStatusCode() +
 						", " + result.getResponseString());
@@ -173,7 +185,9 @@ public class DraftDaoImpl implements DraftDao {
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draft);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return true;
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", boolean.class);
 			} else {
 				logger.error("save draft error from psi service : " + result.getStatusCode() +
 						", " + result.getResponseString());
@@ -198,8 +212,9 @@ public class DraftDaoImpl implements DraftDao {
             ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, draftId);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 logger.info("addProduct result from psi :"+result.getResponseString());
-				InspectionProductBookingBean product =JsonUtil.mapToObject(result.getResponseString(), InspectionProductBookingBean.class);
-                return product;
+                JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", InspectionProductBookingBean.class);
             } else {
                 logger.error("add product error from psi service : " + result.getStatusCode() +
                         ", " + result.getResponseString());
@@ -222,7 +237,9 @@ public class DraftDaoImpl implements DraftDao {
 			logger.info("saveProduct POST! URL : "+url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftProduct);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return true;
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", boolean.class);
 			} else {
 				logger.error("save product error from psi service : " + result.getStatusCode() +
 						", " + result.getResponseString());
@@ -246,7 +263,9 @@ public class DraftDaoImpl implements DraftDao {
             logger.info("deleteProduct DELETE! URL : "+url.toString());
             ServiceCallResult result = HttpUtil.issueDeleteRequest(url.toString(), null);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                return true;
+            	JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", boolean.class);
             } else {
                 logger.error("delete product error from psi service : " + result.getStatusCode() +
                         ", " + result.getResponseString());
@@ -274,7 +293,9 @@ public class DraftDaoImpl implements DraftDao {
 			logger.info("Invoking: " + url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,new HashMap<>());
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return JsonUtil.mapToObject(result.getResponseString(), OrderPriceMandayViewBean.class);
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", OrderPriceMandayViewBean.class);
 			} else {
 				logger.error("calculate Pricing error from psi service : " + result.getStatusCode() + ", "+ result.getResponseString());
 			}
@@ -305,9 +326,12 @@ public class DraftDaoImpl implements DraftDao {
 			   ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					@SuppressWarnings("unchecked")
-					PageBean<DraftOrder> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
+//					PageBean<DraftOrder> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
+					JSONObject object = JSONObject.parseObject(result.getResponseString());
+					Object arrayStr = object.get("content");
+					PageBean<DraftOrder> pageBeanList = JsonUtil.mapToObject(arrayStr + "", PageBean.class);
 					
-					return pageBeanList.getPageItems();
+					 return pageBeanList.getPageItems();
 
 				} else {
 					logger.error("searchDraftOrder from PSI error: " + result.getStatusCode() + ", " + result.getResponseString());
@@ -333,7 +357,9 @@ public class DraftDaoImpl implements DraftDao {
 			logger.info("into saveDraftStep and request url: " + url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftSteps);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return true;
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", boolean.class);
 			}else {
 				logger.error("saveDraftStep from PSI error: " + result.getStatusCode() + ", " + result.getResponseString());
 			}
