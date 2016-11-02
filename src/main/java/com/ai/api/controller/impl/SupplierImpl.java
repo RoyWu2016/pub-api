@@ -125,7 +125,7 @@ public class SupplierImpl implements Supplier {
 	public ResponseEntity<Map<String, String>> updateUserSupplierDetailInfo(@PathVariable("userId") String userId,
 			@PathVariable("supplierId") String supplierId, @RequestBody SupplierDetailBean supplierDetailBean)
 			throws IOException, AIException {
-		System.out.println("updating supplier detail info for user: " + userId);
+		logger.info("updating supplier detail info for user: " + userId);
 		// Map<String, String> result = new HashMap<String,String>();
 		if (factoryService.updateSupplierDetailInfo(supplierDetailBean)) {
 			// result.put("success","true");
@@ -170,7 +170,7 @@ public class SupplierImpl implements Supplier {
 	}
 
 	@Override
-	@RequestMapping(value = "/order/{orderId}/supplier", method = RequestMethod.GET)
+	@RequestMapping(value = "/order/{orderId}/factory", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getSupplierConfirm(@PathVariable("orderId") String orderId,
 	                                                                    @RequestParam("password") String password) {
 		logger.info("getSupplierConfirm ...");
@@ -221,7 +221,7 @@ public class SupplierImpl implements Supplier {
 	}
 
 	@Override
-	@RequestMapping(value = "/order/{orderId}/supplier", method = RequestMethod.PUT)
+	@RequestMapping(value = "/order/{orderId}/factory", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> updateSupplierConfirm(@PathVariable("orderId") String orderId,
 															@RequestParam("password")String password,
 															@RequestParam("inspectionDate") String inspectionDateString,
@@ -253,6 +253,35 @@ public class SupplierImpl implements Supplier {
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+
+
+	@Override
+	@RequestMapping(value = "/order/{orderId}/supplier", method = RequestMethod.PUT)
+	public ResponseEntity<ApiCallResult> updateSupplierDetailInfo(@PathVariable("orderId") String orderId,
+																			@RequestParam("password")String password ,
+																			@RequestBody SupplierDetailBean supplierDetailBean)
+			throws IOException, AIException {
+		logger.info("updateUserSupplierDetailInfo orderId: " + orderId);
+        ApiCallResult callResult = new ApiCallResult();
+		InspectionBookingBean orderBean = orderService.getOrderDetail("nullUserId", orderId);
+		if (orderBean != null) {
+			String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
+			String pw = DigestUtils.shaHex(MD5.toMD5(validateCode));
+			if (pw.equalsIgnoreCase(password)){
+				boolean b = factoryService.updateSupplierDetailInfo(supplierDetailBean);
+                if (b){
+                    callResult.setContent(true);
+                    return new ResponseEntity<>(callResult,HttpStatus.OK);
+                }
+                logger.info("updateUserSupplierDetailInfo failed.");
+            }
+            logger.info("updateUserSupplierDetailInfo  password not matched!");
+		}
+		logger.info("updateUserSupplierDetailInfo can not find by id:"+orderId);
+        callResult.setContent(false);
+        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }
