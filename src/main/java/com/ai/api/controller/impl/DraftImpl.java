@@ -57,6 +57,7 @@ public class DraftImpl implements Draft {
 	@RequestMapping(value = "/user/{userId}/drafts/{draftIds}", method = RequestMethod.DELETE)
 	public ResponseEntity<Boolean> deleteDrafts(@PathVariable("userId") String userId, @PathVariable("draftIds") String draftIds) {
 		try {
+			logger.info("deleteDrafts. . .");
 			boolean result = draftService.deleteDraftFromPsi(userId, draftIds);
 			if(result){
 				return new ResponseEntity<>(HttpStatus.OK);

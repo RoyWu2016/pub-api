@@ -87,7 +87,7 @@ public class DraftDaoImpl implements DraftDao {
 		try {
 			ServiceCallResult result = HttpUtil.issueDeleteRequest(url.toString(), null);
 
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK") && result.getResponseString().equals("true")) {
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				JSONObject object = JSONObject.parseObject(result.getResponseString());
 				Object arrayStr = object.get("content");
 				return JsonUtil.mapToObject(arrayStr + "", boolean.class);

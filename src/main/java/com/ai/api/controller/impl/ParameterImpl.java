@@ -102,7 +102,6 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	@TokenSecured
 	@RequestMapping(value = "/parameter/countries-with-calling-country-code", method = RequestMethod.GET)
 	public ResponseEntity<List<CountryBean>> getCountryList(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
