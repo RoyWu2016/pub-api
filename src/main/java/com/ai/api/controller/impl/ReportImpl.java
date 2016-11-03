@@ -274,6 +274,7 @@ public class ReportImpl implements Report {
 	public ResponseEntity<String> forwardReports(@PathVariable("userId") String userId,
 			@PathVariable("reportIds") String reportIds, @RequestBody ReportsForwardingBean reportsForwardingBean) {
 		// TODO Auto-generated method stub
+		reportIds = reportIds.replace(",", ";");
 		if (StringUtils.isBlank(reportsForwardingBean.getTo())) {
 			return new ResponseEntity<>("the field 'to' can not be null!", HttpStatus.BAD_REQUEST);
 		}
