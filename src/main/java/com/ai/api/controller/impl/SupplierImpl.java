@@ -249,8 +249,8 @@ public class SupplierImpl implements Supplier {
 						return new ResponseEntity<>(callResult,HttpStatus.OK);
 					} else {
 						logger.info("failed confirming order !");
-                        callResult.setMessage("confirm failed!");
-                        callResult.setContent(false);
+//                        callResult.setMessage("confirm failed!");
+//                        callResult.setContent(false);
 						return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
 					}
 				}
