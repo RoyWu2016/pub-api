@@ -6,8 +6,25 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
+import com.ai.api.bean.SupplierDetailBean;
+import com.ai.api.bean.UserBean;
+import com.ai.api.bean.legacy.FactorySearchBean;
+import com.ai.api.controller.Supplier;
+import com.ai.api.exception.AIException;
+import com.ai.api.service.FactoryService;
+import com.ai.api.service.OrderService;
+import com.ai.api.service.ParameterService;
+import com.ai.api.service.UserService;
+import com.ai.commons.DateUtils;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.OrderFactoryBean;
+import com.ai.commons.beans.supplier.SupplierSearchResultBean;
+import com.ai.userservice.common.util.MD5;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,24 +37,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.ai.api.bean.SupplierDetailBean;
-import com.ai.api.bean.UserBean;
-import com.ai.api.bean.legacy.FactorySearchBean;
-import com.ai.api.controller.Supplier;
-import com.ai.api.exception.AIException;
-import com.ai.api.service.FactoryService;
-import com.ai.api.service.OrderService;
-import com.ai.api.service.ParameterService;
-import com.ai.api.service.UserService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.OrderFactoryBean;
-import com.ai.commons.beans.supplier.SupplierSearchResultBean;
-import com.ai.userservice.common.util.MD5;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 
 /**
  * Created by Administrator on 2016/6/29 0029.
@@ -244,6 +243,8 @@ public class SupplierImpl implements Supplier {
 				String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
 				String pw = DigestUtils.shaHex(MD5.toMD5(validateCode));
 				if (pw.equalsIgnoreCase(password)){
+					inspectionDateString = DateUtils.toStringWithAINewInteral(inspectionDateString);
+					containReadyTime = DateUtils.toStringWithAINewInteral(containReadyTime);
                     callResult = factoryService.supplierConfirmOrder(orderId,inspectionDateString,containReadyTime,orderFactoryBean);
 					if(null == callResult.getMessage()) {
 						return new ResponseEntity<>(callResult,HttpStatus.OK);
@@ -263,7 +264,7 @@ public class SupplierImpl implements Supplier {
             callResult.setMessage("can not get order by id:"+orderId);
             callResult.setContent(false);
 		} catch (Exception e) {
-			logger.error("error in updateSupplierConfirm",e);
+			logger.error("error in updateSupplierConfirm", e);
             callResult.setMessage("Error exception!");
             callResult.setContent(false);
 			e.printStackTrace();
