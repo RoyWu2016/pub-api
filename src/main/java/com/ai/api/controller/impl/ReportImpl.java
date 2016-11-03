@@ -28,6 +28,7 @@ import com.ai.api.controller.Report;
 import com.ai.api.service.ReportService;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
@@ -38,6 +39,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 /**
  * Created by yan on 2016/7/25.
  */
+@SuppressWarnings({ "rawtypes", "unchecked", "restriction" })
 @RestController
 public class ReportImpl implements Report {
 	protected Logger logger = LoggerFactory.getLogger(ReportImpl.class);
@@ -146,6 +148,34 @@ public class ReportImpl implements Report {
 
 	@Override
 	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/report/{productId}/filename/{fileName}/pdf-base64", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> downloadPDFBase64(@PathVariable("userId") String userId,
+			@PathVariable("productId") String productId, @PathVariable("fileName") String fileName,
+			HttpServletResponse httpResponse) {
+		logger.info("invoke: " + "/user/" + userId + "/report/" + productId +"/filename/" + fileName + "/pdf-base64");
+		InputStream input = reportService.downloadPDFBase64(productId, fileName, httpResponse);
+		ApiCallResult result = new ApiCallResult();
+		if(null == input) {
+			result.setMessage("ERROR!!! downloadPDFBase64");
+			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+		}else {
+			try {
+				byte[] data = IOUtils.toByteArray(input);
+				String fileStr = Base64.encode(data);
+				
+				result.setContent(fileStr);
+				return new ResponseEntity<>(result,HttpStatus.OK);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				result.setMessage(e.toString());
+				return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+	}
+
+	@Override
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/export-reports", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, String>> exportReports(@PathVariable("userId") String userId,
 			@RequestParam(value = "start", required = false, defaultValue = "") String start,
@@ -162,14 +192,14 @@ public class ReportImpl implements Report {
 		if (!("".equals(start) && "".equals(end))) {
 			inspectionPeriod = start + " - " + end;
 			criterias.put("INSPECTION_DATE", new String[] { inspectionPeriod });
-		}else {
-			//get last 3 month
+		} else {
+			// get last 3 month
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 			Calendar rightNow = Calendar.getInstance();
 			String endStr = sf.format(rightNow.getTime());
 			rightNow.add(Calendar.MONTH, -3);
 			String startStr = sf.format(rightNow.getTime());
-			
+
 			inspectionPeriod = startStr + " - " + endStr;
 		}
 
@@ -177,7 +207,7 @@ public class ReportImpl implements Report {
 		criteriaBean.setCriterias(criterias);
 		criteriaBean.setOrderItems(orderItems);
 		criteriaBean.setIsShowAll(true);
-		InputStream inputStream = reportService.exportReports(userId, criteriaBean,inspectionPeriod);
+		InputStream inputStream = reportService.exportReports(userId, criteriaBean, inspectionPeriod);
 		Map<String, String> result = new HashMap<String, String>();
 		String fileStr = null;
 		if (inputStream != null) {
@@ -255,5 +285,5 @@ public class ReportImpl implements Report {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 }

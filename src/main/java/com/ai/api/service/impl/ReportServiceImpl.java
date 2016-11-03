@@ -151,6 +151,18 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return b;
 	}
+	
+	@Override
+	public InputStream downloadPDFBase64(String reportId, String fileName, HttpServletResponse httpResponse) {
+		try {
+			InputStream inputStream = reportDao.downloadPDF(reportId, fileName);
+			
+			return inputStream;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	@Override
 	public InputStream exportReports(String userId,PageParamBean criteria,String inspectionPeriod) {
