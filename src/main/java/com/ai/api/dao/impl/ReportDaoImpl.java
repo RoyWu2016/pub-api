@@ -1,8 +1,5 @@
 package com.ai.api.dao.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -23,20 +20,16 @@ import org.springframework.stereotype.Component;
 
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.ReportDao;
-import com.ai.api.util.FTPUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.payment.api.PaypalInfoBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * Created by yan on 2016/7/25.
@@ -232,13 +225,16 @@ public class ReportDaoImpl implements ReportDao {
 
 	@Override
 	public boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean, String companyId, String parentId,
-			String userId) {
+	                                   String userId, String reportIds) {
 		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/report/api/forward-reports");
-		url.append("?productIds=" + reportsForwardingBean.getIds()).append("&to=" + reportsForwardingBean.getTo())
-				.append("&cc=" + reportsForwardingBean.getCc()).append("&bcc=" + reportsForwardingBean.getBcc())
-				.append("&message=" + reportsForwardingBean.getMessage()).append("&userId=" + userId)
-				.append("&companyId=" + companyId).append("&parentId=" + parentId);
+		url.append("?productIds=").append(reportIds).append("&to=")
+				.append(reportsForwardingBean.getTo()).append("&cc=")
+				.append(reportsForwardingBean.getCc()).append("&bcc=")
+				.append(reportsForwardingBean.getBcc()).append("&message=")
+				.append(reportsForwardingBean.getMessage()).append("&userId=")
+				.append(userId).append("&companyId=").append(companyId)
+				.append("&parentId=").append(parentId);
 		try {
 			logger.info("requesting url: " + url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, new HashMap<>());
