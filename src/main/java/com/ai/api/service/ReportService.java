@@ -33,7 +33,7 @@ public interface ReportService {
 
 	boolean undoDecisionForReference(String userId, String referenceId);
 
-	boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean, String userId);
+	boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean, String userId, String reportIds);
 
 	InputStream downloadPDFBase64(String reportId, String fileName, HttpServletResponse httpResponse);
 }
