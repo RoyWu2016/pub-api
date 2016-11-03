@@ -15,14 +15,25 @@ import com.ai.commons.beans.report.ReportsForwardingBean;
  * Created by yan on 2016/7/25.
  */
 public interface ReportService {
-    PageBean<ClientReportSearchBean> getPSIReports(String useId, PageParamBean paramBean);
-    ApprovalCertificateBean getApprovalCertificate(String userId, String productId, String certType);
-    boolean confirmApprovalCertificate(String userId,ApprovalCertificateBean cert);
-    List<String> getUserReportPdfInfo(String userId, String reportId);
-    boolean downloadPDF(String reportId,String fileName,HttpServletResponse httpResponse);
-    InputStream exportReports(String userId, PageParamBean criteriaBean, String inspectionPeriod);
-	ApprovalCertificateBean getReferenceApproveCertificate(String userId, String referenceId,String certType);
+	PageBean<ClientReportSearchBean> getPSIReports(String useId, PageParamBean paramBean);
+
+	ApprovalCertificateBean getApprovalCertificate(String userId, String productId, String certType);
+
+	boolean confirmApprovalCertificate(String userId, ApprovalCertificateBean cert);
+
+	List<String> getUserReportPdfInfo(String userId, String reportId);
+
+	boolean downloadPDF(String reportId, String fileName, HttpServletResponse httpResponse);
+
+	InputStream exportReports(String userId, PageParamBean criteriaBean, String inspectionPeriod);
+
+	ApprovalCertificateBean getReferenceApproveCertificate(String userId, String referenceId, String certType);
+
 	boolean undoDecisionForReport(String userId, String productId);
+
 	boolean undoDecisionForReference(String userId, String referenceId);
+
 	boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean, String userId);
+
+	InputStream downloadPDFBase64(String reportId, String fileName, HttpServletResponse httpResponse);
 }
