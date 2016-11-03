@@ -131,25 +131,25 @@ public class ReportDaoImpl implements ReportDao {
 	}
 
 	@Override
-	public PageBean<ClientReportSearchBean> getPSIReports(String userId,String companyId,String parentId,PageParamBean criteria) {
+	public PageBean<ClientReportSearchBean> getPSIReports(String userId, String companyId, String parentId,
+			PageParamBean criteria) {
 		// TODO Auto-generated method stub
 		try {
 			logger.info("getPSIReports json before encoding: " + JsonUtil.mapToJson(criteria));
 			String param = URLEncoder.encode(JsonUtil.mapToJson(criteria), "utf-8");
 			logger.info("getPSIReports json after encoding: " + param);
 			StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/report/api/report-list");
-			url.append("?userId=" + userId)
-			.append("&companyId=" + companyId)
-			.append("&parentId=" + parentId)
-			.append("&param=" + param);
+			url.append("?userId=" + userId).append("&companyId=" + companyId).append("&parentId=" + parentId)
+					.append("&param=" + param);
 			logger.info("requesting !!! Url:" + url.toString());
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return JSON.parseObject(result.getResponseString(), PageBean.class);
 			} else {
-				logger.error("searchClientReports from psi-service error: " + result.getStatusCode() + ", "+ result.getResponseString());
+				logger.error("searchClientReports from psi-service error: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
@@ -231,24 +231,22 @@ public class ReportDaoImpl implements ReportDao {
 	}
 
 	@Override
-	public boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean, String companyId, String parentId,String userId) {
+	public boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean, String companyId, String parentId,
+			String userId) {
 		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/report/api/forward-reports");
-		url.append("?productIds=" + reportsForwardingBean.getIds())
-			.append("&to=" + reportsForwardingBean.getTo())
-			.append("&cc=" + reportsForwardingBean.getCc())
-			.append("&bcc=" + reportsForwardingBean.getBcc())
-			.append("&message=" + reportsForwardingBean.getMessage())
-			.append("&userId=" + userId)
-			.append("&companyId=" + companyId)
-			.append("&parentId=" + parentId);
+		url.append("?productIds=" + reportsForwardingBean.getIds()).append("&to=" + reportsForwardingBean.getTo())
+				.append("&cc=" + reportsForwardingBean.getCc()).append("&bcc=" + reportsForwardingBean.getBcc())
+				.append("&message=" + reportsForwardingBean.getMessage()).append("&userId=" + userId)
+				.append("&companyId=" + companyId).append("&parentId=" + parentId);
 		try {
 			logger.info("requesting url: " + url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, new HashMap<>());
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return true;
 			} else {
-				logger.error("forward reports from middleware error: " + result.getStatusCode() + ", "+ result.getResponseString());
+				logger.error("forward reports from middleware error: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
 				return false;
 			}
 		} catch (Exception e) {
