@@ -28,11 +28,11 @@ public interface Supplier {
 	ResponseEntity<SupplierDetailBean> createSupplier(String userId, SupplierDetailBean supplierDetailBean)
 			throws IOException, AIException;
 
-	ResponseEntity<ApiCallResult> getSupplierConfirm(String orderId, String password);
-
 	ResponseEntity<ApiCallResult> updateSupplierConfirm(String orderId, String password, String inspectionDateString,
 			String containReadyTime, OrderFactoryBean orderFactoryBean);
 
 	ResponseEntity<ApiCallResult> updateSupplierDetailInfo(String orderId, String password,
 			SupplierDetailBean supplierDetailBean) throws IOException, AIException;
+
+	ResponseEntity<ApiCallResult> getFactoryConfirm(String orderId, String password);
 }
