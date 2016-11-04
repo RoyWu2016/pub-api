@@ -17,6 +17,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -109,27 +111,35 @@ public class OrderImpl implements Order {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Object>> getOrderDetail(@PathVariable("userId") String userId,
-			@PathVariable("orderId") String orderId) {
-
-		Map<String, Object> map = new HashMap<String, Object>();
+	public ResponseEntity<ApiCallResult> getOrderDetail(@PathVariable("userId") String userId,
+														@PathVariable("orderId") String orderId) {
+		ApiCallResult callResult = new ApiCallResult();
 		try {
 			logger.info("getOrderDetail ...");
 			logger.info("userId :" + userId);
 			logger.info("orderId:" + orderId);
 			InspectionBookingBean orderBean = orderService.getOrderDetail(userId, orderId);
 			if (orderBean != null) {
-				map.put("success", true);
-				map.put("data", orderBean);
-				return new ResponseEntity<>(map, HttpStatus.OK);
+                JSONObject jsonObject = (JSONObject)JSON.toJSON(orderBean);
+			    try {
+                    callResult = orderService.getOrderPrice(userId, orderId);
+                    jsonObject.put("orderPrice",callResult.getContent());
+                }catch (Exception e){
+                    logger.error("error occurred! getOrderPrice failed",e);
+                    jsonObject.put("orderPrice",null);
+                }
+                callResult.setContent(jsonObject);
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			} else {
-				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			    callResult.setMessage("can't get order by orderId:"+orderId);
+				return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
 			logger.error("error in getOrderDetail", e);
 			e.printStackTrace();
+            callResult.setMessage("convert bean to json failed!"+e.toString());
 		}
-		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override
@@ -332,6 +342,6 @@ public class OrderImpl implements Order {
 		}else {
 			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+
 	}
 }

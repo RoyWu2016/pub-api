@@ -67,4 +67,6 @@ public interface OrderService {
 	ApiCallResult getOrderActionCancel(String orderId);
 
 	ApiCallResult getOrderActionEdit(String orderId);
+
+	ApiCallResult getOrderPrice(String userId, String orderId);
 }

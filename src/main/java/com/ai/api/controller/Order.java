@@ -48,7 +48,7 @@ public interface Order {
 	 */
 	ResponseEntity<Boolean> cancelOrder(String userId, String orderId, String reason, String reason_options);
 
-	ResponseEntity<Map<String, Object>> getOrderDetail(String userId, String orderId);
+	ResponseEntity<ApiCallResult> getOrderDetail(String userId, String orderId);
 
 	ResponseEntity<Map<String, Object>> createOrderByDraft(String userId, String draftId);
 
