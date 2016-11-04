@@ -50,6 +50,7 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
 import com.ai.commons.JsonUtil;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -74,6 +75,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * </PRE>
  ***************************************************************************/
 
+@SuppressWarnings("rawtypes")
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -226,7 +228,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public InputStream exportOrders(String userId, String serviceType, String startDate, String endDate,
-			String orderStatus,String inspectionPeriod) throws IOException, AIException {
+			String orderStatus, String inspectionPeriod) throws IOException, AIException {
 		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
@@ -239,7 +241,8 @@ public class OrderServiceImpl implements OrderService {
 			companyId = user.getCompany().getId();
 		}
 		String keyWord = "";
-		String pageSize = "10000";// hard code in order to return all of the orders in page 1;
+		String pageSize = "10000";// hard code in order to return all of the
+									// orders in page 1;
 		String pageNumber = "1";
 		List<SimpleOrderSearchBean> list = orderDao.searchOrders(userId, companyId, parentId, serviceType, startDate,
 				endDate, keyWord, orderStatus, pageSize, pageNumber);
@@ -249,7 +252,7 @@ public class OrderServiceImpl implements OrderService {
 		} else {
 			XSSFWorkbook wb = new XSSFWorkbook();
 			logger.info("Orders are found and begin to generate excle.");
-			return createExcleFile(wb,list,clientLogin,inspectionPeriod);
+			return createExcleFile(wb, list, clientLogin, inspectionPeriod);
 		}
 	}
 
@@ -280,7 +283,7 @@ public class OrderServiceImpl implements OrderService {
 		tableHeadeCS.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
 		tableHeadeCS.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
 		tableHeadeCS.setWrapText(true);
-		
+
 		CellStyle tableCS = wb.createCellStyle();
 		tableCS.setAlignment(CellStyle.ALIGN_CENTER);
 		tableCS.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
@@ -300,24 +303,24 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 		sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 8));
-		
+
 		String fileName = config.getExcleLoggoCommonSource() + File.separator + "logo.png";
-//		String fileName = "E:" +  File.separator + "logo.png";
+		// String fileName = "E:" + File.separator + "logo.png";
 		logger.info("Found the logo resource: " + fileName);
-		InputStream is = new FileInputStream(fileName);  
-    	byte[] bytes = IOUtils.toByteArray(is);  
-    	  
-    	int pictureIdx = wb.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);  
-    	  
-    	CreationHelper helper = wb.getCreationHelper();  
-    	Drawing drawing = sheet.createDrawingPatriarch();  
-    	ClientAnchor anchor = helper.createClientAnchor();  
-    	  
-    	anchor.setCol1(0);  
-    	anchor.setRow1(0);  
-    	
-    	Picture pict = drawing.createPicture(anchor, pictureIdx);  
-    	pict.resize();  
+		InputStream is = new FileInputStream(fileName);
+		byte[] bytes = IOUtils.toByteArray(is);
+
+		int pictureIdx = wb.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+
+		CreationHelper helper = wb.getCreationHelper();
+		Drawing drawing = sheet.createDrawingPatriarch();
+		ClientAnchor anchor = helper.createClientAnchor();
+
+		anchor.setCol1(0);
+		anchor.setRow1(0);
+
+		Picture pict = drawing.createPicture(anchor, pictureIdx);
+		pict.resize();
 
 		row = sheet.getRow(4);
 		Cell cell = row.createCell(0);
@@ -326,7 +329,7 @@ public class OrderServiceImpl implements OrderService {
 		cell.setCellStyle(tileCS);
 
 		row = sheet.getRow(6);
-		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MMMM-dd",Locale.ENGLISH);
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MMMM-dd", Locale.ENGLISH);
 		cell = row.createCell(0);
 		cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 		cell.setCellValue("Date: " + sf.format(new Date()));
@@ -338,52 +341,91 @@ public class OrderServiceImpl implements OrderService {
 		cell.setCellValue("Client login: " + clientLogin);
 		cell.setCellStyle(dateCS);
 
-		String[] title = new String[] { "Type", "Product Name", "P/O Number","Product Quantity","Product Reference", "Report expected on",
-				"Factory Name", "Status", "AI Rerence","Samples Collection(Lab Testing)","Samples Collection(Onward Shipment)","Status of samplereceived?"};
+		String[] title = new String[] { "Type", "Product Name", "P/O Number", "Product Quantity", "Product Reference",
+				"Report expected on", "Factory Name", "Status", "AI Rerence", "Samples Collection(Lab Testing)",
+				"Samples Collection(Onward Shipment)", "Status of samplereceived?" };
 		row = sheet.createRow(10);
 		for (int k = 0; k < title.length; k++) {
 			cell = row.createCell(k);
 			cell.setCellStyle(tableHeadeCS);
 			cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 			cell.setCellValue(title[k]);
-//			sheet.autoSizeColumn((short) k);
+			// sheet.autoSizeColumn((short) k);
 			sheet.setDefaultColumnWidth(15);
 		}
-		
+
 		int rowid = 11;
 		String resultStr = JsonUtil.mapToJson(list);
-		List<SimpleOrderSearchBean> tempList = JsonUtil.mapToObject(resultStr, new TypeReference<List<SimpleOrderSearchBean>>(){});
-		for(SimpleOrderSearchBean each : tempList) {
+		List<SimpleOrderSearchBean> tempList = JsonUtil.mapToObject(resultStr,
+				new TypeReference<List<SimpleOrderSearchBean>>() {
+				});
+		for (SimpleOrderSearchBean each : tempList) {
 			row = sheet.createRow(rowid);
-			for(int cellid=0;cellid<title.length;cellid++) {
+			for (int cellid = 0; cellid < title.length; cellid++) {
 				cell = row.createCell(cellid);
 				cell.setCellStyle(tableCS);
 				cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 				switch (cellid) {
-				case 0: cell.setCellValue(each.getServiceTypeText());break;
-				case 1: cell.setCellValue(each.getProductNames());break;
-				case 2: cell.setCellValue(each.getPoNumbers());break;
-				case 3: cell.setCellValue(each.getClientReference());break;
-				case 4: cell.setCellValue(each.getClientReference());break;
-				case 5: cell.setCellValue(each.getBookingDate());break;
-				case 6: cell.setCellValue(each.getSupplierName());break;
-				case 7: cell.setCellValue(each.getStatusText());break;
-				case 9: cell.setCellValue(each.getRefNumber());break;
-				case 10: cell.setCellValue(each.getIsSupplierConfirmed());break;
-				case 11: cell.setCellValue(each.getIsSupplierConfirmed());break;
-				case 12: cell.setCellValue(each.getIsSupplierConfirmed());break;
+				case 0:
+					cell.setCellValue(each.getServiceTypeText());
+					break;
+				case 1:
+					cell.setCellValue(each.getProductNames());
+					break;
+				case 2:
+					cell.setCellValue(each.getPoNumbers());
+					break;
+				case 3:
+					cell.setCellValue(each.getClientReference());
+					break;
+				case 4:
+					cell.setCellValue(each.getClientReference());
+					break;
+				case 5:
+					cell.setCellValue(each.getBookingDate());
+					break;
+				case 6:
+					cell.setCellValue(each.getSupplierName());
+					break;
+				case 7:
+					cell.setCellValue(each.getStatusText());
+					break;
+				case 9:
+					cell.setCellValue(each.getRefNumber());
+					break;
+				case 10:
+					cell.setCellValue(each.getIsSupplierConfirmed());
+					break;
+				case 11:
+					cell.setCellValue(each.getIsSupplierConfirmed());
+					break;
+				case 12:
+					cell.setCellValue(each.getIsSupplierConfirmed());
+					break;
 				}
 			}
 			rowid++;
 		}
-		
+
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		wb.write(out);
 		InputStream excelStream = new ByteArrayInputStream(out.toByteArray());
 		out.flush();
 		out.close();
-		
+
 		return excelStream;
+	}
+
+	@Override
+	public ApiCallResult getOrderActionEdit(String orderId) {
+		// TODO Auto-generated method stub
+		return orderDao.getOrderActionEdit(orderId);
+	}
+	
+	@Override
+	public ApiCallResult getOrderActionCancel(String orderId) {
+		// TODO Auto-generated method stub
+		return orderDao.getOrderActionCancel(orderId);
 	}
 
 	/*
