@@ -146,14 +146,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				tokenJWTDao.removePublicAPIToken((String)claims.getClaimValue("sessId"));
 
 				String userType = (String)claims.getClaimValue("userType");
-				if (userType.equals(Consts.Http.USER_TYPE_CLIENT)) {
+				if (userType != null && userType.equals(Consts.Http.USER_TYPE_CLIENT)) {
 					//if user is client
 					userService.removeUserProfileCache((String)claims.getClaimValue("userId"));
-				} else if (userType.equals(Consts.Http.USER_TYPE_EMPLOYEE)) {
+				} else if (userType != null && userType.equals(Consts.Http.USER_TYPE_EMPLOYEE)) {
 					//if user is employee
 					userService.removeEmployeeProfileCache((String) claims.getClaimValue("userId"));
 				} else {
-					logger.error("wrong user type get from token!! " + userType);
+					logger.error("wrong user type get from token or token is null: " + userType);
 					logger.error("user/employee profile not removed, user id: " + claims.getClaimValue("userId"));
 				}
 				result.setStatusCode(HttpServletResponse.SC_OK);

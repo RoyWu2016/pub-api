@@ -386,7 +386,7 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean, String userId) {
+	public boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean, String userId, String reportIds) {
 		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
@@ -403,6 +403,6 @@ public class ReportServiceImpl implements ReportService {
 			}
 			companyId = user.getCompany().getId();
 		}
-		return reportDao.clientForwardReport(reportsForwardingBean, companyId, parentId, userId);
+		return reportDao.clientForwardReport(reportsForwardingBean, companyId, parentId, userId, reportIds);
 	}
 }
