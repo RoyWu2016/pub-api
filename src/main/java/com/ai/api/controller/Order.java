@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 
 /***************************************************************************
@@ -37,6 +38,7 @@ import com.ai.commons.beans.order.SimpleOrderSearchBean;
  * </PRE>
  ***************************************************************************/
 
+@SuppressWarnings("rawtypes")
 public interface Order {
 
 	/*
@@ -64,5 +66,7 @@ public interface Order {
 
 	ResponseEntity<Map<String, String>> exportOrders(String userId, String serviceType, String startDate,
 			String endDate, String orderStatus);
+
+	ResponseEntity<Map<String, ApiCallResult>> getOrderAction(String userId, String orderId);
 
 }

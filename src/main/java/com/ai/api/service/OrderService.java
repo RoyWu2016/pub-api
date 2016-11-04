@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.exception.AIException;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 
@@ -35,6 +36,7 @@ import com.ai.commons.beans.psi.InspectionBookingBean;
  * </PRE>
  ***************************************************************************/
 
+@SuppressWarnings("rawtypes")
 public interface OrderService {
 
 	/*
@@ -61,4 +63,8 @@ public interface OrderService {
 
 	InputStream exportOrders(String userId, String serviceType, String startDate, String endDate, String keyword, String inspectionPeriod)
 			throws IOException, AIException;
+
+	ApiCallResult getOrderActionCancel(String orderId);
+
+	ApiCallResult getOrderActionEdit(String orderId);
 }
