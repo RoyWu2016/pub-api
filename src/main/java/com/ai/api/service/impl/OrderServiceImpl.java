@@ -421,12 +421,33 @@ public class OrderServiceImpl implements OrderService {
 		// TODO Auto-generated method stub
 		return orderDao.getOrderActionEdit(orderId);
 	}
-	
+
 	@Override
 	public ApiCallResult getOrderActionCancel(String orderId) {
 		// TODO Auto-generated method stub
 		return orderDao.getOrderActionCancel(orderId);
 	}
+
+	@Override
+	public ApiCallResult getOrderPrice(String userId,String orderId){
+
+        String companyId = "";
+        String parentId = "";
+        UserBean user = null;
+        try {
+            user = userService.getCustById(userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (null != user) {
+            parentId = user.getCompany().getParentCompanyId();
+            if (parentId == null) {
+                parentId = "";
+            }
+            companyId = user.getCompany().getId();
+        }
+	    return orderDao.getOrderPrice(userId,companyId,parentId,orderId);
+    }
 
 	/*
 	 * private List<OrderSearchBean> searchPSIOrders(String userId, String

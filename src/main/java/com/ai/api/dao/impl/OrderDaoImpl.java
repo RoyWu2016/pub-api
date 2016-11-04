@@ -299,19 +299,19 @@ public class OrderDaoImpl implements OrderDao {
 			}else {
 				logger.error("getOrderActionEdit from psi-service error: " + result.getStatusCode() + ", " + result.getResponseString() );
 				temp.setMessage("getOrderActionEdit from psi-service error: " + result.getStatusCode() + ", "+ result.getResponseString());
-				
+
 				return temp;
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			logger.error(ExceptionUtils.getStackTrace(e));
 			temp.setMessage(e.toString());
-			
+
 			return temp;
 		}
-		
+
 	}
-	
+
 	@Override
 	public ApiCallResult getOrderActionCancel(String orderId) {
 		// TODO Auto-generated method stub
@@ -327,17 +327,46 @@ public class OrderDaoImpl implements OrderDao {
 			}else {
 				logger.error("getOrderActionCancel from psi-service error: " + result.getStatusCode() + ", " + result.getResponseString() );
 				temp.setMessage("getOrderActionCancel from psi-service error: " + result.getStatusCode() + ", "+ result.getResponseString());
-				
+
 				return temp;
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			logger.error(ExceptionUtils.getStackTrace(e));
 			temp.setMessage(e.toString());
-			
+
 			return temp;
 		}
-		
+
+	}
+
+	@Override
+	public ApiCallResult getOrderPrice(String userId, String compId, String parentId, String orderId) {
+		try {
+
+			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+			url.append("/order/api/orderPricing?userId=").append(userId);
+            url.append("&companyId=").append(compId);
+            url.append("&parentId=").append(parentId);
+            url.append("&orderId=").append(orderId);
+
+			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                ApiCallResult apiCallResult = JsonUtil.mapToObject(result.getResponseString(),ApiCallResult.class);
+				return apiCallResult;
+
+			} else {
+				logger.error("searchOrders from PSI error: " + result.getStatusCode() + ", " + result.getResponseString());
+			}
+
+		}catch(IOException e){
+			logger.error(ExceptionUtils.getStackTrace(e));
+
+		}
+
+		return null;
+
 	}
 
 }

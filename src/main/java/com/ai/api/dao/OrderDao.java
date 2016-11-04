@@ -60,4 +60,6 @@ public interface OrderDao {
 	ApiCallResult getOrderActionEdit(String orderId);
 
 	ApiCallResult getOrderActionCancel(String orderId);
+
+    ApiCallResult getOrderPrice(String userId, String compId, String parentId, String orderId);
 }
