@@ -124,10 +124,22 @@ public class OrderImpl implements Order {
 			    try {
                     callResult = orderService.getOrderPrice(userId, orderId);
                     jsonObject.put("orderPrice",callResult.getContent());
+                    
                 }catch (Exception e){
                     logger.error("error occurred! getOrderPrice failed",e);
                     jsonObject.put("orderPrice",null);
                 }
+			    try{
+                    callResult = orderService.getOrderActionEdit(orderId);
+                    jsonObject.put("editable",callResult.getContent());
+                    
+                    callResult = orderService.getOrderActionCancel(orderId);
+                    jsonObject.put("cancelable",callResult.getContent());
+			    }catch (Exception e) {
+			    	 logger.error("error occurred! getOrderAction failed",e);
+			    	 jsonObject.put("editable",null);
+			    	 jsonObject.put("cancelable",null);
+			    }
                 callResult.setContent(jsonObject);
 				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			} else {
@@ -326,22 +338,22 @@ public class OrderImpl implements Order {
 		}
 	}
 
-	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/order/{orderId}/editable-cancelable", method = RequestMethod.GET)
-	public ResponseEntity<Map<String,ApiCallResult>> getOrderAction(@PathVariable("userId") String userId,
-			@PathVariable("orderId") String orderId) {
-		logger.info("invoke: " + "/user/" + userId + "/order/" + orderId + "/editable-cancelable");
-		Map<String,ApiCallResult> result = new HashMap<>();
-		ApiCallResult editReslut = orderService.getOrderActionEdit(orderId);
-		ApiCallResult cancelReslut = orderService.getOrderActionCancel(orderId);
-		result.put("editable", editReslut);
-		result.put("cancelable", cancelReslut);
-		if(null == editReslut.getMessage() && null == cancelReslut.getMessage()) {
-			return new ResponseEntity<>(result,HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-	}
+//	@Override
+//	@TokenSecured
+//	@RequestMapping(value = "/user/{userId}/order/{orderId}/editable-cancelable", method = RequestMethod.GET)
+//	public ResponseEntity<Map<String,ApiCallResult>> getOrderAction(@PathVariable("userId") String userId,
+//			@PathVariable("orderId") String orderId) {
+//		logger.info("invoke: " + "/user/" + userId + "/order/" + orderId + "/editable-cancelable");
+//		Map<String,ApiCallResult> result = new HashMap<>();
+//		ApiCallResult editReslut = orderService.getOrderActionEdit(orderId);
+//		ApiCallResult cancelReslut = orderService.getOrderActionCancel(orderId);
+//		result.put("editable", editReslut);
+//		result.put("cancelable", cancelReslut);
+//		if(null == editReslut.getMessage() && null == cancelReslut.getMessage()) {
+//			return new ResponseEntity<>(result,HttpStatus.OK);
+//		}else {
+//			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//
+//	}
 }
