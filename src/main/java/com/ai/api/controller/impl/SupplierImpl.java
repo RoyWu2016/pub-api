@@ -178,9 +178,9 @@ public class SupplierImpl implements Supplier {
 
 	@Override
 	@RequestMapping(value = "/order/{orderId}/factory", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getSupplierConfirm(@PathVariable("orderId") String orderId,
+	public ResponseEntity<ApiCallResult> getFactoryConfirm(@PathVariable("orderId") String orderId,
 	                                                                    @RequestParam("password") String password) {
-		logger.info("getSupplierConfirm ...");
+		logger.info("getFactoryConfirm ...");
 		logger.info("orderId:"+orderId);
 		ApiCallResult callResult = new ApiCallResult();
 		try {
@@ -211,6 +211,26 @@ public class SupplierImpl implements Supplier {
 					}catch (Exception e){
                         logger.error("change SupplierProductLines from String to Array failed! ",e);
 					}
+                    try{
+                        String str = orderBean.getOrder().getOrderFactory().getFactoryProductLines();
+                        if(null != str) {
+                        	String[] strArray = str.split(";");
+                        	object.getJSONObject("order").getJSONObject("orderFactory").put("factoryProductLines",strArray);
+                        }
+					}catch (Exception e){
+                        logger.error("change factoryProductLines from String to Array failed! ",e);
+					}
+    			    try{
+                        callResult = orderService.getOrderActionEdit(orderId);
+                        object.put("editable",callResult.getContent());
+                        
+                        callResult = orderService.getOrderActionCancel(orderId);
+                        object.put("cancelable",callResult.getContent());
+    			    }catch (Exception e) {
+    			    	 logger.error("error occurred! getOrderAction failed",e);
+    			    	 object.put("editable",null);
+    			    	 object.put("cancelable",null);
+    			    }
 					callResult.setContent(object);
                     return new ResponseEntity<>(callResult, HttpStatus.OK);
                 }
