@@ -2,8 +2,7 @@ package com.ai.api.service;
 
 import java.util.List;
 
-import com.ai.commons.beans.checklist.api.ChecklistBean;
-import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
 
@@ -25,15 +24,25 @@ import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
  * </PRE>
  ***************************************************************************/
 
-
 public interface ChecklistService {
 	List<CKLChecklistSearchVO> searchPrivateChecklist(String userID, String keyword, int pageNumber);
-	List<CKLChecklistSearchVO> searchPublicChecklist(String userId, String keyword,int pageNumber);
-	String createChecklist(String userId,CKLChecklistVO checklistVO);
-    String updateChecklist(String userId,String checklistId,CKLChecklistVO checklist);
-	CKLChecklistVO getChecklist(String userId,String checklistId);
-	boolean deleteChecklist(String userId,String ids);
-	boolean checklistNameExist(String userId,String checklistName);
-    boolean saveFeedback(String userId,String checklistId,String feedback);
-    boolean approved(String userId,String checklistId);
+
+	List<CKLChecklistSearchVO> searchPublicChecklist(String userId, String keyword, int pageNumber);
+
+	String createChecklist(String userId, CKLChecklistVO checklistVO);
+
+	String updateChecklist(String userId, String checklistId, CKLChecklistVO checklist);
+
+	CKLChecklistVO getChecklist(String userId, String checklistId);
+
+	boolean deleteChecklist(String userId, String ids);
+
+	boolean checklistNameExist(String userId, String checklistName);
+
+	boolean saveFeedback(String userId, String checklistId, String feedback);
+
+	boolean approved(String userId, String checklistId);
+
+	ApiCallResult calculateChecklistSampleSize(Integer productQty, String sampleLevel, String unit,
+			String criticalDefects, String majorDefects, String minorDefects, Integer piecesNumberPerSet);
 }
