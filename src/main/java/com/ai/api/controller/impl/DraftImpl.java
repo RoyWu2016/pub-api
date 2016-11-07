@@ -72,7 +72,11 @@ public class DraftImpl implements Draft {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/draft", method = RequestMethod.POST)
 	public ResponseEntity<InspectionBookingBean> createDraft(@PathVariable("userId") String userId,
-	                                                       @RequestParam("serviceType") String serviceType) {
+	                                                       @RequestParam(value = "serviceType", required = true ) String serviceType) {
+		if (userId == null || userId.isEmpty()) {
+			logger.error("userId:" + userId);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 		try {
             InspectionBookingBean newDraft = draftService.createDraft(userId, serviceType);
             if (null!=newDraft) {
@@ -106,6 +110,10 @@ public class DraftImpl implements Draft {
 	public ResponseEntity<InspectionBookingBean> getDraft(@PathVariable final String userId,
 	                                                    @PathVariable final String draftId) {
 
+		if (userId == null || userId.isEmpty() || draftId == null || draftId.isEmpty()) {
+			logger.error("userId:" + userId + ", draftId:" + draftId + " can't be null!");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 		try {
             InspectionBookingBean draft = draftService.getDraft(userId, draftId);
 			if(null!=draft) {
@@ -125,6 +133,11 @@ public class DraftImpl implements Draft {
 	public ResponseEntity<Boolean> saveDraft(@PathVariable("userId")String userId,
 											 @PathVariable("draftId") String draftId,
 											 @RequestBody InspectionBookingBean draft) {
+		if (userId == null || userId.isEmpty() || draftId == null || draftId.isEmpty() || draft == null) {
+			logger.error("userId:" + userId + ", draftId:" + draftId + ", draft:" + draft
+				+ " can't be null!");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 		try {
             draft.setDraftId(draftId);
 			boolean result = draftService.saveDraft(userId, draft);
@@ -199,7 +212,11 @@ public class DraftImpl implements Draft {
 			@PathVariable("draftId") String draftId, 
 			@PathVariable("samplingLevel") String samplingLevel,
 			@RequestParam(value = "measurementSamplingSize", required = false ,defaultValue="") String measurementSamplingSize) {
-		// TODO Auto-generated method stub
+		if (userId == null || draftId == null || samplingLevel == null) {
+			logger.error("userId:" + userId + ", draftId:" + draftId + ", sample level:" + samplingLevel
+					+ " can't be null!");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 		try {
 			OrderPriceMandayViewBean newDraft = draftService.calculatePricing(userId, draftId,samplingLevel, measurementSamplingSize);
 			if(null != newDraft) {
