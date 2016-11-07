@@ -78,6 +78,12 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
 	public ResponseEntity<UserBean> getUserProfile(@PathVariable("userId") String userId,
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) throws IOException, AIException {
+
+		if (userId == null) {
+			logger.error("User id can't be null or empty!");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
 		logger.info("......start getting user profile.......");
 		UserBean cust = null;
 

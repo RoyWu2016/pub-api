@@ -113,6 +113,10 @@ public class OrderImpl implements Order {
 	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getOrderDetail(@PathVariable("userId") String userId,
 														@PathVariable("orderId") String orderId) {
+		if (userId == null || userId.isEmpty() || orderId == null || orderId.isEmpty()) {
+			logger.error("userId:" + userId + ", orderId:" + orderId + " can't be null!");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			logger.info("getOrderDetail ...");
@@ -160,6 +164,11 @@ public class OrderImpl implements Order {
 	public ResponseEntity<Map<String, Object>> createOrderByDraft(@PathVariable("userId") String userId,
 			@RequestParam(value = "draftId", required = true) String draftId) {
 
+		if (userId == null || userId.isEmpty() || draftId == null || draftId.isEmpty()) {
+			logger.error("userId:" + userId + ", draftId:" + draftId + " can't be null!");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			logger.info("createOrderByDraft ...");
@@ -183,6 +192,10 @@ public class OrderImpl implements Order {
 	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}/editing", method = RequestMethod.PUT)
 	public ResponseEntity<Map<String, Object>> editOrder(@PathVariable("userId") String userId,
 			@PathVariable("orderId") String orderId) {
+		if (userId == null || userId.isEmpty() || orderId == null || orderId.isEmpty()) {
+			logger.error("userId:" + userId + ", orderId:" + orderId + " can't be null!");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
