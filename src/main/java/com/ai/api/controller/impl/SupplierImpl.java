@@ -235,7 +235,7 @@ public class SupplierImpl implements Supplier {
                     return new ResponseEntity<>(callResult, HttpStatus.OK);
                 }
                 logger.info("incorrect pw !   ["+ password +"] || should be :"+pw);
-                callResult.setMessage("wrong password");
+                callResult.setMessage("Incorrect password!");
 				return new ResponseEntity<>(callResult,HttpStatus.OK);
 			} else {
 				callResult.setMessage("Get order error!");
@@ -278,7 +278,7 @@ public class SupplierImpl implements Supplier {
 					}
 				}
 				logger.info("incorrect pw !   ["+ password +"] || should be :"+pw);
-                callResult.setMessage("wrong password");
+                callResult.setMessage("Incorrect password!");
                 return new ResponseEntity<>(callResult,HttpStatus.OK);
 			}
 			logger.info("can not get order by id:"+orderId);
