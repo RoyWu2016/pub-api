@@ -76,7 +76,7 @@
     <bean id="callResult" class="com.ai.commons.beans.ApiCallResult"/>
 
     <bean id="cacheManager" class="com.ai.commons.cache.CacheManager" />
-    <bean id="commonParamService" class="com.ai.commons.services.ParameterService" />
+    <bean id="commonParamService" class="com.ai.commons.services.ParameterService" p:PARAMETER_SERVICE_URL="${parameter.service.lb.url}"/>
 
     
      <bean id="fileService" class="com.ai.commons.services.FileService" p:fileServiceUrl="${file.service.lb.url}" p:localTempDir="${local.temp.folder}"/>
