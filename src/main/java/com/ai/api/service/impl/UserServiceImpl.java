@@ -113,6 +113,9 @@ public class UserServiceImpl implements UserService {
 	private FeatureDao featureDao;
 
 	private UserBean getUserBeanByService(String userId) {
+		if (StringUtils.isBlank(userId)){
+			return null;
+		}
 		UserBean user = new UserBean();
 		logger.info("...........start getting UserBean from user service...........");
 		CompanyEntireBean companyEntireBean = companyDao.getCompanyEntireInfo(userId);
@@ -552,6 +555,10 @@ public class UserServiceImpl implements UserService {
 
 	public UserBean updateUserBeanInCache(final String userId) {
 		logger.info("ready to update user in cache ! userId:  " + userId);
+        if (StringUtils.isBlank(userId)){
+            logger.error("userId is blank!");
+            return null;
+        }
 		UserBean newUserBean = this.getUserBeanByService(userId);
 		RedisUtil.hset("userBeanCache", userId, JSON.toJSONString(newUserBean), RedisUtil.HOUR * 2);
 		return newUserBean;
@@ -561,6 +568,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserBean getCustById(String userId) throws IOException, AIException {
 		logger.info("try to get userBean from redis ...");
+        if (StringUtils.isBlank(userId)){
+            logger.error("userId is blank,please check!");
+            throw new AIException("userId is blank,please check!");
+        }
 		String jsonStr = RedisUtil.hget("userBeanCache", userId);
 		UserBean user = JSON.parseObject(jsonStr, UserBean.class);
 		if (user != null && StringUtils.isNotBlank(user.getId())) {
