@@ -1,5 +1,6 @@
 package com.ai.api.service.impl;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -92,6 +93,11 @@ public class ParameterServiceImpl implements ParameterService {
         chinaTimeBean.setTimezone("UTC+8");
         chinaTimeBean.setUnixTimeStamp(unitTimeStamp);
         return chinaTimeBean;
+    }
+
+    @Override
+    public InputStream getSaleImage(String sicName){
+        return paramDao.getSaleImage(sicName);
     }
 }
 

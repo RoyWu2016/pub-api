@@ -51,5 +51,7 @@ public interface Parameter {
 
 	ResponseEntity<ApiCallResult> getAllCountries(boolean refresh);
 
+	ResponseEntity<ApiCallResult> getSaleImage(String sicName,boolean refresh);
+
 
 }

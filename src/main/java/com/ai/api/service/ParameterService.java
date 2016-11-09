@@ -1,5 +1,6 @@
 package com.ai.api.service;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -38,5 +39,7 @@ public interface ParameterService {
 	List<ProductFamilyDtoBean> getProductFamilyList(boolean refresh);
 
 	ChinaTimeBean getChinaTime();
+
+	InputStream getSaleImage(String sicName);
 
 }
