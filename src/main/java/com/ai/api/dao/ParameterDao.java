@@ -6,6 +6,7 @@
  ***************************************************************************/
 package com.ai.api.dao;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -58,4 +59,6 @@ public interface ParameterDao {
 	List<TextileCategoryBean> getTextileProductCategories(boolean refresh);
 	
 	List<ClassifiedBean> getAiOffices(boolean refresh);
+
+	InputStream getSaleImage(String sicName);
 }
