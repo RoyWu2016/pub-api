@@ -7,24 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import com.ai.api.bean.SupplierDetailBean;
-import com.ai.api.bean.UserBean;
-import com.ai.api.bean.legacy.FactorySearchBean;
-import com.ai.api.controller.Supplier;
-import com.ai.api.exception.AIException;
-import com.ai.api.service.FactoryService;
-import com.ai.api.service.OrderService;
-import com.ai.api.service.ParameterService;
-import com.ai.api.service.UserService;
-import com.ai.commons.DateUtils;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.OrderFactoryBean;
-import com.ai.commons.beans.supplier.SupplierSearchResultBean;
-import com.ai.userservice.common.util.MD5;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +20,30 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ai.api.bean.SupplierDetailBean;
+import com.ai.api.bean.UserBean;
+import com.ai.api.bean.legacy.FactorySearchBean;
+import com.ai.api.controller.Supplier;
+import com.ai.api.exception.AIException;
+import com.ai.api.service.FactoryService;
+import com.ai.api.service.OrderService;
+import com.ai.api.service.ParameterService;
+import com.ai.api.service.UserService;
+import com.ai.api.util.RedisUtil;
+import com.ai.commons.DateUtils;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.OrderFactoryBean;
+import com.ai.commons.beans.supplier.SupplierSearchResultBean;
+import com.ai.userservice.common.util.MD5;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 /**
  * Created by Administrator on 2016/6/29 0029.
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 @RestController
 public class SupplierImpl implements Supplier {
 	private static final Logger logger = LoggerFactory.getLogger(SupplierImpl.class);
@@ -48,14 +51,14 @@ public class SupplierImpl implements Supplier {
 	@Autowired
 	FactoryService factoryService;
 
-    @Autowired
-    OrderService orderService;
+	@Autowired
+	OrderService orderService;
 
 	@Autowired
 	UserService userService;
 
-//	@Autowired
-//	ApiCallResult<JSONObject> callResult;
+	// @Autowired
+	// ApiCallResult<JSONObject> callResult;
 
 	@Autowired
 	ParameterService parameterService;
@@ -125,15 +128,15 @@ public class SupplierImpl implements Supplier {
 			@PathVariable("supplierId") String supplierId, @RequestBody SupplierDetailBean supplierDetailBean)
 			throws IOException, AIException {
 		logger.info("updating supplier detail info for user: " + userId);
-        ApiCallResult callResult = new ApiCallResult();
+		ApiCallResult callResult = new ApiCallResult();
 		// Map<String, String> result = new HashMap<String,String>();
 		if (factoryService.updateSupplierDetailInfo(supplierDetailBean)) {
 			// result.put("success","true");
-            callResult.setContent(true);
-			return new ResponseEntity<>(callResult,HttpStatus.OK);
+			callResult.setContent(true);
+			return new ResponseEntity<>(callResult, HttpStatus.OK);
 		} else {
-            callResult.setContent(false);
-			return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+			callResult.setContent(false);
+			return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -143,15 +146,15 @@ public class SupplierImpl implements Supplier {
 	public ResponseEntity<ApiCallResult> deleteSuppliers(@PathVariable("userId") String userId,
 			@PathVariable("supplierIds") String supplierIds) throws IOException, AIException {
 		logger.info("deleting supplier for user: " + userId);
-        ApiCallResult callResult = new ApiCallResult();
+		ApiCallResult callResult = new ApiCallResult();
 		if (factoryService.deleteSuppliers(supplierIds)) {
-            callResult.setMessage("success!");
-            callResult.setContent(true);
-			return new ResponseEntity<>(callResult,HttpStatus.OK);
+			callResult.setMessage("success!");
+			callResult.setContent(true);
+			return new ResponseEntity<>(callResult, HttpStatus.OK);
 		} else {
-            callResult.setMessage("fail!");
-            callResult.setContent(false);
-			return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+			callResult.setMessage("fail!");
+			callResult.setContent(false);
+			return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -179,71 +182,79 @@ public class SupplierImpl implements Supplier {
 	@Override
 	@RequestMapping(value = "/order/{orderId}/factory", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getFactoryConfirm(@PathVariable("orderId") String orderId,
-	                                                                    @RequestParam("password") String password) {
+			@RequestParam("password") String password) {
 		logger.info("getFactoryConfirm ...");
-		logger.info("orderId:"+orderId);
+		logger.info("orderId:" + orderId);
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			InspectionBookingBean orderBean = orderService.getOrderDetail("nullUserId", orderId);
 			if (orderBean != null && orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode() != null) {
 				String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
-                String pw = MD5.toMD5(validateCode);
-                if (pw.equalsIgnoreCase(password)){
-                    JSONObject object = (JSONObject)JSON.toJSON(orderBean);
+				String pw = MD5.toMD5(validateCode);
 
-                    String newPW = DigestUtils.shaHex(password);
-                    object.put("updateConfirmSupplierPwd",newPW);
+				if (pw.equalsIgnoreCase(password)) {
+					JSONObject object = (JSONObject) JSON.toJSON(orderBean);
 
-                    try {
-                        UserBean u=userService.getCustById(orderBean.getOrder().getOrderGeneralInfo().getUserId());
-                        object.put("userCompanyName",u.getCompany().getName());
+					String newPW = DigestUtils.shaHex(password);
+					object.put("updateConfirmSupplierPwd", newPW);
 
-                        object.put("ChinaDatetime",parameterService.getChinaTime().getDatetime());
-                        object.put("productCategoryList",parameterService.getProductCategoryList(false));
-                        object.put("productFamilyList",parameterService.getProductFamilyList(false));
-                    }catch (Exception e){
-                        logger.error("error occur while adding [userCompanyNameChinaDatetime productCategoryList productFamilyList] to result",e);
-                    }
-                    try{
-                        String str = orderBean.getOrder().getOrderSupplier().getSupplierProductLines();
-                        String[] strArray = str.split(";");
-                        object.getJSONObject("order").getJSONObject("orderSupplier").put("supplierProductLines",strArray);
-					}catch (Exception e){
-                        logger.error("change SupplierProductLines from String to Array failed! ",e);
+					try {
+						UserBean u = userService.getCustById(orderBean.getOrder().getOrderGeneralInfo().getUserId());
+						object.put("userCompanyName", u.getCompany().getName());
+
+						object.put("ChinaDatetime", parameterService.getChinaTime().getDatetime());
+						object.put("productCategoryList", parameterService.getProductCategoryList(false));
+						object.put("productFamilyList", parameterService.getProductFamilyList(false));
+					} catch (Exception e) {
+						logger.error(
+								"error occur while adding [userCompanyNameChinaDatetime productCategoryList productFamilyList] to result",
+								e);
 					}
-                    try{
-                        String str = orderBean.getOrder().getOrderFactory().getFactoryProductLines();
-                        if(null != str) {
-                        	String[] strArray = str.split(";");
-                        	object.getJSONObject("order").getJSONObject("orderFactory").put("factoryProductLines",strArray);
-                        }
-					}catch (Exception e){
-                        logger.error("change factoryProductLines from String to Array failed! ",e);
+					try {
+						SupplierDetailBean result = factoryService.getUserSupplierDetailInfoById("nullUserId",
+								orderBean.getOrder().getOrderSupplier().getSupplierId());
+						object.getJSONObject("order").put("orderSupplier", result);
+						// String str =
+						// orderBean.getOrder().getOrderSupplier().getSupplierProductLines();
+						// String[] strArray = str.split(";");
+						// object.getJSONObject("order").getJSONObject("orderSupplier").put("supplierProductLines",strArray);
+					} catch (Exception e) {
+						logger.error("change SupplierProductLines from String to Array failed! ", e);
 					}
-    			    try{
-                        callResult = orderService.getOrderActionEdit(orderId);
-                        object.put("editable",callResult.getContent());
-                        
-                        callResult = orderService.getOrderActionCancel(orderId);
-                        object.put("cancelable",callResult.getContent());
-    			    }catch (Exception e) {
-    			    	 logger.error("error occurred! getOrderAction failed",e);
-    			    	 object.put("editable",null);
-    			    	 object.put("cancelable",null);
-    			    }
+					try {
+						String str = orderBean.getOrder().getOrderFactory().getFactoryProductLines();
+						if (null != str) {
+							String[] strArray = str.split(";");
+							object.getJSONObject("order").getJSONObject("orderFactory").put("factoryProductLines",
+									strArray);
+						}
+					} catch (Exception e) {
+						logger.error("change factoryProductLines from String to Array failed! ", e);
+					}
+					try {
+						callResult = orderService.getOrderActionEdit(orderId);
+						object.put("editable", callResult.getContent());
+
+						callResult = orderService.getOrderActionCancel(orderId);
+						object.put("cancelable", callResult.getContent());
+					} catch (Exception e) {
+						logger.error("error occurred! getOrderAction failed", e);
+						object.put("editable", null);
+						object.put("cancelable", null);
+					}
 					callResult.setContent(object);
-                    return new ResponseEntity<>(callResult, HttpStatus.OK);
-                }
-                logger.info("incorrect pw !   ["+ password +"] || should be :"+pw);
-                callResult.setMessage("Incorrect password!");
-				return new ResponseEntity<>(callResult,HttpStatus.OK);
+					return new ResponseEntity<>(callResult, HttpStatus.OK);
+				}
+				logger.info("incorrect pw !   [" + password + "] || should be :" + pw);
+				callResult.setMessage("Incorrect password!");
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			} else {
 				callResult.setMessage("Get order error!");
 				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
-			logger.error("error in getSupplierConfirm",e);
-            callResult.setMessage("Internal service error.");
+			logger.error("error in getSupplierConfirm", e);
+			callResult.setMessage("Internal service error.");
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -252,74 +263,122 @@ public class SupplierImpl implements Supplier {
 	@Override
 	@RequestMapping(value = "/order/{orderId}/factory", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> updateSupplierConfirm(@PathVariable("orderId") String orderId,
-															@RequestParam("password")String password,
-															@RequestParam("inspectionDate") String inspectionDateString,
-															@RequestParam("containerReadyDate") String containReadyTime,
-															@RequestBody OrderFactoryBean orderFactoryBean) {
+			@RequestParam("password") String password, @RequestParam("inspectionDate") String inspectionDateString,
+			@RequestParam("containerReadyDate") String containReadyTime,
+			@RequestBody OrderFactoryBean orderFactoryBean) {
 		logger.info("updateSupplierConfirm ...");
-		logger.info("orderId:"+orderId);
+		logger.info("orderId:" + orderId);
 		ApiCallResult callResult = new ApiCallResult();
-		InspectionBookingBean orderBean = orderService.getOrderDetail("nullUserId", orderId);
+		String cachePassword = RedisUtil.hget("passwordCache", orderId);
+		InspectionBookingBean orderBean = null;
+		inspectionDateString = DateUtils.toStringWithAINewInteral(inspectionDateString);
+		containReadyTime = DateUtils.toStringWithAINewInteral(containReadyTime);
+		if (null == cachePassword) {
+			orderBean = orderService.getOrderDetail("nullUserId", orderId);
+		}
 		try {
 			if (orderBean != null) {
 				String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
 				String pw = DigestUtils.shaHex(MD5.toMD5(validateCode));
-				if (pw.equalsIgnoreCase(password)){
-					inspectionDateString = DateUtils.toStringWithAINewInteral(inspectionDateString);
-					containReadyTime = DateUtils.toStringWithAINewInteral(containReadyTime);
-                    callResult = factoryService.supplierConfirmOrder(orderId,inspectionDateString,containReadyTime,orderFactoryBean);
-					if(null == callResult.getMessage()) {
-						return new ResponseEntity<>(callResult,HttpStatus.OK);
+				if (pw.equalsIgnoreCase(password)) {
+					RedisUtil.hset("passwordCache", orderId, pw, RedisUtil.HOUR * 24 * 3);
+					logger.info("Password saved into redis successfully...");
+					callResult = factoryService.supplierConfirmOrder(orderId, inspectionDateString, containReadyTime,
+							orderFactoryBean);
+					if (null == callResult.getMessage()) {
+						return new ResponseEntity<>(callResult, HttpStatus.OK);
 					} else {
 						logger.info("failed confirming order !");
-//                        callResult.setMessage("confirm failed!");
-//                        callResult.setContent(false);
-						return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+						return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 					}
 				}
-				logger.info("incorrect pw !   ["+ password +"] || should be :"+pw);
-                callResult.setMessage("Incorrect password!");
-                return new ResponseEntity<>(callResult,HttpStatus.OK);
+				logger.info("incorrect pw !   [" + password + "] || should be :" + pw);
+				callResult.setMessage("Incorrect password.");
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
+			} else {
+				if (null != cachePassword) {
+					if (cachePassword.equalsIgnoreCase(password)) {
+						callResult = factoryService.supplierConfirmOrder(orderId, inspectionDateString,
+								containReadyTime, orderFactoryBean);
+						if (null == callResult.getMessage()) {
+							return new ResponseEntity<>(callResult, HttpStatus.OK);
+						} else {
+							logger.info("failed confirming order !");
+							return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+						}
+					} else {
+						logger.info("incorrect pw !   [" + password + "] || should be :" + cachePassword);
+						callResult.setMessage("Incorrect password.");
+						return new ResponseEntity<>(callResult, HttpStatus.OK);
+					}
+				}
+				logger.info("can not get order by id:" + orderId);
+				callResult.setMessage("can not get order by id:" + orderId);
 			}
-			logger.info("can not get order by id:"+orderId);
-            callResult.setMessage("can not get order by id:"+orderId);
-            callResult.setContent(false);
 		} catch (Exception e) {
 			logger.error("error in updateSupplierConfirm", e);
-            callResult.setMessage("Error exception!");
-            callResult.setContent(false);
+			callResult.setMessage("Error exception: " + e);
 			e.printStackTrace();
 		}
-		return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-
-
 
 	@Override
 	@RequestMapping(value = "/order/{orderId}/supplier", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> updateSupplierDetailInfo(@PathVariable("orderId") String orderId,
-																			@RequestParam("password")String password ,
-																			@RequestBody SupplierDetailBean supplierDetailBean)
+			@RequestParam("password") String password, @RequestBody SupplierDetailBean supplierDetailBean)
 			throws IOException, AIException {
 		logger.info("updateUserSupplierDetailInfo orderId: " + orderId);
-        ApiCallResult callResult = new ApiCallResult();
-		InspectionBookingBean orderBean = orderService.getOrderDetail("nullUserId", orderId);
+		ApiCallResult callResult = new ApiCallResult();
+		String cachePassword = RedisUtil.hget("passwordCache", orderId);
+		InspectionBookingBean orderBean = null;
+		if (null == cachePassword) {
+			orderBean = orderService.getOrderDetail("nullUserId", orderId);
+		}
 		if (orderBean != null) {
 			String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
 			String pw = DigestUtils.shaHex(MD5.toMD5(validateCode));
-			if (pw.equalsIgnoreCase(password)){
+			if (pw.equalsIgnoreCase(password)) {
+				RedisUtil.hset("passwordCache", orderId, pw, RedisUtil.HOUR * 24 * 3);
+				logger.info("Password saved into redis successfully...");
 				boolean b = factoryService.updateSupplierDetailInfo(supplierDetailBean);
-                if (b){
-                    callResult.setContent(true);
-                    return new ResponseEntity<>(callResult,HttpStatus.OK);
-                }
-                logger.info("updateUserSupplierDetailInfo failed.");
-            }
-            logger.info("updateUserSupplierDetailInfo  password not matched!");
+				if (b) {
+					callResult.setContent(true);
+					return new ResponseEntity<>(callResult, HttpStatus.OK);
+				} else {
+					logger.info("updateUserSupplierDetailInfo failed.");
+					callResult.setMessage("updateUserSupplierDetailInfo failed.");
+					callResult.setContent(false);
+					return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+			} else {
+				logger.info("updateUserSupplierDetailInfo  password not matched!");
+				callResult.setMessage("Incorrect Password.");
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
+			}
+		} else {
+			if (null != cachePassword) {
+				if (cachePassword.equalsIgnoreCase(password)) {
+					boolean b = factoryService.updateSupplierDetailInfo(supplierDetailBean);
+					if (b) {
+						callResult.setContent(true);
+						return new ResponseEntity<>(callResult, HttpStatus.OK);
+					} else {
+						logger.info("updateUserSupplierDetailInfo failed.");
+						callResult.setMessage("updateUserSupplierDetailInfo failed.");
+						callResult.setContent(false);
+						return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+					}
+				} else {
+					logger.info("incorrect pw !   [" + password + "] || should be :" + cachePassword);
+					callResult.setMessage("Incorrect password.");
+					return new ResponseEntity<>(callResult, HttpStatus.OK);
+				}
+			}
+			logger.info("updateUserSupplierDetailInfo can not find by id:" + orderId);
+			callResult.setMessage("updateUserSupplierDetailInfo can not find by id:" + orderId);
+			return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		logger.info("updateUserSupplierDetailInfo can not find by id:"+orderId);
-        callResult.setContent(false);
-        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }
