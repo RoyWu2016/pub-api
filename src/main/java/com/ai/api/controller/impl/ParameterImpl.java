@@ -1,11 +1,15 @@
 package com.ai.api.controller.impl;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ai.commons.StringUtils;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -565,5 +569,45 @@ public class ParameterImpl implements Parameter {
 			return new ResponseEntity<>(callResult, HttpStatus.OK);
 		}
 	}
+
+	@Override
+	@RequestMapping(value = "/parameter/sic/{sicName}/base64", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> getSaleImage(@PathVariable("sicName") String sicName,
+                                                      @RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
+
+        logger.info("getSaleImage  sicName:["+sicName+"]  | refresh:["+refresh+"]");
+        ApiCallResult callResult = new ApiCallResult();
+	    try {
+            String fileStr = null;
+            if (!refresh){
+                logger.info("try to get saleImage from redis...");
+                fileStr = RedisUtil.hget("SaleImage",sicName);
+            }
+            if (StringUtils.isBlank(fileStr)){
+                logger.info("get saleImage from parameterService ...");
+                InputStream input = parameterService.getSaleImage(sicName);
+                if(null == input){
+                    logger.error("getSaleImage failed! inputStream is null!");
+                    callResult.setMessage("getSaleImage failed! inputStream is null!");
+                    return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+                byte[] data = IOUtils.toByteArray(input);
+                fileStr = Base64.encode(data);
+                if (StringUtils.isBlank(fileStr)){
+                    logger.error("saleImage is null!");
+                    callResult.setMessage("saleImage is null!");
+                    return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+                RedisUtil.hset("SaleImage",sicName,fileStr,RedisUtil.HOUR*24*14);
+            }
+            callResult.setContent(fileStr);
+            return new ResponseEntity<>(callResult,HttpStatus.OK);
+        }catch (Exception e){
+            logger.error("error!!",e);
+            callResult.setMessage(e.toString());
+            return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }

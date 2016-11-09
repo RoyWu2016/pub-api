@@ -7,11 +7,19 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -437,4 +445,41 @@ public class ParameterDaoImpl implements ParameterDao {
 		return proTypeList;
 	}
 
+	@Override
+	public InputStream getSaleImage(String sicName) {
+		StringBuilder url = new StringBuilder(config.getParamServiceUrl());
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		CloseableHttpResponse response = null;
+		InputStream inputStream = null;
+		try {
+//		    url.append("/sic-pic/").append(URLEncoder.encode(sicName,"UTF-8"));
+            url.append("/sic-pic/").append(sicName.replace(" ","%20"));
+			HttpGet httpGet = new HttpGet(url.toString());
+			RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(60000)
+					.setSocketTimeout(60000).setConnectTimeout(60000).build();
+			httpGet.setConfig(requestConfig);
+			LOGGER.info("getSaleImage doGet----url:[" + url + "]");
+			response = httpClient.execute(httpGet);
+			if (null == response)
+				return null;
+			if (response.getStatusLine().getStatusCode() == 200) {
+				HttpEntity entity = response.getEntity();
+				inputStream = entity.getContent();
+			}
+		} catch (Exception e) {
+			LOGGER.error("ERROR from-Dao[getSaleImage]", e);
+//		}finally {
+//			try {
+//				if (response != null) {
+//					response.close();
+//				}
+//				if(httpClient != null) {
+//					httpClient.close();
+//				}
+//			}catch (Exception e){
+//
+//			}
+		}
+		return inputStream;
+	}
 }
