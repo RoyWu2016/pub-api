@@ -474,13 +474,12 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	}
 
 	@Override
-	public ServiceCallResult resetPassword(String login, String email) {
+	public ServiceCallResult resetPassword(String login) {
 		// TODO Auto-generated method stub
 		try {
-			String emailCode = URLEncoder.encode(email, "UTF-8");
 			String loginCode = URLEncoder.encode(login, "UTF-8");
 			StringBuilder url = new StringBuilder(config.getCustomerServiceUrl() + "/customer-legacy/get-lost-login-password-new");
-			url.append("?login=" + loginCode).append("&email=" + emailCode);
+			url.append("?login=" + loginCode).append("&email=" + "");
 			LOGGER.info("requesting url: " + url.toString());
 			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
