@@ -1,5 +1,6 @@
 package com.ai.api.controller.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ai.api.exception.AIException;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -603,5 +606,15 @@ public class ParameterImpl implements Parameter {
             return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+	@Override
+	@RequestMapping(value = "/parameter/{userName}/is-aca-user", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> isACAUser(@PathVariable("userName") String userName){
+		logger.info("check isACAUser userName:" + userName);
+		Boolean b = parameterService.isACAUser(userName);
+		JSONObject object = new JSONObject();
+		object.put("isACAUser", b);
+		return new ResponseEntity<>(object, HttpStatus.OK);
+	}
 
 }

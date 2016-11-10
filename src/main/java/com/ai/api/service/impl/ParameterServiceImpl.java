@@ -8,6 +8,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.ai.api.bean.ChinaTimeBean;
+import com.ai.api.bean.UserBean;
+import com.ai.api.dao.CustomerDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -31,10 +35,15 @@ import com.ai.commons.beans.params.product.SysProductTypeBean;
 
 @Service
 public class ParameterServiceImpl implements ParameterService {
+    private Logger logger = LoggerFactory.getLogger(ParameterServiceImpl.class);
 
     @Autowired
     @Qualifier("paramDao")
     private ParameterDao paramDao;
+
+    @Autowired
+    @Qualifier("customerDao")
+    private CustomerDao customerDao;
 
     @Override
     public List<ProductCategoryDtoBean> getProductCategoryList(boolean refresh){
@@ -99,6 +108,11 @@ public class ParameterServiceImpl implements ParameterService {
     @Override
     public String getSaleImage(String sicId){
         return paramDao.getSaleImage(sicId);
+    }
+
+    @Override
+    public boolean isACAUser(String userName) {
+            return customerDao.isACAUser(userName);
     }
 }
 
