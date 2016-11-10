@@ -317,25 +317,25 @@ public class UserImpl implements User {
 	}
 
 	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/password-by-login-email", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> resetPassword(@PathVariable("userId") String userId,
-			@RequestParam(value = "login", defaultValue = "") String login,
+//	@TokenSecured
+	@RequestMapping(value = "/user/{login}/reset-password", method = RequestMethod.PUT)
+	public ResponseEntity<ApiCallResult> resetPassword(@PathVariable("login") String login,
 			@RequestParam(value = "email", defaultValue = "") String email) {
-
+		logger.info("invoking: " + "/user/" + login + "/reset-password?email=" + email);
 		ApiCallResult callResult = new ApiCallResult();
-		if ("".equals(login) || "".equals(email)) {
+		if ("".equals(email)) {
 			callResult.setMessage("Login or email can not be empty!");
 			return new ResponseEntity<>(callResult, HttpStatus.BAD_REQUEST);
 		}
 
-		ServiceCallResult temp = userService.resetPassword(userId, login, email);
+		ServiceCallResult temp = userService.resetPassword(login, email);
 		if (null != temp) {
 			if (temp.getStatusCode() == HttpStatus.OK.value() && temp.getReasonPhase().equalsIgnoreCase("OK")) {
+				callResult.setContent(temp.getResponseString());
 				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			} else {
 				logger.error("Reset password get error:" + temp.getStatusCode() + ", " + temp.getResponseString());
-				callResult.setMessage(temp.getReasonPhase());
+				callResult.setMessage(temp.getResponseString());
 				return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} else {

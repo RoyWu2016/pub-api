@@ -469,21 +469,4 @@ public class ParameterDaoImpl implements ParameterDao {
 		return fileStr;
 	}
 
-	@Override
-	public ServiceCallResult getLostPasswordByEmail(String email) {
-		// TODO Auto-generated method stub
-		try {
-			String emailCode = URLEncoder.encode(email, "UTF-8");
-			StringBuilder url = new StringBuilder(
-					config.getCustomerServiceUrl() + "/customer-legacy/get-lost-login-password");
-			url.append("?email=" + emailCode);
-			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
-			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-			return result;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
 }

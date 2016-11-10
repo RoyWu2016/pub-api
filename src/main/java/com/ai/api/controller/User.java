@@ -85,5 +85,5 @@ public interface User {
 
 	ResponseEntity<UserBean> getUserProfile(String userId, boolean refresh) throws IOException, AIException;
 
-	ResponseEntity<ApiCallResult> resetPassword(String userId, String login, String email);
+	ResponseEntity<ApiCallResult> resetPassword(String login, String email);
 }
