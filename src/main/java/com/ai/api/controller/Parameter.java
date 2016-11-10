@@ -53,5 +53,7 @@ public interface Parameter {
 
 	ResponseEntity<ApiCallResult> getSaleImage(String sicName,boolean refresh);
 
+	ResponseEntity<ApiCallResult<String>> getLostPasswordByEmail(String email);
+
 
 }
