@@ -331,7 +331,7 @@ public class UserImpl implements User {
 			} else {
 				logger.error("Reset password get error:" + temp.getStatusCode() + ", " + temp.getResponseString());
 				callResult.setMessage(temp.getResponseString());
-				return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			}
 		} else {
 			callResult.setMessage("Get null from internal service call.");
