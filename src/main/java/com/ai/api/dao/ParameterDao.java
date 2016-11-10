@@ -61,7 +61,7 @@ public interface ParameterDao {
 	
 	List<ClassifiedBean> getAiOffices(boolean refresh);
 
-	InputStream getSaleImage(String sicName);
+	String getSaleImage(String sicId);
 
 	ServiceCallResult getLostPasswordByEmail(String email);
 }

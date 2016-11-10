@@ -573,34 +573,27 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	@RequestMapping(value = "/parameter/sic/{sicName}/base64", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getSaleImage(@PathVariable("sicName") String sicName,
+	@RequestMapping(value = "/parameter/sic/{sicId}/base64", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> getSaleImage(@PathVariable("sicId") String sicId,
                                                       @RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 
-        logger.info("getSaleImage  sicName:["+sicName+"]  | refresh:["+refresh+"]");
+        logger.info("getSaleImage  sicId:["+sicId+"]  | refresh:["+refresh+"]");
         ApiCallResult callResult = new ApiCallResult();
 	    try {
             String fileStr = null;
             if (!refresh){
                 logger.info("try to get saleImage from redis...");
-                fileStr = RedisUtil.hget("SaleImage",sicName);
+                fileStr = RedisUtil.hget("SaleImage",sicId);
             }
             if (StringUtils.isBlank(fileStr)){
                 logger.info("get saleImage from parameterService ...");
-                InputStream input = parameterService.getSaleImage(sicName);
-                if(null == input){
-                    logger.error("getSaleImage failed! inputStream is null!");
-                    callResult.setMessage("getSaleImage failed! inputStream is null!");
-                    return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-                byte[] data = IOUtils.toByteArray(input);
-                fileStr = Base64.encode(data);
+                fileStr =  parameterService.getSaleImage(sicId);
                 if (StringUtils.isBlank(fileStr)){
                     logger.error("saleImage is null!");
                     callResult.setMessage("saleImage is null!");
                     return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
-                RedisUtil.hset("SaleImage",sicName,fileStr,RedisUtil.HOUR*24*14);
+                RedisUtil.hset("SaleImage",sicId,fileStr,RedisUtil.HOUR*24*14);
             }
             callResult.setContent(fileStr);
             return new ResponseEntity<>(callResult,HttpStatus.OK);
