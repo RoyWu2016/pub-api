@@ -226,8 +226,12 @@ public class ReportDaoImpl implements ReportDao {
 	@Override
 	public boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean, String companyId, String parentId,
 	                                   String userId, String reportIds) {
-		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/report/api/forward-reports");
+		try {
+			reportsForwardingBean.setMessage(URLEncoder.encode(reportsForwardingBean.getMessage().trim(),"UTF-8"));
+		}catch (Exception e){
+			reportsForwardingBean.getMessage().trim().replace(" ","%20");
+		}
 		url.append("?productIds=").append(reportIds).append("&to=")
 				.append(reportsForwardingBean.getTo()).append("&cc=")
 				.append(reportsForwardingBean.getCc()).append("&bcc=")
@@ -251,3 +255,4 @@ public class ReportDaoImpl implements ReportDao {
 		}
 	}
 }
+
