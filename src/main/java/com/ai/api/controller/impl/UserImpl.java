@@ -321,7 +321,7 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{login}/reset-password", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> resetPassword(@PathVariable("login") String login,
 			@RequestParam(value = "email", defaultValue = "") String email) {
-		logger.info("/user/" + login + "/reset-password?email=" + email);
+		logger.info("invoking: " + "/user/" + login + "/reset-password?email=" + email);
 		ApiCallResult callResult = new ApiCallResult();
 		if ("".equals(email)) {
 			callResult.setMessage("Login or email can not be empty!");
