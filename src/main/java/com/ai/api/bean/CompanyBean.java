@@ -32,6 +32,8 @@ public class CompanyBean implements Serializable {
 
     private String logo;
 
+    private String mainEmail;
+
 	public String getName() {
         return name;
     }
@@ -134,5 +136,33 @@ public class CompanyBean implements Serializable {
 
     public void setParentCompanyName(String parentCompanyName) {
         this.parentCompanyName = parentCompanyName;
+    }
+
+    public String getMainEmail() {
+        return mainEmail;
+    }
+
+    public void setMainEmail(String mainEmail) {
+        this.mainEmail = mainEmail;
+    }
+
+    @Override
+    public String toString() {
+        return "CompanyBean{" +
+                "id='" + id + '\'' +
+                ", type='" + type + '\'' +
+                ", parentCompanyId='" + parentCompanyId + '\'' +
+                ", parentCompanyName='" + parentCompanyName + '\'' +
+                ", name='" + name + '\'' +
+                ", nameCN='" + nameCN + '\'' +
+                ", industry='" + industry + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", postcode='" + postcode + '\'' +
+                ", country='" + country + '\'' +
+                ", website='" + website + '\'' +
+                ", logo='" + logo + '\'' +
+                ", mainEmail='" + mainEmail + '\'' +
+                '}';
     }
 }
