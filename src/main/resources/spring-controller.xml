@@ -6,8 +6,8 @@
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
 http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
-	<!-- <mvc:annotation-driven /> -->
-	<mvc:annotation-driven enable-matrix-variables="true"
+	<mvc:annotation-driven /> 
+	<!--<mvc:annotation-driven enable-matrix-variables="true"
 		content-negotiation-manager="contentNegotiationManager" />
 	<bean id="contentNegotiationManager"
 		class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
@@ -17,7 +17,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		<property name="parameterName" value="mediaType" />
 		<property name="ignoreAcceptHeader" value="false" />
 		<property name="useJaf" value="false" />
-	</bean>
+	</bean> -->
 	<context:component-scan base-package="com.ai.api, version" />
 
 	<!--, com.ai.commons.services.TokenJWTService -->

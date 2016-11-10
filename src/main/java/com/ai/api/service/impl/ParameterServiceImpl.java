@@ -100,11 +100,5 @@ public class ParameterServiceImpl implements ParameterService {
     public String getSaleImage(String sicId){
         return paramDao.getSaleImage(sicId);
     }
-
-	@Override
-	public ServiceCallResult getLostPasswordByEmail(String email) {
-		// TODO Auto-generated method stub
-		return paramDao.getLostPasswordByEmail(email);
-	}
 }
 

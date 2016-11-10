@@ -603,32 +603,5 @@ public class ParameterImpl implements Parameter {
             return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-	
-	@Override
-//	@ResponseBody
-	@RequestMapping(value = "/parameter/username-password-remind-email/{email}", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult<String>> getLostPasswordByEmail(@PathVariable("email") String email) {
-		logger.info("invoking: " + "/parameter/username-password-remind-email/" + email);
-		ApiCallResult<String> callResult = new ApiCallResult<String>();
-		if ("".equals(email)) {
-			callResult.setMessage("Email can not be empty.");
-			return new ResponseEntity<ApiCallResult<String>>(callResult, HttpStatus.BAD_REQUEST);
-		}
-		ServiceCallResult temp = parameterService.getLostPasswordByEmail(email);
-		if (null != temp) {
-			if (temp.getStatusCode() == HttpStatus.OK.value() && temp.getReasonPhase().equalsIgnoreCase("OK")) {
-				callResult.setContent(temp.getResponseString());
-				return new ResponseEntity<ApiCallResult<String>>(callResult, HttpStatus.OK);
-			} else {
-				logger.error("getLostPasswordByEmail error:" + temp.getStatusCode() + ", " + temp.getResponseString());
-				callResult.setMessage(temp.getResponseString());
-				return new ResponseEntity<ApiCallResult<String>>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		} else {
-			callResult.setMessage("Get null from internal service call.");
-			return new ResponseEntity<ApiCallResult<String>>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
 
 }
