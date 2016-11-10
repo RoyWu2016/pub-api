@@ -2,7 +2,6 @@ package com.ai.api.controller;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import com.ai.api.bean.SupplierDetailBean;
 import com.ai.api.exception.AIException;
@@ -28,7 +27,7 @@ public interface Supplier {
 	ResponseEntity<SupplierDetailBean> createSupplier(String userId, SupplierDetailBean supplierDetailBean)
 			throws IOException, AIException;
 
-	ResponseEntity<ApiCallResult> updateSupplierConfirm(String orderId, String password, String inspectionDateString,
+	ResponseEntity<ApiCallResult> updateFactoryConfirm(String orderId, String password, String inspectionDateString,
 			String containReadyTime, OrderFactoryBean orderFactoryBean);
 
 	ResponseEntity<ApiCallResult> updateSupplierDetailInfo(String orderId, String password,
