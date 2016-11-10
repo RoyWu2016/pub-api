@@ -41,7 +41,7 @@ public interface ParameterService {
 
 	ChinaTimeBean getChinaTime();
 
-	InputStream getSaleImage(String sicName);
+	String getSaleImage(String sicId);
 
 	ServiceCallResult getLostPasswordByEmail(String email);
 
