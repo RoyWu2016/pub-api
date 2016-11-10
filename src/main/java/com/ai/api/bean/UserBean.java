@@ -7,11 +7,18 @@ import java.io.Serializable;
  */
 public class UserBean implements Serializable {
 
-    private String id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 22348442799126945L;
+
+	private String id;
 
     private String login;
 
     private String sic;
+    
+    private String sicId;
 
     private String status;
 
@@ -97,7 +104,15 @@ public class UserBean implements Serializable {
         this.payment = payment;
     }
 
-    @Override
+    public String getSicId() {
+		return sicId;
+	}
+
+	public void setSicId(String sicId) {
+		this.sicId = sicId;
+	}
+
+	@Override
     public String toString() {
         return "UserBean{" +
                 "id='" + id + '\'' +
