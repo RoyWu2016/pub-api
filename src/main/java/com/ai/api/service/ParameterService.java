@@ -43,4 +43,6 @@ public interface ParameterService {
 
 	String getSaleImage(String sicId);
 
+	boolean isACAUser(String userName);
+
 }

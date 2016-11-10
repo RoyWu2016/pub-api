@@ -76,8 +76,6 @@ public interface User {
 
 	ResponseEntity<String> updateCompanyLogo(String userId, String companyId, CompanyLogoBean logoBean);
 
-	ResponseEntity<JSONObject> isACAUser(String userId) throws IOException, AIException;
-
 	ResponseEntity<DashboardBean> getUserDashboard(String userId, String startDate, String endDate)
 			throws IOException, AIException;
 

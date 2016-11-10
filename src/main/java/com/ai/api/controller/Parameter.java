@@ -1,5 +1,6 @@
 package com.ai.api.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -9,9 +10,11 @@ import com.ai.api.bean.CountryBean;
 import com.ai.api.bean.DropdownListOptionBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
+import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -52,5 +55,7 @@ public interface Parameter {
 	ResponseEntity<ApiCallResult> getAllCountries(boolean refresh);
 
 	ResponseEntity<ApiCallResult> getSaleImage(String sicId,boolean refresh);
+
+	ResponseEntity<JSONObject> isACAUser(String userName);
 
 }

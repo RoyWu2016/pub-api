@@ -91,8 +91,6 @@ public interface UserService {
 
     EmployeeBean getEmployeeProfile(String employeeId, boolean refresh);
 
-    boolean isACAUser(String userId);
-
 	DashboardBean getUserDashboard(String userId, String startDate, String endDate) throws IOException, AIException;
 
 	void removeEmployeeProfileCache(String userId);
