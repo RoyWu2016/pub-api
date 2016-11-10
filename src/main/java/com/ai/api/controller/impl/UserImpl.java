@@ -283,17 +283,6 @@ public class UserImpl implements User {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/is-aca-user", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> isACAUser(@PathVariable("userId") String userId) throws IOException, AIException {
-		logger.info("check isACAUser userId:" + userId);
-		Boolean b = userService.isACAUser(userId);
-		JSONObject object = new JSONObject();
-		object.put("isACAUser", b);
-		return new ResponseEntity<>(object, HttpStatus.OK);
-	}
-
-	@Override
-	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/dashboard", method = RequestMethod.GET)
 	public ResponseEntity<DashboardBean> getUserDashboard(@PathVariable("userId") String userId,
 			@RequestParam(value = "startDate", required = false, defaultValue = "") String startDate,
