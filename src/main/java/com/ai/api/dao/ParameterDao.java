@@ -63,5 +63,4 @@ public interface ParameterDao {
 
 	String getSaleImage(String sicId);
 
-	ServiceCallResult getLostPasswordByEmail(String email);
 }

@@ -55,5 +55,5 @@ public interface CustomerDao {
 
 	DashboardBean getUserDashboard(String userId, String parentId, String companyId, String startDate, String endDate);
 
-	ServiceCallResult resetPassword(String userId, String userId2, String email);
+	ServiceCallResult resetPassword(String login, String email);
 }

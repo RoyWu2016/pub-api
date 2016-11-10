@@ -43,6 +43,4 @@ public interface ParameterService {
 
 	String getSaleImage(String sicId);
 
-	ServiceCallResult getLostPasswordByEmail(String email);
-
 }

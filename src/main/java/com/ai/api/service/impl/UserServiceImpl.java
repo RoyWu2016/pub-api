@@ -970,9 +970,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ServiceCallResult resetPassword(String userId, String login, String email) {
+	public ServiceCallResult resetPassword(String login, String email) {
 		// TODO Auto-generated method stub
-		return customerDao.resetPassword(userId,userId,email);
+		return customerDao.resetPassword(login,email);
 	}
 	
 }
