@@ -164,6 +164,7 @@ public class UserServiceImpl implements UserService {
 			for (CrmSaleInChargeBean saleBean : sales) {
 				if (saleBean.getSicTypeKey() != null && saleBean.getSicTypeKey().equals("SIC")) {
 					user.setSic(saleBean.getFirstName() + " " + saleBean.getLastName());
+					user.setSicId(saleBean.getSaleId());
 					break;
 				}
 			}

@@ -70,8 +70,8 @@ public class UserImpl implements User {
 	UserService userService; // Service which will do all data
 								// retrieval/manipulation work
 
-//	@Autowired
-//	ApiCallResult callResult;
+	// @Autowired
+	// ApiCallResult callResult;
 
 	@Override
 	@TokenSecured
@@ -176,7 +176,8 @@ public class UserImpl implements User {
 		if (result.getStatusCode() == HttpStatus.OK.value()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			logger.info("update user password failed! error code :"+result.getStatusCode()+" || "+result.getResponseString());
+			logger.info("update user password failed! error code :" + result.getStatusCode() + " || "
+					+ result.getResponseString());
 			return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
 		}
 
@@ -319,24 +320,25 @@ public class UserImpl implements User {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/password-by-login-email", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> resetPassword(@PathVariable("userId") String userId,
-			@RequestParam(value = "login", defaultValue="") String login, @RequestParam(value = "email",defaultValue="") String email) {
-		
+			@RequestParam(value = "login", defaultValue = "") String login,
+			@RequestParam(value = "email", defaultValue = "") String email) {
+
 		ApiCallResult callResult = new ApiCallResult();
-		if("".equals(login) || "".equals(email)) {
+		if ("".equals(login) || "".equals(email)) {
 			callResult.setMessage("Login or email can not be empty!");
 			return new ResponseEntity<>(callResult, HttpStatus.BAD_REQUEST);
 		}
-		
-		ServiceCallResult temp = userService.resetPassword(userId,login,email);
-		if(null != temp) {
+
+		ServiceCallResult temp = userService.resetPassword(userId, login, email);
+		if (null != temp) {
 			if (temp.getStatusCode() == HttpStatus.OK.value() && temp.getReasonPhase().equalsIgnoreCase("OK")) {
-				return new ResponseEntity<>(callResult,HttpStatus.OK);
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			} else {
-				logger.error("Reset password get error:" + temp.getStatusCode() + ", "+ temp.getResponseString());
+				logger.error("Reset password get error:" + temp.getStatusCode() + ", " + temp.getResponseString());
 				callResult.setMessage(temp.getReasonPhase());
 				return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-		}else {
+		} else {
 			callResult.setMessage("Get null from internal service call.");
 			return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
