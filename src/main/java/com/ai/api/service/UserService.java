@@ -97,7 +97,7 @@ public interface UserService {
 
 	void removeEmployeeProfileCache(String userId);
 
-	ServiceCallResult resetPassword(String login, String email);
+	ServiceCallResult resetPassword(String login);
 
 //    String getCompanyIdByUserId(String userId)throws IOException, AIException;
 }
