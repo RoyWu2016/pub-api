@@ -190,6 +190,7 @@ public class UserServiceImpl implements UserService {
 
 		comp.setWebsite(companyEntireBean.getCompanyProfile().getWebsite());
 		comp.setLogo(companyEntireBean.getCompanyProfile().getLogoPath());
+		comp.setMainEmail(companyEntireBean.getContact().getMainEmail());
 
 		user.setCompany(comp);
 
