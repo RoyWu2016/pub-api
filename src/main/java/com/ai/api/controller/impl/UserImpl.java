@@ -319,16 +319,11 @@ public class UserImpl implements User {
 	@Override
 //	@TokenSecured
 	@RequestMapping(value = "/user/{login}/reset-password", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> resetPassword(@PathVariable("login") String login,
-			@RequestParam(value = "email", defaultValue = "") String email) {
-		logger.info("invoking: " + "/user/" + login + "/reset-password?email=" + email);
+	public ResponseEntity<ApiCallResult> resetPassword(@PathVariable("login") String login) {
+		logger.info("invoking: " + "/user/" + login + "/reset-password");
 		ApiCallResult callResult = new ApiCallResult();
-		if ("".equals(email)) {
-			callResult.setMessage("Login or email can not be empty!");
-			return new ResponseEntity<>(callResult, HttpStatus.BAD_REQUEST);
-		}
 
-		ServiceCallResult temp = userService.resetPassword(login, email);
+		ServiceCallResult temp = userService.resetPassword(login);
 		if (null != temp) {
 			if (temp.getStatusCode() == HttpStatus.OK.value() && temp.getReasonPhase().equalsIgnoreCase("OK")) {
 				callResult.setContent(temp.getResponseString());
