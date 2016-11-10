@@ -16,6 +16,7 @@ import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.dao.ParameterDao;
 import com.ai.api.service.ParameterService;
+import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
@@ -99,5 +100,11 @@ public class ParameterServiceImpl implements ParameterService {
     public InputStream getSaleImage(String sicName){
         return paramDao.getSaleImage(sicName);
     }
+
+	@Override
+	public ServiceCallResult getLostPasswordByEmail(String email) {
+		// TODO Auto-generated method stub
+		return paramDao.getLostPasswordByEmail(email);
+	}
 }
 

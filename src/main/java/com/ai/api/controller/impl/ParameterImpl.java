@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ai.commons.StringUtils;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -38,8 +37,10 @@ import com.ai.api.controller.Parameter;
 import com.ai.api.service.ParameterService;
 import com.ai.api.util.AIUtil;
 import com.ai.api.util.RedisUtil;
+import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
@@ -49,6 +50,7 @@ import com.ai.commons.beans.params.GeoPlanetBean;
 import com.ai.commons.beans.params.TextileCategoryBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 import com.alibaba.fastjson.JSON;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -608,6 +610,32 @@ public class ParameterImpl implements Parameter {
             return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+	
+	@Override
+//	@ResponseBody
+	@RequestMapping(value = "/parameter/username-password-remind-email/{email}", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult<String>> getLostPasswordByEmail(@PathVariable("email") String email) {
+		logger.info("invoking: " + "/parameter/username-password-remind-email/" + email);
+		ApiCallResult<String> callResult = new ApiCallResult<String>();
+		if ("".equals(email)) {
+			callResult.setMessage("Email can not be empty.");
+			return new ResponseEntity<ApiCallResult<String>>(callResult, HttpStatus.BAD_REQUEST);
+		}
+		ServiceCallResult temp = parameterService.getLostPasswordByEmail(email);
+		if (null != temp) {
+			if (temp.getStatusCode() == HttpStatus.OK.value() && temp.getReasonPhase().equalsIgnoreCase("OK")) {
+				callResult.setContent(temp.getResponseString());
+				return new ResponseEntity<ApiCallResult<String>>(callResult, HttpStatus.OK);
+			} else {
+				logger.error("getLostPasswordByEmail error:" + temp.getStatusCode() + ", " + temp.getResponseString());
+				callResult.setMessage(temp.getResponseString());
+				return new ResponseEntity<ApiCallResult<String>>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			callResult.setMessage("Get null from internal service call.");
+			return new ResponseEntity<ApiCallResult<String>>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 
 }
