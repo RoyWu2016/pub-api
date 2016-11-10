@@ -452,41 +452,21 @@ public class ParameterDaoImpl implements ParameterDao {
 	}
 
 	@Override
-	public InputStream getSaleImage(String sicName) {
+	public String getSaleImage(String sicId) {
 		StringBuilder url = new StringBuilder(config.getParamServiceUrl());
-		CloseableHttpClient httpClient = HttpClients.createDefault();
-		CloseableHttpResponse response = null;
-		InputStream inputStream = null;
+		String fileStr = null;
 		try {
-			// url.append("/sic-pic/").append(URLEncoder.encode(sicName,"UTF-8"));
-			url.append("/sic-pic/").append(sicName.replace(" ", "%20"));
-			HttpGet httpGet = new HttpGet(url.toString());
-			RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(60000)
-					.setSocketTimeout(60000).setConnectTimeout(60000).build();
-			httpGet.setConfig(requestConfig);
-			LOGGER.info("getSaleImage doGet----url:[" + url + "]");
-			response = httpClient.execute(httpGet);
-			if (null == response)
-				return null;
-			if (response.getStatusLine().getStatusCode() == 200) {
-				HttpEntity entity = response.getEntity();
-				inputStream = entity.getContent();
-			}
+            url.append("/sales/salespicture/detail/").append(sicId);
+            GetRequest request = GetRequest.newInstance().setUrl(url.toString());
+            ServiceCallResult result = HttpUtil.issueGetRequest(request);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                JSONObject object = JSONObject.parseObject(result.getResponseString());
+                fileStr= (String) object.get("sicPicFile");
+            }
 		} catch (Exception e) {
 			LOGGER.error("ERROR from-Dao[getSaleImage]", e);
-			// }finally {
-			// try {
-			// if (response != null) {
-			// response.close();
-			// }
-			// if(httpClient != null) {
-			// httpClient.close();
-			// }
-			// }catch (Exception e){
-			//
-			// }
 		}
-		return inputStream;
+		return fileStr;
 	}
 
 	@Override
