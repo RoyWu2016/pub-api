@@ -262,7 +262,7 @@ public class SupplierImpl implements Supplier {
 
 	@Override
 	@RequestMapping(value = "/order/{orderId}/factory", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> updateSupplierConfirm(@PathVariable("orderId") String orderId,
+	public ResponseEntity<ApiCallResult> updateFactoryConfirm(@PathVariable("orderId") String orderId,
 			@RequestParam("password") String password, @RequestParam("inspectionDate") String inspectionDateString,
 			@RequestParam("containerReadyDate") String containReadyTime,
 			@RequestBody OrderFactoryBean orderFactoryBean) {
