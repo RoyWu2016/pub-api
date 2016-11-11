@@ -10,6 +10,7 @@ import com.ai.api.bean.CountryBean;
 import com.ai.api.bean.DropdownListOptionBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
+import com.ai.api.bean.TextileDropdownListOptionBean;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
@@ -38,7 +39,7 @@ public interface Parameter {
 
 	ResponseEntity<Map<String, Object>> getProductTypeList(boolean refresh);
 
-	ResponseEntity<List<DropdownListOptionBean>> getTextileProductCategories(boolean refresh);
+	ResponseEntity<List<TextileDropdownListOptionBean>> getTextileProductCategories(boolean refresh);
 
 	ResponseEntity<List<DropdownListOptionBean>> getAiOffices(boolean refresh);
 
