@@ -214,7 +214,7 @@ public class ParameterImpl implements Parameter {
 			TextileDropdownListOptionBean bean = new TextileDropdownListOptionBean();
 			bean.setLabel(each.getTextileCategory());
 			bean.setValue(each.getTextileCategory());
-			bean.setMesurementPoints(each.getNumberOfInspection());
+			bean.setMeasurementPoints(each.getNumberOfInspection());
 
 			list.add(bean);
 		}

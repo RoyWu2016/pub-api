@@ -7,14 +7,14 @@ public class TextileDropdownListOptionBean extends DropdownListOptionBean{
 	 */
 	private static final long serialVersionUID = -6338769452974193303L;
 	
-	private Integer mesurementPoints;
+	private Integer measurementPoints;
 
-	public Integer getMesurementPoints() {
-		return mesurementPoints;
+	public Integer getMeasurementPoints() {
+		return measurementPoints;
 	}
 
-	public void setMesurementPoints(Integer integer) {
-		this.mesurementPoints = integer;
+	public void setMeasurementPoints(Integer measurementPoints) {
+		this.measurementPoints = measurementPoints;
 	}
 
 }
