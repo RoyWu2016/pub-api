@@ -35,6 +35,7 @@ import com.ai.api.bean.CountryBean;
 import com.ai.api.bean.DropdownListOptionBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.ProductFamilyDtoBean;
+import com.ai.api.bean.TextileDropdownListOptionBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.Parameter;
 import com.ai.api.service.ParameterService;
@@ -199,7 +200,7 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/textile-product-categories", method = RequestMethod.GET)
-	public ResponseEntity<List<DropdownListOptionBean>> getTextileProductCategories(
+	public ResponseEntity<List<TextileDropdownListOptionBean>> getTextileProductCategories(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		// TODO Auto-generated method stub
 		logger.info("get getTextileProductCategory");
@@ -208,11 +209,12 @@ public class ParameterImpl implements Parameter {
 			logger.error("getTextileProductCategory not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		List<DropdownListOptionBean> list = new ArrayList<DropdownListOptionBean>();
+		List<TextileDropdownListOptionBean> list = new ArrayList<TextileDropdownListOptionBean>();
 		for (TextileCategoryBean each : result) {
-			DropdownListOptionBean bean = new DropdownListOptionBean();
+			TextileDropdownListOptionBean bean = new TextileDropdownListOptionBean();
 			bean.setLabel(each.getTextileCategory());
 			bean.setValue(each.getTextileCategory());
+			bean.setMesurementPoints(each.getNumberOfInspection());
 
 			list.add(bean);
 		}
