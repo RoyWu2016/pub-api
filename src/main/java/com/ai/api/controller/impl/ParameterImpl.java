@@ -600,7 +600,7 @@ public class ParameterImpl implements Parameter {
                 }
                 RedisUtil.hset("SaleImage",sicId,fileStr,RedisUtil.HOUR*24*14);
             }
-            callResult.setContent(fileStr);
+            callResult.setContent("data:image/jpg;base64,"+fileStr);
             return new ResponseEntity<>(callResult,HttpStatus.OK);
         }catch (Exception e){
             logger.error("error!!",e);
