@@ -9,7 +9,13 @@ import java.io.Serializable;
  */
 public class ProductFamilyDtoBean implements Serializable {
 
-    private String id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1730409263387710974L;
+	
+	private String id;
+    private String categoryName;
     private String categoryId;
     private String name;
 
@@ -19,6 +25,7 @@ public class ProductFamilyDtoBean implements Serializable {
         this.id = obj.getString("id");
         this.categoryId = obj.getString("categoryId");
         this.name = obj.getString("name");
+        this.categoryName = obj.getString("categoryName");
     }
 
     public String getId() {
@@ -44,4 +51,12 @@ public class ProductFamilyDtoBean implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
 }
