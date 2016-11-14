@@ -598,9 +598,10 @@ public class ParameterImpl implements Parameter {
                     callResult.setMessage("saleImage is null!");
                     return new ResponseEntity<>(callResult, HttpStatus.OK);
                 }
+                fileStr = "data:image/jpg;base64,"+fileStr;
                 RedisUtil.hset("SaleImage",sicId,fileStr,RedisUtil.HOUR*24*14);
             }
-            callResult.setContent("data:image/jpg;base64,"+fileStr);
+            callResult.setContent(fileStr);
             return new ResponseEntity<>(callResult,HttpStatus.OK);
         }catch (Exception e){
             logger.error("error!!",e);
