@@ -1,6 +1,9 @@
 package com.ai.api.controller.impl;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +24,10 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
+import com.ai.commons.util.JsonUtils;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 /***************************************************************************
  * <PRE>
@@ -51,7 +58,7 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklists", method = RequestMethod.GET)
-	public ResponseEntity<List<CKLChecklistSearchVO>> searchPrivateChecklist(@PathVariable("userId") String userId,
+	public ResponseEntity<JSONArray> searchPrivateChecklist(@PathVariable("userId") String userId,
 			@RequestParam(value = "keyword", required = false) String keyword,
 			@RequestParam(value = "pageNumber", required = false) String pageNumber) {
 		logger.info("searchChecklist ...");
@@ -60,8 +67,28 @@ public class ChecklistImpl implements Checklist {
 		logger.info("pageNumber :" + pageNumber);
 		List<CKLChecklistSearchVO> result = checklistService.searchPrivateChecklist(userId, keyword,
 				StringUtils.isBlank(pageNumber) ? 0 : Integer.valueOf(pageNumber));
+		SimpleDateFormat df = new SimpleDateFormat("dd-MMM-YYYY", Locale.ENGLISH);
+		JSONArray ja = new JSONArray();
 		if (result != null) {
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			ja = (JSONArray) JSON.toJSON(result);
+			for (int i = 0; i < ja.size(); i++) {
+				JSONObject myjObject = ja.getJSONObject(i);
+				CKLChecklistSearchVO vo = null;
+				try {
+					vo = JsonUtils.toBean(myjObject.toJSONString(), CKLChecklistSearchVO.class);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					logger.error("convert to bean error: " + e);
+					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+				String str = null;
+				if (null != vo) {
+					str = df.format(vo.getUpdateTime());
+				}
+				myjObject.put("updateTime", str);
+			}
+			return new ResponseEntity<>(ja, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}

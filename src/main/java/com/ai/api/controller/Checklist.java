@@ -1,5 +1,7 @@
 package com.ai.api.controller;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 import com.ai.commons.beans.ApiCallResult;
@@ -7,6 +9,8 @@ import com.ai.commons.beans.checklist.api.ChecklistBean;
 import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
 import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
+import com.alibaba.fastjson.JSONArray;
+
 import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
@@ -28,7 +32,7 @@ import org.springframework.http.ResponseEntity;
  ***************************************************************************/
 
 public interface Checklist {
-	ResponseEntity<List<CKLChecklistSearchVO>> searchPrivateChecklist(String userId, String keyword, String pageNumber);
+	ResponseEntity<JSONArray> searchPrivateChecklist(String userId, String keyword, String pageNumber);
 
 	ResponseEntity<List<CKLChecklistSearchVO>> searchPublicChecklist(String userId, String keyword, String pageNumber);
 
