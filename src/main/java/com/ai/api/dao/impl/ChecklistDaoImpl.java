@@ -17,6 +17,8 @@ import com.ai.commons.beans.checklist.api.ChecklistSearchCriteriaBean;
 import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
 import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
+import com.ai.commons.beans.checklist.vo.CKLDefectVO;
+import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -286,5 +288,51 @@ public class ChecklistDaoImpl implements ChecklistDao {
 
 			return temp;
 		}
+	}
+
+	@Override
+	public ApiCallResult createTest(String userId, CKLTestVO test) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getChecklistServiceUrl() + "/ws/" + userId + "/createTest");
+		ApiCallResult temp = new ApiCallResult();
+		try {
+			logger.info("requesting: " + url.toString());
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, test);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				temp.setContent(JSON.parseObject(result.getResponseString(), CKLTestVO.class));
+				return temp;
+			} else {
+				logger.error("ChecklistService error: " + result.getStatusCode() + ", "+ result.getResponseString());
+				temp.setMessage("ChecklistService error: " + result.getStatusCode() + ", "+ result.getResponseString());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			temp.setMessage(e.toString());
+			e.printStackTrace();
+		}
+		return temp;
+	}
+
+	@Override
+	public ApiCallResult createDefect(String userId, CKLDefectVO defect) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getChecklistServiceUrl() + "/ws/" + userId + "/createDefect");
+		ApiCallResult temp = new ApiCallResult();
+		try {
+			logger.info("requesting: " + url.toString());
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, defect);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				temp.setContent(JSON.parseObject(result.getResponseString(), CKLDefectVO.class));
+				return temp;
+			} else {
+				logger.error("ChecklistService error: " + result.getStatusCode() + ", "+ result.getResponseString());
+				temp.setMessage("ChecklistService error: " + result.getStatusCode() + ", "+ result.getResponseString());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			temp.setMessage(e.toString());
+			e.printStackTrace();
+		}
+		return temp;
 	}
 }

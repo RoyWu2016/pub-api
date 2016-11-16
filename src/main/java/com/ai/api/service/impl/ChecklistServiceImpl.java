@@ -15,6 +15,8 @@ import com.ai.api.service.UserService;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
+import com.ai.commons.beans.checklist.vo.CKLDefectVO;
+import com.ai.commons.beans.checklist.vo.CKLTestVO;
 
 /***************************************************************************
  * <PRE>
@@ -145,5 +147,17 @@ public class ChecklistServiceImpl implements ChecklistService {
 		// TODO Auto-generated method stub
 		return checklistDao.calculateChecklistSampleSize(productQty, sampleLevel, unit, criticalDefects, majorDefects,
 				minorDefects, piecesNumberPerSet);
+	}
+
+	@Override
+	public ApiCallResult createTest(String userId, CKLTestVO test) {
+		// TODO Auto-generated method stub
+		return checklistDao.createTest(userId,test);
+	}
+
+	@Override
+	public ApiCallResult createDefect(String userId, CKLDefectVO defect) {
+		// TODO Auto-generated method stub
+		return checklistDao.createDefect(userId,defect);
 	}
 }
