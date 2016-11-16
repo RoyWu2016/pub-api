@@ -9,6 +9,8 @@ import com.ai.commons.beans.checklist.api.ChecklistBean;
 import com.ai.commons.beans.checklist.api.SimpleChecklistBean;
 import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
+import com.ai.commons.beans.checklist.vo.CKLDefectVO;
+import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.alibaba.fastjson.JSONArray;
 
 import org.springframework.http.ResponseEntity;
@@ -52,4 +54,8 @@ public interface Checklist {
 
 	ResponseEntity<ApiCallResult> calculateChecklistSampleSize(String userId, Integer productQty, String sampleLevel,
 			String unit, String criticalDefects, String majorDefects, String minorDefects, Integer piecesNumberPerSet);
+
+	ResponseEntity<ApiCallResult> createTest(String userId, CKLTestVO test);
+
+	ResponseEntity<ApiCallResult> createDefect(String userId, CKLDefectVO defect);
 }

@@ -24,6 +24,8 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
+import com.ai.commons.beans.checklist.vo.CKLDefectVO;
+import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.util.JsonUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -253,5 +255,30 @@ public class ChecklistImpl implements Checklist {
 		} else {
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/createTest", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> createTest(@PathVariable("userId") String userId,
+			@RequestBody CKLTestVO test) {
+		logger.info("invoke: " + "/user/" + userId + "/createTest");
+		ApiCallResult result = checklistService.createTest(userId,test);
+		if(null != result.getMessage()) {
+			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+		}else {
+			return new ResponseEntity<>(result,HttpStatus.OK);
+		}
+		
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/createDefect", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> createDefect(@PathVariable("userId") String userId,
+			@RequestBody CKLDefectVO defect) {
+		logger.info("invoke: " + "/user/" + userId + "/createDefect");
+		ApiCallResult result = checklistService.createDefect(userId,defect);
+		return null;
 	}
 }

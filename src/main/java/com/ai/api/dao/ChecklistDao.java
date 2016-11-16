@@ -5,6 +5,8 @@ import java.util.List;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
+import com.ai.commons.beans.checklist.vo.CKLDefectVO;
+import com.ai.commons.beans.checklist.vo.CKLTestVO;
 
 /***************************************************************************
  * <PRE>
@@ -45,4 +47,8 @@ public interface ChecklistDao {
 
 	ApiCallResult calculateChecklistSampleSize(Integer productQty, String sampleLevel, String unit,
 			String criticalDefects, String majorDefects, String minorDefects, Integer piecesNumberPerSet);
+
+	ApiCallResult createTest(String userId, CKLTestVO test);
+
+	ApiCallResult createDefect(String userId, CKLDefectVO defect);
 }
