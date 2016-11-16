@@ -279,6 +279,10 @@ public class ChecklistImpl implements Checklist {
 			@RequestBody CKLDefectVO defect) {
 		logger.info("invoke: " + "/user/" + userId + "/createDefect");
 		ApiCallResult result = checklistService.createDefect(userId,defect);
-		return null;
+		if(null != result.getMessage()) {
+			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+		}else {
+			return new ResponseEntity<>(result,HttpStatus.OK);
+		}
 	}
 }
