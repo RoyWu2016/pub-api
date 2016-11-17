@@ -297,7 +297,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 		ApiCallResult temp = new ApiCallResult();
 		try {
 			logger.info("requesting: " + url.toString());
-			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, null);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, "");
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				temp.setContent(JSON.parseObject(result.getResponseString(), CKLTestVO.class));
 				return temp;
@@ -320,7 +320,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 		ApiCallResult temp = new ApiCallResult();
 		try {
 			logger.info("requesting: " + url.toString());
-			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, null);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, "");
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				temp.setContent(JSON.parseObject(result.getResponseString(), CKLDefectVO.class));
 				return temp;
