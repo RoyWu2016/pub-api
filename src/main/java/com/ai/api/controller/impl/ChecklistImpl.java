@@ -259,11 +259,11 @@ public class ChecklistImpl implements Checklist {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/createTest", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/createTest/{testId}", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createTest(@PathVariable("userId") String userId,
-			@RequestBody CKLTestVO test) {
+			@PathVariable("userId") String testId) {
 		logger.info("invoke: " + "/user/" + userId + "/createTest");
-		ApiCallResult result = checklistService.createTest(userId,test);
+		ApiCallResult result = checklistService.createTest(userId,testId);
 		if(null != result.getMessage()) {
 			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
 		}else {
@@ -274,11 +274,11 @@ public class ChecklistImpl implements Checklist {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/createDefect", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/createDefect/{defectId}", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createDefect(@PathVariable("userId") String userId,
-			@RequestBody CKLDefectVO defect) {
+			@PathVariable("defectId") String defectId) {
 		logger.info("invoke: " + "/user/" + userId + "/createDefect");
-		ApiCallResult result = checklistService.createDefect(userId,defect);
+		ApiCallResult result = checklistService.createDefect(userId,defectId);
 		if(null != result.getMessage()) {
 			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
 		}else {

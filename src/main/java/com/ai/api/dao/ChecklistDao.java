@@ -48,7 +48,7 @@ public interface ChecklistDao {
 	ApiCallResult calculateChecklistSampleSize(Integer productQty, String sampleLevel, String unit,
 			String criticalDefects, String majorDefects, String minorDefects, Integer piecesNumberPerSet);
 
-	ApiCallResult createTest(String userId, CKLTestVO test);
+	ApiCallResult createTest(String userId, String testId);
 
-	ApiCallResult createDefect(String userId, CKLDefectVO defect);
+	ApiCallResult createDefect(String userId, String defectId);
 }

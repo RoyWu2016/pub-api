@@ -150,14 +150,14 @@ public class ChecklistServiceImpl implements ChecklistService {
 	}
 
 	@Override
-	public ApiCallResult createTest(String userId, CKLTestVO test) {
+	public ApiCallResult createTest(String userId, String testId) {
 		// TODO Auto-generated method stub
-		return checklistDao.createTest(userId,test);
+		return checklistDao.createTest(userId,testId);
 	}
 
 	@Override
-	public ApiCallResult createDefect(String userId, CKLDefectVO defect) {
+	public ApiCallResult createDefect(String userId,  String defectId) {
 		// TODO Auto-generated method stub
-		return checklistDao.createDefect(userId,defect);
+		return checklistDao.createDefect(userId, defectId);
 	}
 }
