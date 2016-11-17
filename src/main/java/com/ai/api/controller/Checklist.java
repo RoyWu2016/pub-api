@@ -55,7 +55,7 @@ public interface Checklist {
 	ResponseEntity<ApiCallResult> calculateChecklistSampleSize(String userId, Integer productQty, String sampleLevel,
 			String unit, String criticalDefects, String majorDefects, String minorDefects, Integer piecesNumberPerSet);
 
-	ResponseEntity<ApiCallResult> createTest(String userId, CKLTestVO test);
+	ResponseEntity<ApiCallResult> createTest(String userId, String testId);
 
-	ResponseEntity<ApiCallResult> createDefect(String userId, CKLDefectVO defect);
+	ResponseEntity<ApiCallResult> createDefect(String userId, String defectId);
 }
