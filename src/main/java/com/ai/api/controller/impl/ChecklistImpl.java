@@ -261,7 +261,7 @@ public class ChecklistImpl implements Checklist {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/createTest/{testId}", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createTest(@PathVariable("userId") String userId,
-			@PathVariable("userId") String testId) {
+			@PathVariable("testId") String testId) {
 		logger.info("invoke: " + "/user/" + userId + "/createTest");
 		ApiCallResult result = checklistService.createTest(userId,testId);
 		if(null != result.getMessage()) {
