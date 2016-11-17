@@ -291,13 +291,13 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	}
 
 	@Override
-	public ApiCallResult createTest(String userId, CKLTestVO test) {
+	public ApiCallResult createTest(String userId, String testId) {
 		// TODO Auto-generated method stub
-		StringBuilder url = new StringBuilder(config.getChecklistServiceUrl() + "/ws/" + userId + "/createTest");
+		StringBuilder url = new StringBuilder(config.getChecklistServiceUrl() + "/ws/" + userId + "/createTest/" + testId);
 		ApiCallResult temp = new ApiCallResult();
 		try {
 			logger.info("requesting: " + url.toString());
-			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, test);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, null);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				temp.setContent(JSON.parseObject(result.getResponseString(), CKLTestVO.class));
 				return temp;
@@ -314,13 +314,13 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	}
 
 	@Override
-	public ApiCallResult createDefect(String userId, CKLDefectVO defect) {
+	public ApiCallResult createDefect(String userId,  String defectId) {
 		// TODO Auto-generated method stub
-		StringBuilder url = new StringBuilder(config.getChecklistServiceUrl() + "/ws/" + userId + "/createDefect");
+		StringBuilder url = new StringBuilder(config.getChecklistServiceUrl() + "/ws/" + userId + "/createDefect/" + defectId);
 		ApiCallResult temp = new ApiCallResult();
 		try {
 			logger.info("requesting: " + url.toString());
-			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, defect);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, null);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				temp.setContent(JSON.parseObject(result.getResponseString(), CKLDefectVO.class));
 				return temp;
