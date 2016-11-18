@@ -578,28 +578,28 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	@RequestMapping(value = "/parameter/sic/{sicId}/base64", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getSaleImage(@PathVariable("sicId") String sicId,
+	@RequestMapping(value = "/parameter/sic/{sicName}/base64", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> getSaleImage(@PathVariable("sicName") String sicName,
                                                       @RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 
-        logger.info("getSaleImage  sicId:["+sicId+"]  | refresh:["+refresh+"]");
+        logger.info("getSaleImage  sicId:["+sicName+"]  | refresh:["+refresh+"]");
         ApiCallResult callResult = new ApiCallResult();
 	    try {
             String fileStr = null;
             if (!refresh){
                 logger.info("try to get saleImage from redis...");
-                fileStr = RedisUtil.hget("SaleImage",sicId);
+                fileStr = RedisUtil.hget("SaleImage",sicName);
             }
             if (StringUtils.isBlank(fileStr)){
                 logger.info("get saleImage from parameterService ...");
-                fileStr =  parameterService.getSaleImage(sicId);
+                fileStr =  parameterService.getSaleImage(sicName);
                 if (StringUtils.isBlank(fileStr)){
                     logger.error("saleImage is null!");
                     callResult.setMessage("saleImage is null!");
                     return new ResponseEntity<>(callResult, HttpStatus.OK);
                 }
                 fileStr = "data:image/jpg;base64,"+fileStr;
-                RedisUtil.hset("SaleImage",sicId,fileStr,RedisUtil.HOUR*24*14);
+                RedisUtil.hset("SaleImage",sicName,fileStr,RedisUtil.HOUR*24*14);
             }
             callResult.setContent(fileStr);
             return new ResponseEntity<>(callResult,HttpStatus.OK);

@@ -452,16 +452,19 @@ public class ParameterDaoImpl implements ParameterDao {
 	}
 
 	@Override
-	public String getSaleImage(String sicId) {
+	public String getSaleImage(String sicName) {
 		StringBuilder url = new StringBuilder(config.getParamServiceUrl());
 		String fileStr = null;
 		try {
-            url.append("/sales/salespicture/detail/").append(sicId);
+            url.append("/sales/salespicture/").append(URLEncoder.encode(sicName,"UTF-8"));
+            LOGGER.info("requesting: " + url.toString());
             GetRequest request = GetRequest.newInstance().setUrl(url.toString());
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 JSONObject object = JSONObject.parseObject(result.getResponseString());
-                fileStr= (String) object.get("sicPicFile");
+                if(null != object) {
+                	fileStr= (String) object.get("sicPicFile");
+                }
             }
 		} catch (Exception e) {
 			LOGGER.error("ERROR from-Dao[getSaleImage]", e);
