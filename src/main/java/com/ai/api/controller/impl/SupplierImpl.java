@@ -187,7 +187,7 @@ public class SupplierImpl implements Supplier {
 		logger.info("orderId:" + orderId);
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-			InspectionBookingBean orderBean = orderService.getOrderDetail("nullUserId", orderId);
+			InspectionBookingBean orderBean = orderService.getInspectionOrder("nullUserId", orderId);
 			if (orderBean != null && orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode() != null) {
 				String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
 				String pw = MD5.toMD5(validateCode);
@@ -274,7 +274,7 @@ public class SupplierImpl implements Supplier {
 		inspectionDateString = DateUtils.toStringWithAINewInteral(inspectionDateString);
 		containReadyTime = DateUtils.toStringWithAINewInteral(containReadyTime);
 		if (null == cachePassword) {
-			orderBean = orderService.getOrderDetail("nullUserId", orderId);
+			orderBean = orderService.getInspectionOrder("nullUserId", orderId);
 		}
 		try {
 			if (orderBean != null) {
@@ -333,7 +333,7 @@ public class SupplierImpl implements Supplier {
 		String cachePassword = RedisUtil.hget("passwordCache", orderId);
 		InspectionBookingBean orderBean = null;
 		if (null == cachePassword) {
-			orderBean = orderService.getOrderDetail("nullUserId", orderId);
+			orderBean = orderService.getInspectionOrder("nullUserId", orderId);
 		}
 		if (orderBean != null) {
 			String validateCode = orderBean.getOrder().getOrderGeneralInfo().getSupplierValidateCode();
