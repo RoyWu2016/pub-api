@@ -61,6 +61,6 @@ public interface ParameterDao {
 	
 	List<ClassifiedBean> getAiOffices(boolean refresh);
 
-	String getSaleImage(String sicId);
+	String getSaleImage(String sicName);
 
 }
