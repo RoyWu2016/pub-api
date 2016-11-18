@@ -369,4 +369,26 @@ public class OrderDaoImpl implements OrderDao {
 
 	}
 
+	@Override
+	public InspectionBookingBean getInspectionOrder(String string, String orderId) {
+		// TODO Auto-generated method stub
+		try {
+			String url = config.getPsiServiceUrl() + "/order/api/getInspectionOrder/" + string + "/" + orderId;
+			logger.info("Get!!! url :" + url);
+			GetRequest request = GetRequest.newInstance().setUrl(url);
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", InspectionBookingBean.class);
+			} else {
+				logger.error("getOrder error from psi service : " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+			}
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
+
 }

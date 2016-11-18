@@ -62,4 +62,6 @@ public interface OrderDao {
 	ApiCallResult getOrderActionCancel(String orderId);
 
     ApiCallResult getOrderPrice(String userId, String compId, String parentId, String orderId);
+
+	InspectionBookingBean getInspectionOrder(String string, String orderId);
 }

@@ -69,4 +69,6 @@ public interface OrderService {
 	ApiCallResult getOrderActionEdit(String orderId);
 
 	ApiCallResult getOrderPrice(String userId, String orderId);
+
+	InspectionBookingBean getInspectionOrder(String string, String orderId);
 }

@@ -449,6 +449,12 @@ public class OrderServiceImpl implements OrderService {
 	    return orderDao.getOrderPrice(userId,companyId,parentId,orderId);
     }
 
+	@Override
+	public InspectionBookingBean getInspectionOrder(String string, String orderId) {
+		// TODO Auto-generated method stub
+		return orderDao.getInspectionOrder(string,orderId);
+	}
+
 	/*
 	 * private List<OrderSearchBean> searchPSIOrders(String userId, String
 	 * compId, String parentId, String serviceType, String startDate, String
