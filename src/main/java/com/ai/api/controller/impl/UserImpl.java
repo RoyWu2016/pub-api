@@ -277,13 +277,15 @@ public class UserImpl implements User {
 			object.remove("modifiedBy");
 			object.remove("modifiedDate");
             try {
-                JSONObject role = object.getJSONArray("roles").getJSONObject(0);
-//            JSONObject role = roles.getJSONObject(0);
-                role.remove("createTime");
-                role.remove("updateTime");
-                role.remove("roleId");
-                role.remove("moduleId");
-                role.remove("moduleName");
+                JSONArray roles = object.getJSONArray("roles");
+                for (int i=0;i<roles.size();i++) {
+                    JSONObject role = roles.getJSONObject(i);
+                    role.remove("createTime");
+                    role.remove("updateTime");
+                    role.remove("roleId");
+                    role.remove("moduleId");
+                    role.remove("moduleName");
+                }
             }catch (Exception e){
 
             }
