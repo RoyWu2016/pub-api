@@ -395,6 +395,7 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			}
 		}
 		StringBuilder sb = new StringBuilder(config.getSsoUserServiceUrl() + "/user/" + employeeId);
+        sb.append("?deep=true");
 		GetRequest request = GetRequest.newInstance().setUrl(sb.toString());
 		try {
 			if (null == generalUserBean) {

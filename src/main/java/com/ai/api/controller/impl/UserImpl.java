@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -275,6 +276,17 @@ public class UserImpl implements User {
 			object.remove("reportTos");
 			object.remove("modifiedBy");
 			object.remove("modifiedDate");
+            try {
+                JSONObject role = object.getJSONArray("roles").getJSONObject(0);
+//            JSONObject role = roles.getJSONObject(0);
+                role.remove("createTime");
+                role.remove("updateTime");
+                role.remove("roleId");
+                role.remove("moduleId");
+                role.remove("moduleName");
+            }catch (Exception e){
+
+            }
 			return new ResponseEntity<>(object, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
