@@ -41,7 +41,7 @@ public interface ParameterService {
 
 	ChinaTimeBean getChinaTime();
 
-	String getSaleImage(String sicName);
+	String getSaleImage(String sicId);
 
 	boolean isACAUser(String userName);
 
