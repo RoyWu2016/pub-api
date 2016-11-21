@@ -579,7 +579,7 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	@RequestMapping(value = "/parameter/sic/{sicId}/base64", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getSaleImage(@PathVariable("sicName") String sicId,
+	public ResponseEntity<ApiCallResult> getSaleImage(@PathVariable("sicId") String sicId,
                                                       @RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 
         logger.info("getSaleImage  sicId:["+sicId+"]  | refresh:["+refresh+"]");
