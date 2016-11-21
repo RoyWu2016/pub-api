@@ -158,7 +158,8 @@ public class UserServiceImpl implements UserService {
 		user.setLogin(userBean.getLogin());
 		user.setStatus(userBean.getStatusText());
 		user.setBusinessUnit(AIUtil.getCompanyBusinessUnit(companyEntireBean, extrabean));
-
+		user.setRate(companyEntireBean.getRate());
+		
 		List<CrmSaleInChargeBean> sales = companyEntireBean.getSales();
 		if (sales != null && sales.size() > 0) {
 			for (CrmSaleInChargeBean saleBean : sales) {

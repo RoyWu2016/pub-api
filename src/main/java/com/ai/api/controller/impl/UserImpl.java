@@ -77,7 +77,7 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
-	public ResponseEntity<UserBean> getUserProfile(@PathVariable("userId") String userId,
+	public ResponseEntity<JSONObject> getUserProfile(@PathVariable("userId") String userId,
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) throws IOException, AIException {
 
 		if (userId == null) {
@@ -104,7 +104,13 @@ public class UserImpl implements User {
 		}
 
 		logger.info("......finish getting user profile.......");
-		return new ResponseEntity<>(cust, HttpStatus.OK);
+		JSONObject result = JSON.parseObject(JSON.toJSONString(cust));
+		JSONObject rateObj = result.getJSONObject("rate");
+		rateObj.remove("countryPricingRates");
+		rateObj.remove("labTestRate");
+		rateObj.remove("createTime");
+		rateObj.remove("createTime");
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	@Override
