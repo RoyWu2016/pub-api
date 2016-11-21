@@ -277,6 +277,7 @@ public class UserImpl implements User {
 			object.remove("modifiedBy");
 			object.remove("modifiedDate");
             try {
+                object.remove("groups");
                 JSONArray roles = object.getJSONArray("roles");
                 for (int i=0;i<roles.size();i++) {
                     JSONObject role = roles.getJSONObject(i);
