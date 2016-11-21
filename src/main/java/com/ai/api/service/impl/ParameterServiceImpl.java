@@ -106,8 +106,8 @@ public class ParameterServiceImpl implements ParameterService {
     }
 
     @Override
-    public String getSaleImage(String sicName){
-        return paramDao.getSaleImage(sicName);
+    public String getSaleImage(String sicId){
+        return paramDao.getSaleImage(sicId);
     }
 
     @Override
