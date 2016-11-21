@@ -81,7 +81,7 @@ public interface User {
 
 	ResponseEntity<JSONObject> getEmployeeProfile(String employeeId, boolean refresh) throws IOException, AIException;
 
-	ResponseEntity<UserBean> getUserProfile(String userId, boolean refresh) throws IOException, AIException;
+	ResponseEntity<JSONObject> getUserProfile(String userId, boolean refresh) throws IOException, AIException;
 
 	ResponseEntity<ApiCallResult> resetPassword(String login);
 }

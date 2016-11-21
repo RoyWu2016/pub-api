@@ -2,6 +2,8 @@ package com.ai.api.bean;
 
 import java.io.Serializable;
 
+import com.ai.commons.beans.customer.RateBean;
+
 /**
  *
  */
@@ -31,8 +33,18 @@ public class UserBean implements Serializable {
     private PreferencesBean preferences;
 
     private Payment payment;
+    
+    private RateBean rate;
 
-    public String getId() {
+    public RateBean getRate() {
+		return rate;
+	}
+
+	public void setRate(RateBean rate) {
+		this.rate = rate;
+	}
+
+	public String getId() {
         return id;
     }
 
