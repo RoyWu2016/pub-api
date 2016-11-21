@@ -456,7 +456,7 @@ public class ParameterDaoImpl implements ParameterDao {
 		StringBuilder url = new StringBuilder(config.getParamServiceUrl());
 		String fileStr = null;
 		try {
-            url.append("/sales/salespicture/detail").append(URLEncoder.encode(sicId,"UTF-8"));
+            url.append("/sales/salespicture/detail/").append(URLEncoder.encode(sicId,"UTF-8"));
             LOGGER.info("requesting: " + url.toString());
             GetRequest request = GetRequest.newInstance().setUrl(url.toString());
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
