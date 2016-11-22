@@ -287,18 +287,21 @@ public class OrderDaoImpl implements OrderDao {
 	@Override
 	public ApiCallResult getOrderActionEdit(String orderId) {
 		// TODO Auto-generated method stub
-		StringBuilder editableurl  = new StringBuilder(config.getPsiServiceUrl() + "/order/api/actionCheck/" + orderId + "/edit");
+		StringBuilder editableurl = new StringBuilder(
+				config.getPsiServiceUrl() + "/order/api/actionCheck/" + orderId + "/edit");
 		GetRequest request = GetRequest.newInstance().setUrl(editableurl.toString());
 		ApiCallResult temp = new ApiCallResult();
 		try {
 			logger.info("requesting url: " + editableurl.toString());
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-			if(result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				temp = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 				return temp;
-			}else {
-				logger.error("getOrderActionEdit from psi-service error: " + result.getStatusCode() + ", " + result.getResponseString() );
-				temp.setMessage("getOrderActionEdit from psi-service error: " + result.getStatusCode() + ", "+ result.getResponseString());
+			} else {
+				logger.error("getOrderActionEdit from psi-service error: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+				temp.setMessage("getOrderActionEdit from psi-service error: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
 
 				return temp;
 			}
@@ -315,18 +318,21 @@ public class OrderDaoImpl implements OrderDao {
 	@Override
 	public ApiCallResult getOrderActionCancel(String orderId) {
 		// TODO Auto-generated method stub
-		StringBuilder cancelablerurl  = new StringBuilder(config.getPsiServiceUrl() + "/order/api/actionCheck/" + orderId + "/cancel");
+		StringBuilder cancelablerurl = new StringBuilder(
+				config.getPsiServiceUrl() + "/order/api/actionCheck/" + orderId + "/cancel");
 		GetRequest request = GetRequest.newInstance().setUrl(cancelablerurl.toString());
 		ApiCallResult temp = new ApiCallResult();
 		try {
 			logger.info("requesting url: " + cancelablerurl.toString());
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-			if(result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				temp = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 				return temp;
-			}else {
-				logger.error("getOrderActionCancel from psi-service error: " + result.getStatusCode() + ", " + result.getResponseString() );
-				temp.setMessage("getOrderActionCancel from psi-service error: " + result.getStatusCode() + ", "+ result.getResponseString());
+			} else {
+				logger.error("getOrderActionCancel from psi-service error: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+				temp.setMessage("getOrderActionCancel from psi-service error: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
 
 				return temp;
 			}
@@ -346,21 +352,22 @@ public class OrderDaoImpl implements OrderDao {
 
 			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 			url.append("/order/api/orderPricing?userId=").append(userId);
-            url.append("&companyId=").append(compId);
-            url.append("&parentId=").append(parentId);
-            url.append("&orderId=").append(orderId);
+			url.append("&companyId=").append(compId);
+			url.append("&parentId=").append(parentId);
+			url.append("&orderId=").append(orderId);
 
 			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                ApiCallResult apiCallResult = JsonUtil.mapToObject(result.getResponseString(),ApiCallResult.class);
+				ApiCallResult apiCallResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 				return apiCallResult;
 
 			} else {
-				logger.error("searchOrders from PSI error: " + result.getStatusCode() + ", " + result.getResponseString());
+				logger.error(
+						"searchOrders from PSI error: " + result.getStatusCode() + ", " + result.getResponseString());
 			}
 
-		}catch(IOException e){
+		} catch (IOException e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
 
 		}
@@ -389,6 +396,33 @@ public class OrderDaoImpl implements OrderDao {
 			logger.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
+	}
+
+	@Override
+	public ApiCallResult reInspection(String userId, String companyId, String parentId, String orderId,
+			String draftId) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/order/api/reInspection");
+		url.append("?userId=" + userId).append("&companyId=" + companyId).append("&parentId=" + parentId)
+				.append("&orderId=" + orderId).append("&draftId=" + draftId);
+		ApiCallResult temp = new ApiCallResult();
+		logger.info("requesting: " + url.toString());
+		try {
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, "");
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			} else {
+				logger.error("getOrder error from psi service : " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+				temp.setMessage("getOrder error from psi service : " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(ExceptionUtils.getStackTrace(e));
+			temp.setMessage(e.toString());
+		}
+		return temp;
 	}
 
 }

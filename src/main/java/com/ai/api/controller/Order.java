@@ -67,6 +67,8 @@ public interface Order {
 	ResponseEntity<Map<String, String>> exportOrders(String userId, String serviceType, String startDate,
 			String endDate, String orderStatus);
 
+	ResponseEntity<ApiCallResult> reInspection(String userId, String orderId, String draftId);
+
 //	ResponseEntity<Map<String, ApiCallResult>> getOrderAction(String userId, String orderId);
 
 }
