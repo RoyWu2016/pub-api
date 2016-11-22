@@ -61,8 +61,8 @@ public interface OrderService {
 	public List<OrderSearchBean> searchLTOrders(String userId, String serviceType, String orderStatus, String pageSize,
 			String pageNumber) throws IOException, AIException;
 
-	InputStream exportOrders(String userId, String serviceType, String startDate, String endDate, String keyword, String inspectionPeriod)
-			throws IOException, AIException;
+	InputStream exportOrders(String userId, String serviceType, String startDate, String endDate, String keyword,
+			String inspectionPeriod) throws IOException, AIException;
 
 	ApiCallResult getOrderActionCancel(String orderId);
 
@@ -71,4 +71,6 @@ public interface OrderService {
 	ApiCallResult getOrderPrice(String userId, String orderId);
 
 	InspectionBookingBean getInspectionOrder(String string, String orderId);
+
+	ApiCallResult reInspection(String userId, String orderId, String draftId);
 }

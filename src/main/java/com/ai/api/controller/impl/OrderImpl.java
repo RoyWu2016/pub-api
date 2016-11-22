@@ -17,8 +17,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -46,6 +44,8 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import io.swagger.annotations.ApiOperation;
@@ -112,7 +112,7 @@ public class OrderImpl implements Order {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getOrderDetail(@PathVariable("userId") String userId,
-														@PathVariable("orderId") String orderId) {
+			@PathVariable("orderId") String orderId) {
 		if (userId == null || userId.isEmpty() || orderId == null || orderId.isEmpty()) {
 			logger.error("userId:" + userId + ", orderId:" + orderId + " can't be null!");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -124,38 +124,38 @@ public class OrderImpl implements Order {
 			logger.info("orderId:" + orderId);
 			InspectionBookingBean orderBean = orderService.getOrderDetail(userId, orderId);
 			if (orderBean != null) {
-                JSONObject jsonObject = (JSONObject)JSON.toJSON(orderBean);
-			    try {
-                    callResult = orderService.getOrderPrice(userId, orderId);
-                    jsonObject.put("orderPrice",callResult.getContent());
-                    
-                }catch (Exception e){
-                    logger.error("error occurred! getOrderPrice failed",e);
-                    jsonObject.put("orderPrice",null);
-                }
-			    try{
-                    callResult = orderService.getOrderActionEdit(orderId);
-                    jsonObject.put("editable",callResult.getContent());
-                    
-                    callResult = orderService.getOrderActionCancel(orderId);
-                    jsonObject.put("cancelable",callResult.getContent());
-			    }catch (Exception e) {
-			    	 logger.error("error occurred! getOrderAction failed",e);
-			    	 jsonObject.put("editable",null);
-			    	 jsonObject.put("cancelable",null);
-			    }
-                callResult.setContent(jsonObject);
+				JSONObject jsonObject = (JSONObject) JSON.toJSON(orderBean);
+				try {
+					callResult = orderService.getOrderPrice(userId, orderId);
+					jsonObject.put("orderPrice", callResult.getContent());
+
+				} catch (Exception e) {
+					logger.error("error occurred! getOrderPrice failed", e);
+					jsonObject.put("orderPrice", null);
+				}
+				try {
+					callResult = orderService.getOrderActionEdit(orderId);
+					jsonObject.put("editable", callResult.getContent());
+
+					callResult = orderService.getOrderActionCancel(orderId);
+					jsonObject.put("cancelable", callResult.getContent());
+				} catch (Exception e) {
+					logger.error("error occurred! getOrderAction failed", e);
+					jsonObject.put("editable", null);
+					jsonObject.put("cancelable", null);
+				}
+				callResult.setContent(jsonObject);
 				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			} else {
-			    callResult.setMessage("can't get order by orderId:"+orderId);
-				return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+				callResult.setMessage("can't get order by orderId:" + orderId);
+				return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
 			logger.error("error in getOrderDetail", e);
 			e.printStackTrace();
-            callResult.setMessage("convert bean to json failed!"+e.toString());
+			callResult.setMessage("convert bean to json failed!" + e.toString());
 		}
-		return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override
@@ -351,22 +351,18 @@ public class OrderImpl implements Order {
 		}
 	}
 
-//	@Override
-//	@TokenSecured
-//	@RequestMapping(value = "/user/{userId}/order/{orderId}/editable-cancelable", method = RequestMethod.GET)
-//	public ResponseEntity<Map<String,ApiCallResult>> getOrderAction(@PathVariable("userId") String userId,
-//			@PathVariable("orderId") String orderId) {
-//		logger.info("invoke: " + "/user/" + userId + "/order/" + orderId + "/editable-cancelable");
-//		Map<String,ApiCallResult> result = new HashMap<>();
-//		ApiCallResult editReslut = orderService.getOrderActionEdit(orderId);
-//		ApiCallResult cancelReslut = orderService.getOrderActionCancel(orderId);
-//		result.put("editable", editReslut);
-//		result.put("cancelable", cancelReslut);
-//		if(null == editReslut.getMessage() && null == cancelReslut.getMessage()) {
-//			return new ResponseEntity<>(result,HttpStatus.OK);
-//		}else {
-//			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-//
-//	}
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/order/{orderId}/draft/{draftId}/re-inspection", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> reInspection(@PathVariable("userId") String userId,
+			@PathVariable("orderId") String orderId, @PathVariable("draftId") String draftId) {
+		logger.info("invoke: " + "/user/" + userId + "/order/" + orderId + "/draft/" + draftId + "/re-inspection");
+		ApiCallResult result = orderService.reInspection(userId, orderId, draftId);
+		if(null == result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 }
