@@ -64,4 +64,10 @@ public class FactoryServiceImpl implements FactoryService {
 		return factoryDao.supplierConfirmOrder(orderId,inspectionDateString,containReadyTime,orderFactoryBean);
 	}
 
+	@Override
+	public OrderFactoryBean getOrderFactory(String supplierId) {
+		// TODO Auto-generated method stub
+		return factoryDao.getOrderFactory(supplierId);
+	}
+
 }

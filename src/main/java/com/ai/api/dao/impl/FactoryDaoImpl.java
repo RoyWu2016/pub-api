@@ -44,7 +44,7 @@ public class FactoryDaoImpl implements FactoryDao {
 	@Autowired
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
-	
+
 	@Autowired
 	private UserService userService;
 
@@ -200,12 +200,12 @@ public class FactoryDaoImpl implements FactoryDao {
 			clientFactoryBean.setSupplierNbEmployees(supplierDetailBean.getNoOfEmployees());
 
 			clientFactoryBean.setCustId(supplierDetailBean.getUserId());
-			
+
 			String login = userService.getLoginByUserId(supplierDetailBean.getUserId());
-			if(null != login) {
+			if (null != login) {
 				clientFactoryBean.setCustLogin(login);
 			}
-			
+
 			if (supplierDetailBean.getContactInfo() != null) {
 				clientFactoryBean.setSupplierQualityManager(supplierDetailBean.getContactInfo().getAlternate());
 				clientFactoryBean.setSupplierManager(supplierDetailBean.getContactInfo().getMain());
@@ -296,7 +296,8 @@ public class FactoryDaoImpl implements FactoryDao {
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return JsonUtil.mapToObject(result.getResponseString(), String.class);
 			} else {
-				LOGGER.error("create Supplier from factory service error: " + result.getStatusCode() + ", "+ result.getResponseString());
+				LOGGER.error("create Supplier from factory service error: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
 			}
 		} catch (IOException e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
@@ -309,31 +310,55 @@ public class FactoryDaoImpl implements FactoryDao {
 			OrderFactoryBean orderFactoryBean) {
 		// TODO Auto-generated method stub
 		StringBuilder sbUrl = new StringBuilder(config.getPsiServiceUrl() + "/order/api/supplierConfirmOrder")
-		.append("?orderId=" + orderId)
-		.append("&inspectionDateString=" + inspectionDateString)
-		.append("&containReadyTime=" + containReadyTime);
-		
+				.append("?orderId=" + orderId).append("&inspectionDateString=" + inspectionDateString)
+				.append("&containReadyTime=" + containReadyTime);
+
 		LOGGER.info("requesting url: " + sbUrl.toString());
 		ApiCallResult temp = new ApiCallResult();
-		try{
+		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(sbUrl.toString(), null, orderFactoryBean);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				JSONObject object = JSONObject.parseObject(result.getResponseString());
 				return JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 			} else {
-				LOGGER.error("supplierConfirmOrder factory service error: " + result.getStatusCode() + ", "+ result.getResponseString());
-				temp.setMessage("supplierConfirmOrder factory service error: " + result.getStatusCode() + ", "+ result.getResponseString());
+				LOGGER.error("supplierConfirmOrder factory service error: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+				temp.setMessage("supplierConfirmOrder factory service error: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
 				temp.setContent(false);
-				
+
 				return temp;
 			}
-		}catch (IOException e) {
+		} catch (IOException e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 			temp.setMessage(e.toString());
 			temp.setContent(false);
-			
+
 			return temp;
 		}
-		
+
+	}
+
+	@Override
+	public OrderFactoryBean getOrderFactory(String supplierId) {
+		// TODO Auto-generated method stub
+		try {
+			StringBuilder url = new StringBuilder(
+					config.getPsiServiceUrl() + "/order/api/supplierFactory/" + supplierId);
+			LOGGER.info("Get!!! url :" + url);
+			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", OrderFactoryBean.class);
+			} else {
+				LOGGER.error("getOrder error from psi service : " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+			}
+		} catch (Exception e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
 	}
 }
