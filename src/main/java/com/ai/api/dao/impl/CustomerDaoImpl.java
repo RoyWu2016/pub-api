@@ -8,7 +8,6 @@ package com.ai.api.dao.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,26 +17,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.ai.api.bean.EmployeeBean;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.dao.CustomerDao;
-import com.ai.api.util.RedisUtil;
-import com.ai.commons.HttpUtil;
-import com.ai.commons.JsonUtil;
-import com.ai.commons.StringUtils;
-import com.ai.commons.beans.GetRequest;
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.PageParamBean;
-import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.customer.DashboardBean;
-import com.ai.commons.beans.customer.GeneralUserViewBean;
-import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
-import com.ai.commons.beans.payment.PaymentSearchResultBean;
-import com.ai.commons.beans.payment.api.PaymentActionLogBean;
-import com.ai.commons.beans.user.GeneralUserBean;
-import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -56,6 +35,28 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.ai.api.bean.EmployeeBean;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.dao.CustomerDao;
+import com.ai.api.util.RedisUtil;
+import com.ai.commons.HttpUtil;
+import com.ai.commons.JsonUtil;
+import com.ai.commons.StringUtils;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.GetRequest;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.customer.DashboardBean;
+import com.ai.commons.beans.customer.GeneralUserViewBean;
+import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import com.ai.commons.beans.payment.api.PaymentActionLogBean;
+import com.ai.commons.beans.user.GeneralUserBean;
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /***************************************************************************
  * <PRE>
@@ -342,27 +343,33 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	}
 
 	@Override
-	public List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String parentId, String orders) {
+	public ApiCallResult generateGlobalPayment(String userId, String parentId, String companyId, String paymentType,
+			String orderIds) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/payment/api/global-payment-list");
-		url.append("?parentId=" + parentId);
-		logger.info("requesting url: " + url.toString());
-		String[] ids = orders.split(",");
-		List<String> oderIds = new ArrayList<String>();
-		oderIds = Arrays.asList(ids);
+		url.append("?userId=" + userId).append("&paymentType=" + paymentType).append("&companyId=" + companyId)
+				.append("&parentId=" + parentId);
+		ApiCallResult temp = new ApiCallResult();
+		logger.info("requesting: " + url.toString());
 		try {
-			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, oderIds);
+			String[] tempStr = orderIds.split(",");
+			List<String> list = Arrays.asList(tempStr);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, list);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return JsonUtil.mapToObject(result.getResponseString(),
+				temp.setContent(JsonUtil.mapToObject(result.getResponseString(),
 						new TypeReference<List<GlobalPaymentInfoBean>>() {
-						});
+						}));
+				return temp;
 			} else {
 				logger.error("save draft error from psi service : " + result.getStatusCode() + ", "
 						+ result.getResponseString());
+				temp.setMessage("save draft error from psi service : " + result.getStatusCode() + ", "
+						+ result.getResponseString());
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
+			temp.setMessage("Exception: " + e.toString());
 		}
-		return null;
+		return temp;
 	}
 
 	@Override
@@ -395,7 +402,7 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			}
 		}
 		StringBuilder sb = new StringBuilder(config.getSsoUserServiceUrl() + "/user/" + employeeId);
-        sb.append("?deep=true");
+		sb.append("?deep=true");
 		GetRequest request = GetRequest.newInstance().setUrl(sb.toString());
 		try {
 			if (null == generalUserBean) {
@@ -479,12 +486,13 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 		// TODO Auto-generated method stub
 		try {
 			String loginCode = URLEncoder.encode(login, "UTF-8");
-			StringBuilder url = new StringBuilder(config.getCustomerServiceUrl() + "/customer-legacy/get-lost-login-password-new");
+			StringBuilder url = new StringBuilder(
+					config.getCustomerServiceUrl() + "/customer-legacy/get-lost-login-password-new");
 			url.append("?login=" + loginCode).append("&email=" + "");
 			LOGGER.info("requesting url: " + url.toString());
 			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-			
+
 			return result;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

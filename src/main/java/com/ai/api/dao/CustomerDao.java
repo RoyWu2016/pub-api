@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ai.api.bean.EmployeeBean;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
@@ -45,8 +46,6 @@ public interface CustomerDao {
 
 	boolean reissueProFormaInvoice(String userId, String login, String orders);
 
-	List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String login, String orders);
-
 	boolean logPaymentAction(String userId, PaymentActionLogBean logBean);
 
 	EmployeeBean getEmployeeProfile(String employeeId, boolean refresh);
@@ -56,4 +55,7 @@ public interface CustomerDao {
 	DashboardBean getUserDashboard(String userId, String parentId, String companyId, String startDate, String endDate);
 
 	ServiceCallResult resetPassword(String login);
+
+	ApiCallResult generateGlobalPayment(String userId, String parentId, String companyId, String paymentType,
+			String orderIds);
 }

@@ -3,16 +3,19 @@ package com.ai.api.controller;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.http.ResponseEntity;
+
 import com.ai.api.exception.AIException;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
-import com.ai.commons.beans.payment.api.PaymentItemParamBean;
 import com.ai.commons.beans.payment.api.PaypalInfoBean;
-import org.springframework.http.ResponseEntity;
 
-import javax.servlet.http.HttpServletResponse;
+import src.main.java.com.ai.commons.beans.payment.PaymentPaidBean;
 
 /***************************************************************************
  * <PRE>
@@ -40,14 +43,14 @@ public interface Payment {
 
 	ResponseEntity<Boolean> reissueProFormaInvoice(String userId, String orders);
 
-	ResponseEntity<List<GlobalPaymentInfoBean>> generateGlobalPayment(String userId, String orders);
-
 	ResponseEntity<Boolean> logPaymentAction(String userId, PaymentActionLogBean logBean);
 
 	ResponseEntity<String> downloadProformaInvoicePDF(String userId, String invoiceId,
 			HttpServletResponse httpResponse);
 
-	ResponseEntity<Boolean> markAsPaid(String userId, PaymentItemParamBean paymentItemParamBean);
-
 	ResponseEntity<List<PaypalInfoBean>> getPaypalPayment(String userId, String orders);
+
+	ResponseEntity<ApiCallResult> markAsPaid(String userId, PaymentPaidBean orders);
+
+	ResponseEntity<ApiCallResult> generateGlobalPayment(String userId, String paymentType, String orderIds);
 }
