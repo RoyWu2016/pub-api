@@ -63,9 +63,6 @@ import com.ai.api.util.AIUtil;
 import com.ai.api.util.BASE64DecodedMultipartFile;
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.StringUtils;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.ApproverBean;
 import com.ai.commons.beans.customer.CompanyEntireBean;
@@ -84,8 +81,6 @@ import com.ai.commons.beans.customer.RejectCategoryReasonBean;
 import com.ai.commons.beans.customer.RelevantCategoryInfoBean;
 import com.ai.commons.beans.customer.ReportCertificateBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.ai.commons.beans.payment.PaymentSearchResultBean;
-import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -873,50 +868,6 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public PageBean<PaymentSearchResultBean> searchPaymentList(PageParamBean criteria, String userId, String paid)
-			throws IOException, AIException {
-		UserBean userBean = this.getCustById(userId);
-		String parentId = "";
-		String companyId = "";
-		if (null != userBean) {
-			parentId = userBean.getCompany().getParentCompanyId();
-			if (null == parentId) {
-				parentId = "";
-			}
-			companyId = userBean.getCompany().getId();
-		}
-		return customerDao.searchPaymentList(criteria, userId, parentId, companyId, paid);
-	}
-
-	@Override
-	public String createProformaInvoice(String userId, String orders) {
-		String login = this.getLoginByUserId(userId);// customerDao.getGeneralUser(userId).getLogin();
-		return customerDao.createProformaInvoice(userId, login, orders);
-	}
-
-	@Override
-	public boolean reissueProFormaInvoice(String userId, String orders) {
-		String login = this.getLoginByUserId(userId);// customerDao.getGeneralUser(userId).getLogin();
-		return customerDao.reissueProFormaInvoice(userId, login, orders);
-	}
-
-	@Override
-	public ApiCallResult generateGlobalPayment(String userId, String paymentType, String orderIds)
-			throws IOException, AIException {
-		UserBean userBean = this.getCustById(userId);
-		String parentId = "";
-		String companyId = "";
-		if (null != userBean) {
-			parentId = userBean.getCompany().getParentCompanyId();
-			if (null == parentId) {
-				parentId = "";
-			}
-			companyId = userBean.getCompany().getId();
-		}
-		return customerDao.generateGlobalPayment(userId, parentId, companyId, paymentType, orderIds);
-	}
-
-	@Override
 	public String getLoginByUserId(String userId) {
 		// RedisUtil redisUtil = RedisUtil.getInstance();
 		// String jsonStr = redisUtil.get(userId);
@@ -938,34 +889,6 @@ public class UserServiceImpl implements UserService {
 		}
 		return login;
 
-	}
-
-	// @Override
-	// public String getCompanyIdByUserId(String userId) throws IOException,
-	// AIException {
-	// //RedisUtil redisUtil = RedisUtil.getInstance();
-	// //String jsonStr = redisUtil.get(userId);
-	//
-	// String jsonStr = RedisUtil.get(userId);
-	//
-	// String companyId = null;
-	// if (StringUtils.isNotBlank(jsonStr)){
-	//// UserBean d = JsonUtil.mapToObject(jsonStr, UserBean.class);
-	// UserBean user = JSON.parseObject(jsonStr, UserBean.class);
-	//// companyId = d.getCompany().getId();
-	// companyId =
-	// JSON.parseObject(jsonStr).getJSONObject("company").getString("id");
-	// }
-	// if (StringUtils.isBlank(companyId)){
-	// UserBean userBean = this.getCustById(userId);
-	// companyId = userBean.getCompany().getId();
-	// }
-	// return companyId;
-	// }
-
-	@Override
-	public boolean logPaymentAction(String userId, PaymentActionLogBean logBean) {
-		return customerDao.logPaymentAction(userId, logBean);
 	}
 
 	@Override

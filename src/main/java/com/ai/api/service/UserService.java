@@ -20,14 +20,9 @@ import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.ai.commons.beans.payment.PaymentSearchResultBean;
-import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 
 /***************************************************************************
  * <PRE>
@@ -75,18 +70,9 @@ public interface UserService {
 
 	boolean createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
 
-	PageBean<PaymentSearchResultBean> searchPaymentList(PageParamBean criteria, String userId, String paid)
-			throws IOException, AIException;
-
 	String getCompanyLogo(String companyId);
 
 	boolean updateCompanyLogo(final String userId, final String compId, CompanyLogoBean logoBean);
-
-	String createProformaInvoice(String userId, String orders);
-
-	boolean reissueProFormaInvoice(String userId, String orders);
-
-	boolean logPaymentAction(String userId, PaymentActionLogBean logBean);
 
 	String getLoginByUserId(String userId);
 
@@ -98,9 +84,4 @@ public interface UserService {
 
 	ServiceCallResult resetPassword(String login);
 
-	ApiCallResult generateGlobalPayment(String userId, String paymentType, String orderIds)
-			throws IOException, AIException;
-
-	// String getCompanyIdByUserId(String userId)throws IOException,
-	// AIException;
 }

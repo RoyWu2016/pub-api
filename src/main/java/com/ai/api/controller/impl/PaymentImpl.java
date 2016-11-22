@@ -89,7 +89,7 @@ public class PaymentImpl implements Payment {
 		criteriaBean.setPageNo(page);
 		criteriaBean.setPageSize(pagesize);
 		try {
-			PageBean<PaymentSearchResultBean> result = userService.searchPaymentList(criteriaBean, userId, paid);
+			PageBean<PaymentSearchResultBean> result = paymentService.searchPaymentList(criteriaBean, userId, paid);
 			if (null != result) {
 				return new ResponseEntity<>(result, HttpStatus.OK);
 			}
@@ -99,82 +99,94 @@ public class PaymentImpl implements Payment {
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/proforma-invoice", method = RequestMethod.POST)
-	public ResponseEntity<String> createProformaInvoice(@PathVariable("userId") String userId,
-			@RequestParam("orders") String orders) {
-		String result = userService.createProformaInvoice(userId, orders);
-		if (result != null) {
-			return new ResponseEntity<>(result, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+	// @Override
+	// @TokenSecured
+	// @RequestMapping(value = "/user/{userId}/proforma-invoice", method =
+	// RequestMethod.POST)
+	// public ResponseEntity<String>
+	// createProformaInvoice(@PathVariable("userId") String userId,
+	// @RequestParam("orders") String orders) {
+	// String result = userService.createProformaInvoice(userId, orders);
+	// if (result != null) {
+	// return new ResponseEntity<>(result, HttpStatus.OK);
+	// } else {
+	// return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	// }
+	// }
+
+	// @Override
+	// @TokenSecured
+	// @RequestMapping(value = "/user/{userId}/proforma-invoice", method =
+	// RequestMethod.PUT)
+	// public ResponseEntity<Boolean>
+	// reissueProFormaInvoice(@PathVariable("userId") String userId,
+	// @RequestParam("orders") String orders) {
+	// boolean result = userService.reissueProFormaInvoice(userId, orders);
+	// if (result) {
+	// return new ResponseEntity<>(HttpStatus.OK);
+	// } else {
+	// return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	// }
+	// }
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/proforma-invoice", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> reissueProFormaInvoice(@PathVariable("userId") String userId,
-			@RequestParam("orders") String orders) {
-		boolean result = userService.reissueProFormaInvoice(userId, orders);
-		if (result) {
-			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/global-payment", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/payment-type/{paymentType}/payment", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> generateGlobalPayment(@PathVariable("userId") String userId,
-			@RequestParam("paymentType") String paymentType, @RequestParam("orderIds") String orderIds) {
-		logger.info("invoke: " + "/user/" + userId + "/global-payment?paymentType=" + paymentType + "&orderIds=" + orderIds);
+			@PathVariable("paymentType") String paymentType, @RequestParam("orderIds") String orderIds) {
+		logger.info("invoke: " + "/user/" + userId + "/payment-type/" + paymentType + "payment?orderIds=" + orderIds);
 		ApiCallResult result = new ApiCallResult();
 		try {
-			result = userService.generateGlobalPayment(userId, paymentType, orderIds);
+			result = paymentService.generateGlobalPayment(userId, paymentType, orderIds);
 			if (null == result.getMessage()) {
-				return new ResponseEntity<>(result,HttpStatus.OK);
-			}else {
-				return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			result.setMessage("Unknow Error: " + e.toString());
 		}
-		return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/payment-log", method = RequestMethod.POST)
-	public ResponseEntity<Boolean> logPaymentAction(@PathVariable("userId") String userId,
-			@RequestBody PaymentActionLogBean logBean) {
-		boolean result = userService.logPaymentAction(userId, logBean);
-		if (result) {
-			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+	// @Override
+	// @TokenSecured
+	// @RequestMapping(value = "/user/{userId}/payment-log", method =
+	// RequestMethod.POST)
+	// public ResponseEntity<Boolean> logPaymentAction(@PathVariable("userId")
+	// String userId,
+	// @RequestBody PaymentActionLogBean logBean) {
+	// boolean result = userService.logPaymentAction(userId, logBean);
+	// if (result) {
+	// return new ResponseEntity<>(HttpStatus.OK);
+	// } else {
+	// return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	// }
+	// }
 
-	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/proforma-invoice/{invoiceId}/pdf", method = RequestMethod.GET)
-	public ResponseEntity<String> downloadProformaInvoicePDF(@PathVariable("userId") String userId,
-			@PathVariable("invoiceId") String invoiceId, HttpServletResponse httpResponse) {
-		logger.info("downloadProformaInvoicePDF ... ");
-		logger.info("userId ：" + userId);
-		logger.info("invoiceId : " + invoiceId);
-		boolean b = paymentService.downloadProformaInvoicePDF(userId, invoiceId, httpResponse);
-		if (b) {
-			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>("no invoice pdf file found", HttpStatus.BAD_REQUEST);
-		}
-	}
+	// @Override
+	// @TokenSecured
+	// @RequestMapping(value =
+	// "/user/{userId}/proforma-invoice/{invoiceId}/pdf", method =
+	// RequestMethod.GET)
+	// public ResponseEntity<String>
+	// downloadProformaInvoicePDF(@PathVariable("userId") String userId,
+	// @PathVariable("invoiceId") String invoiceId, HttpServletResponse
+	// httpResponse) {
+	// logger.info("downloadProformaInvoicePDF ... ");
+	// logger.info("userId ：" + userId);
+	// logger.info("invoiceId : " + invoiceId);
+	// boolean b = paymentService.downloadProformaInvoicePDF(userId, invoiceId,
+	// httpResponse);
+	// if (b) {
+	// return new ResponseEntity<>(HttpStatus.OK);
+	// } else {
+	// return new ResponseEntity<>("no invoice pdf file found",
+	// HttpStatus.BAD_REQUEST);
+	// }
+	// }
 
 	@Override
 	@TokenSecured
@@ -190,16 +202,19 @@ public class PaymentImpl implements Payment {
 		}
 	}
 
-	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/paypal-payment", method = RequestMethod.GET)
-	public ResponseEntity<List<PaypalInfoBean>> getPaypalPayment(@PathVariable("userId") String userId,
-			@RequestParam("orders") String orders) {
-		List<PaypalInfoBean> result = paymentService.getPaypalPayment(userId, orders);
-		if (result != null) {
-			return new ResponseEntity<>(result, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-	}
+	// @Override
+	// @TokenSecured
+	// @RequestMapping(value = "/user/{userId}/paypal-payment", method =
+	// RequestMethod.GET)
+	// public ResponseEntity<List<PaypalInfoBean>>
+	// getPaypalPayment(@PathVariable("userId") String userId,
+	// @RequestParam("orders") String orders) {
+	// List<PaypalInfoBean> result = paymentService.getPaypalPayment(userId,
+	// orders);
+	// if (result != null) {
+	// return new ResponseEntity<>(result, HttpStatus.OK);
+	// } else {
+	// return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	// }
+	// }
 }

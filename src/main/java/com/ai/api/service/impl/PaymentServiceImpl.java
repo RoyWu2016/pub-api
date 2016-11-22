@@ -19,6 +19,9 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.PaymentService;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaypalInfoBean;
 
 import src.main.java.com.ai.commons.beans.payment.PaymentPaidBean;
@@ -41,27 +44,59 @@ public class PaymentServiceImpl implements PaymentService {
 	@Qualifier("userService")
 	private UserService userService;
 
+//	@Override
+//	public boolean downloadProformaInvoicePDF(String userId, String invoiceId, HttpServletResponse httpResponse) {
+//		boolean b = false;
+//		try {
+//			String login = userService.getLoginByUserId(userId);// customerDao.getGeneralUser(userId).getLogin();
+//			httpResponse.setHeader("Content-Disposition",
+//					"attachment; filename=attachment-" + new Date().getTime() + ".pdf");
+//			InputStream inputStream = paymentDao.downloadProformaInvoicePDF(login, invoiceId);
+//			ServletOutputStream output = httpResponse.getOutputStream();
+//			httpResponse.setStatus(HttpServletResponse.SC_OK);
+//			if (null != inputStream) {
+//				byte[] buffer = new byte[10240];
+//				for (int length = 0; (length = inputStream.read(buffer)) > 0;) {
+//					output.write(buffer, 0, length);
+//				}
+//			}
+//			b = true;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return b;
+//	}
+	
 	@Override
-	public boolean downloadProformaInvoicePDF(String userId, String invoiceId, HttpServletResponse httpResponse) {
-		boolean b = false;
-		try {
-			String login = userService.getLoginByUserId(userId);// customerDao.getGeneralUser(userId).getLogin();
-			httpResponse.setHeader("Content-Disposition",
-					"attachment; filename=attachment-" + new Date().getTime() + ".pdf");
-			InputStream inputStream = paymentDao.downloadProformaInvoicePDF(login, invoiceId);
-			ServletOutputStream output = httpResponse.getOutputStream();
-			httpResponse.setStatus(HttpServletResponse.SC_OK);
-			if (null != inputStream) {
-				byte[] buffer = new byte[10240];
-				for (int length = 0; (length = inputStream.read(buffer)) > 0;) {
-					output.write(buffer, 0, length);
-				}
+	public PageBean<PaymentSearchResultBean> searchPaymentList(PageParamBean criteria, String userId, String paid)
+			throws IOException, AIException {
+		UserBean userBean = userService.getCustById(userId);
+		String parentId = "";
+		String companyId = "";
+		if (null != userBean) {
+			parentId = userBean.getCompany().getParentCompanyId();
+			if (null == parentId) {
+				parentId = "";
 			}
-			b = true;
-		} catch (Exception e) {
-			e.printStackTrace();
+			companyId = userBean.getCompany().getId();
 		}
-		return b;
+		return paymentDao.searchPaymentList(criteria, userId, parentId, companyId, paid);
+	}
+	
+	@Override
+	public ApiCallResult generateGlobalPayment(String userId, String paymentType, String orderIds)
+			throws IOException, AIException {
+		UserBean userBean = userService.getCustById(userId);
+		String parentId = "";
+		String companyId = "";
+		if (null != userBean) {
+			parentId = userBean.getCompany().getParentCompanyId();
+			if (null == parentId) {
+				parentId = "";
+			}
+			companyId = userBean.getCompany().getId();
+		}
+		return paymentDao.generateGlobalPayment(userId, parentId, companyId, paymentType, orderIds);
 	}
 
 	@Override
@@ -83,11 +118,5 @@ public class PaymentServiceImpl implements PaymentService {
 			e.printStackTrace();
 		} 
 		return paymentDao.markAsPaid(userId, parentId, companyId,orders);
-	}
-
-	@Override
-	public List<PaypalInfoBean> getPaypalPayment(String userId, String orders) {
-		String login = customerDao.getGeneralUser(userId).getLogin();
-		return paymentDao.getPaypalPayment(userId, login, orders);
 	}
 }
