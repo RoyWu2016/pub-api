@@ -455,14 +455,25 @@ public class OrderServiceImpl implements OrderService {
 		return orderDao.getInspectionOrder(string,orderId);
 	}
 
-	/*
-	 * private List<OrderSearchBean> searchPSIOrders(String userId, String
-	 * compId, String parentId, String serviceType, String startDate, String
-	 * endDate, String keyWord, String orderStatus, String pageSize, String
-	 * pageNumber) { List<OrderSearchBean> orderSearchList = new
-	 * ArrayList<OrderSearchBean>(); orderSearchList =
-	 * orderDao.searchOrders(userId, compId, parentId, serviceType, startDate,
-	 * endDate, keyWord, orderStatus, pageSize, pageNumber); return null !=
-	 * orderSearchList ? orderSearchList : new ArrayList<OrderSearchBean>(); }
-	 */
+	@Override
+	public ApiCallResult reInspection(String userId, String orderId, String draftId) {
+		// TODO Auto-generated method stub
+        String companyId = "";
+        String parentId = "";
+        UserBean user = null;
+        try {
+            user = userService.getCustById(userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (null != user) {
+            parentId = user.getCompany().getParentCompanyId();
+            if (parentId == null) {
+                parentId = "";
+            }
+            companyId = user.getCompany().getId();
+        }
+        return orderDao.reInspection(userId,companyId,parentId,orderId,draftId);
+	}
+
 }
