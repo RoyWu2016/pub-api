@@ -9,11 +9,7 @@ package com.ai.api.dao.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -43,20 +39,13 @@ import com.ai.api.util.RedisUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.StringUtils;
-import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.GetRequest;
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
-import com.ai.commons.beans.payment.PaymentSearchResultBean;
-import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 /***************************************************************************
  * <PRE>
@@ -271,119 +260,6 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 				return true;
 			}
 		} catch (IOException e) {
-			LOGGER.error(ExceptionUtils.getStackTrace(e));
-		}
-		return false;
-	}
-
-	@Override
-	public PageBean<PaymentSearchResultBean> searchPaymentList(PageParamBean criteria, String userId, String parentId,
-			String companyId, String paid) {
-		try {
-			StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/payment/api/search");
-			LOGGER.info("searchPaymentList json before encoding: " + JsonUtil.mapToJson(criteria));
-			String param = URLEncoder.encode(JsonUtil.mapToJson(criteria), "utf-8");
-			LOGGER.info("searchPaymentList json after encoding: " + param);
-			url.append("?userId=" + userId).append("&companyId=" + companyId).append("&parentId=" + parentId)
-					.append("&isPaid=" + paid).append("&param=" + param);
-			LOGGER.info("Requesting url: " + url.toString());
-			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return JSON.parseObject(result.getResponseString(), PageBean.class);
-			} else {
-				logger.error("searchPaymentList from psi error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
-			}
-		} catch (Exception e) {
-			LOGGER.error(ExceptionUtils.getStackTrace(e));
-		}
-		return null;
-	}
-
-	@Override
-	public String createProformaInvoice(String userId, String login, String orders) {
-		try {
-			String url = config.getMwServiceUrl() + "/service/payment/proformaInvoice";
-			Map<String, String> dataMap = new HashMap<String, String>();
-			dataMap.put("userId", userId);
-			dataMap.put("login", login);
-			dataMap.put("orders", orders);
-			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, dataMap);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return result.getResponseString();
-			} else {
-				logger.error("Generate Proforma Invoice For Given Orders from middleware error: "
-						+ result.getStatusCode() + ", " + result.getResponseString());
-			}
-		} catch (Exception e) {
-			LOGGER.error(ExceptionUtils.getStackTrace(e));
-		}
-		return null;
-	}
-
-	@Override
-	public boolean reissueProFormaInvoice(String userId, String login, String orders) {
-		try {
-			String url = config.getMwServiceUrl() + "/service/payment/reissueProformaInvoice";
-			Map<String, String> dataMap = new HashMap<String, String>();
-			dataMap.put("userId", userId);
-			dataMap.put("login", login);
-			dataMap.put("orders", orders);
-			ServiceCallResult result = HttpUtil.issuePutRequest(url, null, dataMap);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return true;
-			} else {
-				logger.error("Reissue Proforma Invoice For Given Orders from middleware error: "
-						+ result.getStatusCode() + ", " + result.getResponseString());
-			}
-		} catch (Exception e) {
-			LOGGER.error(ExceptionUtils.getStackTrace(e));
-		}
-		return false;
-	}
-
-	@Override
-	public ApiCallResult generateGlobalPayment(String userId, String parentId, String companyId, String paymentType,
-			String orderIds) {
-		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/payment/api/global-payment-list");
-		url.append("?userId=" + userId).append("&paymentType=" + paymentType).append("&companyId=" + companyId)
-				.append("&parentId=" + parentId);
-		ApiCallResult temp = new ApiCallResult();
-		logger.info("requesting: " + url.toString());
-		try {
-			String[] tempStr = orderIds.split(",");
-			List<String> list = Arrays.asList(tempStr);
-			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, list);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				temp.setContent(JsonUtil.mapToObject(result.getResponseString(),
-						new TypeReference<List<GlobalPaymentInfoBean>>() {
-						}));
-				return temp;
-			} else {
-				logger.error("save draft error from psi service : " + result.getStatusCode() + ", "
-						+ result.getResponseString());
-				temp.setMessage("save draft error from psi service : " + result.getStatusCode() + ", "
-						+ result.getResponseString());
-			}
-		} catch (Exception e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-			temp.setMessage("Exception: " + e.toString());
-		}
-		return temp;
-	}
-
-	@Override
-	public boolean logPaymentAction(String userId, PaymentActionLogBean logBean) {
-		try {
-			String url = config.getMwServiceUrl() + "/service/payment/log";
-			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, logBean);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return true;
-			} else {
-				logger.error("Log Payment Action from middleware error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
-			}
-		} catch (Exception e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return false;

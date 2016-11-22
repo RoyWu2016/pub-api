@@ -1,11 +1,12 @@
 package com.ai.api.service;
 
-import java.util.List;
+import java.io.IOException;
 
-import javax.servlet.http.HttpServletResponse;
-
+import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.payment.api.PaypalInfoBean;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
 
 import src.main.java.com.ai.commons.beans.payment.PaymentPaidBean;
 
@@ -14,9 +15,15 @@ import src.main.java.com.ai.commons.beans.payment.PaymentPaidBean;
  * 2016/8/12 17:35 Author : Jianxiong.Cai Purpose : TODO History : TODO
  */
 public interface PaymentService {
-	boolean downloadProformaInvoicePDF(String userId, String invoiceId, HttpServletResponse httpResponse);
+	
+//	boolean downloadProformaInvoicePDF(String userId, String invoiceId, HttpServletResponse httpResponse);
 
-	List<PaypalInfoBean> getPaypalPayment(String userId, String orders);
 
 	ApiCallResult markAsPaid(String userId, PaymentPaidBean orders);
+
+	PageBean<PaymentSearchResultBean> searchPaymentList(PageParamBean criteria, String userId, String paid)
+			throws IOException, AIException;
+
+	ApiCallResult generateGlobalPayment(String userId, String paymentType, String orderIds)
+			throws IOException, AIException;
 }
