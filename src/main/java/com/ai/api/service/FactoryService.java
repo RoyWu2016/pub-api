@@ -14,13 +14,18 @@ import com.ai.commons.beans.psi.OrderFactoryBean;
  */
 public interface FactoryService {
 
-    List<FactorySearchBean> getSuppliersByUserId(String userId) throws IOException, AIException;
+	List<FactorySearchBean> getSuppliersByUserId(String userId) throws IOException, AIException;
 
-    SupplierDetailBean getUserSupplierDetailInfoById(String userId, String supplierId) throws IOException, AIException;
+	SupplierDetailBean getUserSupplierDetailInfoById(String userId, String supplierId) throws IOException, AIException;
 
-    boolean updateSupplierDetailInfo(SupplierDetailBean supplierDetailBean) throws IOException, AIException;
-    boolean deleteSuppliers(String supplierIds) throws IOException, AIException;
-    String createSupplier(SupplierDetailBean supplierDetailBean) throws IOException, AIException;
+	boolean updateSupplierDetailInfo(SupplierDetailBean supplierDetailBean) throws IOException, AIException;
 
-	ApiCallResult supplierConfirmOrder(String orderId, String inspectionDateString, String containReadyTime, OrderFactoryBean orderFactoryBean);
+	boolean deleteSuppliers(String supplierIds) throws IOException, AIException;
+
+	String createSupplier(SupplierDetailBean supplierDetailBean) throws IOException, AIException;
+
+	ApiCallResult supplierConfirmOrder(String orderId, String inspectionDateString, String containReadyTime,
+			OrderFactoryBean orderFactoryBean);
+
+	OrderFactoryBean getOrderFactory(String supplierId);
 }

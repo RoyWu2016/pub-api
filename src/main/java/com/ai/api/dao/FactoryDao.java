@@ -26,4 +26,6 @@ public interface FactoryDao {
 
 	ApiCallResult supplierConfirmOrder(String orderId, String inspectionDateString, String containReadyTime,
 			OrderFactoryBean orderFactoryBean);
+
+	OrderFactoryBean getOrderFactory(String supplierId);
 }
