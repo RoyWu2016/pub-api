@@ -1,13 +1,12 @@
 package com.ai.api.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import com.ai.commons.beans.order.draft.DraftOrder;
-import com.ai.commons.beans.order.draft.DraftStepBean;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
+import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
 
 /***************************************************************************
  * <PRE>
@@ -30,8 +29,6 @@ import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
 public interface DraftDao {
 
-	boolean deleteDrafts(Map<String,String> params);
-
 	boolean deleteDraftsFromPsi(String userId,String compId, String parentId, String draftIds);
 
     InspectionBookingBean createDraft(String userId, String compId, String parentId, String serviceTypeStrValue);
@@ -40,11 +37,12 @@ public interface DraftDao {
 
     InspectionBookingBean getDraft(String userId,String compId, String parentId, String draftId);
 
+	ApiInspectionBookingBean getDraftNew(String userId,String compId, String parentId, String draftId);
+
 	boolean saveDraft(String userId,String companyId,String parentId,InspectionBookingBean draft);
 
     InspectionProductBookingBean addProduct(String userId,String companyId,String parentId,String draftId);
 
-    boolean saveProduct(String userId,String companyId,String parentId,InspectionProductBookingBean draftProduct);
 
     boolean deleteProduct(String userId,String companyId,String parentId,String productId);
     
@@ -54,7 +52,10 @@ public interface DraftDao {
 			String samplingLevel,String measurementSamplingSize);
 	
 	 List<DraftOrder> searchDraft(String userId, String compId, String parentId,  String serviceType, String startDate, String endDate, String keyWord, String pageSize, String pageNumber);
-	 
+
+	/*
+	boolean saveProduct(String userId,String companyId,String parentId,InspectionProductBookingBean draftProduct);
 	boolean saveDraftStep(String userId, String draftId, List<DraftStepBean> draftSteps);
+	*/
 }
 

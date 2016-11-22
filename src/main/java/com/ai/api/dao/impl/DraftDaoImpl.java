@@ -3,15 +3,6 @@ package com.ai.api.dao.impl;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.DraftDao;
@@ -20,11 +11,20 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.order.draft.DraftOrder;
-import com.ai.commons.beans.order.draft.DraftStepBean;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
+import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 /***************************************************************************
  * <PRE>
@@ -53,27 +53,6 @@ public class DraftDaoImpl implements DraftDao {
 	@Autowired
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
-
-	@Override
-	public boolean deleteDrafts(Map<String, String> params) {
-		String url = config.getMwServiceUrl() + "/service/draft/delete";
-		try {
-			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, params);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				JSONObject object = JSONObject.parseObject(result.getResponseString());
-				Object arrayStr = object.get("content");
-				return JsonUtil.mapToObject(arrayStr + "", boolean.class);
-
-			} else {
-				logger.error("delete drafts from middleware error: " + result.getStatusCode() +
-						", " + result.getResponseString());
-			}
-
-		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-		}
-		return false;
-	}
 
 
 	@Override
@@ -176,6 +155,44 @@ public class DraftDaoImpl implements DraftDao {
 	}
 
 	@Override
+	public ApiInspectionBookingBean getDraftNew(String userId,String compId, String parentId, String draftId) {
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+		url.append("/draft/api/getDraft/").append(userId).append("/").append(draftId);
+		try {
+			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				JsonNode re = objectMapper.readTree(result.getResponseString());
+//				ObjectNode node = (ObjectNode) new ObjectMapper().readTree(result.getResponseString());
+				String data = JsonUtil.mapToJson(re.get("content"));
+//				String content = re.get("content").asText();
+				System.out.println(data);
+//				ApiInspectionBookingBean draft  = objectMapper.treeToValue(re.get("content"), ApiInspectionBookingBean.class);
+
+				ApiInspectionBookingBean smallObj = objectMapper.readValue(data, ApiInspectionBookingBean.class);
+				return smallObj;
+//				return JsonUtil.mapToObject(data, ApiInspectionBookingBean.class);
+//				return draft;
+//				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
+//				ApiCallResult re = JSONObject.parseObject(result.getResponseString(), ApiCallResult.class);
+//				JSONObject object = JSONObject.parseObject(result.getResponseString());
+//				Object arrayStr = object.get("content");
+//				return JsonUtil.mapToObject(arrayStr + "", ApiInspectionBookingBean.class);
+
+			} else {
+				logger.error("create draft error from psi service : " + result.getStatusCode() +
+						", " + result.getResponseString());
+			}
+
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
+
+
+	@Override
 	public boolean saveDraft(String userId,String companyId,String parentId,InspectionBookingBean draft) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		url.append("/draft/api/updateDraft/");
@@ -226,30 +243,6 @@ public class DraftDaoImpl implements DraftDao {
         return null;
     }
 
-	@Override
-	public boolean saveProduct(String userId,String companyId,String parentId,InspectionProductBookingBean draftProduct) {
-		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		url.append("/draft/api/updateProduct");
-        url.append("?userId=").append(userId);
-        url.append("&companyId=").append(companyId);
-        url.append("&parentId=").append(parentId);
-		try {
-			logger.info("saveProduct POST! URL : "+url.toString());
-			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftProduct);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				JSONObject object = JSONObject.parseObject(result.getResponseString());
-				Object arrayStr = object.get("content");
-				return JsonUtil.mapToObject(arrayStr + "", boolean.class);
-			} else {
-				logger.error("save product error from psi service : " + result.getStatusCode() +
-						", " + result.getResponseString());
-			}
-
-		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-		}
-		return false;
-	}
 
     @Override
     public boolean deleteProduct(String userId,String companyId,String parentId,String productId) {
@@ -280,7 +273,6 @@ public class DraftDaoImpl implements DraftDao {
 	@Override
 	public OrderPriceMandayViewBean calculatePricing(String userId, String companyId,String parentId,
 			String draftId,String samplingLevel,String measurementSamplingSize) {
-		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		url.append("/draft/api/calculatePricing")
 			.append("?userId=").append(userId)
@@ -347,9 +339,33 @@ public class DraftDaoImpl implements DraftDao {
 	}
 
 
+	/*
+	@Override
+	public boolean saveProduct(String userId,String companyId,String parentId,InspectionProductBookingBean draftProduct) {
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+		url.append("/draft/api/updateProduct");
+        url.append("?userId=").append(userId);
+        url.append("&companyId=").append(companyId);
+        url.append("&parentId=").append(parentId);
+		try {
+			logger.info("saveProduct POST! URL : "+url.toString());
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftProduct);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				return JsonUtil.mapToObject(arrayStr + "", boolean.class);
+			} else {
+				logger.error("save product error from psi service : " + result.getStatusCode() +
+						", " + result.getResponseString());
+			}
+
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return false;
+	}
 	@Override
 	public boolean saveDraftStep(String userId, String draftId, List<DraftStepBean> draftSteps) {
-		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		url.append("/draft/api/updateDraftStep?draftId=");
 		url.append(draftId);
@@ -364,11 +380,11 @@ public class DraftDaoImpl implements DraftDao {
 				logger.error("saveDraftStep from PSI error: " + result.getStatusCode() + ", " + result.getResponseString());
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			logger.error(ExceptionUtils.getStackTrace(e));
 			e.printStackTrace();
 		}
 		return false;
 	}
+	*/
 }
 
