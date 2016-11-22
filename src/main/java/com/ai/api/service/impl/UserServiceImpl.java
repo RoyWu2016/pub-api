@@ -17,8 +17,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ai.api.bean.*;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -30,6 +28,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.ai.api.bean.AqlAndSamplingSizeBean;
+import com.ai.api.bean.BillingBean;
+import com.ai.api.bean.BookingPreferenceBean;
+import com.ai.api.bean.CompanyBean;
+import com.ai.api.bean.CompanyLogoBean;
+import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.CustomAQLBean;
+import com.ai.api.bean.CustomizedProductType;
+import com.ai.api.bean.EmployeeBean;
+import com.ai.api.bean.MainBean;
+import com.ai.api.bean.MinQuantityToBeReadyBean;
+import com.ai.api.bean.MultiReferenceBean;
+import com.ai.api.bean.Payment;
+import com.ai.api.bean.PreferencesBean;
+import com.ai.api.bean.PreferredProductFamilies;
+import com.ai.api.bean.ProductCategoryDtoBean;
+import com.ai.api.bean.ProductFamilyDtoBean;
+import com.ai.api.bean.PublicProductType;
+import com.ai.api.bean.QualityManual;
+import com.ai.api.bean.ReportApproverBean;
+import com.ai.api.bean.ReportPreferenceBean;
+import com.ai.api.bean.ReportRejectCategoryBean;
+import com.ai.api.bean.ReportRejectCategoryReasonBean;
+import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.CompanyDao;
 import com.ai.api.dao.CustomerDao;
@@ -41,6 +63,7 @@ import com.ai.api.util.AIUtil;
 import com.ai.api.util.BASE64DecodedMultipartFile;
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.StringUtils;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
@@ -61,11 +84,11 @@ import com.ai.commons.beans.customer.RejectCategoryReasonBean;
 import com.ai.commons.beans.customer.RelevantCategoryInfoBean;
 import com.ai.commons.beans.customer.ReportCertificateBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 /***************************************************************************
@@ -113,7 +136,7 @@ public class UserServiceImpl implements UserService {
 	private FeatureDao featureDao;
 
 	private UserBean getUserBeanByService(String userId) {
-		if (StringUtils.isBlank(userId)){
+		if (StringUtils.isBlank(userId)) {
 			return null;
 		}
 		UserBean user = new UserBean();
@@ -159,7 +182,7 @@ public class UserServiceImpl implements UserService {
 		user.setStatus(userBean.getStatusText());
 		user.setBusinessUnit(AIUtil.getCompanyBusinessUnit(companyEntireBean, extrabean));
 		user.setRate(companyEntireBean.getRate());
-		
+
 		List<CrmSaleInChargeBean> sales = companyEntireBean.getSales();
 		if (sales != null && sales.size() > 0) {
 			for (CrmSaleInChargeBean saleBean : sales) {
@@ -197,7 +220,7 @@ public class UserServiceImpl implements UserService {
 
 		Payment payment = new Payment();
 		payment.setExpressBookingFee(companyEntireBean.getRate().getExpressFee());
-        payment.setOnlinePaymentType(companyEntireBean.getInvoicing().getOnlinePayStatus());
+		payment.setOnlinePaymentType(companyEntireBean.getInvoicing().getOnlinePayStatus());
 		user.setPayment(payment);
 
 		// ------------Set ContactInfoBean Properties ----------------
@@ -246,7 +269,8 @@ public class UserServiceImpl implements UserService {
 		PreferencesBean preferencesBean = new PreferencesBean();
 		BookingPreferenceBean bookingbean = new BookingPreferenceBean();
 
-		bookingbean.setUseQuickFormByDefault(extrabean.getIsDetailedBookingForm().equalsIgnoreCase("yes")?true:false);
+		bookingbean
+				.setUseQuickFormByDefault(extrabean.getIsDetailedBookingForm().equalsIgnoreCase("yes") ? true : false);
 
 		String sendSampleToFactory = orderBookingBean.getSendSampleToFactory();
 		if (sendSampleToFactory != null && sendSampleToFactory.equalsIgnoreCase("Yes")) {
@@ -343,7 +367,8 @@ public class UserServiceImpl implements UserService {
 			multiReferenceBean.setAskNumberOfReferences(false);
 		} else {
 			multiReferenceBean.setClientCanApproveRejectIndividualProductReferences(false);
-			multiReferenceBean.setAskNumberOfReferences(multiRefBookingBean.getAskNumberOfReferences().equalsIgnoreCase("Yes")?true:false);
+			multiReferenceBean.setAskNumberOfReferences(
+					multiRefBookingBean.getAskNumberOfReferences().equalsIgnoreCase("Yes") ? true : false);
 		}
 		multiReferenceBean.setNumberOfRefPerProduct(multiRefBookingBean.getNumberOfRefPerProduct());
 		multiReferenceBean.setNumberOfRefPerReport(multiRefBookingBean.getNumberOfRefPerReport());
@@ -481,15 +506,18 @@ public class UserServiceImpl implements UserService {
 		ReportPreferenceBean reportPreferenceBean = new ReportPreferenceBean();
 		if (reportCertificateBean != null) {
 			reportPreferenceBean.setAttType(reportCertificateBean.getAttType());
-			reportPreferenceBean.setAllowReportApprover(reportCertificateBean.getAllowReportApprover().equalsIgnoreCase("Yes")?true:false);
+			reportPreferenceBean.setAllowReportApprover(
+					reportCertificateBean.getAllowReportApprover().equalsIgnoreCase("Yes") ? true : false);
 			reportPreferenceBean.setDisApproverName(reportCertificateBean.getDisApproverName());
 			reportPreferenceBean.setMaxReportSize(reportCertificateBean.getMaxReportSize());
 			reportPreferenceBean.setRejectReasonOther(reportCertificateBean.getRejectReasonOther());
 			reportPreferenceBean.setRejectReasonSortBy(reportCertificateBean.getRejectReasonSortBy());
 			reportPreferenceBean.setReportContactName(reportCertificateBean.getReportContactName());
-			reportPreferenceBean.setWithAttachment(reportCertificateBean.getWithAttachment().equalsIgnoreCase("Yes")?true:false);
+			reportPreferenceBean.setWithAttachment(
+					reportCertificateBean.getWithAttachment().equalsIgnoreCase("Yes") ? true : false);
 			reportPreferenceBean.setSendMailToSupplier(reportCertificateBean.getSendMailToSupplier());
-			reportPreferenceBean.setSameDayReport(reportCertificateBean.getSameDayReport().equalsIgnoreCase("Yes")?true:false);
+			reportPreferenceBean
+					.setSameDayReport(reportCertificateBean.getSameDayReport().equalsIgnoreCase("Yes") ? true : false);
 			reportPreferenceBean.setReportTemplate(reportCertificateBean.getReportTemplate());
 			List<ApproverBean> approverBeenList = reportCertificateBean.getApprovers();
 			if (approverBeenList != null) {
@@ -558,10 +586,10 @@ public class UserServiceImpl implements UserService {
 
 	public UserBean updateUserBeanInCache(final String userId) {
 		logger.info("ready to update user in cache ! userId:  " + userId);
-        if (StringUtils.isBlank(userId)){
-            logger.error("userId is blank!");
-            return null;
-        }
+		if (StringUtils.isBlank(userId)) {
+			logger.error("userId is blank!");
+			return null;
+		}
 		UserBean newUserBean = this.getUserBeanByService(userId);
 		RedisUtil.hset("userBeanCache", userId, JSON.toJSONString(newUserBean), RedisUtil.HOUR * 2);
 		return newUserBean;
@@ -571,10 +599,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserBean getCustById(String userId) throws IOException, AIException {
 		logger.info("try to get userBean from redis ...");
-        if (StringUtils.isBlank(userId)){
-            logger.error("userId is blank,please check!");
-            throw new AIException("userId is blank,please check!");
-        }
+		if (StringUtils.isBlank(userId)) {
+			logger.error("userId is blank,please check!");
+			throw new AIException("userId is blank,please check!");
+		}
 		String jsonStr = RedisUtil.hget("userBeanCache", userId);
 		UserBean user = JSON.parseObject(jsonStr, UserBean.class);
 		if (user != null && StringUtils.isNotBlank(user.getId())) {
@@ -584,7 +612,8 @@ public class UserServiceImpl implements UserService {
 			logger.info("can't find user " + userId + " in cache. Will get from customer service. ");
 			user = this.getUserBeanByService(userId);
 			logger.info("saving userBean to redis ...");
-			RedisUtil.hset("userBeanCache", userId, JSON.toJSONString(user, SerializerFeature.WriteMapNullValue), RedisUtil.MINUTE * 30);
+			RedisUtil.hset("userBeanCache", userId, JSON.toJSONString(user, SerializerFeature.WriteMapNullValue),
+					RedisUtil.MINUTE * 30);
 			logger.info("saving success !!!");
 			return user;
 		}
@@ -677,10 +706,10 @@ public class UserServiceImpl implements UserService {
 		booking.setClcPercentage(newBookingPref.getMinQuantityToBeReady()[3].getMinQty());
 		booking.setPmPercentage(newBookingPref.getMinQuantityToBeReady()[4].getMinQty());
 
-		booking.setAllowChangeAql(newBookingPref.getAqlAndSamplingSize().isCanModify()? "1" : "0");
+		booking.setAllowChangeAql(newBookingPref.getAqlAndSamplingSize().isCanModify() ? "1" : "0");
 		booking.setCustomizedSampleLevel(newBookingPref.getAqlAndSamplingSize().getCustomDefaultSampleLevel());
 		booking.setMeasurementSampleLevel(newBookingPref.getAqlAndSamplingSize().getMeasurementSampleLevel());
-		booking.setCustAqlLevel(newBookingPref.getAqlAndSamplingSize().isUseCustomAQL()? "Yes" : "No");
+		booking.setCustAqlLevel(newBookingPref.getAqlAndSamplingSize().isUseCustomAQL() ? "Yes" : "No");
 		if (!newBookingPref.getAqlAndSamplingSize().isUseCustomAQL()) {
 			booking.setCriticalDefects("");
 			booking.setMajorDefects("");
@@ -695,7 +724,7 @@ public class UserServiceImpl implements UserService {
 
 		// get extra first
 		ExtraBean extra = companyDao.getCompanyExtra(compId);
-		extra.setIsDetailedBookingForm(newBookingPref.isUseQuickFormByDefault()?"Yes":"No");
+		extra.setIsDetailedBookingForm(newBookingPref.isUseQuickFormByDefault() ? "Yes" : "No");
 
 		// update order booking and extra
 		// return companyDao.updateCompanyExtra(compId, extra) &&
@@ -872,17 +901,19 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders)
+	public ApiCallResult generateGlobalPayment(String userId, String paymentType, String orderIds)
 			throws IOException, AIException {
 		UserBean userBean = this.getCustById(userId);
 		String parentId = "";
+		String companyId = "";
 		if (null != userBean) {
 			parentId = userBean.getCompany().getParentCompanyId();
 			if (null == parentId) {
 				parentId = "";
 			}
+			companyId = userBean.getCompany().getId();
 		}
-		return customerDao.generateGlobalPayment(userId, parentId, orders);
+		return customerDao.generateGlobalPayment(userId, parentId, companyId, paymentType, orderIds);
 	}
 
 	@Override
@@ -965,5 +996,5 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		return customerDao.resetPassword(login);
 	}
-	
+
 }

@@ -1,6 +1,5 @@
 package com.ai.api.controller.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,17 +20,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.api.controller.Payment;
-import com.ai.api.exception.AIException;
 import com.ai.api.service.PaymentService;
 import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
-import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
-import com.ai.commons.beans.payment.api.PaymentItemParamBean;
 import com.ai.commons.beans.payment.api.PaypalInfoBean;
+
+import src.main.java.com.ai.commons.beans.payment.PaymentPaidBean;
 
 /***************************************************************************
  * <PRE>
@@ -129,18 +128,23 @@ public class PaymentImpl implements Payment {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/global-payment", method = RequestMethod.GET)
-	public ResponseEntity<List<GlobalPaymentInfoBean>> generateGlobalPayment(@PathVariable("userId") String userId,
-			@RequestParam("orders") String orders) {
+	public ResponseEntity<ApiCallResult> generateGlobalPayment(@PathVariable("userId") String userId,
+			@RequestParam("paymentType") String paymentType, @RequestParam("orderIds") String orderIds) {
+		logger.info("invoke: " + "/user/" + userId + "/global-payment?paymentType=" + paymentType + "&orderIds=" + orderIds);
+		ApiCallResult result = new ApiCallResult();
 		try {
-			List<GlobalPaymentInfoBean> result = userService.generateGlobalPayment(userId, orders);
-			if (result != null) {
-				return new ResponseEntity<>(result, HttpStatus.OK);
-			} 
+			result = userService.generateGlobalPayment(userId, paymentType, orderIds);
+			if (null == result.getMessage()) {
+				return new ResponseEntity<>(result,HttpStatus.OK);
+			}else {
+				return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			result.setMessage("Unknow Error: " + e.toString());
 		}
-		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override
@@ -175,13 +179,14 @@ public class PaymentImpl implements Payment {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/payment", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> markAsPaid(@PathVariable("userId") String userId,
-			@RequestBody PaymentItemParamBean paymentItemParamBean) {
-		boolean result = paymentService.markAsPaid(userId, paymentItemParamBean);
-		if (result) {
-			return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<ApiCallResult> markAsPaid(@PathVariable("userId") String userId,
+			@RequestBody PaymentPaidBean orders) {
+		logger.info("invoke: " + "/user/" + userId + "/payment");
+		ApiCallResult result = paymentService.markAsPaid(userId, orders);
+		if (null == result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

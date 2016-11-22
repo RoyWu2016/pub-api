@@ -20,12 +20,12 @@ import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 
@@ -51,45 +51,46 @@ import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 
 public interface UserService {
 
-	void  removeUserProfileCache(String userId) throws IOException, AIException;
+	void removeUserProfileCache(String userId) throws IOException, AIException;
 
-    UserBean getCustById(String userId) throws IOException, AIException;
+	UserBean getCustById(String userId) throws IOException, AIException;
 
-    UserBean updateCompany(CompanyBean crmCompanyBean, String userId) throws IOException, AIException;
+	UserBean updateCompany(CompanyBean crmCompanyBean, String userId) throws IOException, AIException;
 
-    UserBean updateContact(ContactInfoBean newContact, String userId) throws IOException, AIException;
+	UserBean updateContact(ContactInfoBean newContact, String userId) throws IOException, AIException;
 
-	UserBean updateBookingPreference(BookingPreferenceBean newBookingPref, String user_id) throws IOException, AIException;
+	UserBean updateBookingPreference(BookingPreferenceBean newBookingPref, String user_id)
+			throws IOException, AIException;
 
-	UserBean updateBookingPreferredProductFamily(List<String> newPreferred, String user_id) throws IOException, AIException;
+	UserBean updateBookingPreferredProductFamily(List<String> newPreferred, String user_id)
+			throws IOException, AIException;
 
-    ServiceCallResult updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException;
+	ServiceCallResult updateUserPassword(String userId, HashMap<String, String> pwdMap) throws IOException, AIException;
 
-    boolean getCompanyLogoByFile(String userId,String companyId,HttpServletResponse httpResponse);
+	boolean getCompanyLogoByFile(String userId, String companyId, HttpServletResponse httpResponse);
 
-    boolean updateCompanyLogoByFile(String userId, String companyId, HttpServletRequest request);
+	boolean updateCompanyLogoByFile(String userId, String companyId, HttpServletRequest request);
 
-    boolean deleteCompanyLogo(String userId,String companyId);
+	boolean deleteCompanyLogo(String userId, String companyId);
 
-    boolean createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
+	boolean createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
 
-	PageBean<PaymentSearchResultBean> searchPaymentList(PageParamBean criteria, String userId, String paid) throws IOException, AIException;
+	PageBean<PaymentSearchResultBean> searchPaymentList(PageParamBean criteria, String userId, String paid)
+			throws IOException, AIException;
 
-    String getCompanyLogo(String companyId);
+	String getCompanyLogo(String companyId);
 
-    boolean updateCompanyLogo(final String userId, final String compId, CompanyLogoBean logoBean);
+	boolean updateCompanyLogo(final String userId, final String compId, CompanyLogoBean logoBean);
 
-    String createProformaInvoice(String userId, String orders);
+	String createProformaInvoice(String userId, String orders);
 
-    boolean reissueProFormaInvoice(String userId, String orders);
+	boolean reissueProFormaInvoice(String userId, String orders);
 
-    List<GlobalPaymentInfoBean> generateGlobalPayment(String userId, String orders) throws IOException, AIException;
+	boolean logPaymentAction(String userId, PaymentActionLogBean logBean);
 
-    boolean logPaymentAction(String userId, PaymentActionLogBean logBean);
+	String getLoginByUserId(String userId);
 
-    String getLoginByUserId(String userId);
-
-    EmployeeBean getEmployeeProfile(String employeeId, boolean refresh);
+	EmployeeBean getEmployeeProfile(String employeeId, boolean refresh);
 
 	DashboardBean getUserDashboard(String userId, String startDate, String endDate) throws IOException, AIException;
 
@@ -97,5 +98,9 @@ public interface UserService {
 
 	ServiceCallResult resetPassword(String login);
 
-//    String getCompanyIdByUserId(String userId)throws IOException, AIException;
+	ApiCallResult generateGlobalPayment(String userId, String paymentType, String orderIds)
+			throws IOException, AIException;
+
+	// String getCompanyIdByUserId(String userId)throws IOException,
+	// AIException;
 }
