@@ -1,15 +1,7 @@
 package com.ai.api.service.impl;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 
 import com.ai.api.bean.UserBean;
 import com.ai.api.bean.consts.ConstMap;
@@ -18,10 +10,15 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.DraftService;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.order.draft.DraftOrder;
-import com.ai.commons.beans.order.draft.DraftStepBean;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
+import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 /***************************************************************************
  * <PRE>
@@ -53,15 +50,6 @@ public class DraftServiceImpl implements DraftService {
 	@Autowired
 	@Qualifier("userService")
 	private UserService userService;
-
-	@Override
-	public boolean deleteDraft(String userId, String ids) throws Exception {
-		Map<String,String> params = new HashMap<String, String>();
-		String login = userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
-		params.put("login",login);
-		params.put("ids",ids);
-		return draftDao.deleteDrafts(params);
-	}
 
 	@Override
 	public boolean deleteDraftFromPsi(String userId, String draftIds) throws Exception {
@@ -113,6 +101,20 @@ public class DraftServiceImpl implements DraftService {
 	}
 
 	@Override
+	public ApiInspectionBookingBean getDraftNew(String userId, String draftId) throws Exception {
+		String companyId = "null";
+		String parentId = "null";
+		UserBean user = userService.getCustById(userId);
+		if (null!=user){
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null) parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		return draftDao.getDraftNew(userId,companyId,parentId, draftId);
+	}
+
+
+	@Override
 	public boolean saveDraft(String userId,InspectionBookingBean draft) throws Exception {
 		String companyId = "null";
 		String parentId = "null";
@@ -138,18 +140,6 @@ public class DraftServiceImpl implements DraftService {
 		return draftDao.addProduct(userId,companyId,parentId,draftId);
 	}
 
-	@Override
-	public boolean saveProduct(String userId,InspectionProductBookingBean draftProduct) throws Exception {
-		String companyId = "null";
-		String parentId = "null";
-		UserBean user = userService.getCustById(userId);
-		if (null!=user){
-			parentId = user.getCompany().getParentCompanyId();
-			if (parentId == null) parentId = "";
-			companyId = user.getCompany().getId();
-		}
-		return draftDao.saveProduct(userId,companyId,parentId,draftProduct);
-	}
 
 	@Override
 	public boolean deleteProduct(String userId,String productId) throws Exception {
@@ -167,7 +157,6 @@ public class DraftServiceImpl implements DraftService {
 	@Override
 	public OrderPriceMandayViewBean calculatePricing(String userId, String draftId,
 			String samplingLevel,String measurementSamplingSize) throws Exception {
-		// TODO Auto-generated method stub
 		UserBean userBean = userService.getCustById(userId);
 		String parentId = "null";
 		String companyId = "null";
@@ -196,10 +185,24 @@ public class DraftServiceImpl implements DraftService {
 		return draftDao.searchDraft(userId, companyId, parentId, serviceType, startDate, endDate, keyWord, pageSize, pageNumber);
 	}
 
+	/*
+	@Override
+	public boolean saveProduct(String userId,InspectionProductBookingBean draftProduct) throws Exception {
+		String companyId = "null";
+		String parentId = "null";
+		UserBean user = userService.getCustById(userId);
+		if (null!=user){
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null) parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		return draftDao.saveProduct(userId,companyId,parentId,draftProduct);
+	}
+
 	@Override
 	public boolean saveDraftStep(String userId, String draftId, List<DraftStepBean> draftSteps) throws Exception {
-		// TODO Auto-generated method stub
 		return draftDao.saveDraftStep(userId, draftId, draftSteps);
 	}
+	*/
 }
 
