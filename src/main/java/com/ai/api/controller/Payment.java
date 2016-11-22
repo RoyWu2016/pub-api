@@ -36,19 +36,20 @@ import src.main.java.com.ai.commons.beans.payment.PaymentPaidBean;
  ***************************************************************************/
 
 public interface Payment {
+	
 	ResponseEntity<PageBean<PaymentSearchResultBean>> getPaymentList(String userId, String archived, String start,
 			String end, String keywords, Integer page, Integer pagesize) throws IOException, AIException;
 
-	ResponseEntity<String> createProformaInvoice(String userId, String orders);
+//	ResponseEntity<String> createProformaInvoice(String userId, String orders);
 
-	ResponseEntity<Boolean> reissueProFormaInvoice(String userId, String orders);
+//	ResponseEntity<Boolean> reissueProFormaInvoice(String userId, String orders);
 
-	ResponseEntity<Boolean> logPaymentAction(String userId, PaymentActionLogBean logBean);
+//	ResponseEntity<Boolean> logPaymentAction(String userId, PaymentActionLogBean logBean);
 
-	ResponseEntity<String> downloadProformaInvoicePDF(String userId, String invoiceId,
-			HttpServletResponse httpResponse);
+//	ResponseEntity<String> downloadProformaInvoicePDF(String userId, String invoiceId,
+//			HttpServletResponse httpResponse);
 
-	ResponseEntity<List<PaypalInfoBean>> getPaypalPayment(String userId, String orders);
+//	ResponseEntity<List<PaypalInfoBean>> getPaypalPayment(String userId, String orders);
 
 	ResponseEntity<ApiCallResult> markAsPaid(String userId, PaymentPaidBean orders);
 
