@@ -38,9 +38,9 @@ public interface Checklist {
 
 	ResponseEntity<List<CKLChecklistSearchVO>> searchPublicChecklist(String userId, String keyword, String pageNumber);
 
-	ResponseEntity<String> createChecklist(String userId, CKLChecklistVO checklistVO);
+	ResponseEntity<ApiCallResult<CKLChecklistVO>> createChecklist(String userId, CKLChecklistVO checklistVO);
 
-	ResponseEntity<String> updateChecklist(String userId, String checklistId, CKLChecklistVO checklist);
+	ResponseEntity<ApiCallResult<CKLChecklistVO>> updateChecklist(String userId, String checklistId, CKLChecklistVO checklist);
 
 	ResponseEntity<CKLChecklistVO> getChecklist(String userId, String checklistId);
 

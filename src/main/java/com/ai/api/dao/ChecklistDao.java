@@ -31,9 +31,9 @@ public interface ChecklistDao {
 
 	List<CKLChecklistSearchVO> searchPublicChecklist(String userId, String keyword, int pageNumber);
 
-	String createChecklist(String userId, CKLChecklistVO checklistVO);
+	ApiCallResult<CKLChecklistVO> createChecklist(String userId, CKLChecklistVO checklistVO);
 
-	String updateChecklist(String userId, String checklistId, CKLChecklistVO checklist);
+	ApiCallResult<CKLChecklistVO> updateChecklist(String userId, String checklistId, CKLChecklistVO checklist);
 
 	CKLChecklistVO getChecklist(String userId, String checklistId);
 

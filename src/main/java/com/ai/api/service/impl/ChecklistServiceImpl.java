@@ -98,12 +98,12 @@ public class ChecklistServiceImpl implements ChecklistService {
 	}
 
 	@Override
-	public String createChecklist(String userId, CKLChecklistVO checklistVO) {
+	public ApiCallResult<CKLChecklistVO> createChecklist(String userId, CKLChecklistVO checklistVO) {
 		return checklistDao.createChecklist(userId, checklistVO);
 	}
 
 	@Override
-	public String updateChecklist(String userId, String checklistId, CKLChecklistVO checklist) {
+	public ApiCallResult<CKLChecklistVO> updateChecklist(String userId, String checklistId, CKLChecklistVO checklist) {
 		// String login =
 		// userService.getLoginByUserId(userId);//customerDao.getGeneralUser(userId).getLogin();
 		return checklistDao.updateChecklist(userId, checklistId, checklist);
