@@ -118,24 +118,24 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist", method = RequestMethod.POST)
-	public ResponseEntity<String> createChecklist(@PathVariable("userId") String userId,
+	public ResponseEntity<ApiCallResult<CKLChecklistVO>> createChecklist(@PathVariable("userId") String userId,
 			@RequestBody CKLChecklistVO checklistVO) {
 		logger.info("createChecklist ...");
 		logger.info("userId :" + userId);
 		logger.info("checklistBean :" + checklistVO.toString());
-		String result = checklistService.createChecklist(userId, checklistVO);
-		if (result != null) {
+		ApiCallResult<CKLChecklistVO>  result = checklistService.createChecklist(userId, checklistVO);
+		if (result.getContent() != null) {
 			logger.info("create result : " + result);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<ApiCallResult<CKLChecklistVO>>(result,HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ApiCallResult<CKLChecklistVO>>(result,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}", method = RequestMethod.PUT)
-	public ResponseEntity<String> updateChecklist(@PathVariable("userId") String userId,
+	public ResponseEntity<ApiCallResult<CKLChecklistVO>> updateChecklist(@PathVariable("userId") String userId,
 			@PathVariable("checklistId") String checklistId, @RequestBody CKLChecklistVO checklist) {
 		logger.info("updateChecklist ...");
 		logger.info("userId :" + userId);
@@ -143,12 +143,12 @@ public class ChecklistImpl implements Checklist {
 		logger.info("checklist :" + checklist);
 
 		checklist.setCheckListId(checklistId);
-		String result = checklistService.updateChecklist(userId, checklistId, checklist);
-		if (result != null) {
+		ApiCallResult<CKLChecklistVO>  result = checklistService.updateChecklist(userId, checklistId, checklist);
+		if (result.getContent() != null) {
 			logger.info("update result : " + result);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<ApiCallResult<CKLChecklistVO>>(result,HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ApiCallResult<CKLChecklistVO>>(result,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

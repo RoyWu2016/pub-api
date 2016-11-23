@@ -102,44 +102,52 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	}
 
 	@Override
-	public String createChecklist(String userId, CKLChecklistVO checklistVO) {
+	public ApiCallResult<CKLChecklistVO> createChecklist(String userId, CKLChecklistVO checklistVO) {
 		// // for test ..................
 		// logger.info("for test ..............");
 		// String url ="http://192.168.2.133:8888/checklist-service" +
 		// "/ws/"+userId+"/checklist/create";
 		String url = config.getChecklistServiceUrl() + "/ws/" + userId + "/checklist/create";
+		ApiCallResult<CKLChecklistVO> apiCallResult = new ApiCallResult<CKLChecklistVO>();
 		try {
 			logger.info(
 					"createChecklist - POST Url:" + url + " || userId:" + userId + " || checklistVO:" + checklistVO);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklistVO);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return result.getResponseString();
+				apiCallResult.setContent(JSON.parseObject(result.getResponseString(), CKLChecklistVO.class));
+				return apiCallResult;
 			} else {
 				logger.error("createChecklist from checklist-service error: " + result.getStatusCode() + ", "
 						+ result.getResponseString());
+                apiCallResult.setMessage("ChecklistService error: " + result.getStatusCode() + ", "+ result.getResponseString());
 			}
 		} catch (IOException e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
+            apiCallResult.setMessage(e.toString());
 		}
-		return null;
+		return apiCallResult;
 	}
 
 	@Override
-	public String updateChecklist(String userId, String checklistId, CKLChecklistVO checklist) {
+	public ApiCallResult<CKLChecklistVO> updateChecklist(String userId, String checklistId, CKLChecklistVO checklist) {
 		String url = config.getChecklistServiceUrl() + "/ws/" + userId + "/checklist/" + checklistId + "/update";
+        ApiCallResult<CKLChecklistVO> apiCallResult = new ApiCallResult<CKLChecklistVO>();
 		try {
 			logger.info("updateChecklist - POST  Url:" + url + " || checklist:" + checklist);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklist);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				return result.getResponseString();
+                apiCallResult.setContent(JSON.parseObject(result.getResponseString(), CKLChecklistVO.class));
+                return apiCallResult;
 			} else {
 				logger.error("updateChecklist from checklist-service error: " + result.getStatusCode() + ", "
 						+ result.getResponseString());
+                apiCallResult.setMessage("ChecklistService error: " + result.getStatusCode() + ", "+ result.getResponseString());
 			}
 		} catch (IOException e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
+            apiCallResult.setMessage(e.toString());
 		}
-		return null;
+		return apiCallResult;
 	}
 
 	@Override
