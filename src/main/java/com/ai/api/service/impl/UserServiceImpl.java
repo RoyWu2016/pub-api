@@ -869,12 +869,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public String getLoginByUserId(String userId) {
-		// RedisUtil redisUtil = RedisUtil.getInstance();
-		// String jsonStr = redisUtil.get(userId);
-
 		String jsonStr = RedisUtil.get(userId);
-		// Object result = redisTemplate.opsForValue().get(userId);
-		// String jsonStr = JSON.toJSONString(result);
 		String login = null;
 		if (StringUtils.isNotBlank(jsonStr)) {
 			login = JSON.parseObject(jsonStr).getString("login");
@@ -888,19 +883,16 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		return login;
-
 	}
 
 	@Override
 	public EmployeeBean getEmployeeProfile(String employeeId, boolean refresh) {
-		// TODO Auto-generated method stub
 		return customerDao.getEmployeeProfile(employeeId, refresh);
 	}
 
 	@Override
 	public DashboardBean getUserDashboard(String userId, String startDate, String endDate)
 			throws IOException, AIException {
-		// TODO Auto-generated method stub
 		UserBean userBean = this.getCustById(userId);
 		String parentId = "";
 		String companyId = "";
@@ -916,7 +908,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ServiceCallResult resetPassword(String login) {
-		// TODO Auto-generated method stub
 		return customerDao.resetPassword(login);
 	}
 
