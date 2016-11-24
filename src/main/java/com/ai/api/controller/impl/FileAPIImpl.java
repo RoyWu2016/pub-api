@@ -12,6 +12,15 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.api.bean.consts.ConstMap;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.controller.FileAPI;
+import com.ai.api.exception.AIException;
+import com.ai.api.service.APIFileService;
+import com.ai.api.service.UserService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.fileservice.FileMetaBean;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,15 +34,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import com.ai.api.bean.consts.ConstMap;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.controller.FileAPI;
-import com.ai.api.exception.AIException;
-import com.ai.api.service.APIFileService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.fileservice.FileMetaBean;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 /***************************************************************************
  * <PRE>
@@ -63,6 +63,10 @@ public class FileAPIImpl implements FileAPI {
 
 	@Autowired
 	private ServiceConfig serviceConfig;
+
+	@Autowired
+	UserService userService; // Service which will do all data
+
 
 	@Override
 	@TokenSecured
@@ -129,6 +133,9 @@ public class FileAPIImpl implements FileAPI {
 
 		String bucket = ConstMap.bucketMap.get(docType.toUpperCase());
 		FileMetaBean bean = new FileMetaBean();
+
+		String username = userService.getLoginByUserId(userId);
+
 		try {
 			Iterator<String> itr = request.getFileNames();
 			MultipartFile mpf = null;
@@ -149,7 +156,7 @@ public class FileAPIImpl implements FileAPI {
 					String filePath = com.ai.commons.FileUtils.copyFileToDirectory(mpf, tempDir);
 					File fileUploded = new File(tempDir + System.getProperty("file.separator") + filePath);
 
-					bean = myFileService.getFileService().upload(sourceId, docType, bucket, userId, fileUploded);
+					bean = myFileService.getFileService().upload(sourceId, docType, bucket, username, fileUploded);
 					if (fileUploded.exists()) {
 						fileUploded.delete();
 					}
