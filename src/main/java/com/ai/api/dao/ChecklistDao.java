@@ -51,4 +51,6 @@ public interface ChecklistDao {
 	ApiCallResult createTest(String userId, String testId);
 
 	ApiCallResult createDefect(String userId, String defectId);
+
+	ApiCallResult importChecklist(String userId, String checklistId);
 }

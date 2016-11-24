@@ -123,12 +123,12 @@ public class ChecklistImpl implements Checklist {
 		logger.info("createChecklist ...");
 		logger.info("userId :" + userId);
 		logger.info("checklistBean :" + checklistVO.toString());
-		ApiCallResult<CKLChecklistVO>  result = checklistService.createChecklist(userId, checklistVO);
+		ApiCallResult<CKLChecklistVO> result = checklistService.createChecklist(userId, checklistVO);
 		if (result.getContent() != null) {
 			logger.info("create result : " + result);
-			return new ResponseEntity<ApiCallResult<CKLChecklistVO>>(result,HttpStatus.OK);
+			return new ResponseEntity<ApiCallResult<CKLChecklistVO>>(result, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<ApiCallResult<CKLChecklistVO>>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ApiCallResult<CKLChecklistVO>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -143,12 +143,12 @@ public class ChecklistImpl implements Checklist {
 		logger.info("checklist :" + checklist);
 
 		checklist.setCheckListId(checklistId);
-		ApiCallResult<CKLChecklistVO>  result = checklistService.updateChecklist(userId, checklistId, checklist);
+		ApiCallResult<CKLChecklistVO> result = checklistService.updateChecklist(userId, checklistId, checklist);
 		if (result.getContent() != null) {
 			logger.info("update result : " + result);
-			return new ResponseEntity<ApiCallResult<CKLChecklistVO>>(result,HttpStatus.OK);
+			return new ResponseEntity<ApiCallResult<CKLChecklistVO>>(result, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<ApiCallResult<CKLChecklistVO>>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ApiCallResult<CKLChecklistVO>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -259,30 +259,45 @@ public class ChecklistImpl implements Checklist {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/createTest/{testId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/test", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createTest(@PathVariable("userId") String userId,
-			@PathVariable("testId") String testId) {
-		logger.info("invoke: " + "/user/" + userId + "/createTest");
-		ApiCallResult result = checklistService.createTest(userId,testId);
-		if(null != result.getMessage()) {
-			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
-		}else {
-			return new ResponseEntity<>(result,HttpStatus.OK);
+			@RequestParam("testId") String testId) {
+		logger.info("invoke: " + "/user/" + userId + "/test?testId=" + testId);
+		ApiCallResult result = checklistService.createTest(userId, testId);
+		if (null != result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
-		
+
 	}
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/createDefect/{defectId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/defect", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createDefect(@PathVariable("userId") String userId,
-			@PathVariable("defectId") String defectId) {
-		logger.info("invoke: " + "/user/" + userId + "/createDefect");
-		ApiCallResult result = checklistService.createDefect(userId,defectId);
-		if(null != result.getMessage()) {
-			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
-		}else {
-			return new ResponseEntity<>(result,HttpStatus.OK);
+			@RequestParam("defectId") String defectId) {
+		logger.info("invoke: " + "/user/" + userId + "/defect?defectId=" + defectId);
+		ApiCallResult result = checklistService.createDefect(userId, defectId);
+		if (null != result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}
+	
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/public-checklist/{checklistId}", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> importChecklist(@PathVariable("userId") String userId,
+			@PathVariable("checklistId") String checklistId) {
+		logger.info("invoke: " + "/user/" + userId + "/public-checklist/" + checklistId);
+		ApiCallResult result = checklistService.importChecklist(userId, checklistId);
+		if (null != result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+	}
+	
 }

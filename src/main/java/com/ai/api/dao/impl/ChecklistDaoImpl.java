@@ -119,11 +119,12 @@ public class ChecklistDaoImpl implements ChecklistDao {
 			} else {
 				logger.error("createChecklist from checklist-service error: " + result.getStatusCode() + ", "
 						+ result.getResponseString());
-                apiCallResult.setMessage("ChecklistService error: " + result.getStatusCode() + ", "+ result.getResponseString());
+				apiCallResult.setMessage(
+						"ChecklistService error: " + result.getStatusCode() + ", " + result.getResponseString());
 			}
 		} catch (IOException e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
-            apiCallResult.setMessage(e.toString());
+			apiCallResult.setMessage(e.toString());
 		}
 		return apiCallResult;
 	}
@@ -131,21 +132,22 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	@Override
 	public ApiCallResult<CKLChecklistVO> updateChecklist(String userId, String checklistId, CKLChecklistVO checklist) {
 		String url = config.getChecklistServiceUrl() + "/ws/" + userId + "/checklist/" + checklistId + "/update";
-        ApiCallResult<CKLChecklistVO> apiCallResult = new ApiCallResult<CKLChecklistVO>();
+		ApiCallResult<CKLChecklistVO> apiCallResult = new ApiCallResult<CKLChecklistVO>();
 		try {
 			logger.info("updateChecklist - POST  Url:" + url + " || checklist:" + checklist);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, checklist);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                apiCallResult.setContent(JSON.parseObject(result.getResponseString(), CKLChecklistVO.class));
-                return apiCallResult;
+				apiCallResult.setContent(JSON.parseObject(result.getResponseString(), CKLChecklistVO.class));
+				return apiCallResult;
 			} else {
 				logger.error("updateChecklist from checklist-service error: " + result.getStatusCode() + ", "
 						+ result.getResponseString());
-                apiCallResult.setMessage("ChecklistService error: " + result.getStatusCode() + ", "+ result.getResponseString());
+				apiCallResult.setMessage(
+						"ChecklistService error: " + result.getStatusCode() + ", " + result.getResponseString());
 			}
 		} catch (IOException e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
-            apiCallResult.setMessage(e.toString());
+			apiCallResult.setMessage(e.toString());
 		}
 		return apiCallResult;
 	}
@@ -301,7 +303,8 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	@Override
 	public ApiCallResult createTest(String userId, String testId) {
 		// TODO Auto-generated method stub
-		StringBuilder url = new StringBuilder(config.getChecklistServiceUrl() + "/ws/" + userId + "/createTest/" + testId);
+		StringBuilder url = new StringBuilder(
+				config.getChecklistServiceUrl() + "/ws/" + userId + "/createTest/" + testId);
 		ApiCallResult temp = new ApiCallResult();
 		try {
 			logger.info("requesting: " + url.toString());
@@ -310,8 +313,9 @@ public class ChecklistDaoImpl implements ChecklistDao {
 				temp.setContent(JSON.parseObject(result.getResponseString(), CKLTestVO.class));
 				return temp;
 			} else {
-				logger.error("ChecklistService error: " + result.getStatusCode() + ", "+ result.getResponseString());
-				temp.setMessage("ChecklistService error: " + result.getStatusCode() + ", "+ result.getResponseString());
+				logger.error("ChecklistService error: " + result.getStatusCode() + ", " + result.getResponseString());
+				temp.setMessage(
+						"ChecklistService error: " + result.getStatusCode() + ", " + result.getResponseString());
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -322,9 +326,10 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	}
 
 	@Override
-	public ApiCallResult createDefect(String userId,  String defectId) {
+	public ApiCallResult createDefect(String userId, String defectId) {
 		// TODO Auto-generated method stub
-		StringBuilder url = new StringBuilder(config.getChecklistServiceUrl() + "/ws/" + userId + "/createDefect/" + defectId);
+		StringBuilder url = new StringBuilder(
+				config.getChecklistServiceUrl() + "/ws/" + userId + "/createDefect/" + defectId);
 		ApiCallResult temp = new ApiCallResult();
 		try {
 			logger.info("requesting: " + url.toString());
@@ -333,8 +338,34 @@ public class ChecklistDaoImpl implements ChecklistDao {
 				temp.setContent(JSON.parseObject(result.getResponseString(), CKLDefectVO.class));
 				return temp;
 			} else {
-				logger.error("ChecklistService error: " + result.getStatusCode() + ", "+ result.getResponseString());
-				temp.setMessage("ChecklistService error: " + result.getStatusCode() + ", "+ result.getResponseString());
+				logger.error("ChecklistService error: " + result.getStatusCode() + ", " + result.getResponseString());
+				temp.setMessage(
+						"ChecklistService error: " + result.getStatusCode() + ", " + result.getResponseString());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			temp.setMessage(e.toString());
+			e.printStackTrace();
+		}
+		return temp;
+	}
+
+	@Override
+	public ApiCallResult importChecklist(String userId, String checklistId) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(
+				config.getChecklistServiceUrl() + "/ws/" + userId + "/checklist/createPrivateTestDefectCopyFromPublicChecklist/" + checklistId);
+		ApiCallResult temp = new ApiCallResult();
+		try {
+			logger.info("requesting: " + url.toString());
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, "");
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				temp.setContent(JSON.parseObject(result.getResponseString(), CKLChecklistVO.class));
+				return temp;
+			} else {
+				logger.error("importChecklist error: " + result.getStatusCode() + ", " + result.getResponseString());
+				temp.setMessage(
+						"importChecklist error: " + result.getStatusCode() + ", " + result.getResponseString());
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
