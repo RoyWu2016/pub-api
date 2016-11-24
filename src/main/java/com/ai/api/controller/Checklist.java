@@ -58,4 +58,6 @@ public interface Checklist {
 	ResponseEntity<ApiCallResult> createTest(String userId, String testId);
 
 	ResponseEntity<ApiCallResult> createDefect(String userId, String defectId);
+
+	ResponseEntity<ApiCallResult> importChecklist(String userId, String checklistId);
 }
