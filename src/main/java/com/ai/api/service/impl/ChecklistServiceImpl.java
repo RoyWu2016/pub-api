@@ -160,4 +160,10 @@ public class ChecklistServiceImpl implements ChecklistService {
 		// TODO Auto-generated method stub
 		return checklistDao.createDefect(userId, defectId);
 	}
+
+	@Override
+	public ApiCallResult importChecklist(String userId, String checklistId) {
+		// TODO Auto-generated method stub
+		return checklistDao.importChecklist(userId,checklistId);
+	}
 }
