@@ -259,9 +259,9 @@ public class ChecklistImpl implements Checklist {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/test", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/public-test/{testId}", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createTest(@PathVariable("userId") String userId,
-			@RequestParam("testId") String testId) {
+			@PathVariable("testId") String testId) {
 		logger.info("invoke: " + "/user/" + userId + "/test?testId=" + testId);
 		ApiCallResult result = checklistService.createTest(userId, testId);
 		if (null != result.getMessage()) {
@@ -274,9 +274,9 @@ public class ChecklistImpl implements Checklist {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/defect", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/public-defect/{defectId}", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createDefect(@PathVariable("userId") String userId,
-			@RequestParam("defectId") String defectId) {
+			@PathVariable("defectId") String defectId) {
 		logger.info("invoke: " + "/user/" + userId + "/defect?defectId=" + defectId);
 		ApiCallResult result = checklistService.createDefect(userId, defectId);
 		if (null != result.getMessage()) {
