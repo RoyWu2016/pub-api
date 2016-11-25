@@ -37,7 +37,7 @@ import src.main.java.com.ai.commons.beans.payment.PaymentPaidBean;
 
 public interface Payment {
 	
-	ResponseEntity<PageBean<PaymentSearchResultBean>> getPaymentList(String userId, String archived, String start,
+	ResponseEntity<PageBean<PaymentSearchResultBean>> getPaymentList(String userId,boolean paid, String start,
 			String end, String keywords, Integer page, Integer pagesize) throws IOException, AIException;
 
 //	ResponseEntity<String> createProformaInvoice(String userId, String orders);
