@@ -354,7 +354,7 @@ public class ChecklistDaoImpl implements ChecklistDao {
 	public ApiCallResult importChecklist(String userId, String checklistId) {
 		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(
-				config.getChecklistServiceUrl() + "/ws/" + userId + "/checklist/createPrivateTestDefectCopyFromPublicChecklist/" + checklistId);
+				config.getChecklistServiceUrl() + "/ws/" + userId + "/checklist/" + checklistId +"/createPrivateTestDefectCopyFromPublicChecklist");
 		ApiCallResult temp = new ApiCallResult();
 		try {
 			logger.info("requesting: " + url.toString());
