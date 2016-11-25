@@ -64,7 +64,7 @@ public class PaymentImpl implements Payment {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/payments", method = RequestMethod.GET)
 	public ResponseEntity<PageBean<PaymentSearchResultBean>> getPaymentList(@PathVariable("userId") String userId,
-			@RequestParam(value = "paid", required = false, defaultValue = "no") String paid,
+			@RequestParam(value = "paid", required = false, defaultValue = "false") boolean paid,
 			@RequestParam(value = "start", required = false, defaultValue = "") String start,
 			@RequestParam(value = "end", required = false, defaultValue = "") String end,
 			@RequestParam(value = "keyword", required = false, defaultValue = "") String keywords,
@@ -89,7 +89,7 @@ public class PaymentImpl implements Payment {
 		criteriaBean.setPageNo(page);
 		criteriaBean.setPageSize(pagesize);
 		try {
-			PageBean<PaymentSearchResultBean> result = paymentService.searchPaymentList(criteriaBean, userId, paid);
+			PageBean<PaymentSearchResultBean> result = paymentService.searchPaymentList(criteriaBean, userId, paid?"yes":"no");
 			if (null != result) {
 				return new ResponseEntity<>(result, HttpStatus.OK);
 			}
