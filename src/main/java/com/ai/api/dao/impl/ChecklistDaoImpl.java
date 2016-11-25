@@ -8,6 +8,7 @@ import java.util.Map;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.ChecklistDao;
 import com.ai.commons.HttpUtil;
+import com.ai.commons.JsonUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.GetRequest;
@@ -20,6 +21,8 @@ import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -360,7 +363,9 @@ public class ChecklistDaoImpl implements ChecklistDao {
 			logger.info("requesting: " + url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, "");
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				temp.setContent(JSON.parseObject(result.getResponseString(), CKLChecklistVO.class));
+				JSONObject object = JSONObject.parseObject(result.getResponseString());
+				Object arrayStr = object.get("content");
+				temp.setContent(JsonUtil.mapToObject(arrayStr + "", CKLChecklistVO.class));
 				return temp;
 			} else {
 				logger.error("importChecklist error: " + result.getStatusCode() + ", " + result.getResponseString());
