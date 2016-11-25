@@ -1,6 +1,7 @@
 package com.ai.api.controller.impl;
 
-import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ai.api.exception.AIException;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -44,7 +42,6 @@ import com.ai.api.util.RedisUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.checklist.vo.CKLDefectVO;
 import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.beans.params.ChecklistTestSampleSizeBean;
@@ -54,6 +51,7 @@ import com.ai.commons.beans.params.GeoPlanetBean;
 import com.ai.commons.beans.params.TextileCategoryBean;
 import com.ai.commons.beans.params.product.SysProductTypeBean;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import io.swagger.annotations.ApiOperation;
@@ -339,7 +337,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-//	@TokenSecured
+	// @TokenSecured
 	@RequestMapping(value = "/parameter/continents", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getContinents(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
@@ -376,9 +374,9 @@ public class ParameterImpl implements Parameter {
 			return new ResponseEntity<>(callResult, HttpStatus.OK);
 		}
 	}
-	
+
 	@Override
-//	@TokenSecured
+	// @TokenSecured
 	@RequestMapping(value = "/parameter/countries", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getAllCountries(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
@@ -417,10 +415,9 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-//	@TokenSecured
+	// @TokenSecured
 	@RequestMapping(value = "/parameter/continent/{continentId}/countries", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getCountriesByContinentId(
-			@PathVariable("continentId") String continentId,
+	public ResponseEntity<ApiCallResult> getCountriesByContinentId(@PathVariable("continentId") String continentId,
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		// TODO Auto-generated method stub
 		logger.info("invoking: /parameter/continent/" + continentId + "/countries?refresh=" + refresh);
@@ -443,7 +440,8 @@ public class ParameterImpl implements Parameter {
 					temp.add(bean);
 				}
 				logger.info("saving getContinents into redis");
-				RedisUtil.hset("countriesByContinentIdCache", continentId, JSON.toJSONString(temp), RedisUtil.HOUR * 24);
+				RedisUtil.hset("countriesByContinentIdCache", continentId, JSON.toJSONString(temp),
+						RedisUtil.HOUR * 24);
 				callResult.setContent(temp);
 				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			} else {
@@ -458,7 +456,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-//	@TokenSecured
+	// @TokenSecured
 	@RequestMapping(value = "/parameter/country/{countryId}/provinces", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getProvincesByCountryId(@PathVariable("countryId") String countryId,
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
@@ -498,7 +496,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-//	@TokenSecured
+	// @TokenSecured
 	@RequestMapping(value = "/parameter/province/{provinceId}/cities", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getCitiesByProvinceId(@PathVariable("provinceId") String provinceId,
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
@@ -538,7 +536,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-//	@TokenSecured
+	// @TokenSecured
 	@RequestMapping(value = "/parameter/country/{countryId}/cities", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getCitiesByCountryId(@PathVariable("countryId") String countryId,
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
@@ -563,7 +561,7 @@ public class ParameterImpl implements Parameter {
 					temp.add(bean);
 				}
 				logger.info("saving getCitiesByCountryId into redis");
-				RedisUtil.hset("citiesByCountryIdCache",countryId, JSON.toJSONString(temp), RedisUtil.HOUR * 24);
+				RedisUtil.hset("citiesByCountryIdCache", countryId, JSON.toJSONString(temp), RedisUtil.HOUR * 24);
 				callResult.setContent(temp);
 				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			} else {
@@ -580,44 +578,78 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@RequestMapping(value = "/parameter/sic/{sicId}/base64", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getSaleImage(@PathVariable("sicId") String sicId,
-                                                      @RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
+			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 
-        logger.info("getSaleImage  sicId:["+sicId+"]  | refresh:["+refresh+"]");
-        ApiCallResult callResult = new ApiCallResult();
-	    try {
-            String fileStr = null;
-            if (!refresh){
-                logger.info("try to get saleImage from redis...");
-                fileStr = RedisUtil.hget("SaleImage",sicId);
-            }
-            if (StringUtils.isBlank(fileStr)){
-                logger.info("get saleImage from parameterService ...");
-                fileStr =  parameterService.getSaleImage(sicId);
-                if (StringUtils.isBlank(fileStr)){
-                    logger.error("saleImage is null!");
-                    callResult.setMessage("saleImage is null!");
-                    return new ResponseEntity<>(callResult, HttpStatus.OK);
-                }
-                fileStr = "data:image/jpg;base64,"+fileStr;
-                RedisUtil.hset("SaleImage",sicId,fileStr,RedisUtil.HOUR*24*14);
-            }
-            callResult.setContent(fileStr);
-            return new ResponseEntity<>(callResult,HttpStatus.OK);
-        }catch (Exception e){
-            logger.error("error!!",e);
-            callResult.setMessage(e.toString());
-            return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+		logger.info("getSaleImage  sicId:[" + sicId + "]  | refresh:[" + refresh + "]");
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			String fileStr = null;
+			if (!refresh) {
+				logger.info("try to get saleImage from redis...");
+				fileStr = RedisUtil.hget("SaleImage", sicId);
+			}
+			if (StringUtils.isBlank(fileStr)) {
+				logger.info("get saleImage from parameterService ...");
+				fileStr = parameterService.getSaleImage(sicId);
+				if (StringUtils.isBlank(fileStr)) {
+					logger.error("saleImage is null!");
+					callResult.setMessage("saleImage is null!");
+					return new ResponseEntity<>(callResult, HttpStatus.OK);
+				}
+				fileStr = "data:image/jpg;base64," + fileStr;
+				RedisUtil.hset("SaleImage", sicId, fileStr, RedisUtil.HOUR * 24 * 14);
+			}
+			callResult.setContent(fileStr);
+			return new ResponseEntity<>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("error!!", e);
+			callResult.setMessage(e.toString());
+			return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@Override
 	@RequestMapping(value = "/parameter/{userName}/is-aca-user", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> isACAUser(@PathVariable("userName") String userName){
+	public ResponseEntity<JSONObject> isACAUser(@PathVariable("userName") String userName) {
 		logger.info("check isACAUser userName:" + userName);
 		Boolean b = parameterService.isACAUser(userName);
 		JSONObject object = new JSONObject();
 		object.put("isACAUser", b);
 		return new ResponseEntity<>(object, HttpStatus.OK);
+	}
+
+	@Override
+	@RequestMapping(value = "/parameter/resourcs/{resourceName}/base64", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> getCommonImagesBase64(@PathVariable("resourceName") String resourceName,
+			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
+		logger.info("invoke: " + "/parameter/resourcs/" + resourceName + "/base64");
+		ApiCallResult callResult = new ApiCallResult();
+		String fileStr = null;
+		String path = config.getExcleLoggoCommonSource() + File.separator + resourceName;
+		logger.info("Found the logo resource: " + path);
+		if (!refresh) {
+			logger.info("try to getCommonImagesBase64 from redis ...");
+			fileStr = RedisUtil.hget("resourceCache", resourceName);
+		}
+		if (StringUtils.isBlank(fileStr)) {
+			try {
+				InputStream is = new FileInputStream(path);
+				byte[] bytes = IOUtils.toByteArray(is);
+				fileStr = Base64.encode(bytes);
+				RedisUtil.hset("resourceCache", resourceName, fileStr, RedisUtil.HOUR * 24 * 90);
+				logger.info("save to redis resourceCache successfully: " + resourceName);
+				callResult.setContent(fileStr);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				callResult.setMessage("Exception: " + e.toString());
+				return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			logger.info("getCommonImagesBase64 from redis successfully");
+			callResult.setContent(fileStr);
+		}
+		return new ResponseEntity<>(callResult, HttpStatus.OK);
 	}
 
 }
