@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.DraftDao;
+import com.ai.api.util.InspectionBookingBeanConvert;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.PageBean;
@@ -15,6 +16,7 @@ import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
 import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -95,7 +97,9 @@ public class DraftDaoImpl implements DraftDao {
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				JSONObject object = JSONObject.parseObject(result.getResponseString());
 				Object arrayStr = object.get("content");
-				return JsonUtil.mapToObject(arrayStr+"", InspectionBookingBean.class);
+				InspectionBookingBean returnBean =  JsonUtil.mapToObject(arrayStr+"", InspectionBookingBean.class);
+                returnBean = InspectionBookingBeanConvert.po2vo(returnBean);
+                return returnBean;
 			} else {
 				logger.error("create draft error from psi service : " + result.getStatusCode() +
 						", " + result.getResponseString());
@@ -120,7 +124,9 @@ public class DraftDaoImpl implements DraftDao {
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				JSONObject object = JSONObject.parseObject(result.getResponseString());
 				Object arrayStr = object.get("content");
-				return JsonUtil.mapToObject(arrayStr + "", InspectionBookingBean.class);
+                InspectionBookingBean resultBean = JsonUtil.mapToObject(arrayStr + "", InspectionBookingBean.class);
+                resultBean = InspectionBookingBeanConvert.po2vo(resultBean);
+                return resultBean;
 			} else {
 				logger.error("createDraftFromPreviousOrder error from psi service : " + result.getStatusCode() +
 						", " + result.getResponseString());
@@ -142,7 +148,11 @@ public class DraftDaoImpl implements DraftDao {
 //				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
 				JSONObject object = JSONObject.parseObject(result.getResponseString());
 				Object arrayStr = object.get("content");
-				return JsonUtil.mapToObject(arrayStr + "", InspectionBookingBean.class);
+                InspectionBookingBean resultBean =  JsonUtil.mapToObject(arrayStr + "", InspectionBookingBean.class);
+                logger.info("before convert :"+JSON.toJSONString(resultBean));
+                resultBean = InspectionBookingBeanConvert.po2vo(resultBean);
+                logger.info("before convert :"+ JSON.toJSONString(resultBean));
+                return resultBean;
 			} else {
 				logger.error("create draft error from psi service : " + result.getStatusCode() +
 						", " + result.getResponseString());
@@ -200,6 +210,7 @@ public class DraftDaoImpl implements DraftDao {
         url.append("&companyId=").append(companyId);
         url.append("&parentId=").append(parentId);
 		try {
+            draft = InspectionBookingBeanConvert.vo2po(draft);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draft);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				JSONObject object = JSONObject.parseObject(result.getResponseString());
