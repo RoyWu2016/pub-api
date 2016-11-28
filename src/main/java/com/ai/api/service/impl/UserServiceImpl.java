@@ -430,7 +430,11 @@ public class UserServiceImpl implements UserService {
 			customAQLBean.setMaxMeasurementDefects(orderBookingBean.getMaxMeaDefects());
 		} else {
 			aqlAndSamplingSizeBean.setUseCustomAQL(false);
-			customAQLBean.setCriticalDefects(orderBookingBean.getCriticalDefects());
+			if(null == orderBookingBean.getCriticalDefects()) {
+				customAQLBean.setCriticalDefects("0");
+			}else {
+				customAQLBean.setCriticalDefects(orderBookingBean.getCriticalDefects());
+			}
 			customAQLBean.setMajorDefects("0");
 			customAQLBean.setMinorDefects("0");
 			customAQLBean.setMaxMeasurementDefects("0");
