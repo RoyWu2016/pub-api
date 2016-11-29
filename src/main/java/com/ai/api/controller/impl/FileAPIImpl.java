@@ -12,15 +12,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ai.api.bean.consts.ConstMap;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.controller.FileAPI;
-import com.ai.api.exception.AIException;
-import com.ai.api.service.APIFileService;
-import com.ai.api.service.UserService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.fileservice.FileMetaBean;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +25,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import com.ai.api.bean.consts.ConstMap;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.controller.FileAPI;
+import com.ai.api.exception.AIException;
+import com.ai.api.service.APIFileService;
+import com.ai.api.service.UserService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.fileservice.FileMetaBean;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 /***************************************************************************
  * <PRE>
@@ -66,7 +68,6 @@ public class FileAPIImpl implements FileAPI {
 
 	@Autowired
 	UserService userService; // Service which will do all data
-
 
 	@Override
 	@TokenSecured
@@ -104,24 +105,23 @@ public class FileAPIImpl implements FileAPI {
 		}
 		return true;
 	}
-	
+
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/file/{fileId}/base64", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, String>> getFileBase64(
-			@PathVariable("userId") String userId, 
+	public ResponseEntity<Map<String, String>> getFileBase64(@PathVariable("userId") String userId,
 			@PathVariable("fileId") String fileId) throws IOException {
 		Map<String, String> result = new HashMap<String, String>();
 		InputStream inputStream = myFileService.getFileService().getFile(fileId);
 		String fileStr = null;
-		if(inputStream!=null) {
+		if (inputStream != null) {
 			byte[] data = IOUtils.toByteArray(inputStream);
 			fileStr = Base64.encode(data);
-		}else{
+		} else {
 			fileStr = "";
 		}
 		result.put("base64", fileStr);
-		return new ResponseEntity<>(result,HttpStatus.OK);
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	@Override
@@ -187,22 +187,48 @@ public class FileAPIImpl implements FileAPI {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/files/{srcId}", method = RequestMethod.GET)
-	public ResponseEntity<List<FileMetaBean>> getFilesList(
-			@PathVariable("userId") String userId,
-			@PathVariable("srcId") String srcId, 
-			@RequestParam(value = "docType", required = false) String docType) throws IOException {
+	public ResponseEntity<List<FileMetaBean>> getFilesList(@PathVariable("userId") String userId,
+			@PathVariable("srcId") String srcId, @RequestParam(value = "docType", required = false) String docType)
+			throws IOException {
 		// TODO Auto-generated method stub
 		List<FileMetaBean> result = null;
-		try{
+		try {
 			result = myFileService.getFileService().getFileInfoBySrcIdAndFileType(srcId, docType);
-			if(null != result) {
-				return new ResponseEntity<>(result,HttpStatus.OK);
-			}else {
+			if (null != result) {
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			} else {
 				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			logger.error("Error in getFilesList", e);
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/copy-files", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> copyFiles(@PathVariable("userId") String userId,
+			@RequestParam(value = "fromSrcId") String fromSrcId, @RequestParam(value = "toSrcId") String toSrcId,
+			@RequestParam(value = "userName", required = false) String userName) throws IOException {
+		// TODO Auto-generated method stub
+		logger.info("invoke: " + "/user/" + userId + "/copy-files?fromSrcId=" + fromSrcId + "&toSrcId=" + toSrcId
+				+ "&userName=" + userName);
+		ApiCallResult finalResult = new ApiCallResult();
+		List<FileMetaBean> result = null;
+		try {
+			result = myFileService.getFileService().copyfiles(fromSrcId, toSrcId, userName);
+			if (null != result) {
+				finalResult.setContent(result);
+				return new ResponseEntity<>(finalResult, HttpStatus.OK);
+			} else {
+				finalResult.setMessage("Copy files from file-service get null");
+				return new ResponseEntity<>(finalResult, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} catch (Exception e) {
+			logger.error("Error in getFilesList", e);
+			finalResult.setMessage("Exception: " + e.toString());
+			return new ResponseEntity<>(finalResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }
