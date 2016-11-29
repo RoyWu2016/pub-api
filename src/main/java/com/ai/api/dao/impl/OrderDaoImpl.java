@@ -25,6 +25,7 @@ import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.ProductBean;
 import com.alibaba.fastjson.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
@@ -423,6 +424,27 @@ public class OrderDaoImpl implements OrderDao {
 			temp.setMessage(e.toString());
 		}
 		return temp;
+	}
+
+	@Override
+	public List<ProductBean> listProducts(String orderId) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/product/general/list/" + orderId);
+		logger.info("requesting: " + url.toString());
+		try {
+			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return JsonUtil.mapToObject(result.getResponseString(), List.class);
+			} else {
+				logger.error("listProducts error from psi service : " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
 	}
 
 }

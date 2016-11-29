@@ -12,6 +12,7 @@ import com.ai.api.bean.OrderSearchBean;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.ProductBean;
 
 /***************************************************************************
  * <PRE>
@@ -66,4 +67,6 @@ public interface OrderDao {
 	InspectionBookingBean getInspectionOrder(String string, String orderId);
 
 	ApiCallResult reInspection(String userId, String companyId, String parentId, String orderId, String draftId);
+
+	List<ProductBean> listProducts(String orderId);
 }
