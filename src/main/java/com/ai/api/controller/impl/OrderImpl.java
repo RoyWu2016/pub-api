@@ -37,14 +37,18 @@ import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.Order;
+import com.ai.api.service.APIFileService;
 import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.ProductBean;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
@@ -84,6 +88,9 @@ public class OrderImpl implements Order {
 	@Autowired
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
+
+	@Autowired
+	private APIFileService myFileService;
 
 	@Override
 	@TokenSecured
@@ -358,10 +365,39 @@ public class OrderImpl implements Order {
 			@PathVariable("orderId") String orderId, @PathVariable("draftId") String draftId) {
 		logger.info("invoke: " + "/user/" + userId + "/order/" + orderId + "/draft/" + draftId + "/re-inspection");
 		ApiCallResult result = orderService.reInspection(userId, orderId, draftId);
-		if(null == result.getMessage()) {
+		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/order/{orderId}/files", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> getFilesByOrderID(@PathVariable("userId") String userId,
+			@PathVariable("orderId") String orderId) throws IOException {
+		// TODO Auto-generated method stub
+		logger.info("invoke: " + "/user/" + userId + "/order/" + orderId + "/files");
+		ApiCallResult result = new ApiCallResult();
+		List<ProductBean> products = orderService.listProducts(orderId);
+		if (null != products) {
+			JSONArray jArray = (JSONArray) JSON.parseArray(JSON.toJSONString(products));
+			StringBuilder srcIds = new StringBuilder();
+			for (int i = 0; i < jArray.size(); i++) {
+				JSONObject each = (JSONObject) jArray.get(i);
+				srcIds.append(each.getString("productId"));
+				if (i != jArray.size() - 1) {
+					srcIds.append(";");
+				}
+			}
+			Map<String, List<FileMetaBean>> content = myFileService.getFileService()
+					.getFileInfoBySrcIds(srcIds.toString());
+			result.setContent(content);
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			result.setMessage("No products in this order: " + orderId);
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}
 

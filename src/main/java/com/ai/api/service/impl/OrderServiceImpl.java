@@ -53,6 +53,7 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.ProductBean;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /***************************************************************************
@@ -474,6 +475,12 @@ public class OrderServiceImpl implements OrderService {
             companyId = user.getCompany().getId();
         }
         return orderDao.reInspection(userId,companyId,parentId,orderId,draftId);
+	}
+
+	@Override
+	public List<ProductBean> listProducts(String orderId) {
+		// TODO Auto-generated method stub
+		return orderDao.listProducts(orderId);
 	}
 
 }

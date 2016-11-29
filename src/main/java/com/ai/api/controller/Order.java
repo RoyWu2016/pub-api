@@ -6,6 +6,7 @@
  ***************************************************************************/
 package com.ai.api.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +69,8 @@ public interface Order {
 			String endDate, String orderStatus);
 
 	ResponseEntity<ApiCallResult> reInspection(String userId, String orderId, String draftId);
+
+	ResponseEntity<ApiCallResult> getFilesByOrderID(String userId, String orderId) throws IOException;
 
 //	ResponseEntity<Map<String, ApiCallResult>> getOrderAction(String userId, String orderId);
 
