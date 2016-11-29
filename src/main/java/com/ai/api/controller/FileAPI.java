@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.ai.api.exception.AIException;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 
 /***************************************************************************
@@ -46,6 +47,9 @@ public interface FileAPI {
 	ResponseEntity<List<FileMetaBean>> getFilesList(String userId,String srcId,String docType) throws IOException;
 
 	ResponseEntity<Map<String, String>> getFileBase64(String userId, String fileId)
+			throws IOException;
+
+	ResponseEntity<ApiCallResult> copyFiles(String userId, String fromSrcId, String toSrcId, String userName)
 			throws IOException;
 
 }
