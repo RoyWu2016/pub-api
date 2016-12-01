@@ -129,7 +129,7 @@ public class ReportImpl implements Report {
 	}
 
 	@Override
-//	@TokenSecured
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/report/{productId}/filename/{fileName}/pdf", method = RequestMethod.GET)
 	public ResponseEntity<String> downloadPDF(@PathVariable("userId") String userId,
 			@PathVariable("productId") String productId, @PathVariable("fileName") String fileName,
@@ -147,7 +147,7 @@ public class ReportImpl implements Report {
 	}
 
 	@Override
-//	@TokenSecured
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/report/{productId}/filename/{fileName}/pdf-base64", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> downloadPDFBase64(@PathVariable("userId") String userId,
 			@PathVariable("productId") String productId, @PathVariable("fileName") String fileName,
