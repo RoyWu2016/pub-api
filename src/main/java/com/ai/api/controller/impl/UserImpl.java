@@ -105,6 +105,20 @@ public class UserImpl implements User {
 
 		logger.info("......finish getting user profile.......");
 		JSONObject result = JSON.parseObject(JSON.toJSONString(cust));
+		JSONObject paymentObj = result.getJSONObject("payment");
+		String onlinePaymentType = paymentObj.getString("onlinePaymentType");
+		paymentObj.put("onlinePaymentType", onlinePaymentType.toUpperCase().replaceAll(" ", "_"));
+		if ("new client".equalsIgnoreCase(onlinePaymentType)) {
+			paymentObj.put("charge", "8%");
+		} else if ("new client v3".equalsIgnoreCase(onlinePaymentType)) {
+			paymentObj.put("charge", "5%");
+		} else if ("old client".equalsIgnoreCase(onlinePaymentType)) {
+			paymentObj.put("charge", "0");
+		} else if ("ONLINE_PAYMENT_MANDATORY".equalsIgnoreCase(onlinePaymentType.toUpperCase().replaceAll(" ", "_"))) {
+			paymentObj.put("charge", "0");
+		} else if ("ONLINE_PAYMENT_MANDATORY".equalsIgnoreCase(onlinePaymentType.toUpperCase().replaceAll(" ", "_"))) {
+			paymentObj.put("charge", "0");
+		}
 		JSONObject rateObj = result.getJSONObject("rate");
 		rateObj.remove("countryPricingRates");
 		rateObj.remove("labTestRate");
@@ -282,20 +296,20 @@ public class UserImpl implements User {
 			object.remove("reportTos");
 			object.remove("modifiedBy");
 			object.remove("modifiedDate");
-            try {
-                object.remove("groups");
-                JSONArray roles = object.getJSONArray("roles");
-                for (int i=0;i<roles.size();i++) {
-                    JSONObject role = roles.getJSONObject(i);
-                    role.remove("createTime");
-                    role.remove("updateTime");
-                    role.remove("roleId");
-                    role.remove("moduleId");
-                    role.remove("moduleName");
-                }
-            }catch (Exception e){
+			try {
+				object.remove("groups");
+				JSONArray roles = object.getJSONArray("roles");
+				for (int i = 0; i < roles.size(); i++) {
+					JSONObject role = roles.getJSONObject(i);
+					role.remove("createTime");
+					role.remove("updateTime");
+					role.remove("roleId");
+					role.remove("moduleId");
+					role.remove("moduleName");
+				}
+			} catch (Exception e) {
 
-            }
+			}
 			return new ResponseEntity<>(object, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -327,7 +341,7 @@ public class UserImpl implements User {
 	}
 
 	@Override
-//	@TokenSecured
+	// @TokenSecured
 	@RequestMapping(value = "/user/{login}/reset-password", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> resetPassword(@PathVariable("login") String login) {
 		logger.info("invoking: " + "/user/" + login + "/reset-password");
