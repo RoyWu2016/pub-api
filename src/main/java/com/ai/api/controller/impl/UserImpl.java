@@ -109,7 +109,7 @@ public class UserImpl implements User {
 		String onlinePaymentType = paymentObj.getString("onlinePaymentType");
 		paymentObj.put("onlinePaymentType", onlinePaymentType.toUpperCase().replaceAll(" ", "_"));
 		if ("new client".equalsIgnoreCase(onlinePaymentType)) {
-			paymentObj.put("charge", "8%");
+			paymentObj.put("charge", "8$");
 		} else if ("new client v3".equalsIgnoreCase(onlinePaymentType)) {
 			paymentObj.put("charge", "5%");
 		} else if ("old client".equalsIgnoreCase(onlinePaymentType)) {
