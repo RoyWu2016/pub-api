@@ -213,11 +213,10 @@ public class SupplierImpl implements Supplier {
 					try {
 						SupplierDetailBean result = factoryService.getUserSupplierDetailInfoById("nullUserId",
 								orderBean.getOrder().getOrderSupplier().getSupplierId());
+						String userId = orderBean.getOrder().getOrderGeneralInfo().getUserId();
+						UserBean userBean = userService.getCustById(userId);
 						object.getJSONObject("order").put("orderSupplier", result);
-						// String str =
-						// orderBean.getOrder().getOrderSupplier().getSupplierProductLines();
-						// String[] strArray = str.split(";");
-						// object.getJSONObject("order").getJSONObject("orderSupplier").put("supplierProductLines",strArray);
+						object.getJSONObject("order").put("rates", userBean.getRate());
 					} catch (Exception e) {
 						logger.error("change SupplierProductLines from String to Array failed! ", e);
 					}
