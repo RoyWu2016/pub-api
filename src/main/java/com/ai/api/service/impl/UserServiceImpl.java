@@ -518,6 +518,7 @@ public class UserServiceImpl implements UserService {
 			reportPreferenceBean
 					.setSameDayReport(reportCertificateBean.getSameDayReport().equalsIgnoreCase("Yes") ? true : false);
 			reportPreferenceBean.setReportTemplate(reportCertificateBean.getReportTemplate());
+			reportPreferenceBean.setCertificateType(reportCertificateBean.getIcTemplate());
 			List<ApproverBean> approverBeenList = reportCertificateBean.getApprovers();
 			if (approverBeenList != null) {
 				List<ReportApproverBean> reportApproverBeenList = new ArrayList<ReportApproverBean>();
