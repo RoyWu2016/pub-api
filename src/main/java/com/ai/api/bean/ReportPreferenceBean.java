@@ -22,6 +22,7 @@ public class ReportPreferenceBean implements Serializable {
     private List<ReportRejectCategoryBean> rejectCategories;
     private String rejectReasonSortBy;
     private String rejectReasonOther;
+    private String certificateType;
 
     public ReportPreferenceBean(){}
 
@@ -129,7 +130,15 @@ public class ReportPreferenceBean implements Serializable {
         this.rejectReasonOther = rejectReasonOther;
     }
 
-    @Override
+    public String getCertificateType() {
+		return certificateType;
+	}
+
+	public void setCertificateType(String certificateType) {
+		this.certificateType = certificateType;
+	}
+
+	@Override
     public String toString() {
         return "ReportPreferenceBean{" +
                 "withAttachment=" + withAttachment +
