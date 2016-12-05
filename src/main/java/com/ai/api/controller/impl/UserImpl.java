@@ -119,6 +119,7 @@ public class UserImpl implements User {
 		} else if ("ONLINE_PAYMENT_MANDATORY".equalsIgnoreCase(onlinePaymentType.toUpperCase().replaceAll(" ", "_"))) {
 			paymentObj.put("charge", "0");
 		}
+		paymentObj.remove("expressBookingFee");
 		JSONObject rateObj = result.getJSONObject("rate");
 		rateObj.remove("countryPricingRates");
 		rateObj.remove("labTestRate");
