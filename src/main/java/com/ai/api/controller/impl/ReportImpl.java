@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
@@ -292,21 +293,33 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/report/{productId}/pdf-Certificate", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> listAllSyncObjByOracleId(@PathVariable("userId") String userId,
-			@PathVariable("productId") String productId) {
+	public ResponseEntity<ApiCallResult> getPDFCertificate(@PathVariable("userId") String userId,
+			@PathVariable("productId") String productId, HttpServletResponse httpResponse) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/report/" + productId + "/pdf-Certificate");
 		List<LotusSyncBean> list = reportService.listAllSyncObjByOracleId(productId, "report_detail");
 		JSONObject joson = JSON.parseObject(JSON.toJSONString(list.get(0)));
 		String lotusId = joson.getString("lotusId");
-		String result = reportService.getPDFCertificate(lotusId);
+		InputStream result = reportService.getPDFCertificate(lotusId);
+		httpResponse.setHeader("Content-Disposition", "inline; filename=" + "TEST.pdf");
+		try {
+			ServletOutputStream output = httpResponse.getOutputStream();
+			httpResponse.setStatus(HttpServletResponse.SC_OK);
+			byte[] buffer = new byte[10240];
+			for (int length = 0; (length = result.read(buffer)) > 0;) {
+				output.write(buffer, 0, length);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ApiCallResult finalResult = new ApiCallResult();
 		if (null == result) {
-			finalResult.setMessage("Unknow Error");
-			return new ResponseEntity<>(finalResult,HttpStatus.INTERNAL_SERVER_ERROR);
+			finalResult.setContent(false);
+			return new ResponseEntity<>(finalResult, HttpStatus.OK);
 		} else {
-			finalResult.setContent(result);
-			return new ResponseEntity<>(finalResult,HttpStatus.OK);
+			finalResult.setContent(true);
+			return new ResponseEntity<>(finalResult, HttpStatus.OK);
 		}
 	}
 

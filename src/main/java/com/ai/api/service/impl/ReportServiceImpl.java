@@ -415,7 +415,7 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public String getPDFCertificate(String lotusId) {
+	public InputStream getPDFCertificate(String lotusId) {
 		// TODO Auto-generated method stub
 		return reportDao.getPDFCertificate(lotusId);
 	}
