@@ -40,5 +40,5 @@ public interface ReportService {
 
 	List<LotusSyncBean> listAllSyncObjByOracleId(String productId, String reportDetail);
 
-	String getPDFCertificate(String lotusId);
+	InputStream getPDFCertificate(String lotusId);
 }
