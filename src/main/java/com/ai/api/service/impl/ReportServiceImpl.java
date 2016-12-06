@@ -48,6 +48,7 @@ import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
+import com.ai.commons.beans.sync.LotusSyncBean;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
@@ -404,5 +405,18 @@ public class ReportServiceImpl implements ReportService {
 			companyId = user.getCompany().getId();
 		}
 		return reportDao.clientForwardReport(reportsForwardingBean, companyId, parentId, userId, reportIds);
+	}
+
+	@Override
+	public List<LotusSyncBean> listAllSyncObjByOracleId(String productId, String reportDetail) {
+		// TODO Auto-generated method stub
+		return reportDao.listAllSyncObjByOracleId(productId,reportDetail);
+		
+	}
+
+	@Override
+	public String getPDFCertificate(String lotusId) {
+		// TODO Auto-generated method stub
+		return reportDao.getPDFCertificate(lotusId);
 	}
 }

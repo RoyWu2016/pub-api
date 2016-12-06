@@ -1,5 +1,6 @@
 package com.ai.api.dao.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
+import com.ai.commons.beans.sync.LotusSyncBean;
 import com.alibaba.fastjson.JSON;
 
 /**
@@ -225,27 +227,24 @@ public class ReportDaoImpl implements ReportDao {
 
 	@Override
 	public boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean, String companyId, String parentId,
-	                                   String userId, String reportIds) {
+			String userId, String reportIds) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/report/api/forward-reports");
 		try {
-			reportsForwardingBean.setMessage(URLEncoder.encode(reportsForwardingBean.getMessage().trim(),"UTF-8"));
-		}catch (Exception e){
-			reportsForwardingBean.getMessage().trim().replace(" ","%20");
+			reportsForwardingBean.setMessage(URLEncoder.encode(reportsForwardingBean.getMessage().trim(), "UTF-8"));
+		} catch (Exception e) {
+			reportsForwardingBean.getMessage().trim().replace(" ", "%20");
 		}
-		url.append("?productIds=").append(reportIds).append("&to=")
-				.append(reportsForwardingBean.getTo()).append("&cc=")
-				.append(reportsForwardingBean.getCc()).append("&bcc=")
-				.append(reportsForwardingBean.getBcc()).append("&message=")
-				.append(reportsForwardingBean.getMessage()).append("&userId=")
-				.append(userId).append("&companyId=").append(companyId)
-				.append("&parentId=").append(parentId);
+		url.append("?productIds=").append(reportIds).append("&to=").append(reportsForwardingBean.getTo()).append("&cc=")
+				.append(reportsForwardingBean.getCc()).append("&bcc=").append(reportsForwardingBean.getBcc())
+				.append("&message=").append(reportsForwardingBean.getMessage()).append("&userId=").append(userId)
+				.append("&companyId=").append(companyId).append("&parentId=").append(parentId);
 		try {
 			logger.info("requesting url: " + url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, new HashMap<>());
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return true;
 			} else {
-				logger.error("forward reports from middleware error: " + result.getStatusCode() + ", "
+				logger.error("forward reports from psi-service error: " + result.getStatusCode() + ", "
 						+ result.getResponseString());
 				return false;
 			}
@@ -254,5 +253,49 @@ public class ReportDaoImpl implements ReportDao {
 			return false;
 		}
 	}
-}
 
+	@Override
+	public List<LotusSyncBean> listAllSyncObjByOracleId(String productId, String reportDetail) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/lotus-sync/list-by-oracle-id/" + productId);
+		url.append("?syncObj=" + reportDetail);
+		logger.info("requesting: " + url.toString());
+		GetRequest request = GetRequest.newInstance().setUrl(url.toString());
+		try {
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return JSON.parseObject(result.getResponseString(), List.class);
+			} else {
+				logger.error("listAllSyncObjByOracleId from psi-service error: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+				return null;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getPDFCertificate(String lotusId) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getMwServiceUrl() + "/report/getPDFCertificate?reportId=" + lotusId);
+		logger.info("requesting: " + url.toString());
+		GetRequest request = GetRequest.newInstance().setUrl(url.toString());
+		try {
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return JSON.parseObject(result.getResponseString(), String.class);
+			} else {
+				logger.error("listAllSyncObjByOracleId from middle-ware error: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+				return null;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+}
