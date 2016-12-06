@@ -43,4 +43,6 @@ public interface Report {
 
 	ResponseEntity<ApiCallResult> downloadPDFBase64(String userId, String productId, String fileName,
 			HttpServletResponse httpResponse);
+
+	ResponseEntity listAllSyncObjByOracleId(String userId, String productId);
 }

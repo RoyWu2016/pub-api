@@ -34,6 +34,9 @@ import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
+import com.ai.commons.beans.sync.LotusSyncBean;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 /**
@@ -129,7 +132,7 @@ public class ReportImpl implements Report {
 	}
 
 	@Override
-//	@TokenSecured
+	// @TokenSecured
 	@RequestMapping(value = "/user/{userId}/report/{productId}/filename/{fileName}/pdf", method = RequestMethod.GET)
 	public ResponseEntity<String> downloadPDF(@PathVariable("userId") String userId,
 			@PathVariable("productId") String productId, @PathVariable("fileName") String fileName,
@@ -152,24 +155,24 @@ public class ReportImpl implements Report {
 	public ResponseEntity<ApiCallResult> downloadPDFBase64(@PathVariable("userId") String userId,
 			@PathVariable("productId") String productId, @PathVariable("fileName") String fileName,
 			HttpServletResponse httpResponse) {
-		logger.info("invoke: " + "/user/" + userId + "/report/" + productId +"/filename/" + fileName + "/pdf-base64");
+		logger.info("invoke: " + "/user/" + userId + "/report/" + productId + "/filename/" + fileName + "/pdf-base64");
 		InputStream input = reportService.downloadPDFBase64(productId, fileName, httpResponse);
 		ApiCallResult result = new ApiCallResult();
-		if(null == input) {
+		if (null == input) {
 			result.setMessage("ERROR!!! downloadPDFBase64");
-			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
-		}else {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		} else {
 			try {
 				byte[] data = IOUtils.toByteArray(input);
 				String fileStr = Base64.encode(data);
-				
+
 				result.setContent(fileStr);
-				return new ResponseEntity<>(result,HttpStatus.OK);
+				return new ResponseEntity<>(result, HttpStatus.OK);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				result.setMessage(e.toString());
-				return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 	}
@@ -283,6 +286,27 @@ public class ReportImpl implements Report {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/report/{productId}/pdf-Certificate", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> listAllSyncObjByOracleId(@PathVariable("userId") String userId,
+			@PathVariable("productId") String productId) {
+		// TODO Auto-generated method stub
+		logger.info("invoke: " + "/user/" + userId + "/report/" + productId + "/pdf-Certificate");
+		List<LotusSyncBean> list = reportService.listAllSyncObjByOracleId(productId, "report_detail");
+		JSONObject joson = JSON.parseObject(JSON.toJSONString(list.get(0)));
+		String lotusId = joson.getString("lotusId");
+		String result = reportService.getPDFCertificate(lotusId);
+		ApiCallResult finalResult = new ApiCallResult();
+		if (null == result) {
+			finalResult.setMessage("Unknow Error");
+			return new ResponseEntity<>(finalResult,HttpStatus.INTERNAL_SERVER_ERROR);
+		} else {
+			finalResult.setContent(result);
+			return new ResponseEntity<>(finalResult,HttpStatus.OK);
 		}
 	}
 
