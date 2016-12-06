@@ -10,6 +10,7 @@ import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
+import com.ai.commons.beans.sync.LotusSyncBean;
 
 /**
  * Created by yan on 2016/7/25.
@@ -36,4 +37,8 @@ public interface ReportService {
 	boolean clientForwardReport(ReportsForwardingBean reportsForwardingBean, String userId, String reportIds);
 
 	InputStream downloadPDFBase64(String reportId, String fileName, HttpServletResponse httpResponse);
+
+	List<LotusSyncBean> listAllSyncObjByOracleId(String productId, String reportDetail);
+
+	String getPDFCertificate(String lotusId);
 }
