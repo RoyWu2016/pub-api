@@ -61,6 +61,8 @@ public class ServiceConfig {
     private String redisPassword;
     private String aimsServiceBaseUrl;
     private String programServiceBaseUrl;
+
+	private String financeServiceBaseUrl;
     
     private String excleLoggoCommonSource;
 
@@ -233,6 +235,14 @@ public class ServiceConfig {
 		this.programServiceBaseUrl = programServiceBaseUrl;
 	}
 
+	public String getFinanceServiceBaseUrl() {
+		return financeServiceBaseUrl;
+	}
+
+	public void setFinanceServiceBaseUrl(String financeServiceBaseUrl) {
+		this.financeServiceBaseUrl = financeServiceBaseUrl;
+	}
+
 	@Override
 	public String toString() {
 		return "ServiceConfig{" +
@@ -252,6 +262,8 @@ public class ServiceConfig {
 				", redisPassword='" + redisPassword + '\'' +
 				", aimsServiceBaseUrl='" + aimsServiceBaseUrl + '\'' +
 				", programServiceBaseUrl='" + programServiceBaseUrl + '\'' +
+				", financeServiceBaseUrl='" + financeServiceBaseUrl + '\'' +
+				", excleLoggoCommonSource='" + excleLoggoCommonSource + '\'' +
 				'}';
 	}
 }

@@ -45,6 +45,7 @@
           p:redisHost="${redis.host}"
           p:aimsServiceBaseUrl="${aims.service.base.lb.url}"
           p:programServiceBaseUrl="${program.service.base.lb.url}"
+          p:financeServiceBaseUrl="${finance.service.base.lb.url}"
           p:excleLoggoCommonSource="${resource.share.folder}"/>
 
     <bean id="redisUtil" class="com.ai.api.util.RedisUtil" >
