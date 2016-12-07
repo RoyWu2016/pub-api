@@ -292,7 +292,7 @@ public class ReportImpl implements Report {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/report/{productId}/pdf-Certificate", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/report/{productId}/pdf-Certificate-base64", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getPDFCertificate(@PathVariable("userId") String userId,
 			@PathVariable("productId") String productId, HttpServletResponse httpResponse) {
 		// TODO Auto-generated method stub
@@ -301,25 +301,22 @@ public class ReportImpl implements Report {
 		JSONObject joson = JSON.parseObject(JSON.toJSONString(list.get(0)));
 		String lotusId = joson.getString("lotusId");
 		InputStream result = reportService.getPDFCertificate(lotusId);
-		httpResponse.setHeader("Content-Disposition", "inline; filename=" + "TEST.pdf");
+		ApiCallResult finalResult = new ApiCallResult();
 		try {
-			ServletOutputStream output = httpResponse.getOutputStream();
-			httpResponse.setStatus(HttpServletResponse.SC_OK);
-			byte[] buffer = new byte[10240];
-			for (int length = 0; (length = result.read(buffer)) > 0;) {
-				output.write(buffer, 0, length);
+			if (null != result) {
+				byte[] data = IOUtils.toByteArray(result);
+				String fileStr = Base64.encode(data);
+				finalResult.setContent(fileStr);
+				return new ResponseEntity<>(finalResult, HttpStatus.OK);
+			} else {
+				finalResult.setMessage("Can not get Certificate from MW");
+				return new ResponseEntity<>(finalResult, HttpStatus.OK);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		ApiCallResult finalResult = new ApiCallResult();
-		if (null == result) {
-			finalResult.setContent(false);
-			return new ResponseEntity<>(finalResult, HttpStatus.OK);
-		} else {
-			finalResult.setContent(true);
-			return new ResponseEntity<>(finalResult, HttpStatus.OK);
+			finalResult.setMessage("Exception: " + e.toString());
+			return new ResponseEntity<>(finalResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
