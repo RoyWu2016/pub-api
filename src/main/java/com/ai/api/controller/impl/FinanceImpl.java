@@ -45,7 +45,7 @@ public class FinanceImpl implements Finance {
         StringBuilder url = new StringBuilder(config.getPsiServiceUrl()).append("/netsuite/interface/log/save");
         ApiCallResult callResult = new ApiCallResult();
         try {
-            logger.info("requesting: " + url.toString());
+            logger.info("processNSLog requesting: " + url.toString());
             ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, nsLogs);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setMessage(result.getResponseString());
@@ -67,7 +67,7 @@ public class FinanceImpl implements Finance {
         StringBuilder url = new StringBuilder(config.getPsiServiceUrl()).append("/netsuite/cndn/save");
         ApiCallResult callResult = new ApiCallResult();
         try {
-            logger.info("requesting: " + url.toString());
+            logger.info("processCreditOrDebitMemos requesting: " + url.toString());
             ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, cndnMap);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setMessage(result.getResponseString());
