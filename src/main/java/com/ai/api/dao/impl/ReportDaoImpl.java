@@ -295,20 +295,6 @@ public class ReportDaoImpl implements ReportDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		GetRequest request = GetRequest.newInstance().setUrl(url.toString());
-//		try {
-//			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-//			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-//				return JSON.parseObject(result.getResponseString(), String.class);
-//			} else {
-//				logger.error("listAllSyncObjByOracleId from middle-ware error: " + result.getStatusCode() + ", "
-//						+ result.getResponseString());
-//				return null;
-//			}
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		return null;
 	}
 }
