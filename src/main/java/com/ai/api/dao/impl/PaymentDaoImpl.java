@@ -21,6 +21,7 @@ import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
+import com.ai.commons.beans.payment.PaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -150,7 +151,7 @@ public class PaymentDaoImpl implements PaymentDao {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, list);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				temp.setContent(JsonUtil.mapToObject(result.getResponseString(),
-						new TypeReference<List<GlobalPaymentInfoBean>>() {
+						new TypeReference<List<PaymentInfoBean>>() {
 						}));
 				return temp;
 			} else {
