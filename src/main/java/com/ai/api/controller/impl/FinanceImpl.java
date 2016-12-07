@@ -42,7 +42,7 @@ public class FinanceImpl implements Finance {
     @Override
     @RequestMapping(value = "/finance/net-suite/logs", method = RequestMethod.POST)
     public ResponseEntity<ApiCallResult> processNSLog(@RequestBody List<NSLog> nsLogs) {
-        StringBuilder url = new StringBuilder(config.getPsiServiceUrl()).append("/netsuite/interface/log/save");
+        StringBuilder url = new StringBuilder(config.getFinanceServiceBaseUrl()).append("/netsuite/interface/log/save");
         ApiCallResult callResult = new ApiCallResult();
         try {
             logger.info("processNSLog requesting: " + url.toString());
@@ -64,7 +64,7 @@ public class FinanceImpl implements Finance {
     @Override
     @RequestMapping(value = "/finance/net-suite/memo", method = RequestMethod.POST)
     public ResponseEntity<ApiCallResult> processCreditOrDebitMemos(@RequestBody Map<String, List<NSCreditDebitMemo>> cndnMap) {
-        StringBuilder url = new StringBuilder(config.getPsiServiceUrl()).append("/netsuite/cndn/save");
+        StringBuilder url = new StringBuilder(config.getFinanceServiceBaseUrl()).append("/netsuite/cndn/save");
         ApiCallResult callResult = new ApiCallResult();
         try {
             logger.info("processCreditOrDebitMemos requesting: " + url.toString());
