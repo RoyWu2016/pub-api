@@ -6,6 +6,7 @@
  ***************************************************************************/
 package com.ai.api.lab.dao.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.lab.dao.LTOrderDao;
 import com.ai.api.util.AIUtil;
+import com.ai.commons.beans.ApiCallResult;
 
 /***************************************************************************
  * <PRE>
@@ -46,6 +48,7 @@ import com.ai.api.util.AIUtil;
  * </PRE>
  ***************************************************************************/
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 @Qualifier("ltorderDao")
 @Component
 public class LTOrderDaoImpl implements LTOrderDao {
@@ -55,13 +58,14 @@ public class LTOrderDaoImpl implements LTOrderDao {
 	private ServiceConfig config;
 
 	@Override
-	public List<OrderSearchBean> searchLTOrders(String compId, String orderStatus, Integer pageNumber, Integer pageSize,
-			String direction) {
-
+	public ApiCallResult searchLTOrders(String compId, String orderStatus, Integer pageNumber, Integer pageSize,
+			String direction) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		
+		ApiCallResult callResult = new ApiCallResult();
 		List<OrderSearchBean> orderSearchList = new ArrayList<OrderSearchBean>();
 		
-		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		List<OrderMaster> orders = Arrays.asList(restTemplate.getForObject(buildOrderSearchCriteria(compId, orderStatus, pageSize,
 				pageNumber, direction, config.getAimsServiceBaseUrl() + "/api/ordermanagement/search/all").build()
 						.encode().toUri(),
@@ -70,7 +74,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		for (OrderMaster order : orders) {
 			OrderSearchBean orderSearch = new OrderSearchBean();
 			orderSearch.setOrderId(order.getId());
-			orderSearch.setSupplierName(StringUtils.stripToEmpty(order.getSupplier().getCompanyName()));
+			orderSearch.setSupplierName(null != order.getSupplier() ? StringUtils.stripToEmpty(order.getSupplier().getCompanyName()) : null );
 			orderSearch.setServiceType("LT");
 			orderSearch.setServiceTypeText("LT");
 			orderSearch.setPoNumbers(order.getClientPONo());
@@ -81,8 +85,8 @@ public class LTOrderDaoImpl implements LTOrderDao {
 			orderSearch.setProductNames(StringUtils.stripToEmpty(order.getDescription()));
 			orderSearchList.add(orderSearch);
 		}
-
-		return orderSearchList;
+		callResult.setContent(orderSearchList);
+		return callResult;
 	}
 
 	private UriComponentsBuilder buildOrderSearchCriteria(String compId, String orderStatus, Integer pageSize,
@@ -100,40 +104,44 @@ public class LTOrderDaoImpl implements LTOrderDao {
 	}
 
 	@Override
-	public OrderMaster findOrder(String orderId) {
+	public ApiCallResult findOrder(String orderId) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
-		OrderMaster order = restTemplate.getForObject(config.getAimsServiceBaseUrl() + "/api/ordermanagement/search/" + orderId,
-				OrderMaster.class);
-
-		return order;
+		
+		ApiCallResult callResult = new ApiCallResult();
+		OrderMaster order = restTemplate.getForObject(config.getAimsServiceBaseUrl() + "/api/ordermanagement/search/" + orderId, OrderMaster.class);
+		callResult.setContent(order);
+		return callResult;
 	}
 
 	@Override
-	public OrderMaster saveOrder(String userId, OrderMaster order) {
+	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
-		Map<String, String> vars = new HashMap<String, String>();
-		vars.put("userId", userId);
-
+		
+		ApiCallResult callResult = new ApiCallResult();
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/")
 				.append(userId).toString();
+		
+		Map<String, String> vars = new HashMap<String, String>();
+		vars.put("userId", userId);		
 		order = restTemplate.postForObject(url, order, OrderMaster.class, vars);
-
-		return order;
+		callResult.setContent(order);					
+		return callResult;
 	}
 
 	@Override
-	public OrderMaster editOrder(String userId, OrderMaster order) {
+	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		
+		ApiCallResult callResult = new ApiCallResult();
 		Map<String, String> vars = new HashMap<String, String>();
 		vars.put("userId", userId);
-
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/")
-				.append(userId).toString();
+ 				.append(userId).toString();
 		restTemplate.put(url, order, vars);
-
-		return order;
+		callResult.setContent(order);
+		return callResult;
 	}
 }

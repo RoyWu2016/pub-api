@@ -6,12 +6,10 @@
  ***************************************************************************/
 package com.ai.api.lab.dao;
 
-import java.util.List;
+import java.io.IOException;
 
-import com.ai.aims.services.model.OfficeMaster;
-import com.ai.aims.services.model.TestMaster;
-import com.ai.aims.services.model.search.SearchTestCriteria;
-import com.ai.program.model.Program;
+import com.ai.aims.services.model.search.SearchTagCriteria;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.program.search.criteria.SearchProgramCriteria;
 
 /***************************************************************************
@@ -33,12 +31,14 @@ import com.ai.program.search.criteria.SearchProgramCriteria;
  *
  * </PRE>
  ***************************************************************************/
-
+@SuppressWarnings("rawtypes")
 public interface LTParameterDao {
 
-	public List<OfficeMaster> searchOffice();
+	public ApiCallResult searchOffice() throws IOException;
 	
-	public List<Program> searchPrograms(SearchProgramCriteria criteria);
+	public ApiCallResult searchPrograms(SearchProgramCriteria criteria) throws IOException;
 	
-	public List<TestMaster> searchTests(SearchTestCriteria criteria);
+	public ApiCallResult searchTests(SearchTagCriteria criteria) throws IOException;
+	
+	public ApiCallResult searchTest(String testId) throws IOException;
 }

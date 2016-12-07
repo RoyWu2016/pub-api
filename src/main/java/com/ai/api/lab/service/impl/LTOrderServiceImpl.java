@@ -7,7 +7,6 @@
 package com.ai.api.lab.service.impl;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +16,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ai.aims.services.model.OrderMaster;
-import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.exception.AIException;
 import com.ai.api.lab.dao.LTOrderDao;
 import com.ai.api.lab.service.LTOrderService;
 import com.ai.api.service.UserService;
+import com.ai.commons.beans.ApiCallResult;
 
 /***************************************************************************
  * <PRE>
@@ -45,6 +44,7 @@ import com.ai.api.service.UserService;
  * </PRE>
  ***************************************************************************/
 
+@SuppressWarnings("rawtypes")
 @Service
 @Qualifier("ltorderService")
 public class LTOrderServiceImpl implements LTOrderService {
@@ -64,7 +64,7 @@ public class LTOrderServiceImpl implements LTOrderService {
 	private UserService userService;
 
 	@Override
-	public List<OrderSearchBean> searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException {
+	public ApiCallResult searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException {
 		String companyId = "";
 		String parentId = "";
 		UserBean user = userService.getCustById(userId);
@@ -78,17 +78,17 @@ public class LTOrderServiceImpl implements LTOrderService {
 	}
 	
 	@Override
-	public OrderMaster findOrder(String orderId) {
+	public ApiCallResult findOrder(String orderId) throws IOException {
 		return ltorderDao.findOrder(orderId);
 	}
 
 	@Override
-	public OrderMaster saveOrder(String userId, OrderMaster order) {
+	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException {
 		return ltorderDao.saveOrder(userId, order);
 	}
 
 	@Override
-	public OrderMaster editOrder(String userId, OrderMaster order) {
+	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException {
 		return ltorderDao.editOrder(userId, order);
 	}
 }

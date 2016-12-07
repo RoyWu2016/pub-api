@@ -7,11 +7,10 @@
 package com.ai.api.lab.service;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.ai.aims.services.model.OrderMaster;
-import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.exception.AIException;
+import com.ai.commons.beans.ApiCallResult;
 
 /***************************************************************************
  * <PRE>
@@ -33,13 +32,14 @@ import com.ai.api.exception.AIException;
  * </PRE>
  ***************************************************************************/
 
+@SuppressWarnings("rawtypes")
 public interface LTOrderService {
 
-	public List<OrderSearchBean> searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException;
+	public ApiCallResult searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException;
 	
-	public OrderMaster findOrder(String orderId);
+	public ApiCallResult findOrder(String orderId) throws IOException;
 	
-	public OrderMaster saveOrder(String userId, OrderMaster order);
+	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException;
 	
-	public OrderMaster editOrder(String userId, OrderMaster order);
+	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException;
 }

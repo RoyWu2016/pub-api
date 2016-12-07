@@ -6,10 +6,10 @@
  ***************************************************************************/
 package com.ai.api.lab.dao;
 
-import java.util.List;
+import java.io.IOException;
 
 import com.ai.aims.services.model.OrderMaster;
-import com.ai.api.bean.OrderSearchBean;
+import com.ai.commons.beans.ApiCallResult;
 
 /***************************************************************************
  * <PRE>
@@ -30,14 +30,14 @@ import com.ai.api.bean.OrderSearchBean;
  *
  * </PRE>
  ***************************************************************************/
-
+@SuppressWarnings("rawtypes")
 public interface LTOrderDao {
-
-	public List<OrderSearchBean> searchLTOrders(String compId, String orderStatus, Integer pageNumber, Integer pageSize, String direction);
 	
-	public OrderMaster findOrder(String orderId);
+	public ApiCallResult searchLTOrders(String compId, String orderStatus, Integer pageNumber, Integer pageSize, String direction) throws IOException;
 	
-	public OrderMaster saveOrder(String userId, OrderMaster order);
+	public ApiCallResult findOrder(String orderId) throws IOException;
 	
-	public OrderMaster editOrder(String userId, OrderMaster order);
+	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException;
+	
+	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException;
 }

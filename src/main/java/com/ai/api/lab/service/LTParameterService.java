@@ -9,10 +9,8 @@ package com.ai.api.lab.service;
 import java.io.IOException;
 import java.util.List;
 
-import com.ai.aims.services.model.OfficeMaster;
-import com.ai.aims.services.model.TestMaster;
 import com.ai.api.exception.AIException;
-import com.ai.program.model.Program;
+import com.ai.commons.beans.ApiCallResult;
 
 /***************************************************************************
  * <PRE>
@@ -34,15 +32,16 @@ import com.ai.program.model.Program;
  * </PRE>
  ***************************************************************************/
 
+@SuppressWarnings("rawtypes")
 public interface LTParameterService {
 
-	public List<OfficeMaster> searchOffice();
+	public ApiCallResult searchOffice() throws IOException;
 	
-	public List<Program> searchPrograms(String userId) throws IOException, AIException;
+	public ApiCallResult searchPrograms(String userId) throws IOException, AIException;
 	
-	public Program searchProgram(String programId);
+	public ApiCallResult searchProgram(String programId) throws IOException;
 	
-	public List<TestMaster> searchTests(String countryName, String testName);
+	public ApiCallResult searchTests(List<String> countryName, List<String> testName) throws IOException;
 	
-	public TestMaster searchTest(String testId);
+	public ApiCallResult searchTest(String testId) throws IOException;
 }

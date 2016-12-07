@@ -15,17 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.ai.aims.services.model.OfficeMaster;
-import com.ai.aims.services.model.TestMaster;
-import com.ai.aims.services.model.search.SearchTestCriteria;
+import com.ai.aims.services.model.search.SearchTagCriteria;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.exception.AIException;
 import com.ai.api.lab.dao.LTParameterDao;
 import com.ai.api.lab.service.LTParameterService;
 import com.ai.api.service.UserService;
-import com.ai.program.model.Program;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.program.search.criteria.SearchProgramCriteria;
+import com.google.common.collect.Lists;
 
 /***************************************************************************
  * <PRE>
@@ -47,6 +46,7 @@ import com.ai.program.search.criteria.SearchProgramCriteria;
  * </PRE>
  ***************************************************************************/
 
+@SuppressWarnings("rawtypes")
 @Service
 @Qualifier("ltparameterService")
 public class LTParameterServiceImpl implements LTParameterService {
@@ -66,12 +66,12 @@ public class LTParameterServiceImpl implements LTParameterService {
 	private UserService userService;
 
 	@Override
-	public List<OfficeMaster> searchOffice() {
+	public ApiCallResult searchOffice() throws IOException {
 		return ltparameterDao.searchOffice();
 	}
 
 	@Override
-	public List<Program> searchPrograms(String userId) throws IOException, AIException {
+	public ApiCallResult searchPrograms(String userId) throws IOException, AIException {
 		String companyId = "";
 		String parentId = "";
 		UserBean user = userService.getCustById(userId);
@@ -87,27 +87,27 @@ public class LTParameterServiceImpl implements LTParameterService {
 	}
 
 	@Override
-	public List<TestMaster> searchTests(String countryName, String testName) {
-		SearchTestCriteria criteria = new SearchTestCriteria();
-		criteria.setCountryName(countryName);
-		criteria.setName(testName);
+	public ApiCallResult searchTests(List<String> countryName, List<String> testName) throws IOException {
+		SearchTagCriteria criteria = new SearchTagCriteria();
+		if(null != countryName && !countryName.isEmpty()) {
+			criteria.setCountryName(Lists.newArrayList(countryName));	
+		}
+		if(null != testName && !testName.isEmpty()) {
+			criteria.setTestName(Lists.newArrayList(testName));	
+		}		
 		return ltparameterDao.searchTests(criteria);
 	}
 
 	@Override
-	public Program searchProgram(String programId) {
+	public ApiCallResult searchProgram(String programId) throws IOException {
 		SearchProgramCriteria criteria = new SearchProgramCriteria();
 		criteria.setProgramId(programId);
-		List<Program> programs = ltparameterDao.searchPrograms(criteria);
-		return !programs.isEmpty() ? programs.get(0) : null;
+		return ltparameterDao.searchPrograms(criteria);
 	}
 
 	@Override
-	public TestMaster searchTest(String testId) {
-		SearchTestCriteria criteria = new SearchTestCriteria();
-		criteria.setId(testId);
-		List<TestMaster> tests = ltparameterDao.searchTests(criteria);
-		return !tests.isEmpty() ? tests.get(0) : null;
+	public ApiCallResult searchTest(String testId) throws IOException {
+		return ltparameterDao.searchTest(testId);
 	}
 
 }

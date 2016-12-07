@@ -6,7 +6,7 @@
  ***************************************************************************/
 package com.ai.api.lab.dao.impl;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,11 +19,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ai.aims.constants.Status;
 import com.ai.aims.services.model.OfficeMaster;
+import com.ai.aims.services.model.TagTestMap;
 import com.ai.aims.services.model.TestMaster;
-import com.ai.aims.services.model.search.SearchTestCriteria;
+import com.ai.aims.services.model.search.SearchTagCriteria;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.lab.dao.LTParameterDao;
 import com.ai.api.util.AIUtil;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.program.model.Program;
 import com.ai.program.search.criteria.SearchProgramCriteria;
 
@@ -47,6 +49,7 @@ import com.ai.program.search.criteria.SearchProgramCriteria;
  * </PRE>
  ***************************************************************************/
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 @Qualifier("ltparameterDao")
 @Component
 public class LTParameterDaoImpl implements LTParameterDao {
@@ -56,36 +59,48 @@ public class LTParameterDaoImpl implements LTParameterDao {
 	private ServiceConfig config;
 
 	@Override
-	public List<OfficeMaster> searchOffice() {
-		List<OfficeMaster> offices = new ArrayList<>();
+	public ApiCallResult searchOffice() throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
-		
+		ApiCallResult callResult = new ApiCallResult();
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/office/search/all").toString();
-		offices = Arrays.asList(restTemplate.getForObject(url, OfficeMaster[].class));		
-		return offices;
+		List<OfficeMaster> offices = Arrays.asList(restTemplate.getForObject(url, OfficeMaster[].class));	
+		callResult.setContent(offices);
+		return callResult;
 	}
 
 	@Override
-	public List<Program> searchPrograms(SearchProgramCriteria criteria) {
-		List<Program> programs = new ArrayList<>();
+	public ApiCallResult searchPrograms(SearchProgramCriteria criteria) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
-		
+		ApiCallResult callResult = new ApiCallResult();
+
 		String url = new StringBuilder(config.getProgramServiceBaseUrl()).append("/program/search").toString();
-		programs = Arrays.asList(restTemplate.getForObject(buildProgramSearchCriteria(criteria, url).build().encode().toUri(), Program[].class));		
-		return programs;
+		List<Program> programs = Arrays.asList(restTemplate.getForObject(buildProgramSearchCriteria(criteria, url).build().encode().toUri(), Program[].class));	
+		callResult.setContent(programs);
+		return callResult;
 	}
 	
 	@Override
-	public List<TestMaster> searchTests(SearchTestCriteria criteria) {
-		List<TestMaster> tests = new ArrayList<>();
+	public ApiCallResult searchTests(SearchTagCriteria criteria) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
-		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/test/search").toString();
-		
-		tests = Arrays.asList(restTemplate.getForObject(buildTestSearchCriteria(criteria, url).build().encode().toUri(), TestMaster[].class));
-		return tests;
+		ApiCallResult callResult = new ApiCallResult();
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/tag/search/tests").toString();		
+		List<TagTestMap> tests = Arrays.asList(restTemplate.getForObject(buildTagSearchCriteria(criteria, url).build().encode().toUri(), TagTestMap[].class));	
+		callResult.setContent(tests);
+		return callResult;
+	}
+	
+	@Override
+	public ApiCallResult searchTest(String testId) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		ApiCallResult callResult = new ApiCallResult();
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/testmanagement/").append(testId).toString();					
+		TestMaster test = restTemplate.getForObject(url, TestMaster.class);
+		callResult.setContent(test);
+		return callResult;		
 	}
 	
 	private UriComponentsBuilder buildProgramSearchCriteria(SearchProgramCriteria criteria, String url) {
@@ -109,20 +124,16 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		return builder;
 	}
 	
-	private UriComponentsBuilder buildTestSearchCriteria(SearchTestCriteria criteria, String url) {
+	private UriComponentsBuilder buildTagSearchCriteria(SearchTagCriteria criteria, String url) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
 		        .queryParam("page", criteria.getPage() != 0 ? criteria.getPage() - 1 : 0)
-		        .queryParam("size", criteria.getSize() != 0 ? criteria.getSize() : 1000000)
-		        .queryParam("direction", "desc");
+		        .queryParam("size", criteria.getPageSize() != 0 ? criteria.getPageSize() : 1000000);
 		
-		if(!StringUtils.stripToEmpty(criteria.getName()).trim().isEmpty())
-			builder.queryParam("name", criteria.getName().trim());
+		if(null != criteria.getTestName() && !criteria.getTestName().isEmpty())
+			builder.queryParam("testName", criteria.getTestName());
 		
-		if(!StringUtils.stripToEmpty(criteria.getTestCategory()).trim().isEmpty())
-			builder.queryParam("testCategory", criteria.getTestCategory().trim());
-		
-		if(!StringUtils.stripToEmpty(criteria.getCountryName()).trim().isEmpty())
-			builder.queryParam("countryName", criteria.getCountryName().trim());
+		if(null != criteria.getCountryName() && !criteria.getCountryName().isEmpty())
+			builder.queryParam("countryName", criteria.getCountryName());
 		
 		if(!StringUtils.stripToEmpty(criteria.getOptional()).trim().isEmpty())
 			builder.queryParam("optional", criteria.getOptional().trim());

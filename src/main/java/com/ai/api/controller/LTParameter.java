@@ -24,19 +24,18 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import com.ai.aims.services.model.OfficeMaster;
-import com.ai.aims.services.model.TestMaster;
-import com.ai.program.model.Program;
+import com.ai.commons.beans.ApiCallResult;
 
+@SuppressWarnings("rawtypes")
 public interface LTParameter {
-
-	public ResponseEntity<List<OfficeMaster>> searchOffice(boolean refresh);
 	
-	public ResponseEntity<List<Program>> searchPrograms(boolean refresh, String userId);
+	public ResponseEntity<ApiCallResult> searchOffice(boolean refresh);
 	
-	public ResponseEntity<Program> searchProgram(boolean refresh, String programId);
+	public ResponseEntity<ApiCallResult> searchPrograms(boolean refresh, String userId);
 	
-	public ResponseEntity<List<TestMaster>> searchTests(boolean refresh, String countryName, String testName);
+	public ResponseEntity<ApiCallResult> searchProgram(boolean refresh, String programId);
 	
-	public ResponseEntity<TestMaster> searchTest(boolean refresh, String testId);
+	public ResponseEntity<ApiCallResult> searchTests(boolean refresh, List<String> countryName, List<String> testName);
+	
+	public ResponseEntity<ApiCallResult> searchTest(boolean refresh, String testId);
 }
