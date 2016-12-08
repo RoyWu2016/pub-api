@@ -317,47 +317,6 @@ public class OrderImpl implements Order {
 		}
 	}
 
-	@ApiOperation(value = "Order Add API", produces = "application/json", response = OrderMaster.class, httpMethod = "POST")
-	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/lt-orders", method = RequestMethod.POST)
-	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, @PathVariable String userId,
-			@RequestBody OrderMaster orderMaster) {
-		RestTemplate restTemplate = new RestTemplate();
-		OrderMaster orderMasterObj = null;
-		try {
-			AIUtil.addRestTemplateMessageConverter(restTemplate);
-			String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/")
-					.append(userId).toString();
-			orderMaster.setOrderStatus("Draft");
-			orderMasterObj = restTemplate.postForObject(url, orderMaster, OrderMaster.class, request);
-		} catch (Exception e) {
-			logger.error("create order error: " + ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<OrderMaster>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return new ResponseEntity<OrderMaster>(orderMasterObj, HttpStatus.OK);
-	}
-
-	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/lt-orders/list", method = RequestMethod.GET)
-	public ResponseEntity<List<OrderSearchBean>> searchLTOrders(@PathVariable("userId") String userId,
-			@RequestParam(value = "serviceType", required = false, defaultValue = "") String serviceType,
-			@RequestParam(value = "orderStatus", required = false, defaultValue = "") String orderStatus,
-			@RequestParam(value = "pageNo", required = false, defaultValue = "1") Integer pageNumber,
-			@RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
-		List<OrderSearchBean> ordersList = new ArrayList<OrderSearchBean>();
-		try {
-			ordersList = orderService.searchLTOrders(userId, serviceType, orderStatus, pageSize.toString(),
-					pageNumber.toString());
-			// if not data found, just return 200 with empty list
-			return new ResponseEntity<List<OrderSearchBean>>(ordersList, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/order/{orderId}/draft/{draftId}/re-inspection", method = RequestMethod.POST)
