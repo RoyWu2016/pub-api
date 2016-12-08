@@ -9,7 +9,6 @@ import java.util.List;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
@@ -279,19 +278,36 @@ public class ReportDaoImpl implements ReportDao {
 	}
 
 	@Override
-	public InputStream getPDFCertificate(String lotusId) {
+	public String getPDFCertificate(String lotusId) {
 		// TODO Auto-generated method stub
-		StringBuilder url = new StringBuilder(config.getMwServiceUrl() + "/report/getPDFCertificate?reportId=" + lotusId);
+//		StringBuilder url = new StringBuilder(config.getMwServiceUrl() + "/report/getPDFCertificate?reportId=" + lotusId);
+//		logger.info("requesting: " + url.toString());
+//		InputStream inputStream = null;
+//		try {
+//			HttpClient httpclient = HttpClients.createDefault();
+//			HttpGet httpget = new HttpGet(url.toString());
+//			HttpResponse response = httpclient.execute(httpget);
+//			HttpEntity entity = response.getEntity();
+//			inputStream = entity.getContent();
+//			return inputStream;
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		StringBuilder url = new StringBuilder(config.getLotusApiUrl() + lotusId);
 		logger.info("requesting: " + url.toString());
-		InputStream inputStream = null;
+		GetRequest request = GetRequest.newInstance().setUrl(url.toString());
 		try {
-			HttpClient httpclient = HttpClients.createDefault();
-			HttpGet httpget = new HttpGet(url.toString());
-			HttpResponse response = httpclient.execute(httpget);
-			HttpEntity entity = response.getEntity();
-			inputStream = entity.getContent();
-			return inputStream;
-		} catch (Exception e) {
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return result.getResponseString();
+			} else {
+				logger.error("listAllSyncObjByOracleId from psi-service error: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+				return null;
+			}
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

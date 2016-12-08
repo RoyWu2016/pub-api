@@ -38,5 +38,5 @@ public interface ReportDao {
 
 	List<LotusSyncBean> listAllSyncObjByOracleId(String productId, String reportDetail);
 
-	InputStream getPDFCertificate(String lotusId);
+	String getPDFCertificate(String lotusId);
 }
