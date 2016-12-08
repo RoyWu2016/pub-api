@@ -5,7 +5,7 @@ import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 
-import src.main.java.com.ai.commons.beans.payment.PaymentPaidBean;
+import com.ai.commons.beans.payment.PaymentPaidBean;
 
 /**
  * Project Name : Public-API Package Name : com.ai.api.dao Creation Date :
