@@ -26,7 +26,7 @@ import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import src.main.java.com.ai.commons.beans.payment.PaymentPaidBean;
+import com.ai.commons.beans.payment.PaymentPaidBean;
 
 /**
  * Project Name : Public-API Package Name : com.ai.api.dao.impl Creation Date :

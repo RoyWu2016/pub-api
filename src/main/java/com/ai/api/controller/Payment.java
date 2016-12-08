@@ -15,7 +15,7 @@ import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaymentActionLogBean;
 import com.ai.commons.beans.payment.api.PaypalInfoBean;
 
-import src.main.java.com.ai.commons.beans.payment.PaymentPaidBean;
+import com.ai.commons.beans.payment.PaymentPaidBean;
 
 /***************************************************************************
  * <PRE>
