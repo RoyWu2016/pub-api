@@ -65,6 +65,8 @@ public class ServiceConfig {
 	private String financeServiceBaseUrl;
     
     private String excleLoggoCommonSource;
+    
+    private String lotusApiUrl;
 
     //    public String getBaseURL() {
 //        return baseURL;
@@ -73,6 +75,14 @@ public class ServiceConfig {
 //    public void setBaseURL(String baseURL) {
 //        this.baseURL = baseURL;
 //    }
+
+	public String getLotusApiUrl() {
+		return lotusApiUrl;
+	}
+
+	public void setLotusApiUrl(String lotusApiUrl) {
+		this.lotusApiUrl = lotusApiUrl;
+	}
 
 	public String getExcleLoggoCommonSource() {
 		return excleLoggoCommonSource;

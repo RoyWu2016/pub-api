@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
@@ -300,24 +299,24 @@ public class ReportImpl implements Report {
 		List<LotusSyncBean> list = reportService.listAllSyncObjByOracleId(productId, "report_detail");
 		JSONObject joson = JSON.parseObject(JSON.toJSONString(list.get(0)));
 		String lotusId = joson.getString("lotusId");
-		InputStream result = reportService.getPDFCertificate(lotusId);
+		String result = reportService.getPDFCertificate(lotusId);
 		ApiCallResult finalResult = new ApiCallResult();
-		try {
-			if (null != result) {
-				byte[] data = IOUtils.toByteArray(result);
-				String fileStr = Base64.encode(data);
-				finalResult.setContent(fileStr);
-				return new ResponseEntity<>(finalResult, HttpStatus.OK);
-			} else {
-				finalResult.setMessage("Can not get Certificate from MW");
-				return new ResponseEntity<>(finalResult, HttpStatus.OK);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			finalResult.setMessage("Exception: " + e.toString());
-			return new ResponseEntity<>(finalResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		if (null != result) {
+//				byte[] data = IOUtils.toByteArray(result);
+//				String fileStr = Base64.encode(data);
+			finalResult.setContent(result);
+			return new ResponseEntity<>(finalResult, HttpStatus.OK);
+		} else {
+			finalResult.setMessage("Can not get Certificate from MW");
+			return new ResponseEntity<>(finalResult, HttpStatus.OK);
 		}
+//		try {
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			finalResult.setMessage("Exception: " + e.toString());
+//			return new ResponseEntity<>(finalResult, HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
 	}
 
 }
