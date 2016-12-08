@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -26,21 +24,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
-import com.ai.aims.services.model.OrderMaster;
-import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.Order;
 import com.ai.api.service.APIFileService;
 import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
-import com.ai.api.util.AIUtil;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
@@ -51,8 +44,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
-
-import io.swagger.annotations.ApiOperation;
 
 /***************************************************************************
  * <PRE>
@@ -263,6 +254,27 @@ public class OrderImpl implements Order {
 		try {
 			ordersList = orderService.searchOrders(userId, serviceType, startDate, endDate, keyword, orderStatus,
 					pageSize, pageNumber);
+			// if not data found, just return 200 with empty list
+			return new ResponseEntity<>(ordersList, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/re-inspection-list", method = RequestMethod.GET)
+	public ResponseEntity<List<SimpleOrderSearchBean>> getReInspectionList(@PathVariable("userId") String userId,
+			@RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value = "status", required = false, defaultValue = "") String orderStatus,
+			@RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
+			@RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
+
+		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
+		try {
+			ordersList = orderService.searchOrders(userId, serviceType, "", "", keyword, orderStatus,pageSize, pageNumber);
 			// if not data found, just return 200 with empty list
 			return new ResponseEntity<>(ordersList, HttpStatus.OK);
 		} catch (Exception e) {
