@@ -37,6 +37,8 @@ import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
+import io.swagger.annotations.ApiParam;
+
 /***************************************************************************
  * <PRE>
  * Project Name    : api
@@ -209,15 +211,16 @@ public class FileAPIImpl implements FileAPI {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/copy-files", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> copyFiles(@PathVariable("userId") String userId,
-			@RequestParam(value = "fromSrcId") String fromSrcId, @RequestParam(value = "toSrcId") String toSrcId,
-			@RequestParam(value = "userName", required = false) String userName) throws IOException {
+			@ApiParam(value = "if multiple,separated by semicolon", required = true) @RequestParam(value = "fileIds") String fileIds,
+			@RequestParam(value = "newSrcId") String newSrcId,
+			@RequestParam(value = "userName", required = false, defaultValue = "") String userName) throws IOException {
 		// TODO Auto-generated method stub
-		logger.info("invoke: " + "/user/" + userId + "/copy-files?fromSrcId=" + fromSrcId + "&toSrcId=" + toSrcId
-				+ "&userName=" + userName);
+		logger.info("invoke: " + "/user/" + userId + "/copy-files?newSrcId=" + newSrcId + "&userName=" + userName
+				+ "&fileIds" + fileIds);
 		ApiCallResult finalResult = new ApiCallResult();
 		List<FileMetaBean> result = null;
 		try {
-			result = myFileService.getFileService().copyfiles(fromSrcId, toSrcId, userName);
+			result = myFileService.getFileService().copyFileLinkByIds(fileIds, newSrcId, userName);
 			if (null != result) {
 				finalResult.setContent(result);
 				return new ResponseEntity<>(finalResult, HttpStatus.OK);

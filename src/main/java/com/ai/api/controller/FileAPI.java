@@ -49,7 +49,7 @@ public interface FileAPI {
 	ResponseEntity<Map<String, String>> getFileBase64(String userId, String fileId)
 			throws IOException;
 
-	ResponseEntity<ApiCallResult> copyFiles(String userId, String fromSrcId, String toSrcId, String userName)
+	ResponseEntity<ApiCallResult> copyFiles(String userId, String fileIds, String newSrcId, String userName)
 			throws IOException;
 
 }
