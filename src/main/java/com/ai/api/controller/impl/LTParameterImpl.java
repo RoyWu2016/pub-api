@@ -20,6 +20,8 @@ package com.ai.api.controller.impl;
  * </PRE>
  ***************************************************************************/
 
+import io.swagger.annotations.ApiOperation;
+
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.aims.services.model.OfficeMaster;
+import com.ai.aims.services.model.TagTestMap;
 import com.ai.aims.services.model.TestMaster;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.LTParameter;
@@ -43,8 +46,6 @@ import com.ai.api.lab.service.LTParameterService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.program.model.Program;
-
-import io.swagger.annotations.ApiOperation;
 
 @SuppressWarnings({"rawtypes"})
 @RestController
@@ -153,7 +154,7 @@ public class LTParameterImpl implements LTParameter {
 	}	
 	
 	@Override
-	@ApiOperation(value = "Search LT Tests API", produces = "application/json", response = TestMaster.class, httpMethod = "GET", responseContainer = "List")
+	@ApiOperation(value = "Search LT Tests API", produces = "application/json", response = TagTestMap.class, httpMethod = "GET", responseContainer = "List")
 	@TokenSecured
 	@RequestMapping(value = "/parameter/lt-tests", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchTests(			
