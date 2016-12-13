@@ -89,7 +89,7 @@ public class DraftImpl implements Draft {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/previous-psi-order/{orderId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/draft/previous-psi-order/{orderId}", method = RequestMethod.POST)
 	public ResponseEntity<InspectionBookingBean> createDraftFromPreviousOrder(@PathVariable("userId") String userId,
 	                                                                          @PathVariable("orderId") String orderId) {
 		try {
