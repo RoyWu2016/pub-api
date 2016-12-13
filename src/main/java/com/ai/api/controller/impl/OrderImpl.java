@@ -261,7 +261,7 @@ public class OrderImpl implements Order {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/re-inspection-list", method = RequestMethod.GET)
@@ -274,7 +274,8 @@ public class OrderImpl implements Order {
 
 		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
 		try {
-			ordersList = orderService.searchOrders(userId, serviceType, "", "", keyword, orderStatus,pageSize, pageNumber);
+			ordersList = orderService.searchOrders(userId, serviceType, "", "", keyword, orderStatus, pageSize,
+					pageNumber);
 			// if not data found, just return 200 with empty list
 			return new ResponseEntity<>(ordersList, HttpStatus.OK);
 		} catch (Exception e) {
@@ -351,6 +352,7 @@ public class OrderImpl implements Order {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/order/" + orderId + "/files");
 		ApiCallResult result = new ApiCallResult();
+		Map<String, String> prodMap = new HashMap<String, String>();
 		List<ProductBean> products = orderService.listProducts(orderId);
 		if (null != products) {
 			JSONArray jArray = (JSONArray) JSON.parseArray(JSON.toJSONString(products));
@@ -358,13 +360,23 @@ public class OrderImpl implements Order {
 			for (int i = 0; i < jArray.size(); i++) {
 				JSONObject each = (JSONObject) jArray.get(i);
 				srcIds.append(each.getString("productId"));
+				prodMap.put(each.getString("productId"), each.getString("prodName"));
 				if (i != jArray.size() - 1) {
 					srcIds.append(";");
 				}
 			}
 			Map<String, List<FileMetaBean>> content = myFileService.getFileService()
 					.getFileInfoBySrcIds(srcIds.toString());
-			result.setContent(content);
+			JSONObject jsonObj = JSON.parseObject(JSON.toJSONString(content));
+			for (Map.Entry<String, String> entry : prodMap.entrySet()) {
+				System.out.println(entry.getKey() + "--->" + entry.getValue());
+				JSONArray fileArray = jsonObj.getJSONArray(entry.getKey());
+				for (int j=0; j < fileArray.size(); j++) {
+					JSONObject each = (JSONObject) fileArray.get(j);
+					each.put("prodName", entry.getValue());
+				}
+			}
+			result.setContent(jsonObj);
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
 			result.setMessage("No products in this order: " + orderId);
