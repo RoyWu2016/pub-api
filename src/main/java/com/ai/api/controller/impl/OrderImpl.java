@@ -372,9 +372,11 @@ public class OrderImpl implements Order {
 				for (Map.Entry<String, String> entry : prodMap.entrySet()) {
 					logger.info(entry.getKey() + "--->" + entry.getValue());
 					JSONArray fileArray = jsonObj.getJSONArray(entry.getKey());
-					for (int j=0; j < fileArray.size(); j++) {
-						JSONObject each = (JSONObject) fileArray.get(j);
-						each.put("prodName", entry.getValue());
+					if(null != fileArray) {
+						for (int j=0; j < fileArray.size(); j++) {
+							JSONObject each = (JSONObject) fileArray.get(j);
+							each.put("prodName", entry.getValue());
+						}
 					}
 				}
 				result.setContent(jsonObj);
