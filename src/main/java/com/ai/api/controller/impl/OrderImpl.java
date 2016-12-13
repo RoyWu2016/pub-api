@@ -367,17 +367,22 @@ public class OrderImpl implements Order {
 			}
 			Map<String, List<FileMetaBean>> content = myFileService.getFileService()
 					.getFileInfoBySrcIds(srcIds.toString());
-			JSONObject jsonObj = JSON.parseObject(JSON.toJSONString(content));
-			for (Map.Entry<String, String> entry : prodMap.entrySet()) {
-				System.out.println(entry.getKey() + "--->" + entry.getValue());
-				JSONArray fileArray = jsonObj.getJSONArray(entry.getKey());
-				for (int j=0; j < fileArray.size(); j++) {
-					JSONObject each = (JSONObject) fileArray.get(j);
-					each.put("prodName", entry.getValue());
+			if(null != content) {
+				JSONObject jsonObj = JSON.parseObject(JSON.toJSONString(content));
+				for (Map.Entry<String, String> entry : prodMap.entrySet()) {
+					logger.info(entry.getKey() + "--->" + entry.getValue());
+					JSONArray fileArray = jsonObj.getJSONArray(entry.getKey());
+					for (int j=0; j < fileArray.size(); j++) {
+						JSONObject each = (JSONObject) fileArray.get(j);
+						each.put("prodName", entry.getValue());
+					}
 				}
+				result.setContent(jsonObj);
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			}else {
+				result.setContent(null);
+				return new ResponseEntity<>(result, HttpStatus.OK);
 			}
-			result.setContent(jsonObj);
-			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
 			result.setMessage("No products in this order: " + orderId);
 			return new ResponseEntity<>(result, HttpStatus.OK);
