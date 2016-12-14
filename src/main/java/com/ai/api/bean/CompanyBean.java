@@ -3,8 +3,6 @@ package com.ai.api.bean;
 import java.io.Serializable;
 import java.util.List;
 
-import com.ai.commons.beans.customer.MasterBean;
-
 /**
  * Created by KK on 4/25/2016.
  */
@@ -41,13 +39,13 @@ public class CompanyBean implements Serializable {
 	
 	private List<CompanyRelationshipBean> Subordinates;
 	
-	private MasterBean master;
+	private ApiMasterBean master;
 
-	public MasterBean getMaster() {
+	public ApiMasterBean getMaster() {
 		return master;
 	}
 
-	public void setMaster(MasterBean master) {
+	public void setMaster(ApiMasterBean master) {
 		this.master = master;
 	}
 

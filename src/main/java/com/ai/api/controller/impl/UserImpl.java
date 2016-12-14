@@ -105,21 +105,6 @@ public class UserImpl implements User {
 
 		logger.info("......finish getting user profile.......");
 		JSONObject result = JSON.parseObject(JSON.toJSONString(cust));
-//		JSONObject paymentObj = result.getJSONObject("payment");
-//		String onlinePaymentType = paymentObj.getString("onlinePaymentType");
-//		paymentObj.put("onlinePaymentType", onlinePaymentType.toUpperCase().replaceAll(" ", "_"));
-//		if ("new client".equalsIgnoreCase(onlinePaymentType)) {
-//			paymentObj.put("charge", "USD 8");
-//		} else if ("new client v3".equalsIgnoreCase(onlinePaymentType)) {
-//			paymentObj.put("charge", "5%");
-//		} else if ("old client".equalsIgnoreCase(onlinePaymentType)) {
-//			paymentObj.put("charge", "0");
-//		} else if ("ONLINE_PAYMENT_MANDATORY".equalsIgnoreCase(onlinePaymentType.toUpperCase().replaceAll(" ", "_"))) {
-//			paymentObj.put("charge", "0");
-//		} else if ("ONLINE_PAYMENT_MANDATORY".equalsIgnoreCase(onlinePaymentType.toUpperCase().replaceAll(" ", "_"))) {
-//			paymentObj.put("charge", "0");
-//		}
-//		paymentObj.remove("expressBookingFee");
 		JSONObject rateObj = result.getJSONObject("rate");
 		rateObj.remove("countryPricingRates");
 		rateObj.remove("labTestRate");
