@@ -1,6 +1,7 @@
 package com.ai.api.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by KK on 4/25/2016.
@@ -33,6 +34,36 @@ public class CompanyBean implements Serializable {
     private String logo;
 
     private String mainEmail;
+    
+	private List<CompanyRelationshipBean> Parents;
+	
+	private List<CompanyRelationshipBean> Subordinates;
+	
+	private ApiMasterBean master;
+
+	public ApiMasterBean getMaster() {
+		return master;
+	}
+
+	public void setMaster(ApiMasterBean master) {
+		this.master = master;
+	}
+
+	public List<CompanyRelationshipBean> getParents() {
+		return Parents;
+	}
+
+	public void setParents(List<CompanyRelationshipBean> parents) {
+		Parents = parents;
+	}
+
+	public List<CompanyRelationshipBean> getSubordinates() {
+		return Subordinates;
+	}
+
+	public void setSubordinates(List<CompanyRelationshipBean> subordinates) {
+		Subordinates = subordinates;
+	}
 
 	public String getName() {
         return name;
