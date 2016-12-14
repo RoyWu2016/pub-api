@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.ai.api.bean.ApiMasterBean;
 import com.ai.api.bean.AqlAndSamplingSizeBean;
 import com.ai.api.bean.BillingBean;
 import com.ai.api.bean.BookingPreferenceBean;
@@ -235,25 +236,22 @@ public class UserServiceImpl implements UserService {
 		comp.setSubordinates(subordinatesList);
 		
 		MasterBean masterBean = companyEntireBean.getMaster();
-		MasterBean finalBeam = new MasterBean();
-		finalBeam.setIsSuperMaster(masterBean.getIsSuperMaster());//	    private String isSuperMaster;
-		finalBeam.setMasterList(null);////		private String masterList;
-		finalBeam.setIsMaster(null);////		private String isMaster;
-		finalBeam.setSubCompanies(null);////		private List<String> subCompanies;
-		finalBeam.setCanCreateOrder(masterBean.getCanCreateOrder());//		private String canCreateOrder;
-		finalBeam.setShareFactoryLib(masterBean.getShareFactoryLib());//		private String shareFactoryLib;
-		finalBeam.setSeePendingOrders(masterBean.getSeePendingOrders());//		private String seePendingOrders;
-		finalBeam.setSeeOnlineReports(masterBean.getSeeOnlineReports());//		private String seeOnlineReports;
-		finalBeam.setSeeAllFactories(masterBean.getSeeAllFactories());//		private String seeAllFactories;
-		finalBeam.setReceiveAllMails(masterBean.getReceiveAllMails());//		private String receiveAllMails;
-		finalBeam.setSendAllMailsToSub(masterBean.getSendAllMailsToSub());//		private String sendAllMailsToSub;
-		finalBeam.setAllMailsToSubCcBcc(masterBean.getAllMailsToSubCcBcc());//		private String allMailsToSubCcBcc;
-		finalBeam.setSendReportMailsToMaster(masterBean.getSendReportMailsToMaster());//		private String sendReportMailsToMaster;
-		finalBeam.setSendReportMailsToSub(masterBean.getSendReportMailsToSub());//		private String sendReportMailsToSub;
+		ApiMasterBean finalBeam = new ApiMasterBean();
+		finalBeam.setSuperMaster(StringUtils.isTrue(masterBean.getIsSuperMaster()));//	    private String isSuperMaster;
+		finalBeam.setCanCreateOrder(StringUtils.isTrue(masterBean.getCanCreateOrder()));//		private String canCreateOrder;
+		finalBeam.setShareFactoryLib(StringUtils.isTrue(masterBean.getShareFactoryLib()));//		private String shareFactoryLib;
+		finalBeam.setSeePendingOrders(StringUtils.isTrue(masterBean.getSeePendingOrders()));//		private String seePendingOrders;
+		finalBeam.setSeeOnlineReports(StringUtils.isTrue(masterBean.getCanCreateOrder()));//		private String seeOnlineReports;
+		finalBeam.setSeeAllFactories(StringUtils.isTrue(masterBean.getSeeOnlineReports()));//		private String seeAllFactories;
+		finalBeam.setReceiveAllMails(StringUtils.isTrue(masterBean.getReceiveAllMails()));//		private String receiveAllMails;
+		finalBeam.setSendAllMailsToSub(StringUtils.isTrue(masterBean.getCanCreateOrder()));//		private String sendAllMailsToSub;
+		finalBeam.setAllMailsToSubCcBcc(StringUtils.isTrue(masterBean.getAllMailsToSubCcBcc()));//		private String allMailsToSubCcBcc;
+		finalBeam.setSendReportMailsToMaster(StringUtils.isTrue(masterBean.getSendReportMailsToMaster()));//		private String sendReportMailsToMaster;
+		finalBeam.setSendReportMailsToSub(StringUtils.isTrue(masterBean.getSendReportMailsToSub()));//		private String sendReportMailsToSub;
 		finalBeam.setReportMailsToSubCcBcc(masterBean.getReportMailsToSubCcBcc());//		private String reportMailsToSubCcBcc;
 		finalBeam.setDisClientName(masterBean.getDisClientName());//		private String disClientName;
-		finalBeam.setHideApproveButton(masterBean.getHideApproveButton());//		private String hideApproveButton;
-		finalBeam.setHideCcFields(masterBean.getHideCcFields());//		private String hideCcFields;
+		finalBeam.setHideApproveButton(StringUtils.isTrue(masterBean.getHideApproveButton()));//		private String hideApproveButton;
+		finalBeam.setHideCcFields(StringUtils.isTrue(masterBean.getHideCcFields()));//		private String hideCcFields;
 		finalBeam.setWhoPayOrder(masterBean.getWhoPayOrder());//		private String whoPayOrder;
 		finalBeam.setWhoPayReorder(masterBean.getWhoPayReorder());//		private String whoPayReorder;
 		finalBeam.setWhoPayLt(masterBean.getWhoPayLt());//		private String whoPayLt;
@@ -261,7 +259,7 @@ public class UserServiceImpl implements UserService {
 		finalBeam.setWhoPayReAudit(masterBean.getWhoPayReAudit());//		private String whoPayReAudit;
 		finalBeam.setConsolidatedInvoice(masterBean.getConsolidatedInvoice());//		private String consolidatedInvoice;
 		finalBeam.setSuspendOrdersBy(masterBean.getSuspendOrdersBy());//		private String suspendOrdersBy;
-		finalBeam.setIsReadMasterChecklist(masterBean.getIsReadMasterChecklist());//		private String isReadMasterChecklist;
+		finalBeam.setReadMasterChecklist(StringUtils.isTrue(masterBean.getIsReadMasterChecklist()));//		private String isReadMasterChecklist;
 		
 		comp.setMaster(finalBeam);
 		
