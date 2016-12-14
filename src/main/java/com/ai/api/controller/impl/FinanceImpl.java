@@ -5,6 +5,7 @@ import com.ai.api.bean.finance.NSLog;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.Finance;
 import com.ai.commons.HttpUtil;
+import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -40,6 +41,7 @@ public class FinanceImpl implements Finance {
     private ServiceConfig config;
 
     @Override
+    @TokenSecured
     @RequestMapping(value = "/finance/net-suite/logs", method = RequestMethod.POST)
     public ResponseEntity<ApiCallResult> processNSLog(@RequestBody List<NSLog> nsLogs) {
         StringBuilder url = new StringBuilder(config.getFinanceServiceBaseUrl()).append("/netsuite/interface/log/save");
@@ -62,6 +64,7 @@ public class FinanceImpl implements Finance {
     }
 
     @Override
+    @TokenSecured
     @RequestMapping(value = "/finance/net-suite/memo", method = RequestMethod.POST)
     public ResponseEntity<ApiCallResult> processCreditOrDebitMemos(@RequestBody Map<String, List<NSCreditDebitMemo>> cndnMap) {
         StringBuilder url = new StringBuilder(config.getFinanceServiceBaseUrl()).append("/netsuite/cndn/save");

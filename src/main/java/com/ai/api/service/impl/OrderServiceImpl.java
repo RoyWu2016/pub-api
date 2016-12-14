@@ -13,13 +13,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -40,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ai.api.bean.OrderSearchBean;
@@ -191,11 +190,10 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<OrderSearchBean> searchLTOrders(String userId, String serviceType, String orderStatus, String pageSize,
+	public List<OrderSearchBean> searchLTOrders(String userId, String orderStatus, String pageSize,
 			String pageNumber) throws IOException, AIException {
 		String companyId = "";
 		String parentId = "";
-		List<OrderSearchBean> orderSearchList = new ArrayList<OrderSearchBean>();
 		UserBean user = userService.getCustById(userId);
 		if (null != user) {
 			parentId = user.getCompany().getParentCompanyId();
@@ -203,28 +201,7 @@ public class OrderServiceImpl implements OrderService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		if (StringUtils.stripToEmpty(serviceType).isEmpty()) {
-			orderSearchList = searchAllOrders(userId, companyId, parentId, serviceType, null, null, null, orderStatus,
-					pageSize, pageNumber);
-		}
-
-		return orderSearchList;
-	}
-
-	private List<OrderSearchBean> searchAllOrders(String userId, String companyId, String parentId, String serviceType,
-			String startDate, String endDate, String keyWord, String orderStatus, String pageSize, String pageNumber) {
-		List<OrderSearchBean> orderSearchList = new ArrayList<OrderSearchBean>();
-
-		// orderSearchList = searchPSIOrders(userId, companyId, parentId,
-		// serviceType, startDate, endDate, keyWord, orderStatus, pageSize,
-		// pageNumber);
-		orderSearchList.addAll(searchLTOrdersList(companyId, orderStatus, pageSize, pageNumber, "desc"));
-		return orderSearchList;
-	}
-
-	private List<OrderSearchBean> searchLTOrdersList(String companyId, String orderStatus, String pageSize,
-			String pageNumber, String direction) {
-		return orderDao.searchLTOrders(companyId, orderStatus, pageSize, pageNumber, direction);
+		return orderDao.searchLTOrders(companyId, orderStatus, pageSize, pageNumber, Sort.Direction.DESC.name().toLowerCase());
 	}
 
 	@Override
