@@ -56,11 +56,6 @@ public interface Order {
 	ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(String userId, String serviceType, String startDate,
 			String endDate, String keyWord, String orderStatus, String pageNumber, String pageSize);
 
-//	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, String userId, OrderMaster orderMaster);
-//
-//	public ResponseEntity<List<OrderSearchBean>> searchLTOrders(String userId, String serviceType, String orderStatus,
-//			Integer pageNumber, Integer pageSize);
-
 	ResponseEntity<Map<String, String>> exportOrders(String userId, String serviceType, String startDate,
 			String endDate, String orderStatus);
 

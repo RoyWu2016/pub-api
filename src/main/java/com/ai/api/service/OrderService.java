@@ -59,7 +59,7 @@ public interface OrderService {
 	List<SimpleOrderSearchBean> searchOrders(String userId, String serviceType, String startDate, String endDate,
 			String keyWord, String orderStatus, String pageSize, String pageNumber) throws IOException, AIException;
 
-	public List<OrderSearchBean> searchLTOrders(String userId, String serviceType, String orderStatus, String pageSize,
+	public List<OrderSearchBean> searchLTOrders(String userId, String orderStatus, String pageSize,
 			String pageNumber) throws IOException, AIException;
 
 	InputStream exportOrders(String userId, String serviceType, String startDate, String endDate, String keyword,
