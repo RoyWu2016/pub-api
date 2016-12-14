@@ -226,7 +226,7 @@ public class UserServiceImpl implements UserService {
 		comp.setParents(parentList);
 		
 		List<CompanyRelationshipBean> subordinatesList = new ArrayList();
-		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectParents()) {
+		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectSubordinates()) {
 			CompanyRelationshipBean bean = new CompanyRelationshipBean();
 			bean.setCompanyId(each.getCompanyId());
 			bean.setCompanyName(each.getCompanyName());
@@ -267,15 +267,15 @@ public class UserServiceImpl implements UserService {
 
 		Payment payment = new Payment();
 		payment.setOnlinePaymentType(companyEntireBean.getInvoicing().getOnlinePayStatus().toUpperCase().replaceAll(" ", "_"));
-		if ("new client".equalsIgnoreCase(payment.getOnlinePaymentType())) {
+		if ("new client".equalsIgnoreCase(companyEntireBean.getInvoicing().getOnlinePayStatus().toUpperCase())) {
 			payment.setCharge("USD 8");
-		} else if ("new client v3".equalsIgnoreCase(payment.getOnlinePaymentType())) {
+		} else if ("new client v3".equalsIgnoreCase(companyEntireBean.getInvoicing().getOnlinePayStatus().toUpperCase())) {
 			payment.setCharge("5%");
-		} else if ("old client".equalsIgnoreCase(payment.getOnlinePaymentType())) {
+		} else if ("old client".equalsIgnoreCase(companyEntireBean.getInvoicing().getOnlinePayStatus().toUpperCase())) {
 			payment.setCharge("0");
-		} else if ("ONLINE_PAYMENT_MANDATORY".equalsIgnoreCase(payment.getOnlinePaymentType())) {
+		} else if ("ONLINE_PAYMENT_MANDATORY".equalsIgnoreCase(companyEntireBean.getInvoicing().getOnlinePayStatus().toUpperCase().replaceAll(" ", "_"))) {
 			payment.setCharge("0");
-		} else if ("ONLINE_PAYMENT_MANDATORY".equalsIgnoreCase(payment.getOnlinePaymentType())) {
+		} else if ("ONLINE_PAYMENT_MANDATORY".equalsIgnoreCase(companyEntireBean.getInvoicing().getOnlinePayStatus().toUpperCase().replaceAll(" ", "_"))) {
 			payment.setCharge("0");
 		}
 		user.setPayment(payment);
