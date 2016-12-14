@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -26,21 +24,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
-import com.ai.aims.services.model.OrderMaster;
-import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.Order;
 import com.ai.api.service.APIFileService;
 import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
-import com.ai.api.util.AIUtil;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
@@ -51,8 +44,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
-
-import io.swagger.annotations.ApiOperation;
 
 /***************************************************************************
  * <PRE>
@@ -273,6 +264,28 @@ public class OrderImpl implements Order {
 
 	@Override
 	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/re-inspection-list", method = RequestMethod.GET)
+	public ResponseEntity<List<SimpleOrderSearchBean>> getReInspectionList(@PathVariable("userId") String userId,
+			@RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value = "status", required = false, defaultValue = "") String orderStatus,
+			@RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
+			@RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
+
+		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
+		try {
+			ordersList = orderService.searchOrders(userId, serviceType, "", "", keyword, orderStatus, pageSize,
+					pageNumber);
+			// if not data found, just return 200 with empty list
+			return new ResponseEntity<>(ordersList, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-orders-export", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, String>> exportOrders(@PathVariable("userId") String userId,
 			@RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
@@ -339,6 +352,7 @@ public class OrderImpl implements Order {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/order/" + orderId + "/files");
 		ApiCallResult result = new ApiCallResult();
+		Map<String, String> prodMap = new HashMap<String, String>();
 		List<ProductBean> products = orderService.listProducts(orderId);
 		if (null != products) {
 			JSONArray jArray = (JSONArray) JSON.parseArray(JSON.toJSONString(products));
@@ -346,14 +360,31 @@ public class OrderImpl implements Order {
 			for (int i = 0; i < jArray.size(); i++) {
 				JSONObject each = (JSONObject) jArray.get(i);
 				srcIds.append(each.getString("productId"));
+				prodMap.put(each.getString("productId"), each.getString("prodName"));
 				if (i != jArray.size() - 1) {
 					srcIds.append(";");
 				}
 			}
 			Map<String, List<FileMetaBean>> content = myFileService.getFileService()
 					.getFileInfoBySrcIds(srcIds.toString());
-			result.setContent(content);
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			if(null != content) {
+				JSONObject jsonObj = JSON.parseObject(JSON.toJSONString(content));
+				for (Map.Entry<String, String> entry : prodMap.entrySet()) {
+					logger.info(entry.getKey() + "--->" + entry.getValue());
+					JSONArray fileArray = jsonObj.getJSONArray(entry.getKey());
+					if(null != fileArray) {
+						for (int j=0; j < fileArray.size(); j++) {
+							JSONObject each = (JSONObject) fileArray.get(j);
+							each.put("prodName", entry.getValue());
+						}
+					}
+				}
+				result.setContent(jsonObj);
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			}else {
+				result.setContent(null);
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			}
 		} else {
 			result.setMessage("No products in this order: " + orderId);
 			return new ResponseEntity<>(result, HttpStatus.OK);
