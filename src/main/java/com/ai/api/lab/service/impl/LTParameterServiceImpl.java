@@ -9,13 +9,14 @@ package com.ai.api.lab.service.impl;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.ai.aims.services.model.search.SearchTagCriteria;
+import com.ai.aims.services.model.search.SearchTagTestCriteria;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.exception.AIException;
@@ -24,7 +25,6 @@ import com.ai.api.lab.service.LTParameterService;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.program.search.criteria.SearchProgramCriteria;
-import com.google.common.collect.Lists;
 
 /***************************************************************************
  * <PRE>
@@ -87,15 +87,25 @@ public class LTParameterServiceImpl implements LTParameterService {
 	}
 
 	@Override
-	public ApiCallResult searchTests(List<String> countryName, List<String> testName) throws IOException {
-		SearchTagCriteria criteria = new SearchTagCriteria();
-		if(null != countryName && !countryName.isEmpty()) {
-			criteria.setCountryName(Lists.newArrayList(countryName));	
+	public ApiCallResult searchTestsByTag(List<String> countries, List<String> testNames, List<String> regions, String tagLevel, String productCategory) throws IOException {
+		SearchTagTestCriteria criteria = new SearchTagTestCriteria();
+		if(null != countries) {
+			criteria.setCountries(countries);	
 		}
-		if(null != testName && !testName.isEmpty()) {
-			criteria.setTestName(Lists.newArrayList(testName));	
-		}		
-		return ltparameterDao.searchTests(criteria);
+		if(null != testNames) {
+			criteria.setTestnames(testNames);	
+		}	
+		
+		if(null != regions)
+			criteria.setRegions(regions);
+		
+		if(!StringUtils.stripToEmpty(tagLevel).isEmpty())
+			criteria.setTagLevel(tagLevel);
+		
+		if(!StringUtils.stripToEmpty(productCategory).isEmpty())
+			criteria.setProductCategory(productCategory);
+		
+		return ltparameterDao.searchTestsByTag(criteria);
 	}
 
 	@Override
@@ -109,5 +119,9 @@ public class LTParameterServiceImpl implements LTParameterService {
 	public ApiCallResult searchTest(String testId) throws IOException {
 		return ltparameterDao.searchTest(testId);
 	}
-
+	
+	@Override
+	public ApiCallResult searchTestsByName(String testName) throws IOException {
+		return ltparameterDao.searchTestsByName(testName);
+	}
 }
