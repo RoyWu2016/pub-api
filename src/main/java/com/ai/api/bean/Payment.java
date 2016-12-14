@@ -5,18 +5,9 @@ package com.ai.api.bean;
  * 2016/10/21 17:14 Author : Jianxiong.Cai Purpose : TODO History : TODO
  */
 public class Payment {
-	private int expressBookingFee;
 	private String onlinePaymentType;
 
 	private String charge;
-
-	public int getExpressBookingFee() {
-		return expressBookingFee;
-	}
-
-	public void setExpressBookingFee(int expressBookingFee) {
-		this.expressBookingFee = expressBookingFee;
-	}
 
 	public String getOnlinePaymentType() {
 		return onlinePaymentType;
@@ -36,7 +27,7 @@ public class Payment {
 
 	@Override
 	public String toString() {
-		return "Payment{" + "expressBookingFee=" + expressBookingFee + ", onlinePaymentType='" + onlinePaymentType
+		return "Payment{" + "onlinePaymentType='" + onlinePaymentType
 				+ '\'' + '}';
 	}
 }
