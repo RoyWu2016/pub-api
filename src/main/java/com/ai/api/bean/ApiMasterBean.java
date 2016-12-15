@@ -10,8 +10,8 @@ public class ApiMasterBean implements Serializable {
 	 */
 	private static final long serialVersionUID = -1416347337552100339L;
 	
-    private boolean isSuperMaster;
-//	private String masterList;
+    private SuperMasterBean superMaster;
+	private String masterList;
 //	private String isMaster;
 //	private List<String> subCompanies;
 	private boolean canCreateOrder;
@@ -37,12 +37,6 @@ public class ApiMasterBean implements Serializable {
 	private String suspendOrdersBy;
 	private boolean isReadMasterChecklist;
 	
-	public boolean isSuperMaster() {
-		return isSuperMaster;
-	}
-	public void setSuperMaster(boolean isSuperMaster) {
-		this.isSuperMaster = isSuperMaster;
-	}
 	public boolean isCanCreateOrder() {
 		return canCreateOrder;
 	}
@@ -102,9 +96,6 @@ public class ApiMasterBean implements Serializable {
 	}
 	public void setSendReportMailsToSub(boolean sendReportMailsToSub) {
 		this.sendReportMailsToSub = sendReportMailsToSub;
-	}
-	public String isReportMailsToSubCcBcc() {
-		return reportMailsToSubCcBcc;
 	}
 	public void setReportMailsToSubCcBcc(String reportMailsToSubCcBcc) {
 		this.reportMailsToSubCcBcc = reportMailsToSubCcBcc;
@@ -174,6 +165,24 @@ public class ApiMasterBean implements Serializable {
 	}
 	public void setReadMasterChecklist(boolean isReadMasterChecklist) {
 		this.isReadMasterChecklist = isReadMasterChecklist;
+	}
+	public SuperMasterBean getSuperMaster() {
+		return superMaster;
+	}
+	public void setSuperMaster(SuperMasterBean superMaster) {
+		this.superMaster = superMaster;
+	}
+	public String getMasterList() {
+		return masterList;
+	}
+	public void setMasterList(String masterList) {
+		this.masterList = masterList;
+	}
+	public String getReportMailsToSubCcBcc() {
+		return reportMailsToSubCcBcc;
+	}
+	public String getDisClientName() {
+		return disClientName;
 	}
 
 }

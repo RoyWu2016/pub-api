@@ -6,7 +6,10 @@
  ***************************************************************************/
 package com.ai.api.dao;
 
+import java.util.List;
+
 import com.ai.commons.beans.customer.*;
+import com.ai.commons.beans.legacy.customer.ClientInfoWithTokenBean;
 
 /***************************************************************************
  *<PRE>
@@ -59,4 +62,8 @@ public interface CompanyDao {
 	ReportCertificateBean getCompanyReportCertificateInfo(String companyId);
 
 	CompanyEntireBean getCompanyEntireInfo(String userId);
+
+	CompanyEntireBean getCompanyEntireInfoByCompanyId(String companyId);
+
+	List<ClientInfoWithTokenBean> getMasterAccountTokens(String companyId, boolean isMobile, boolean isClientFactory);
 }
