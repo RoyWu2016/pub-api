@@ -7,6 +7,7 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.CompanyDao;
@@ -15,6 +16,10 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.*;
+import com.ai.commons.beans.legacy.customer.ClientInfoWithTokenBean;
+import com.ai.commons.beans.psi.report.ClientReportSearchBean;
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 /***************************************************************************
- *<PRE>
+ * <PRE>
  *  Project Name    : api
  *
  *  Package Name    : com.ai.api.dao.impl
@@ -38,7 +43,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  *
  *  History         : TODO
  *
- *</PRE>
+ * </PRE>
  ***************************************************************************/
 
 public class CompanyDaoImpl implements CompanyDao {
@@ -64,7 +69,6 @@ public class CompanyDaoImpl implements CompanyDao {
 		}
 		return null;
 	}
-
 
 	@Override
 	public boolean updateCrmCompany(CrmCompanyBean company) {
@@ -120,8 +124,9 @@ public class CompanyDaoImpl implements CompanyDao {
 			ServiceCallResult result = HttpUtil.issuePostRequest(contactBeanURL, null, newContact);
 			if (result.getResponseString().equalsIgnoreCase("true")) {
 				return true;
-			}else {
-				LOGGER.info("update CompanyContact fail! error from customerService :"+result.getResponseString()+" || code:"+result.getStatusCode());
+			} else {
+				LOGGER.info("update CompanyContact fail! error from customerService :" + result.getResponseString()
+						+ " || code:" + result.getStatusCode());
 			}
 		} catch (IOException e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
@@ -135,7 +140,8 @@ public class CompanyDaoImpl implements CompanyDao {
 		GetRequest request = GetRequest.newInstance().setUrl(orderBBeanURL);
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-			MultiRefBookingBean multiRefBookingBean = JsonUtil.mapToObject(result.getResponseString(), MultiRefBookingBean.class);
+			MultiRefBookingBean multiRefBookingBean = JsonUtil.mapToObject(result.getResponseString(),
+					MultiRefBookingBean.class);
 			return multiRefBookingBean;
 		} catch (IOException e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
@@ -252,26 +258,54 @@ public class CompanyDaoImpl implements CompanyDao {
 	}
 
 	@Override
-	public ReportCertificateBean getCompanyReportCertificateInfo(String companyId){
-		try{
-			String url = config.getCustomerServiceUrl()+"/customer/"+companyId+"/report-certificate";
+	public ReportCertificateBean getCompanyReportCertificateInfo(String companyId) {
+		try {
+			String url = config.getCustomerServiceUrl() + "/customer/" + companyId + "/report-certificate";
 			GetRequest request = GetRequest.newInstance().setUrl(url);
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-			return JsonUtil.mapToObject(result.getResponseString(),ReportCertificateBean.class);
-		}catch (Exception e){
+			return JsonUtil.mapToObject(result.getResponseString(), ReportCertificateBean.class);
+		} catch (Exception e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
 
 	@Override
-	public CompanyEntireBean getCompanyEntireInfo(String userId){
-		try{
-			String url = config.getCustomerServiceUrl()+"/customer/get-companyentire-by-user/"+userId;
+	public CompanyEntireBean getCompanyEntireInfo(String userId) {
+		try {
+			String url = config.getCustomerServiceUrl() + "/customer/get-companyentire-by-user/" + userId;
 			GetRequest request = GetRequest.newInstance().setUrl(url);
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-			return JsonUtil.mapToObject(result.getResponseString(),CompanyEntireBean.class);
-		}catch (Exception e){
+			return JsonUtil.mapToObject(result.getResponseString(), CompanyEntireBean.class);
+		} catch (Exception e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
+
+	@Override
+	public List<ClientInfoWithTokenBean> getMasterAccountTokens(String companyId, boolean isMobile,
+			boolean isClientFactory) {
+		try {
+			String url = config.getCustomerServiceUrl() + "/customer-legacy/master-account-tokens/" + companyId + "/is-mobile/"
+					+ isMobile + "/is-client-factory/" + isClientFactory;
+			GetRequest request = GetRequest.newInstance().setUrl(url);
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			return JsonUtil.mapToObject(result.getResponseString(), new TypeReference<List<ClientInfoWithTokenBean>>(){});
+		} catch (Exception e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
+
+	@Override
+	public CompanyEntireBean getCompanyEntireInfoByCompanyId(String companyId) {
+		try {
+			String url = config.getCustomerServiceUrl() + "/customer/get-companyentire-by-company/" + companyId;
+			GetRequest request = GetRequest.newInstance().setUrl(url);
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			return JsonUtil.mapToObject(result.getResponseString(), CompanyEntireBean.class);
+		} catch (Exception e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;

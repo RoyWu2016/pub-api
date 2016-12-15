@@ -9,6 +9,7 @@ package com.ai.api.service.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,12 +35,12 @@ import com.ai.api.bean.BillingBean;
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.CompanyRelationshipBean;
 import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.bean.CustomAQLBean;
 import com.ai.api.bean.CustomizedProductType;
 import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.MainBean;
+import com.ai.api.bean.MasterCompanyBean;
 import com.ai.api.bean.MinQuantityToBeReadyBean;
 import com.ai.api.bean.MultiReferenceBean;
 import com.ai.api.bean.Payment;
@@ -53,6 +54,7 @@ import com.ai.api.bean.ReportApproverBean;
 import com.ai.api.bean.ReportPreferenceBean;
 import com.ai.api.bean.ReportRejectCategoryBean;
 import com.ai.api.bean.ReportRejectCategoryReasonBean;
+import com.ai.api.bean.SuperMasterBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.CompanyDao;
@@ -64,13 +66,13 @@ import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.api.util.BASE64DecodedMultipartFile;
 import com.ai.api.util.RedisUtil;
+import com.ai.commons.JsonUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.ApproverBean;
 import com.ai.commons.beans.customer.CompanyEntireBean;
 import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.CrmCompanyBean;
-import com.ai.commons.beans.customer.CrmCompanyRelationshipBean;
 import com.ai.commons.beans.customer.CrmSaleInChargeBean;
 import com.ai.commons.beans.customer.CustomerFeatureBean;
 import com.ai.commons.beans.customer.DashboardBean;
@@ -85,9 +87,12 @@ import com.ai.commons.beans.customer.RejectCategoryReasonBean;
 import com.ai.commons.beans.customer.RelevantCategoryInfoBean;
 import com.ai.commons.beans.customer.ReportCertificateBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.legacy.customer.ClientInfoWithTokenBean;
+import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 /***************************************************************************
@@ -134,7 +139,7 @@ public class UserServiceImpl implements UserService {
 	@Qualifier("featureDao")
 	private FeatureDao featureDao;
 
-	private UserBean getUserBeanByService(String userId) {
+	private UserBean getUserBeanByService(String userId) throws IOException {
 		if (StringUtils.isBlank(userId)) {
 			return null;
 		}
@@ -215,29 +220,48 @@ public class UserServiceImpl implements UserService {
 		comp.setLogo(companyEntireBean.getCompanyProfile().getLogoPath());
 		comp.setMainEmail(companyEntireBean.getContact().getMainEmail());
 		
-		List<CompanyRelationshipBean> parentList = new ArrayList();
-		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectParents()) {
-			CompanyRelationshipBean bean = new CompanyRelationshipBean();
-			bean.setCompanyId(each.getCompanyId());
-			bean.setCompanyName(each.getCompanyName());
-			
-			parentList.add(bean);
-		}
-		comp.setParents(parentList);
-		
-		List<CompanyRelationshipBean> subordinatesList = new ArrayList();
-		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectSubordinates()) {
-			CompanyRelationshipBean bean = new CompanyRelationshipBean();
-			bean.setCompanyId(each.getCompanyId());
-			bean.setCompanyName(each.getCompanyName());
-			
-			subordinatesList.add(bean);
-		}
-		comp.setSubordinates(subordinatesList);
+//		List<CompanyRelationshipBean> parentList = new ArrayList();
+//		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectParents()) {
+//			CompanyRelationshipBean bean = new CompanyRelationshipBean();
+//			bean.setCompanyId(each.getCompanyId());
+//			bean.setCompanyName(each.getCompanyName());
+//			
+//			parentList.add(bean);
+//		}
+//		comp.setParents(parentList);
+//		
+//		List<CompanyRelationshipBean> subordinatesList = new ArrayList();
+//		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectSubordinates()) {
+//			CompanyRelationshipBean bean = new CompanyRelationshipBean();
+//			bean.setCompanyId(each.getCompanyId());
+//			bean.setCompanyName(each.getCompanyName());
+//			
+//			subordinatesList.add(bean);
+//		}
+//		comp.setSubordinates(subordinatesList);
 		
 		MasterBean masterBean = companyEntireBean.getMaster();
 		ApiMasterBean finalBeam = new ApiMasterBean();
-		finalBeam.setSuperMaster(StringUtils.isTrue(masterBean.getIsSuperMaster()));//	    private String isSuperMaster;
+		if(StringUtils.isTrue(masterBean.getIsSuperMaster())) {
+			SuperMasterBean superMaster = new SuperMasterBean();
+			List<MasterCompanyBean> masterCompanies = new ArrayList<MasterCompanyBean>();
+			superMaster.setIsSupperMaster(true);
+			List<ClientInfoWithTokenBean> beans = companyDao.getMasterAccountTokens(companyEntireBean.getCompanyId(),false,false);
+			for(ClientInfoWithTokenBean each :beans) {
+				MasterCompanyBean bean = new MasterCompanyBean();
+				bean.setCompanyName(each.getCompanyName());
+				bean.setCompanyId(each.getCompanyId());
+				CompanyEntireBean child = companyDao.getCompanyEntireInfoByCompanyId(each.getCompanyId());
+				if(null != child && null != child.getUsers() && null != child.getUsers().get(0)) {
+					bean.setUserId(child.getUsers().get(0).getUserId());
+				}
+				masterCompanies.add(bean);
+			}
+			superMaster.setMasterCompanies(masterCompanies);
+			finalBeam.setSuperMaster(superMaster);
+		}else {
+			finalBeam.setSuperMaster(null);
+		}
 		finalBeam.setCanCreateOrder(StringUtils.isTrue(masterBean.getCanCreateOrder()));//		private String canCreateOrder;
 		finalBeam.setShareFactoryLib(StringUtils.isTrue(masterBean.getShareFactoryLib()));//		private String shareFactoryLib;
 		finalBeam.setSeePendingOrders(StringUtils.isTrue(masterBean.getSeePendingOrders()));//		private String seePendingOrders;
@@ -646,7 +670,7 @@ public class UserServiceImpl implements UserService {
 		logger.info("success removed!!");
 	}
 
-	public UserBean updateUserBeanInCache(final String userId) {
+	public UserBean updateUserBeanInCache(final String userId) throws IOException {
 		logger.info("ready to update user in cache ! userId:  " + userId);
 		if (StringUtils.isBlank(userId)) {
 			logger.error("userId is blank!");
