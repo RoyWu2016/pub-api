@@ -240,9 +240,9 @@ public class UserServiceImpl implements UserService {
 		
 		MasterBean masterBean = companyEntireBean.getMaster();
 		ApiMasterBean finalBeam = new ApiMasterBean();
+		SuperMasterBean superMaster = new SuperMasterBean();
+		List<MasterCompanyBean> masterCompanies = new ArrayList<MasterCompanyBean>();
 		if (StringUtils.isTrue(masterBean.getIsSuperMaster())) {
-			SuperMasterBean superMaster = new SuperMasterBean();
-			List<MasterCompanyBean> masterCompanies = new ArrayList<MasterCompanyBean>();
 			superMaster.setIsSupperMaster(true);
 			List<ClientInfoWithTokenBean> beans = companyDao.getMasterAccountTokens(companyEntireBean.getCompanyId(),
 					false, false);
@@ -256,12 +256,12 @@ public class UserServiceImpl implements UserService {
 				}
 				masterCompanies.add(bean);
 			}
-			superMaster.setMasterCompanies(masterCompanies);
-			finalBeam.setSuperMaster(superMaster);
 		} else {
-			finalBeam.setSuperMaster(null);
+			superMaster.setIsSupperMaster(false);
 		}
-		finalBeam.setMasterList(masterBean.getMasterList());
+		superMaster.setMasterCompanies(masterCompanies);
+		finalBeam.setSuperMaster(superMaster);
+//		finalBeam.setMasterList(masterBean.getMasterList());
 		finalBeam.setCanCreateOrder(StringUtils.isTrue(masterBean.getCanCreateOrder()));//		private String canCreateOrder;
 		finalBeam.setShareFactoryLib(StringUtils.isTrue(masterBean.getShareFactoryLib()));//		private String shareFactoryLib;
 		finalBeam.setSeePendingOrders(StringUtils.isTrue(masterBean.getSeePendingOrders()));//		private String seePendingOrders;
