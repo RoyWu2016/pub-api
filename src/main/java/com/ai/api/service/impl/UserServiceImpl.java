@@ -40,6 +40,7 @@ import com.ai.api.bean.CustomAQLBean;
 import com.ai.api.bean.CustomizedProductType;
 import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.MainBean;
+import com.ai.api.bean.MasterCompanyBean;
 import com.ai.api.bean.MinQuantityToBeReadyBean;
 import com.ai.api.bean.MultiReferenceBean;
 import com.ai.api.bean.Payment;
@@ -53,6 +54,7 @@ import com.ai.api.bean.ReportApproverBean;
 import com.ai.api.bean.ReportPreferenceBean;
 import com.ai.api.bean.ReportRejectCategoryBean;
 import com.ai.api.bean.ReportRejectCategoryReasonBean;
+import com.ai.api.bean.SuperMasterBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.CompanyDao;
@@ -85,6 +87,7 @@ import com.ai.commons.beans.customer.RejectCategoryReasonBean;
 import com.ai.commons.beans.customer.RelevantCategoryInfoBean;
 import com.ai.commons.beans.customer.ReportCertificateBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.legacy.customer.ClientInfoWithTokenBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -215,29 +218,50 @@ public class UserServiceImpl implements UserService {
 		comp.setLogo(companyEntireBean.getCompanyProfile().getLogoPath());
 		comp.setMainEmail(companyEntireBean.getContact().getMainEmail());
 		
-		List<CompanyRelationshipBean> parentList = new ArrayList();
-		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectParents()) {
-			CompanyRelationshipBean bean = new CompanyRelationshipBean();
-			bean.setCompanyId(each.getCompanyId());
-			bean.setCompanyName(each.getCompanyName());
-			
-			parentList.add(bean);
-		}
-		comp.setParents(parentList);
-		
-		List<CompanyRelationshipBean> subordinatesList = new ArrayList();
-		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectSubordinates()) {
-			CompanyRelationshipBean bean = new CompanyRelationshipBean();
-			bean.setCompanyId(each.getCompanyId());
-			bean.setCompanyName(each.getCompanyName());
-			
-			subordinatesList.add(bean);
-		}
-		comp.setSubordinates(subordinatesList);
+//		List<CompanyRelationshipBean> parentList = new ArrayList();
+//		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectParents()) {
+//			CompanyRelationshipBean bean = new CompanyRelationshipBean();
+//			bean.setCompanyId(each.getCompanyId());
+//			bean.setCompanyName(each.getCompanyName());
+//			
+//			parentList.add(bean);
+//		}
+//		comp.setParents(parentList);
+//		
+//		List<CompanyRelationshipBean> subordinatesList = new ArrayList();
+//		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectSubordinates()) {
+//			CompanyRelationshipBean bean = new CompanyRelationshipBean();
+//			bean.setCompanyId(each.getCompanyId());
+//			bean.setCompanyName(each.getCompanyName());
+//			
+//			subordinatesList.add(bean);
+//		}
+//		comp.setSubordinates(subordinatesList);
 		
 		MasterBean masterBean = companyEntireBean.getMaster();
 		ApiMasterBean finalBeam = new ApiMasterBean();
-		finalBeam.setSuperMaster(StringUtils.isTrue(masterBean.getIsSuperMaster()));//	    private String isSuperMaster;
+		if (StringUtils.isTrue(masterBean.getIsSuperMaster())) {
+			SuperMasterBean superMaster = new SuperMasterBean();
+			List<MasterCompanyBean> masterCompanies = new ArrayList<MasterCompanyBean>();
+			superMaster.setIsSupperMaster(true);
+			List<ClientInfoWithTokenBean> beans = companyDao.getMasterAccountTokens(companyEntireBean.getCompanyId(),
+					false, false);
+			for (ClientInfoWithTokenBean each : beans) {
+				MasterCompanyBean bean = new MasterCompanyBean();
+				bean.setCompanyName(each.getCompanyName());
+				bean.setCompanyId(each.getCompanyId());
+				CompanyEntireBean child = companyDao.getCompanyEntireInfoByCompanyId(each.getCompanyId());
+				if (null != child && null != child.getUsers() && null != child.getUsers().get(0)) {
+					bean.setUserId(child.getUsers().get(0).getUserId());
+				}
+				masterCompanies.add(bean);
+			}
+			superMaster.setMasterCompanies(masterCompanies);
+			finalBeam.setSuperMaster(superMaster);
+		} else {
+			finalBeam.setSuperMaster(null);
+		}
+		finalBeam.setMasterList(masterBean.getMasterList());
 		finalBeam.setCanCreateOrder(StringUtils.isTrue(masterBean.getCanCreateOrder()));//		private String canCreateOrder;
 		finalBeam.setShareFactoryLib(StringUtils.isTrue(masterBean.getShareFactoryLib()));//		private String shareFactoryLib;
 		finalBeam.setSeePendingOrders(StringUtils.isTrue(masterBean.getSeePendingOrders()));//		private String seePendingOrders;
