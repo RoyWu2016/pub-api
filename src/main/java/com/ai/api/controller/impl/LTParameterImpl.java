@@ -1,27 +1,5 @@
 package com.ai.api.controller.impl;
 
-/***************************************************************************
- * <PRE>
- *  Project Name    : api
- *
- *  Package Name    : com.ai.api.lab.controller.impl
- *
- *  File Name       : LTParameterImpl.java
- *
- *  Creation Date   : Dec 6, 2016
- *
- *  Author          : Aashish Thakran
- *
- *  Purpose         : TODO
- *
- *
- *  History         : TODO
- *
- * </PRE>
- ***************************************************************************/
-
-import io.swagger.annotations.ApiOperation;
-
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -46,6 +24,28 @@ import com.ai.api.lab.service.LTParameterService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.program.model.Program;
+
+/***************************************************************************
+ * <PRE>
+ *  Project Name    : api
+ *
+ *  Package Name    : com.ai.api.lab.controller.impl
+ *
+ *  File Name       : LTParameterImpl.java
+ *
+ *  Creation Date   : Dec 6, 2016
+ *
+ *  Author          : Aashish Thakran
+ *
+ *  Purpose         : TODO
+ *
+ *
+ *  History         : TODO
+ *
+ * </PRE>
+ ***************************************************************************/
+
+import io.swagger.annotations.ApiOperation;
 
 @SuppressWarnings({"rawtypes"})
 @RestController
@@ -154,13 +154,16 @@ public class LTParameterImpl implements LTParameter {
 	}	
 	
 	@Override
-	@ApiOperation(value = "Search LT Tests API", produces = "application/json", response = TagTestMap.class, httpMethod = "GET", responseContainer = "List")
+	@ApiOperation(value = "Search LT Tests By tag Name API", produces = "application/json", response = TagTestMap.class, httpMethod = "GET", responseContainer = "List")
 	@TokenSecured
-	@RequestMapping(value = "/parameter/lt-tests", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> searchTests(			
+	@RequestMapping(value = "/parameter/lt-tests-by-tag", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchTestsByTag(			
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh,
-			@RequestParam(value = "countryName", required = false) List<String> countryName, 
-			@RequestParam(value = "testName", required = false) List<String> testName) {
+			@RequestParam(value = "countries", required = false) List<String> countries, 
+			@RequestParam(value = "testNames", required = false) List<String> testNames,
+			@RequestParam(value = "regions", required = false) List<String> regions, 
+			@RequestParam(value = "tagLevel", required = false) String tagLevel,
+			@RequestParam(value = "productCategory", required = false) String productCategory) {
 		ApiCallResult callResult = new ApiCallResult();
 		/*if (!refresh) {
 			logger.info("try to searchTests from redis ...");
@@ -169,7 +172,7 @@ public class LTParameterImpl implements LTParameter {
 		}
 		if (null == tests) {*/
 			try {
-				callResult = ltparameterService.searchTests(countryName, testName);
+				callResult = ltparameterService.searchTestsByTag(countries, testNames, regions, tagLevel, productCategory);
 				logger.info("saving searchTests");
 				//RedisUtil.set("ltTestsCache", JSON.toJSONString(tests), RedisUtil.HOUR * 24);
 
@@ -186,7 +189,7 @@ public class LTParameterImpl implements LTParameter {
 	}
 		
 	@Override
-	@ApiOperation(value = "Search LT Test API", produces = "application/json", response = TestMaster.class, httpMethod = "GET")
+	@ApiOperation(value = "Search LT Test By Test Id API", produces = "application/json", response = TestMaster.class, httpMethod = "GET")
 	@TokenSecured
 	@RequestMapping(value = "/parameter/lt-tests/{testId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchTest(
@@ -214,5 +217,36 @@ public class LTParameterImpl implements LTParameter {
 			logger.info("get lt test from redis successfully");
 			return new ResponseEntity<TestMaster>(test, HttpStatus.OK);
 		}*/
-	}	
+	}
+	
+	@Override
+	@ApiOperation(value = "Search LT Test By Name API", produces = "application/json", response = TestMaster.class, httpMethod = "GET")
+	@TokenSecured
+	@RequestMapping(value = "/parameter/lt-tests-by-name", method = RequestMethod.GET)	
+	public ResponseEntity<ApiCallResult> searchTestsByName(
+			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh,
+			@RequestParam(value = "testName") String testName) {
+		ApiCallResult callResult = new ApiCallResult();
+		/*if (!refresh) {
+			logger.info("try to searchTest y name from redis ...");
+			String jsonStringTextileProductCategory = RedisUtil.get("ltTestByNameCache");
+			test = JSON.parseObject(jsonStringTextileProductCategory, TestMaster.class);
+		}
+		if (null == test) {*/
+			try {
+				callResult = ltparameterService.searchTestsByName(testName);
+				logger.info("saving searchTest by name");
+				//RedisUtil.set("ltTestByNameCache", JSON.toJSONString(test), RedisUtil.HOUR * 24);
+
+				return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("search LT Test error: " + ExceptionUtils.getFullStackTrace(e));
+				callResult.setMessage("can't get LT test by test name:" + testName);
+				return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		/*} else {
+			logger.info("get lt test from redis successfully");
+			return new ResponseEntity<TestMaster>(test, HttpStatus.OK);
+		}*/		
+	}
 }

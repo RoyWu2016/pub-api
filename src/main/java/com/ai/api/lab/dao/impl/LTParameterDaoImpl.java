@@ -21,7 +21,7 @@ import com.ai.aims.constants.Status;
 import com.ai.aims.services.model.OfficeMaster;
 import com.ai.aims.services.model.TagTestMap;
 import com.ai.aims.services.model.TestMaster;
-import com.ai.aims.services.model.search.SearchTagCriteria;
+import com.ai.aims.services.model.search.SearchTagTestCriteria;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.lab.dao.LTParameterDao;
 import com.ai.api.util.AIUtil;
@@ -82,7 +82,7 @@ public class LTParameterDaoImpl implements LTParameterDao {
 	}
 	
 	@Override
-	public ApiCallResult searchTests(SearchTagCriteria criteria) throws IOException {
+	public ApiCallResult searchTestsByTag(SearchTagTestCriteria criteria) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		ApiCallResult callResult = new ApiCallResult();
@@ -90,6 +90,17 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		List<TagTestMap> tests = Arrays.asList(restTemplate.getForObject(buildTagSearchCriteria(criteria, url).build().encode().toUri(), TagTestMap[].class));	
 		callResult.setContent(tests);
 		return callResult;
+	}
+	
+	@Override
+	public ApiCallResult searchTestsByName(String testName) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		ApiCallResult callResult = new ApiCallResult();
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/test/autocomplete?name=").append(testName).toString();		
+		List<TestMaster> tests = Arrays.asList(restTemplate.getForObject(url, TestMaster[].class));	
+		callResult.setContent(tests);
+		return callResult;		
 	}
 	
 	@Override
@@ -102,7 +113,7 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		callResult.setContent(test);
 		return callResult;		
 	}
-	
+
 	private UriComponentsBuilder buildProgramSearchCriteria(SearchProgramCriteria criteria, String url) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);	
 		
@@ -124,19 +135,25 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		return builder;
 	}
 	
-	private UriComponentsBuilder buildTagSearchCriteria(SearchTagCriteria criteria, String url) {
+	private UriComponentsBuilder buildTagSearchCriteria(SearchTagTestCriteria criteria, String url) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
 		        .queryParam("page", criteria.getPage() != 0 ? criteria.getPage() - 1 : 0)
 		        .queryParam("size", criteria.getPageSize() != 0 ? criteria.getPageSize() : 1000000);
 		
-		if(null != criteria.getTestName() && !criteria.getTestName().isEmpty())
-			builder.queryParam("testName", criteria.getTestName());
+		if(null != criteria.getTagLevel() && !criteria.getTagLevel().isEmpty())
+			builder.queryParam("tagLevel", criteria.getTagLevel());
 		
-		if(null != criteria.getCountryName() && !criteria.getCountryName().isEmpty())
-			builder.queryParam("countryName", criteria.getCountryName());
+		if(null != criteria.getProductCategory() && !criteria.getProductCategory().isEmpty())
+			builder.queryParam("productCategory", criteria.getProductCategory());
 		
-		if(!StringUtils.stripToEmpty(criteria.getOptional()).trim().isEmpty())
-			builder.queryParam("optional", criteria.getOptional().trim());
+		if(null != criteria.getTestnames())
+			builder.queryParam("testnames", String.join(",", criteria.getTestnames()));
+		
+		if(null != criteria.getCountries())
+			builder.queryParam("countries", String.join(",", criteria.getCountries()));
+		
+		if(null != criteria.getRegions())
+			builder.queryParam("regions", String.join(",", criteria.getRegions()));
 		
 		return builder;
 	}
