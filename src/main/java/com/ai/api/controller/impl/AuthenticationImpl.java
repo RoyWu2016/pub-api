@@ -101,7 +101,7 @@ public class AuthenticationImpl implements Authentication {
 			return mapper.writeValueAsString(result);
 		}
         logger.info("start to get user from DB --> verify pw --> generate tokenSession");
-        result = authenticationService.userLogin(account,password,userType);
+        result = authenticationService.userLogin(account,password,userType,request);
 		logger.info("user login result: "+result.getResponseString());
 		return mapper.writeValueAsString(result);
 	}
