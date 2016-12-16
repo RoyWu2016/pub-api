@@ -15,7 +15,7 @@ import com.ai.commons.beans.ServiceCallResult;
  */
 public interface AuthenticationService {
 
-    ServiceCallResult userLogin(String userName,String password,String userType);
+    ServiceCallResult userLogin(String userName,String password,String userType,HttpServletRequest request);
 
 	ServiceCallResult removeAPIToken(HttpServletRequest request, HttpServletResponse response);
 }
