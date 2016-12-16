@@ -299,7 +299,7 @@ public class ReportImpl implements Report {
 		List<LotusSyncBean> list = reportService.listAllSyncObjByOracleId(productId, "report_detail");
 		JSONObject joson = JSON.parseObject(JSON.toJSONString(list.get(0)));
 		String lotusId = joson.getString("lotusId");
-		String result = reportService.getPDFCertificate("001A377288B0894748257D85004A227D");
+		String result = reportService.getPDFCertificate(lotusId);
 		ApiCallResult finalResult = new ApiCallResult();
 		if (null != result) {
 //				byte[] data = IOUtils.toByteArray(result);
