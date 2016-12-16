@@ -3,13 +3,16 @@ package com.ai.api.service.impl;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.api.bean.LoginLog;
 import com.ai.api.bean.UserForToken;
+import com.ai.api.dao.LoginLogDao;
 import com.ai.api.dao.SSOUserServiceDao;
 import com.ai.api.dao.UserDao;
 import com.ai.api.dao.impl.TokenJWTDaoImpl;
 import com.ai.api.service.AuthenticationService;
 import com.ai.api.service.UserService;
 import com.ai.commons.Consts;
+import com.ai.commons.HttpUtil;
 import com.ai.commons.IDGenerator;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.user.GeneralUserBean;
@@ -22,6 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 /**
  * Project Name    : Public-API
@@ -37,6 +42,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     private UserDao userDBDao;
+    @Autowired
+    private LoginLogDao loginLogDao;
 
     @Autowired
     private TokenJWTDaoImpl tokenJWTDao;
@@ -49,7 +56,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public ServiceCallResult userLogin(String userName, String password, String userType) {
+    public ServiceCallResult userLogin(String userName, String password, String userType,HttpServletRequest request) {
         logger.info("userLogin ... userName:{}, userType:{}" ,userName,userType);
         ServiceCallResult result = new ServiceCallResult();
         if (userType.toLowerCase().equals(Consts.Http.USER_TYPE_CLIENT)){
@@ -72,6 +79,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         result.setResponseString(token);
                         result.setStatusCode(HttpServletResponse.SC_OK);
                         result.setReasonPhase("User credential verified and token generated.");
+                        try {
+                            LoginLog loginLog = new LoginLog();
+                            loginLog.setLogin(userName);
+                            loginLog.setLoginType("Login");
+                            loginLog.setLoginTime(new Date());
+                            loginLog.setLoginServer("PublicAPI");
+                            loginLog.setLoginIP(HttpUtil.getIpAddr(request));
+                            int i =loginLogDao.addLog(loginLog);
+                            if (i>0){
+                                logger.info("add loginLog done! "+loginLog);
+                            }
+                        }catch (Exception e){
+                            logger.error("add loginLog failed.",e);
+                        }
                     } else {
                         result.setResponseString("");
                         result.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -106,6 +127,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     result.setResponseString(JSON.toJSONString(tokenSession));
                     result.setStatusCode(HttpServletResponse.SC_OK);
                     result.setReasonPhase("User credential verified and token generated.");
+                    try {
+                        LoginLog loginLog = new LoginLog();
+                        loginLog.setLogin(userName);
+                        loginLog.setLoginType("EmployeeLogin");
+                        loginLog.setLoginTime(new Date());
+                        loginLog.setLoginServer("PublicAPI");
+                        loginLog.setLoginIP(HttpUtil.getIpAddr(request));
+                        int i =loginLogDao.addLog(loginLog);
+                        if (i>0){
+                            logger.info("add loginLog done! "+loginLog);
+                        }
+                    }catch (Exception e){
+                        logger.error("add loginLog failed.",e);
+                    }
                 } else {
                     result.setResponseString("");
                     result.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

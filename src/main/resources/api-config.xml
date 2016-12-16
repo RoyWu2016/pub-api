@@ -68,6 +68,10 @@
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
 
+    <bean id="loginLogDao" class="com.ai.api.dao.impl.LoginLogDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
     <bean id="draftDao" class="com.ai.api.dao.impl.DraftDaoImpl"/>
     <bean id="tokenJWTDao" class="com.ai.api.dao.impl.TokenJWTDaoImpl"/>
     <bean id="paramDao" class="com.ai.api.dao.impl.ParameterDaoImpl"/>
