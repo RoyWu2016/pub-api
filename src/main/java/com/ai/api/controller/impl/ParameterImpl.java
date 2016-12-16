@@ -552,10 +552,10 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	@RequestMapping(value = "/parameter/resourcs/{resourceName}/base64", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/resources/{resourceName}/base64", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getCommonImagesBase64(@PathVariable("resourceName") String resourceName,
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
-		logger.info("invoke: " + "/parameter/resourcs/" + resourceName + "/base64");
+		logger.info("invoke: " + "/parameter/resources/" + resourceName + "/base64");
 		ApiCallResult callResult = new ApiCallResult();
 		String fileStr = null;
 		String path = config.getExcleLoggoCommonSource() + File.separator + resourceName;
