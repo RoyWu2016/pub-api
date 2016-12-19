@@ -338,7 +338,7 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			String endDate) {
 		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/dashBoard/statistics");
-		url.append("?userId=" + userId).append("&companyId=" + parentId).append("&parentId=" + companyId)
+		url.append("?userId=" + userId).append("&companyId=" + companyId).append("&parentId=" + parentId)
 				.append("&startDate=" + startDate).append("&endDate=" + endDate);
 		LOGGER.info("requesting url: " + url.toString());
 		GetRequest request = GetRequest.newInstance().setUrl(url.toString());

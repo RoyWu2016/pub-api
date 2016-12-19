@@ -1,5 +1,8 @@
 package com.ai.api.dao.impl;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import com.ai.api.bean.UserForToken;
 import com.ai.api.dao.UserDao;
 import com.ai.commons.beans.user.GeneralUserBean;
@@ -7,9 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Project Name    : Public-API
@@ -32,7 +32,8 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
     @Override
     public UserForToken getEmployeeUser(String login) {
-        String sql = "SELECT USER_ID,LOGIN,PASSWORD  FROM UR_USER  WHERE LOGIN = ?";
+        String sql = "SELECT USER_ID,LOGIN,PASSWORD  FROM UR_USER  WHERE UPPER(LOGIN) = ?";
+	    login = login.toUpperCase();
         return getJdbcTemplate().queryForObject(sql, new Object[] { login },new UserForTokenMapper());
     }
 
