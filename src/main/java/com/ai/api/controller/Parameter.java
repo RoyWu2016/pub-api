@@ -59,6 +59,6 @@ public interface Parameter {
 
 	ResponseEntity<JSONObject> isACAUser(String userName);
 
-	ResponseEntity<ApiCallResult> getCommonImagesBase64(String resourceName, boolean refresh);
+	ResponseEntity<String> getCommonImagesBase64(String resourceName, boolean refresh);
 
 }
