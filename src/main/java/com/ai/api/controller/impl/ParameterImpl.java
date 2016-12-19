@@ -553,10 +553,10 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	@RequestMapping(value = "/parameter/resources/{resourceName}/base64", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getCommonImagesBase64(@PathVariable("resourceName") String resourceName,
+	public ResponseEntity<String> getCommonImagesBase64(@PathVariable("resourceName") String resourceName,
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		logger.info("invoke: " + "/parameter/resources/" + resourceName + "/base64");
-		ApiCallResult callResult = new ApiCallResult();
+//		ApiCallResult callResult = new ApiCallResult();
 		String fileStr = null;
 		String path = config.getExcleLoggoCommonSource() + File.separator + resourceName;
 		logger.info("Found the logo resource: " + path);
@@ -571,18 +571,18 @@ public class ParameterImpl implements Parameter {
 				fileStr = Base64.encode(bytes);
 				RedisUtil.hset("resourceCache", resourceName, fileStr, RedisUtil.HOUR * 24 * 90);
 				logger.info("save to redis resourceCache successfully: " + resourceName);
-				callResult.setContent(fileStr);
+//				callResult.setContent(fileStr);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				callResult.setMessage("Exception: " + e.toString());
-				return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+//				callResult.setMessage("Exception: " + e.toString());
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} else {
 			logger.info("getCommonImagesBase64 from redis successfully");
-			callResult.setContent(fileStr);
+//			callResult.setContent(fileStr);
 		}
-		return new ResponseEntity<>(callResult, HttpStatus.OK);
+		return new ResponseEntity<>(fileStr, HttpStatus.OK);
 	}
 
 }
