@@ -53,5 +53,5 @@ public interface Payment {
 
 	ResponseEntity<ApiCallResult> markAsPaid(String userId, PaymentPaidBean orders);
 
-	ResponseEntity<ApiCallResult> generateGlobalPayment(String userId, String paymentType, String orderIds);
+	ResponseEntity<ApiCallResult> generatePayment(String userId, String paymentType, String orderIds);
 }
