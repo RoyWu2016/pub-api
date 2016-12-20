@@ -132,7 +132,7 @@ public class PaymentImpl implements Payment {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/payment-type/{paymentType}/payment", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> generateGlobalPayment(@PathVariable("userId") String userId,
+	public ResponseEntity<ApiCallResult> generatePayment(@PathVariable("userId") String userId,
 			@PathVariable("paymentType") String paymentType, @RequestParam("orderIds") String orderIds) {
 		logger.info("invoke: " + "/user/" + userId + "/payment-type/" + paymentType + "payment?orderIds=" + orderIds);
 		ApiCallResult result = new ApiCallResult();
