@@ -305,10 +305,10 @@ public class ReportImpl implements Report {
 //				byte[] data = IOUtils.toByteArray(result);
 //				String fileStr = Base64.encode(data);
 			if(result.contains("<!DOCTYPE HTML PUBLIC")) {
-				finalResult.setContent(result);
+				finalResult.setMessage("Inspection certificate is generating, please wait.");
 				return new ResponseEntity<>(finalResult, HttpStatus.OK);
 			}else {
-				finalResult.setMessage("Inspection certificate is generating, please wait.");
+				finalResult.setContent(result);
 				return new ResponseEntity<>(finalResult, HttpStatus.OK);
 			}
 		} else {
