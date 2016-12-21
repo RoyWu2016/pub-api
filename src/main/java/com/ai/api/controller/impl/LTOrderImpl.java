@@ -2,6 +2,7 @@ package com.ai.api.controller.impl;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ai.api.bean.OrderSearchBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,8 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 
 import io.swagger.annotations.ApiOperation;
+
+import java.util.List;
 
 @SuppressWarnings({"rawtypes"})
 @RestController
@@ -66,12 +69,18 @@ public class LTOrderImpl implements LTOrder {
 			@RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-			callResult = ltOrderService.searchLTOrders(userId, orderStatus, pageSize, pageNumber);
-			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+			List<OrderSearchBean> list = ltOrderService.searchLTOrders(userId, orderStatus, pageSize, pageNumber);
+			if (null!=list && list.size()>0){
+				callResult.setContent(list);
+				return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+			}else {
+                callResult.setMessage("get empty LT orders list.");
+                return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.NOT_FOUND);
+            }
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("can't get LT orders");
-			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+            callResult.setMessage("can't get LT orders.error occurred!");
+            return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -82,13 +91,19 @@ public class LTOrderImpl implements LTOrder {
 	public ResponseEntity<ApiCallResult> findOrder(@PathVariable("orderId") String orderId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-			callResult = ltOrderService.findOrder(orderId);
+            OrderMaster order = ltOrderService.findOrder(orderId);
+            if (null!=order) {
+                callResult.setContent(order);
+                return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+            }else {
+                callResult.setMessage("can't get LT order by orderId:" + orderId);
+                return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.NOT_FOUND);
+            }
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("can't get LT order by orderId:" + orderId);
-			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+			callResult.setMessage("can't get LT order by orderId:" + orderId+". error occurred!");
+            return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Order Edit API", produces = "application/json", response = OrderMaster.class, httpMethod = "PUT")

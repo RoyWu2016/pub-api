@@ -58,12 +58,12 @@ public class LTOrderDaoImpl implements LTOrderDao {
 	private ServiceConfig config;
 
 	@Override
-	public ApiCallResult searchLTOrders(String compId, String orderStatus, Integer pageNumber, Integer pageSize,
+	public List<OrderSearchBean> searchLTOrders(String compId, String orderStatus, Integer pageNumber, Integer pageSize,
 			String direction) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		
-		ApiCallResult callResult = new ApiCallResult();
+//		ApiCallResult callResult = new ApiCallResult();
 		List<OrderSearchBean> orderSearchList = new ArrayList<OrderSearchBean>();
 		
 		List<OrderMaster> orders = Arrays.asList(restTemplate.getForObject(buildOrderSearchCriteria(compId, orderStatus, pageSize,
@@ -85,8 +85,8 @@ public class LTOrderDaoImpl implements LTOrderDao {
 			orderSearch.setProductNames(StringUtils.stripToEmpty(order.getDescription()));
 			orderSearchList.add(orderSearch);
 		}
-		callResult.setContent(orderSearchList);
-		return callResult;
+//		callResult.setContent(orderSearchList);
+		return orderSearchList;
 	}
 
 	private UriComponentsBuilder buildOrderSearchCriteria(String compId, String orderStatus, Integer pageSize,
@@ -104,14 +104,14 @@ public class LTOrderDaoImpl implements LTOrderDao {
 	}
 
 	@Override
-	public ApiCallResult findOrder(String orderId) throws IOException {
+	public OrderMaster findOrder(String orderId) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		
-		ApiCallResult callResult = new ApiCallResult();
+//		ApiCallResult callResult = new ApiCallResult();
 		OrderMaster order = restTemplate.getForObject(config.getAimsServiceBaseUrl() + "/api/ordermanagement/search/" + orderId, OrderMaster.class);
-		callResult.setContent(order);
-		return callResult;
+//		callResult.setContent(order);
+		return order;
 	}
 
 	@Override

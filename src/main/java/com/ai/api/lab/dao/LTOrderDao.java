@@ -7,8 +7,10 @@
 package com.ai.api.lab.dao;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
 import com.ai.commons.beans.ApiCallResult;
 
 /***************************************************************************
@@ -33,9 +35,9 @@ import com.ai.commons.beans.ApiCallResult;
 @SuppressWarnings("rawtypes")
 public interface LTOrderDao {
 	
-	public ApiCallResult searchLTOrders(String compId, String orderStatus, Integer pageNumber, Integer pageSize, String direction) throws IOException;
+	public List<OrderSearchBean> searchLTOrders(String compId, String orderStatus, Integer pageNumber, Integer pageSize, String direction) throws IOException;
 	
-	public ApiCallResult findOrder(String orderId) throws IOException;
+	public OrderMaster findOrder(String orderId) throws IOException;
 	
 	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException;
 	

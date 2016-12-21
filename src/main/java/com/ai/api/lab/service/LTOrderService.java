@@ -7,8 +7,10 @@
 package com.ai.api.lab.service;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
 
@@ -35,9 +37,9 @@ import com.ai.commons.beans.ApiCallResult;
 @SuppressWarnings("rawtypes")
 public interface LTOrderService {
 
-	public ApiCallResult searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException;
+	public List<OrderSearchBean> searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException;
 	
-	public ApiCallResult findOrder(String orderId) throws IOException;
+	public OrderMaster findOrder(String orderId) throws IOException;
 	
 	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException;
 	
