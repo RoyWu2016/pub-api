@@ -7,7 +7,9 @@
 package com.ai.api.lab.service.impl;
 
 import java.io.IOException;
+import java.util.List;
 
+import com.ai.api.bean.OrderSearchBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +66,7 @@ public class LTOrderServiceImpl implements LTOrderService {
 	private UserService userService;
 
 	@Override
-	public ApiCallResult searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException {
+	public List<OrderSearchBean> searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException {
 		String companyId = "";
 		String parentId = "";
 		UserBean user = userService.getCustById(userId);
@@ -74,11 +76,15 @@ public class LTOrderServiceImpl implements LTOrderService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
+		if (null==companyId){
+		    logger.info("use incorrect userId["+userId+"] to search LT orders");
+			throw new AIException("incorrect userId");
+		}
 		return ltorderDao.searchLTOrders(companyId, orderStatus, pageSize, pageNumber, Sort.Direction.DESC.name().toLowerCase());
 	}
 	
 	@Override
-	public ApiCallResult findOrder(String orderId) throws IOException {
+	public OrderMaster findOrder(String orderId) throws IOException {
 		return ltorderDao.findOrder(orderId);
 	}
 
