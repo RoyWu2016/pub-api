@@ -58,7 +58,7 @@ public class ReportDaoImpl implements ReportDao {
 			logger.info("post !!! Url:" + url);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, certType);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				ApprovalCertificateBean bean = JSON.parseObject(result.getResponseString(), ApprovalCertificateBean.class);
+				ApprovalCertificateBean bean = (ApprovalCertificateBean)JSON.parseObject(result.getResponseString(), ApprovalCertificateBean.class);
 				String name = bean.getApprover().trim();
 				bean.setApprover(name);
 				return bean;
