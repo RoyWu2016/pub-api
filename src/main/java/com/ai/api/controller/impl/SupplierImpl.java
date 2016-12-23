@@ -146,16 +146,8 @@ public class SupplierImpl implements Supplier {
 	public ResponseEntity<ApiCallResult> deleteSuppliers(@PathVariable("userId") String userId,
 			@PathVariable("supplierIds") String supplierIds) throws IOException, AIException {
 		logger.info("deleting supplier for user: " + userId);
-		ApiCallResult callResult = new ApiCallResult();
-		if (factoryService.deleteSuppliers(supplierIds)) {
-			callResult.setMessage("success!");
-			callResult.setContent(true);
-			return new ResponseEntity<>(callResult, HttpStatus.OK);
-		} else {
-			callResult.setMessage("fail!");
-			callResult.setContent(false);
-			return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		ApiCallResult callResult = factoryService.deleteSuppliers(supplierIds);
+		return new ResponseEntity<>(callResult, HttpStatus.OK);
 	}
 
 	@Override
