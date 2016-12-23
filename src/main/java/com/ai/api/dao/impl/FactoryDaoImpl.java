@@ -169,18 +169,26 @@ public class FactoryDaoImpl implements FactoryDao {
 	}
 
 	@Override
-	public boolean deleteSuppliers(String supplierIds) throws IOException, AIException {
+	public ApiCallResult deleteSuppliers(String supplierIds) throws IOException, AIException {
 		String url = config.getFactoryServiceUrl() + "/deleteSupplier/" + supplierIds;
+		ApiCallResult finalResult = new ApiCallResult();
 		try {
 			ServiceCallResult result = HttpUtil.issueDeleteRequest(url, null);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-
-				return true;
+				finalResult.setContent(true);
+			}else {
+				if("false".equals(result.getReasonPhase())) {
+					finalResult.setContent(false);
+					finalResult.setMessage(supplierIds + " NOT_FOUND");
+				}else {
+					finalResult.setContent(false);
+					finalResult.setMessage("SUPPLIER_IN_USE");
+				}
 			}
 		} catch (IOException e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
-		return false;
+		return finalResult;
 	}
 
 	private ClientFactoryBean convertToClientFactoryBean(SupplierDetailBean supplierDetailBean) {
