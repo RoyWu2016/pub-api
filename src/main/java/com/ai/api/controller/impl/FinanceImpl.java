@@ -1,6 +1,7 @@
 package com.ai.api.controller.impl;
 
 import com.ai.api.bean.finance.NSCreditDebitMemo;
+import com.ai.api.bean.finance.NSInvoice;
 import com.ai.api.bean.finance.NSLog;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.Finance;
@@ -73,6 +74,31 @@ public class FinanceImpl implements Finance {
             logger.info("processCreditOrDebitMemos requesting: " + url.toString());
             ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, cndnMap);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                logger.info("processCreditOrDebitMemos done!");
+                callResult.setMessage(result.getResponseString());
+                return new ResponseEntity<>(callResult, HttpStatus.OK);
+            } else {
+                logger.error("finance-service failed : " + result.getStatusCode() + ", "+ result.getResponseString());
+                callResult.setMessage("failed! : [" + result.getStatusCode() + "] "+ result.getResponseString());
+            }
+        } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+            callResult.setMessage("Exception: " + e.toString());
+        }
+        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/finance/net-suite/invoice", method = RequestMethod.POST)
+    public ResponseEntity<ApiCallResult> processInvoice(Map<String, List<NSInvoice>> invMap){
+        StringBuilder url = new StringBuilder(config.getFinanceServiceBaseUrl()).append("/netsuite/invoice/save");
+        ApiCallResult callResult = new ApiCallResult();
+        try {
+            logger.info("processInvoice requesting: " + url.toString());
+            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, invMap);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                logger.info("processInvoice done!");
                 callResult.setMessage(result.getResponseString());
                 return new ResponseEntity<>(callResult, HttpStatus.OK);
             } else {
