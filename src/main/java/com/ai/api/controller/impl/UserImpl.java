@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSONArray;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,11 +93,10 @@ public class UserImpl implements User {
 			if (!refresh) {
 				cust = userService.getCustById(userId);
 			} else {
-				userService.removeUserProfileCache(userId);
-				cust = userService.getCustById(userId);
+				cust = userService.updateUserBeanInCache(userId);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("error in get/update user profile bean!" + ExceptionUtils.getStackTrace(e));
 		}
 		if (cust == null) {
 			logger.info("User with id " + userId + " not found");

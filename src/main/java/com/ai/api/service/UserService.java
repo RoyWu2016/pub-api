@@ -84,4 +84,5 @@ public interface UserService {
 
 	ServiceCallResult resetPassword(String login);
 
+	UserBean updateUserBeanInCache(final String userId);
 }
