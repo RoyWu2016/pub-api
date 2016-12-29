@@ -91,7 +91,7 @@ public class FinanceImpl implements Finance {
     @Override
     @TokenSecured
     @RequestMapping(value = "/finance/net-suite/invoice", method = RequestMethod.POST)
-    public ResponseEntity<ApiCallResult> processInvoice(Map<String, List<NSInvoice>> invMap){
+    public ResponseEntity<ApiCallResult> processInvoice(@RequestBody Map<String, List<NSInvoice>> invMap){
         StringBuilder url = new StringBuilder(config.getFinanceServiceBaseUrl()).append("/netsuite/invoice/save");
         ApiCallResult callResult = new ApiCallResult();
         try {
