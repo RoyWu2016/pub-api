@@ -63,6 +63,7 @@ public class ServiceConfig {
     private String programServiceBaseUrl;
 
 	private String financeServiceBaseUrl;
+	private String ipServiceBaseUrl;
     
     private String excleLoggoCommonSource;
     
@@ -253,6 +254,14 @@ public class ServiceConfig {
 		this.financeServiceBaseUrl = financeServiceBaseUrl;
 	}
 
+	public String getIpServiceBaseUrl() {
+		return ipServiceBaseUrl;
+	}
+
+	public void setIpServiceBaseUrl(String ipServiceBaseUrl) {
+		this.ipServiceBaseUrl = ipServiceBaseUrl;
+	}
+
 	@Override
 	public String toString() {
 		return "ServiceConfig{" +
@@ -273,7 +282,9 @@ public class ServiceConfig {
 				", aimsServiceBaseUrl='" + aimsServiceBaseUrl + '\'' +
 				", programServiceBaseUrl='" + programServiceBaseUrl + '\'' +
 				", financeServiceBaseUrl='" + financeServiceBaseUrl + '\'' +
+				", ipServiceBaseUrl='" + ipServiceBaseUrl + '\'' +
 				", excleLoggoCommonSource='" + excleLoggoCommonSource + '\'' +
+				", lotusApiUrl='" + lotusApiUrl + '\'' +
 				'}';
 	}
 }
