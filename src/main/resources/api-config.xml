@@ -46,6 +46,7 @@
           p:aimsServiceBaseUrl="${aims.service.base.lb.url}"
           p:programServiceBaseUrl="${program.service.base.lb.url}"
           p:financeServiceBaseUrl="${finance.service.base.lb.url}"
+          p:ipServiceBaseUrl="${ip.service.base.lb.url}"
           p:excleLoggoCommonSource="${resource.share.folder}"
           p:lotusApiUrl="${lotus.api.url}"/>
 
