@@ -78,7 +78,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 			orderSearch.setServiceType("LT");
 			orderSearch.setServiceTypeText("LT");
 			orderSearch.setPoNumbers(order.getClientPONo());
-			orderSearch.setStatus(order.getOrderStatus());
+			orderSearch.setStatus(order.getStatusCode());
 			orderSearch.setStatusText(order.getOrderStatus());
 			orderSearch.setBookingDate("Pending".equalsIgnoreCase(order.getOrderStatus())
 					? DateUtils.formatDate(order.getUpdateTime(), "MM/dd/yyyy") : null);
@@ -95,7 +95,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 				.queryParam("size", pageSize).queryParam("direction", direction);
 
 		if (!StringUtils.stripToEmpty(orderStatus).trim().isEmpty())
-			builder.queryParam("orderStatus", orderStatus.trim());
+			builder.queryParam("statusCode", orderStatus.trim());
 
 		if (!StringUtils.stripToEmpty(compId).trim().isEmpty())
 			builder.queryParam("clientId", compId.trim());
