@@ -1,5 +1,6 @@
 package com.ai.api.dao.impl;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +24,8 @@ import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.payment.GlobalPaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import com.ai.commons.beans.psi.OrderPayRecordBean;
+import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -40,59 +43,62 @@ public class PaymentDaoImpl implements PaymentDao {
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
 
-//	@Override
-//	public InputStream downloadProformaInvoicePDF(String login, String invoiceId) {
-//		String url = config.getMwServiceUrl() + "/service/payment/proformaInvoicePDF?login=" + login + "&invoiceId="
-//				+ invoiceId;
-//		try {
-//			GetRequest request = GetRequest.newInstance().setUrl(url);
-//			logger.info("get!!! Url:" + url);
-//			ServiceCallResult result = HttpUtil.issueGetRequest(request);
-//			logger.info("get done!");
-//			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-//				logger.info("get OK!");
-//				String remotePath = "/CACHE/";
-//				String fileName = result.getResponseString();
-//				// String host = config.getMwFTPHost();
-//				String host = "";
-//				int port = 21;
-//				String username = "";
-//				String password = "";
-//				// String username = config.getMwFTPUsername();
-//				// String password = config.getMwFTPPassword();
-//				String tempPath = "/tmp";
-//				logger.info(remotePath);
-//				logger.info(fileName);
-//				logger.info(host + ":" + port);
-//				logger.info(username + " || " + password);
-//				logger.info(tempPath);
-//				boolean b = FTPUtil.downloadFile(host, port, username, password, remotePath, fileName, tempPath);
-//				if (b) {
-//					logger.info("success downloadFile to /tmp ");
-//					File tempFile = new File(tempPath + fileName);
-//					InputStream inputStream = new FileInputStream(tempFile);
-//					return inputStream;
-//				} else {
-//					logger.error("ERROR! fail to download PDF from FTP server. ");
-//					return null;
-//				}
-//			} else {
-//				logger.error("downloadProformaInvoicePDF from middleware error: " + result.getStatusCode() + ", "
-//						+ result.getResponseString());
-//				return null;
-//			}
-//		} catch (Exception e) {
-//			logger.error(ExceptionUtils.getStackTrace(e));
-//			return null;
-//		}
-//	}
+	// @Override
+	// public InputStream downloadProformaInvoicePDF(String login, String
+	// invoiceId) {
+	// String url = config.getMwServiceUrl() +
+	// "/service/payment/proformaInvoicePDF?login=" + login + "&invoiceId="
+	// + invoiceId;
+	// try {
+	// GetRequest request = GetRequest.newInstance().setUrl(url);
+	// logger.info("get!!! Url:" + url);
+	// ServiceCallResult result = HttpUtil.issueGetRequest(request);
+	// logger.info("get done!");
+	// if (result.getStatusCode() == HttpStatus.OK.value() &&
+	// result.getReasonPhase().equalsIgnoreCase("OK")) {
+	// logger.info("get OK!");
+	// String remotePath = "/CACHE/";
+	// String fileName = result.getResponseString();
+	// // String host = config.getMwFTPHost();
+	// String host = "";
+	// int port = 21;
+	// String username = "";
+	// String password = "";
+	// // String username = config.getMwFTPUsername();
+	// // String password = config.getMwFTPPassword();
+	// String tempPath = "/tmp";
+	// logger.info(remotePath);
+	// logger.info(fileName);
+	// logger.info(host + ":" + port);
+	// logger.info(username + " || " + password);
+	// logger.info(tempPath);
+	// boolean b = FTPUtil.downloadFile(host, port, username, password,
+	// remotePath, fileName, tempPath);
+	// if (b) {
+	// logger.info("success downloadFile to /tmp ");
+	// File tempFile = new File(tempPath + fileName);
+	// InputStream inputStream = new FileInputStream(tempFile);
+	// return inputStream;
+	// } else {
+	// logger.error("ERROR! fail to download PDF from FTP server. ");
+	// return null;
+	// }
+	// } else {
+	// logger.error("downloadProformaInvoicePDF from middleware error: " +
+	// result.getStatusCode() + ", "
+	// + result.getResponseString());
+	// return null;
+	// }
+	// } catch (Exception e) {
+	// logger.error(ExceptionUtils.getStackTrace(e));
+	// return null;
+	// }
+	// }
 
 	@Override
 	public ApiCallResult markAsPaid(String userId, String parentId, String companyId, PaymentPaidBean orders) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/payment/api/mark-order-paid");
-		url.append("?userId=" + userId)
-		.append("&companyId=" + companyId)
-		.append("&parentId=" + parentId);
+		url.append("?userId=" + userId).append("&companyId=" + companyId).append("&parentId=" + parentId);
 		ApiCallResult temp = new ApiCallResult();
 		try {
 			logger.info("requesting: " + url.toString());
@@ -112,7 +118,7 @@ public class PaymentDaoImpl implements PaymentDao {
 		}
 		return temp;
 	}
-	
+
 	@Override
 	public PageBean<PaymentSearchResultBean> searchPaymentList(PageParamBean criteria, String userId, String parentId,
 			String companyId, String paid) {
@@ -136,7 +142,7 @@ public class PaymentDaoImpl implements PaymentDao {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public ApiCallResult generateGlobalPayment(String userId, String parentId, String companyId, String paymentType,
 			String orderIds) {
@@ -150,8 +156,8 @@ public class PaymentDaoImpl implements PaymentDao {
 			List<String> list = Arrays.asList(tempStr);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, list);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				temp.setContent(JsonUtil.mapToObject(result.getResponseString(),
-						new TypeReference<List<PaymentInfoBean>>() {
+				temp.setContent(
+						JsonUtil.mapToObject(result.getResponseString(), new TypeReference<List<PaymentInfoBean>>() {
 						}));
 				return temp;
 			} else {
@@ -166,5 +172,33 @@ public class PaymentDaoImpl implements PaymentDao {
 		}
 		return temp;
 	}
-	
+
+	@Override
+	public ApiCallResult findPaymentMarkAsPaidByUserId(String userId) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(
+				config.getPsiServiceUrl() + "/payment/api/find-history-by-userid?userId=" + userId);
+		logger.info("Requesting url: " + url.toString());
+		ApiCallResult temp = new ApiCallResult();
+		try {
+			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				List<OrderPayRecordBean> list = JsonUtil.mapToObject(result.getResponseString(),
+						new TypeReference<List<OrderPayRecordBean>>() {
+						});
+				temp.setContent(list);
+			} else {
+				logger.error("Get error from psi service payment-history: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+				temp.setMessage("Get error from psi service payment-history: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			temp.setMessage("Exception: " + e.toString());
+		}
+		return temp;
+	}
+
 }

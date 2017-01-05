@@ -1,10 +1,12 @@
 package com.ai.api.dao;
 
+import java.util.List;
+
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
-
+import com.ai.commons.beans.psi.OrderPayRecordBean;
 import com.ai.commons.beans.payment.PaymentPaidBean;
 
 /**
@@ -12,7 +14,7 @@ import com.ai.commons.beans.payment.PaymentPaidBean;
  * 2016/8/12 16:04 Author : Jianxiong.Cai Purpose : TODO History : TODO
  */
 public interface PaymentDao {
-//	InputStream downloadProformaInvoicePDF(String login, String invoiceId);
+	// InputStream downloadProformaInvoicePDF(String login, String invoiceId);
 
 	ApiCallResult markAsPaid(String userId, String parentId, String companyId, PaymentPaidBean orders);
 
@@ -21,5 +23,7 @@ public interface PaymentDao {
 
 	ApiCallResult generateGlobalPayment(String userId, String parentId, String companyId, String paymentType,
 			String orderIds);
+
+	ApiCallResult findPaymentMarkAsPaidByUserId(String userId);
 
 }
