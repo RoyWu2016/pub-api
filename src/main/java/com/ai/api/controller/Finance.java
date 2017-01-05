@@ -1,12 +1,7 @@
 package com.ai.api.controller;
 
-import com.ai.api.bean.finance.NSCreditDebitMemo;
-import com.ai.api.bean.finance.NSLog;
 import com.ai.commons.beans.ApiCallResult;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Project Name    : Public-API
@@ -18,7 +13,9 @@ import java.util.Map;
  */
 public interface Finance {
 
-    ResponseEntity<ApiCallResult> processNSLog(List<NSLog> nsLogs);
+    ResponseEntity<ApiCallResult> processNSLog(String nsLogs);
 
-    ResponseEntity<ApiCallResult> processCreditOrDebitMemos(Map<String, List<NSCreditDebitMemo>> cndnMap);
+    ResponseEntity<ApiCallResult> processCreditOrDebitMemos(String cndnMap);
+
+    ResponseEntity<ApiCallResult> processInvoice(String invMap);
 }

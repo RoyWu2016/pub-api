@@ -1,13 +1,11 @@
 package com.ai.api.controller.impl;
 
-import com.ai.api.bean.finance.NSCreditDebitMemo;
-import com.ai.api.bean.finance.NSLog;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.Finance;
-import com.ai.commons.HttpUtil;
+import com.ai.commons.HttpUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.helpers.http.beans.ServiceResponse;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Project Name    : Public-API
@@ -43,12 +38,12 @@ public class FinanceImpl implements Finance {
     @Override
     @TokenSecured
     @RequestMapping(value = "/finance/net-suite/logs", method = RequestMethod.POST)
-    public ResponseEntity<ApiCallResult> processNSLog(@RequestBody List<NSLog> nsLogs) {
+    public ResponseEntity<ApiCallResult> processNSLog(@RequestBody String nsLogs) {
         StringBuilder url = new StringBuilder(config.getFinanceServiceBaseUrl()).append("/netsuite/interface/log/save");
         ApiCallResult callResult = new ApiCallResult();
         try {
             logger.info("processNSLog requesting: " + url.toString());
-            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, nsLogs);
+            ServiceResponse result = HttpUtils.postJson(url.toString(),null,nsLogs);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setMessage(result.getResponseString());
                 return new ResponseEntity<>(callResult, HttpStatus.OK);
@@ -66,13 +61,38 @@ public class FinanceImpl implements Finance {
     @Override
     @TokenSecured
     @RequestMapping(value = "/finance/net-suite/memo", method = RequestMethod.POST)
-    public ResponseEntity<ApiCallResult> processCreditOrDebitMemos(@RequestBody Map<String, List<NSCreditDebitMemo>> cndnMap) {
+    public ResponseEntity<ApiCallResult> processCreditOrDebitMemos(@RequestBody String cndnMap) {
         StringBuilder url = new StringBuilder(config.getFinanceServiceBaseUrl()).append("/netsuite/cndn/save");
         ApiCallResult callResult = new ApiCallResult();
         try {
             logger.info("processCreditOrDebitMemos requesting: " + url.toString());
-            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, cndnMap);
+            ServiceResponse result = HttpUtils.postJson(url.toString(),null,cndnMap);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                logger.info("processCreditOrDebitMemos done!");
+                callResult.setMessage(result.getResponseString());
+                return new ResponseEntity<>(callResult, HttpStatus.OK);
+            } else {
+                logger.error("finance-service failed : " + result.getStatusCode() + ", "+ result.getResponseString());
+                callResult.setMessage("failed! : [" + result.getStatusCode() + "] "+ result.getResponseString());
+            }
+        } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+            callResult.setMessage("Exception: " + e.toString());
+        }
+        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/finance/net-suite/invoice", method = RequestMethod.POST)
+    public ResponseEntity<ApiCallResult> processInvoice(@RequestBody String invMap){
+        StringBuilder url = new StringBuilder(config.getFinanceServiceBaseUrl()).append("/netsuite/invoice/save");
+        ApiCallResult callResult = new ApiCallResult();
+        try {
+            logger.info("processInvoice requesting: " + url.toString());
+            ServiceResponse result = HttpUtils.postJson(url.toString(),null,invMap);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                logger.info("processInvoice done!");
                 callResult.setMessage(result.getResponseString());
                 return new ResponseEntity<>(callResult, HttpStatus.OK);
             } else {
