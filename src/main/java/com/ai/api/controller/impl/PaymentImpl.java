@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +24,9 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
-import com.ai.commons.beans.payment.PaymentSearchResultBean;
-import com.ai.commons.beans.payment.api.PaymentActionLogBean;
-import com.ai.commons.beans.payment.api.PaypalInfoBean;
-
 import com.ai.commons.beans.payment.PaymentPaidBean;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import com.ai.commons.beans.psi.OrderPayRecordBean;
 
 /***************************************************************************
  * <PRE>
@@ -89,7 +85,8 @@ public class PaymentImpl implements Payment {
 		criteriaBean.setPageNo(page);
 		criteriaBean.setPageSize(pagesize);
 		try {
-			PageBean<PaymentSearchResultBean> result = paymentService.searchPaymentList(criteriaBean, userId, paid?"yes":"no");
+			PageBean<PaymentSearchResultBean> result = paymentService.searchPaymentList(criteriaBean, userId,
+					paid ? "yes" : "no");
 			if (null != result) {
 				return new ResponseEntity<>(result, HttpStatus.OK);
 			}
@@ -200,6 +197,27 @@ public class PaymentImpl implements Payment {
 		} else {
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/payment-history", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> findPaymentMarkAsPaidByUserId(@PathVariable("userId") String userId) {
+		logger.info("invoke: " + "/user/" + userId + "/payment-history");
+		ApiCallResult result = new ApiCallResult();
+		try {
+			result = paymentService.findPaymentMarkAsPaidByUserId(userId);
+			if (null == result.getMessage()) {
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result.setMessage("Unknow Error: " + e.toString());
+		}
+		return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	// @Override
