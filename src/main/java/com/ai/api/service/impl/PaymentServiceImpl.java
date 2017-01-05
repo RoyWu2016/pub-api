@@ -23,7 +23,7 @@ import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
 import com.ai.commons.beans.payment.api.PaypalInfoBean;
-
+import com.ai.commons.beans.psi.OrderPayRecordBean;
 import com.ai.commons.beans.payment.PaymentPaidBean;
 
 /**
@@ -118,5 +118,11 @@ public class PaymentServiceImpl implements PaymentService {
 			e.printStackTrace();
 		} 
 		return paymentDao.markAsPaid(userId, parentId, companyId,orders);
+	}
+
+	@Override
+	public ApiCallResult findPaymentMarkAsPaidByUserId(String userId) {
+		// TODO Auto-generated method stub
+		return paymentDao.findPaymentMarkAsPaidByUserId(userId);
 	}
 }
