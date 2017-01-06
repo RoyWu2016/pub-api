@@ -243,7 +243,7 @@ public class UserServiceImpl implements UserService {
 		SuperMasterBean superMaster = new SuperMasterBean();
 		List<MasterCompanyBean> masterCompanies = new ArrayList<MasterCompanyBean>();
 		if (StringUtils.isTrue(masterBean.getIsSuperMaster())) {
-			superMaster.setIsSupperMaster(true);
+			superMaster.setSuperMaster(true);
 			List<ClientInfoWithTokenBean> beans = companyDao.getMasterAccountTokens(companyEntireBean.getCompanyId(),
 					false, false);
 			for (ClientInfoWithTokenBean each : beans) {
@@ -257,7 +257,7 @@ public class UserServiceImpl implements UserService {
 				masterCompanies.add(bean);
 			}
 		} else {
-			superMaster.setIsSupperMaster(false);
+			superMaster.setSuperMaster(false);
 		}
 		superMaster.setMasterCompanies(masterCompanies);
 		finalBeam.setSuperMaster(superMaster);
