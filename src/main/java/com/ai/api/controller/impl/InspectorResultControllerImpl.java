@@ -57,87 +57,6 @@ public class InspectorResultControllerImpl implements InspectorResultController 
     @Autowired
     private ServiceConfig serviceConfig;
 
-    @Override
-    @RequestMapping(value = "/results/{productId}", method = RequestMethod.POST)
-    public ResponseEntity<ApiCallResult> saveResult(@PathVariable("productId") String productId,
-                                                    @RequestBody InspResultForm aiResultForm,
-                                                    @RequestParam(value="username", required=false)  String username) {
-        ApiCallResult callResult = new ApiCallResult();
-//        StringBuilder url = new StringBuilder("http://127.0.0.1:8888")
-        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
-                .append("/results/save/").append(productId);
-        if (StringUtils.isNotBlank(username)){
-            url.append("?username=").append(username);
-        }
-        try {
-            logger.info("saveResult requesting: " + url.toString());
-            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,aiResultForm);
-            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                callResult.setContent(result.getResponseString());
-                return new ResponseEntity<>(callResult, HttpStatus.OK);
-            }else {
-                callResult.setMessage(result.getResponseString());
-            }
-        } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-            callResult.setMessage("Exception: " + e.toString());
-        }
-        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @Override
-    @RequestMapping(value = "/results/{productId}", method = RequestMethod.PUT)
-    public ResponseEntity<ApiCallResult> updateResult(@PathVariable("productId") String productId,
-                                                    @RequestBody InspResultForm aiResultForm,
-                                                    @RequestParam(value="username", required=false)  String username) {
-        ApiCallResult callResult = new ApiCallResult();
-        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
-                .append("/results/save/").append(productId);
-        if (StringUtils.isNotBlank(username)){
-            url.append("?username=").append(username);
-        }
-        try {
-            logger.info("updateResult requesting: " + url.toString());
-            ServiceCallResult result = HttpUtil.issuePutRequest(url.toString(),null,aiResultForm);
-            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                callResult.setContent(result.getResponseString());
-                return new ResponseEntity<>(callResult, HttpStatus.OK);
-            }else {
-                callResult.setMessage(result.getResponseString());
-            }
-        } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-            callResult.setMessage("Exception: " + e.toString());
-        }
-        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @Override
-    @RequestMapping(value = "/results/userData/{productId}", method = RequestMethod.POST)
-    public ResponseEntity<ApiCallResult> saveUserData(@PathVariable("productId") String productId,
-                                                    @RequestBody InspResultForm aiResultForm,
-                                                    @RequestParam(value="username", required=false)  String username) {
-        ApiCallResult callResult = new ApiCallResult();
-        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
-                .append("/results/saveUserData/").append(productId);
-        if (StringUtils.isNotBlank(username)){
-            url.append("?username=").append(username);
-        }
-        try {
-            logger.info("saveUserData requesting: " + url.toString());
-            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,aiResultForm);
-            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                callResult.setContent(result.getResponseString());
-                return new ResponseEntity<>(callResult, HttpStatus.OK);
-            }else {
-                callResult.setMessage(result.getResponseString());
-            }
-        } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-            callResult.setMessage("Exception: " + e.toString());
-        }
-        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 
     @Override
     @RequestMapping(value = "/results/{orderId}/{reportType}", method = RequestMethod.GET)
@@ -160,7 +79,6 @@ public class InspectorResultControllerImpl implements InspectorResultController 
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
     @Override
     @RequestMapping(value = "/results/product/{productId}/{reportType}", method = RequestMethod.GET)
     public ResponseEntity<ApiCallResult> searchByProductId(@PathVariable("productId") String productId,@PathVariable("reportType") String reportType ) {
@@ -169,28 +87,6 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                 .append("/list-insp-result/product/").append(productId).append("/").append(reportType);
         try {
             logger.info("searchByProductId requesting: " + url.toString());
-            ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(),null);
-            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                callResult.setContent(result.getResponseString());
-                return new ResponseEntity<>(callResult, HttpStatus.OK);
-            }else {
-                callResult.setMessage(result.getResponseString());
-            }
-        } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-            callResult.setMessage("Exception: " + e.toString());
-        }
-        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @Override
-    @RequestMapping(value = "/results/product/{productId}", method = RequestMethod.GET)
-    public ResponseEntity<ApiCallResult> searchByProductId(@PathVariable("productId") String productId) {
-        ApiCallResult callResult = new ApiCallResult();
-        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
-                .append("/map-list-insp-result/product/").append(productId);
-        try {
-            logger.info("searchByProductId  requesting: " + url.toString());
             ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(),null);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setContent(result.getResponseString());
@@ -253,13 +149,116 @@ public class InspectorResultControllerImpl implements InspectorResultController 
 
     @Override
     @RequestMapping(value = "/supervisor/product/{productId}", method = RequestMethod.GET)
-    public ResponseEntity<ApiCallResult> getAllIpSupervisorData(@PathVariable("productId") String productId) {
+    public ResponseEntity<ApiCallResult> getSupervisorData(@PathVariable("productId") String productId) {
         ApiCallResult callResult = new ApiCallResult();
         StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
-                .append("/map-list-ipsupervisor-result/product/").append(productId);
+                .append("/report-supervisor/product/").append(productId);
         try {
-            logger.info("getAllIpSupervisorData  requesting: " + url.toString());
+            logger.info("getSupervisorData  requesting: " + url.toString());
             ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(),null);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                callResult.setContent(result.getResponseString());
+                return new ResponseEntity<>(callResult, HttpStatus.OK);
+            }else {
+                callResult.setMessage(result.getResponseString());
+            }
+        } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+            callResult.setMessage("Exception: " + e.toString());
+        }
+        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    @RequestMapping(value = "/protocol-supervisor/product/{productId}", method = RequestMethod.GET)
+    public ResponseEntity<ApiCallResult> getProtocolSupervisorData(@PathVariable("productId") String productId) {
+        ApiCallResult callResult = new ApiCallResult();
+        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
+                .append("/protocol-supervisor/product/").append(productId);
+        try {
+            logger.info("getProtocolSupervisorData  requesting: " + url.toString());
+            ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(),null);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                callResult.setContent(result.getResponseString());
+                return new ResponseEntity<>(callResult, HttpStatus.OK);
+            }else {
+                callResult.setMessage(result.getResponseString());
+            }
+        } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+            callResult.setMessage("Exception: " + e.toString());
+        }
+        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    @RequestMapping(value = "/results/uploadMapWithFileids/{sourceId}", method = RequestMethod.POST)
+    public ResponseEntity<ApiCallResult> createMapWithFileids(@PathVariable("sourceId") String sourceId,
+                                                              @RequestParam(value="username", required=false)  String username,
+                                                              @RequestBody String map,HttpServletRequest request) {
+        ApiCallResult callResult = new ApiCallResult();
+        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
+                .append("/results/").append(sourceId).append("uploadMapWithFileids");
+        if (StringUtils.isNotBlank(username)){
+            url.append("?username=").append(username);
+        }
+        try {
+            logger.info("createMapWithFileids requesting: " + url.toString());
+            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,map);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                callResult.setContent(result.getResponseString());
+                return new ResponseEntity<>(callResult, HttpStatus.OK);
+            }else {
+                callResult.setMessage(result.getResponseString());
+            }
+        } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+            callResult.setMessage("Exception: " + e.toString());
+        }
+        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    @RequestMapping(value = "/results/uploadMapWithFileids/{sourceId}", method = RequestMethod.POST)
+    public ResponseEntity<ApiCallResult> approveReport(@PathVariable("sourceId") String sourceId,
+                                                              @RequestParam(value="username", required=false)  String username,
+                                                              @RequestBody String map,HttpServletRequest request) {
+        ApiCallResult callResult = new ApiCallResult();
+        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
+                .append("/results/").append(sourceId).append("updateDataWithFileids");
+        if (StringUtils.isNotBlank(username)){
+            url.append("?username=").append(username);
+        }
+        try {
+            logger.info("approveReport requesting: " + url.toString());
+            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,map);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                callResult.setContent(result.getResponseString());
+                return new ResponseEntity<>(callResult, HttpStatus.OK);
+            }else {
+                callResult.setMessage(result.getResponseString());
+            }
+        } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+            callResult.setMessage("Exception: " + e.toString());
+        }
+        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    @RequestMapping(value = "/results/protocolSupervisorData/{sourceId}", method = RequestMethod.POST)
+    public ResponseEntity<ApiCallResult> saveProtocolSupervisorData(@PathVariable("sourceId") String sourceId,
+                                                       @RequestParam(value="username", required=false)  String username,
+                                                       @RequestBody String map,HttpServletRequest request) {
+        ApiCallResult callResult = new ApiCallResult();
+        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
+                .append("/results/").append(sourceId).append("saveProtocolSupervisorData");
+        if (StringUtils.isNotBlank(username)){
+            url.append("?username=").append(username);
+        }
+        try {
+            logger.info("saveProtocolSupervisorData requesting: " + url.toString());
+            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,map);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setContent(result.getResponseString());
                 return new ResponseEntity<>(callResult, HttpStatus.OK);
@@ -336,68 +335,6 @@ public class InspectorResultControllerImpl implements InspectorResultController 
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    @Override
-    @RequestMapping(value = "/results/file-uploads/{sourceId}", method = RequestMethod.POST)
-    public ResponseEntity<ApiCallResult> uploadFileWithCaption(@PathVariable("sourceId") String sourceId,
-                                                               @RequestParam(value="username", required=false) String username,
-                                                               @RequestBody Map<String,List<offlineVM>> map) {
-        ApiCallResult callResult = new ApiCallResult();
-        List<File> tobeDeleted = new ArrayList<File>();
-        Map<String, List<FileMetaBean>> fileMetaList = new HashMap<String, List<FileMetaBean>>();
-        try {
-            for (String key : map.keySet()) {
-                String[] keys = key.split("@");
-                String fileType = "";
-                if (keys[1].equals("Upload_Product_Image")) {
-                    fileType = FileType.PROD_REPORT_PICTURE.getType();
-                } else {
-                    fileType = FileType.INSP_RESULT_FILE.getType();
-                }
-                List<offlineVM> value = map.get(key);
-                if (value != null) {
-                    List<FileMetaBean> beanList = new ArrayList<FileMetaBean>();
-                    for (offlineVM element : value) {
-                        String[] base64 = element.getData().split(",");
-                        String sourceData = base64[1];
-
-                        try {
-                            byte[] imageByteArray = decodeImage(sourceData);
-                            File tempDir = new File(myFileService.getFileService().getLocalTempDir() + sourceId);
-                            if (!tempDir.exists()) {
-                                tempDir.mkdir();
-                            }
-                            String filePath = element.getFilename();
-                            FileOutputStream imageOutFile = new FileOutputStream(tempDir + "/" + filePath);
-                            File files = new File(tempDir + "/" + filePath);
-                            imageOutFile.write(imageByteArray);
-                            imageOutFile.close();
-                            tobeDeleted.add(files);
-                            FileMetaBean ftb = myFileService.getFileService().upload(sourceId, fileType, "insp-result-file", username, element.getCaption(), files);
-                            beanList.add(ftb);
-                        } catch (FileNotFoundException e) {
-                            logger.error("Uploading Failed  e " + e);
-                        } catch (IOException ioe) {
-                            logger.error("Uploading Failed  ioe " + ioe);
-                        }
-                    }
-                    fileMetaList.put(key, beanList);
-                    for (File f : tobeDeleted) {
-                        if (f.exists()) {
-                            f.delete();
-                        }
-                    }
-                }
-            }
-            callResult.setContent(fileMetaList);
-            return new ResponseEntity<>(callResult,HttpStatus.OK);
-        }catch (Exception e){
-            logger.error("Error exception!",e);
-            callResult.setMessage("Error exception!"+e);
-        }
-        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     @Override
     @RequestMapping(value = "/results/file/{fileIds}", method = RequestMethod.GET)
     public @ResponseBody void getFile(@PathVariable("fileIds") String fileIds,HttpServletResponse response) throws IOException {
@@ -482,58 +419,247 @@ public class InspectorResultControllerImpl implements InspectorResultController 
     }
 
 
+//    @Override
+//    @RequestMapping(value = "/results/{productId}", method = RequestMethod.POST)
+//    public ResponseEntity<ApiCallResult> saveResult(@PathVariable("productId") String productId,
+//                                                    @RequestBody InspResultForm aiResultForm,
+//                                                    @RequestParam(value="username", required=false)  String username) {
+//        ApiCallResult callResult = new ApiCallResult();
+////        StringBuilder url = new StringBuilder("http://127.0.0.1:8888")
+//        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
+//                .append("/results/save/").append(productId);
+//        if (StringUtils.isNotBlank(username)){
+//            url.append("?username=").append(username);
+//        }
+//        try {
+//            logger.info("saveResult requesting: " + url.toString());
+//            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,aiResultForm);
+//            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+//                callResult.setContent(result.getResponseString());
+//                return new ResponseEntity<>(callResult, HttpStatus.OK);
+//            }else {
+//                callResult.setMessage(result.getResponseString());
+//            }
+//        } catch (Exception e) {
+//            logger.error(ExceptionUtils.getStackTrace(e));
+//            callResult.setMessage("Exception: " + e.toString());
+//        }
+//        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+//
+//    @Override
+//    @RequestMapping(value = "/results/{productId}", method = RequestMethod.PUT)
+//    public ResponseEntity<ApiCallResult> updateResult(@PathVariable("productId") String productId,
+//                                                    @RequestBody InspResultForm aiResultForm,
+//                                                    @RequestParam(value="username", required=false)  String username) {
+//        ApiCallResult callResult = new ApiCallResult();
+//        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
+//                .append("/results/save/").append(productId);
+//        if (StringUtils.isNotBlank(username)){
+//            url.append("?username=").append(username);
+//        }
+//        try {
+//            logger.info("updateResult requesting: " + url.toString());
+//            ServiceCallResult result = HttpUtil.issuePutRequest(url.toString(),null,aiResultForm);
+//            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+//                callResult.setContent(result.getResponseString());
+//                return new ResponseEntity<>(callResult, HttpStatus.OK);
+//            }else {
+//                callResult.setMessage(result.getResponseString());
+//            }
+//        } catch (Exception e) {
+//            logger.error(ExceptionUtils.getStackTrace(e));
+//            callResult.setMessage("Exception: " + e.toString());
+//        }
+//        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+//
+//    @Override
+//    @RequestMapping(value = "/results/userData/{productId}", method = RequestMethod.POST)
+//    public ResponseEntity<ApiCallResult> saveUserData(@PathVariable("productId") String productId,
+//                                                    @RequestBody InspResultForm aiResultForm,
+//                                                    @RequestParam(value="username", required=false)  String username) {
+//        ApiCallResult callResult = new ApiCallResult();
+//        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
+//                .append("/results/saveUserData/").append(productId);
+//        if (StringUtils.isNotBlank(username)){
+//            url.append("?username=").append(username);
+//        }
+//        try {
+//            logger.info("saveUserData requesting: " + url.toString());
+//            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,aiResultForm);
+//            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+//                callResult.setContent(result.getResponseString());
+//                return new ResponseEntity<>(callResult, HttpStatus.OK);
+//            }else {
+//                callResult.setMessage(result.getResponseString());
+//            }
+//        } catch (Exception e) {
+//            logger.error(ExceptionUtils.getStackTrace(e));
+//            callResult.setMessage("Exception: " + e.toString());
+//        }
+//        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+//
+//    @Override
+//    @RequestMapping(value = "/results/product/{productId}", method = RequestMethod.GET)
+//    public ResponseEntity<ApiCallResult> searchByProductId(@PathVariable("productId") String productId) {
+//        ApiCallResult callResult = new ApiCallResult();
+//        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
+//                .append("/map-list-insp-result/product/").append(productId);
+//        try {
+//            logger.info("searchByProductId  requesting: " + url.toString());
+//            ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(),null);
+//            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+//                callResult.setContent(result.getResponseString());
+//                return new ResponseEntity<>(callResult, HttpStatus.OK);
+//            }else {
+//                callResult.setMessage(result.getResponseString());
+//            }
+//        } catch (Exception e) {
+//            logger.error(ExceptionUtils.getStackTrace(e));
+//            callResult.setMessage("Exception: " + e.toString());
+//        }
+//        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+//
+//    @Override
+//    @RequestMapping(value = "/supervisor/product/{productId}", method = RequestMethod.GET)
+//    public ResponseEntity<ApiCallResult> getAllIpSupervisorData(@PathVariable("productId") String productId) {
+//        ApiCallResult callResult = new ApiCallResult();
+//        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
+//                .append("/map-list-ipsupervisor-result/product/").append(productId);
+//        try {
+//            logger.info("getAllIpSupervisorData  requesting: " + url.toString());
+//            ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(),null);
+//            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+//                callResult.setContent(result.getResponseString());
+//                return new ResponseEntity<>(callResult, HttpStatus.OK);
+//            }else {
+//                callResult.setMessage(result.getResponseString());
+//            }
+//        } catch (Exception e) {
+//            logger.error(ExceptionUtils.getStackTrace(e));
+//            callResult.setMessage("Exception: " + e.toString());
+//        }
+//        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class offlineVM implements Serializable {
+//    @Override
+//    @RequestMapping(value = "/results/file-uploads/{sourceId}", method = RequestMethod.POST)
+//    public ResponseEntity<ApiCallResult> uploadFileWithCaption(@PathVariable("sourceId") String sourceId,
+//                                                               @RequestParam(value="username", required=false) String username,
+//                                                               @RequestBody Map<String,List<offlineVM>> map) {
+//        ApiCallResult callResult = new ApiCallResult();
+//        List<File> tobeDeleted = new ArrayList<File>();
+//        Map<String, List<FileMetaBean>> fileMetaList = new HashMap<String, List<FileMetaBean>>();
+//        try {
+//            for (String key : map.keySet()) {
+//                String[] keys = key.split("@");
+//                String fileType = "";
+//                if (keys[1].equals("Upload_Product_Image")) {
+//                    fileType = FileType.PROD_REPORT_PICTURE.getType();
+//                } else {
+//                    fileType = FileType.INSP_RESULT_FILE.getType();
+//                }
+//                List<offlineVM> value = map.get(key);
+//                if (value != null) {
+//                    List<FileMetaBean> beanList = new ArrayList<FileMetaBean>();
+//                    for (offlineVM element : value) {
+//                        String[] base64 = element.getData().split(",");
+//                        String sourceData = base64[1];
+//
+//                        try {
+//                            byte[] imageByteArray = decodeImage(sourceData);
+//                            File tempDir = new File(myFileService.getFileService().getLocalTempDir() + sourceId);
+//                            if (!tempDir.exists()) {
+//                                tempDir.mkdir();
+//                            }
+//                            String filePath = element.getFilename();
+//                            FileOutputStream imageOutFile = new FileOutputStream(tempDir + "/" + filePath);
+//                            File files = new File(tempDir + "/" + filePath);
+//                            imageOutFile.write(imageByteArray);
+//                            imageOutFile.close();
+//                            tobeDeleted.add(files);
+//                            FileMetaBean ftb = myFileService.getFileService().upload(sourceId, fileType, "insp-result-file", username, element.getCaption(), files);
+//                            beanList.add(ftb);
+//                        } catch (FileNotFoundException e) {
+//                            logger.error("Uploading Failed  e " + e);
+//                        } catch (IOException ioe) {
+//                            logger.error("Uploading Failed  ioe " + ioe);
+//                        }
+//                    }
+//                    fileMetaList.put(key, beanList);
+//                    for (File f : tobeDeleted) {
+//                        if (f.exists()) {
+//                            f.delete();
+//                        }
+//                    }
+//                }
+//            }
+//            callResult.setContent(fileMetaList);
+//            return new ResponseEntity<>(callResult,HttpStatus.OK);
+//        }catch (Exception e){
+//            logger.error("Error exception!",e);
+//            callResult.setMessage("Error exception!"+e);
+//        }
+//        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
-        private static final long serialVersionUID = 511137310600169111L;
-
-        private String id;
-        private String caption;
-        private String data;
-        private String filename;
-
-        public offlineVM() {
-        }
-        public String getId() {
-            return id;
-        }
-        public void setId(String id) {
-            this.id = id;
-        }
-        public String getCaption() {
-            return caption;
-        }
-        public void setCaption(String caption) {
-            this.caption = caption;
-        }
-        public String getData() {
-            return data;
-        }
-        public void setData(String data) {
-            this.data = data;
-        }
-        public String getFilename() {
-            return filename;
-        }
-        public void setFilename(String filename) {
-            this.filename = filename;
-        }
-
-        @Override
-        public String toString() {
-            return "InspResultForm [id=" + id + ", caption="
-                    + caption + ", data=" + data + ", filename=" + filename + "]";
-        }
 
 
-    }
 
-    private static byte[] decodeImage(String imageDataString) {
-        return org.apache.commons.codec.binary.Base64.decodeBase64(imageDataString);
-    }
+//    @JsonIgnoreProperties(ignoreUnknown = true)
+//    public static class offlineVM implements Serializable {
+//
+//        private static final long serialVersionUID = 511137310600169111L;
+//
+//        private String id;
+//        private String caption;
+//        private String data;
+//        private String filename;
+//
+//        public offlineVM() {
+//        }
+//        public String getId() {
+//            return id;
+//        }
+//        public void setId(String id) {
+//            this.id = id;
+//        }
+//        public String getCaption() {
+//            return caption;
+//        }
+//        public void setCaption(String caption) {
+//            this.caption = caption;
+//        }
+//        public String getData() {
+//            return data;
+//        }
+//        public void setData(String data) {
+//            this.data = data;
+//        }
+//        public String getFilename() {
+//            return filename;
+//        }
+//        public void setFilename(String filename) {
+//            this.filename = filename;
+//        }
+//
+//        @Override
+//        public String toString() {
+//            return "InspResultForm [id=" + id + ", caption="
+//                    + caption + ", data=" + data + ", filename=" + filename + "]";
+//        }
+//
+//
+//    }
 
-    private static String encodeImage(byte[] imageByteArray) {
-        return Base64.encodeBase64URLSafeString(imageByteArray);
-    }
+//    private static byte[] decodeImage(String imageDataString) {
+//        return org.apache.commons.codec.binary.Base64.decodeBase64(imageDataString);
+//    }
+//
+//    private static String encodeImage(byte[] imageByteArray) {
+//        return Base64.encodeBase64URLSafeString(imageByteArray);
+//    }
 }
