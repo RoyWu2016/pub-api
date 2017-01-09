@@ -90,10 +90,12 @@ public class DraftImpl implements Draft {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/draft/previous-psi-order/{orderId}", method = RequestMethod.POST)
-	public ResponseEntity<InspectionBookingBean> createDraftFromPreviousOrder(@PathVariable("userId") String userId,
-	                                                                          @PathVariable("orderId") String orderId) {
+	public ResponseEntity<InspectionBookingBean> createDraftFromPreviousOrder(
+														@PathVariable("userId") String userId,
+													    @PathVariable("orderId") String orderId,
+													    @RequestParam(value = "service-type", required = false) String serviceType ) {
 		try {
-			InspectionBookingBean newDraft = draftService.createDraftFromPreviousOrder(userId, orderId);
+			InspectionBookingBean newDraft = draftService.createDraftFromPreviousOrder(userId, orderId, serviceType);
 			if (null != newDraft) {
 				return new ResponseEntity<>(newDraft, HttpStatus.OK);
 			}

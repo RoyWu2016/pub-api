@@ -35,7 +35,8 @@ public interface DraftService {
 
     InspectionBookingBean createDraft(String userId, String serviceType) throws Exception;
 
-    InspectionBookingBean createDraftFromPreviousOrder(String userId, String orderId) throws Exception;
+    InspectionBookingBean createDraftFromPreviousOrder(String userId, String orderId,
+                                                       String serviceType) throws Exception;
 
     InspectionBookingBean getDraft(String userId, String draftId) throws Exception;
 

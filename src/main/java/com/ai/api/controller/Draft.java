@@ -34,7 +34,7 @@ public interface Draft {
 
 	ResponseEntity<InspectionBookingBean> createDraft(final String userId, final String serviceType);
 
-	ResponseEntity<InspectionBookingBean> createDraftFromPreviousOrder(final String userId, final String orderId);
+	ResponseEntity<InspectionBookingBean> createDraftFromPreviousOrder(final String userId, final String orderId, final String serviceType);
 
 	ResponseEntity<InspectionBookingBean> getDraft(final String userId, final String draftId);
 
