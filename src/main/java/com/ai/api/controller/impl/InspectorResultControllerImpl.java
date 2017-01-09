@@ -219,7 +219,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
     }
 
     @Override
-    @RequestMapping(value = "/results/uploadMapWithFileids/{sourceId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/results/updateDataWithFileids/{sourceId}", method = RequestMethod.POST)
     public ResponseEntity<ApiCallResult> approveReport(@PathVariable("sourceId") String sourceId,
                                                               @RequestParam(value="username", required=false)  String username,
                                                               @RequestBody String map,HttpServletRequest request) {
