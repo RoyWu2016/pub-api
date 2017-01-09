@@ -74,8 +74,9 @@ public class LTOrderImpl implements LTOrder {
 				callResult.setContent(list);
 				return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 			}else {
+				callResult.setContent(list);
                 callResult.setMessage("get empty LT orders list.");
-                return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.NO_CONTENT);
             }
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
