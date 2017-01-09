@@ -2,24 +2,37 @@ package com.ai.api.controller.impl;
 
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.InspectorResultController;
+import com.ai.api.service.APIFileService;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.fileservice.FileMetaBean;
+import com.ai.commons.beans.fileservice.FileType;
 import com.ai.commons.beans.psi.InspResultForm;
+import com.ai.dto.JsonResponse;
+import com.ai.userservice.common.http.SimpleFileObject;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.codec.binary.*;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.*;
 
 /**
  * Project Name    : Public-API
@@ -37,6 +50,12 @@ public class InspectorResultControllerImpl implements InspectorResultController 
     @Autowired
     @Qualifier("serviceConfig")
     private ServiceConfig config;
+
+    @Autowired
+    private APIFileService myFileService;
+
+    @Autowired
+    private ServiceConfig serviceConfig;
 
     @Override
     @RequestMapping(value = "/results/{productId}", method = RequestMethod.POST)
@@ -252,5 +271,269 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             callResult.setMessage("Exception: " + e.toString());
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    @RequestMapping(value = "/results/file-upload/{sourceId}", method = RequestMethod.POST)
+    public ResponseEntity<ApiCallResult> uploadFile(@PathVariable("sourceId") String sourceId,
+                                                    @RequestParam(value="username", required=false) String username,
+                                                    MultipartHttpServletRequest request) {
+        ApiCallResult callResult = new ApiCallResult();
+        Map<String,List<MultipartFile>> mapFileList = new HashMap<String,List<MultipartFile>>();
+        List<String> idList = new ArrayList<String>();
+        List<SimpleFileObject> fileList = new ArrayList<SimpleFileObject>();
+        List<File>  tobeDeleted = new ArrayList<File>();
+        try{
+            Iterator<String> itr = request.getFileNames();
+            while(itr.hasNext()) {
+                List<MultipartFile> multiList = new ArrayList<MultipartFile>();
+                MultipartFile mpf = request.getFile(itr.next());
+                String keyName = mpf.getName();
+                String[] key = keyName.split(":");
+                if(mapFileList.get(key[0]) == null ){
+                    multiList.add(mpf);
+                    mapFileList.put(key[0],multiList);
+                }else {
+                    mapFileList.get(key[0]).add(mpf);
+                }
+            }
+
+            Map<String,List<FileMetaBean>> fileMetaList = new HashMap<String,List<FileMetaBean>>();
+            for (Map.Entry<String,List<MultipartFile>> map : mapFileList.entrySet())
+            {
+                List<FileMetaBean> beanList = new ArrayList<FileMetaBean>();
+                for(MultipartFile mpf : map.getValue()) {
+                    double sizeM = mpf.getSize() / (1024 * 1000);
+                    if (sizeM > serviceConfig.getFileMaximumSize()) {
+                        callResult.setMessage("Max of file size is :"+serviceConfig.getFileMaximumSize()+"M");
+                        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+                    } else {
+                        File tempDir = new File(myFileService.getFileService().getLocalTempDir() + sourceId);
+                        if (!tempDir.exists()) {
+                            tempDir.mkdir();
+                        }
+                        String filePath = com.ai.commons.FileUtils.copyFileToDirectory(mpf, tempDir);
+                        File uploaded = new File(tempDir + System.getProperty("file.separator") + filePath);
+                        SimpleFileObject fileUplodedObject = new SimpleFileObject(uploaded);
+                        fileList.add(fileUplodedObject);
+                        idList.add(sourceId);
+                        tobeDeleted.add(uploaded);
+                    }
+                    beanList.addAll(myFileService.getFileService().uploadFiles("insp-result-file", FileType.GI_CONTENT_FILE.getType(), idList, fileList, username));
+                    fileMetaList.put(map.getKey(), beanList);
+                    for(File f : tobeDeleted) {
+                        if(f.exists()){
+                            f.delete();
+                        }
+                    }
+                }
+            }
+            callResult.setContent(fileMetaList);
+            return new ResponseEntity<>(callResult,HttpStatus.OK);
+        }catch(Exception e){
+            logger.error("Error Exception!",e);
+            callResult.setMessage("Error Exception! "+e);
+        }
+        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    @RequestMapping(value = "/results/file-uploads/{sourceId}", method = RequestMethod.POST)
+    public ResponseEntity<ApiCallResult> uploadFileWithCaption(@PathVariable("sourceId") String sourceId,
+                                                               @RequestParam(value="username", required=false) String username,
+                                                               @RequestBody Map<String,List<offlineVM>> map) {
+        ApiCallResult callResult = new ApiCallResult();
+        List<File> tobeDeleted = new ArrayList<File>();
+        Map<String, List<FileMetaBean>> fileMetaList = new HashMap<String, List<FileMetaBean>>();
+        try {
+            for (String key : map.keySet()) {
+                String[] keys = key.split("@");
+                String fileType = "";
+                if (keys[1].equals("Upload_Product_Image")) {
+                    fileType = FileType.PROD_REPORT_PICTURE.getType();
+                } else {
+                    fileType = FileType.INSP_RESULT_FILE.getType();
+                }
+                List<offlineVM> value = map.get(key);
+                if (value != null) {
+                    List<FileMetaBean> beanList = new ArrayList<FileMetaBean>();
+                    for (offlineVM element : value) {
+                        String[] base64 = element.getData().split(",");
+                        String sourceData = base64[1];
+
+                        try {
+                            byte[] imageByteArray = decodeImage(sourceData);
+                            File tempDir = new File(myFileService.getFileService().getLocalTempDir() + sourceId);
+                            if (!tempDir.exists()) {
+                                tempDir.mkdir();
+                            }
+                            String filePath = element.getFilename();
+                            FileOutputStream imageOutFile = new FileOutputStream(tempDir + "/" + filePath);
+                            File files = new File(tempDir + "/" + filePath);
+                            imageOutFile.write(imageByteArray);
+                            imageOutFile.close();
+                            tobeDeleted.add(files);
+                            FileMetaBean ftb = myFileService.getFileService().upload(sourceId, fileType, "insp-result-file", username, element.getCaption(), files);
+                            beanList.add(ftb);
+                        } catch (FileNotFoundException e) {
+                            logger.error("Uploading Failed  e " + e);
+                        } catch (IOException ioe) {
+                            logger.error("Uploading Failed  ioe " + ioe);
+                        }
+                    }
+                    fileMetaList.put(key, beanList);
+                    for (File f : tobeDeleted) {
+                        if (f.exists()) {
+                            f.delete();
+                        }
+                    }
+                }
+            }
+            callResult.setContent(fileMetaList);
+            return new ResponseEntity<>(callResult,HttpStatus.OK);
+        }catch (Exception e){
+            logger.error("Error exception!",e);
+            callResult.setMessage("Error exception!"+e);
+        }
+        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    @RequestMapping(value = "/results/file/{fileIds}", method = RequestMethod.GET)
+    public @ResponseBody void getFile(@PathVariable("fileIds") String fileIds,HttpServletResponse response) throws IOException {
+        try {
+            logger.info("getFile - fileIds : " + fileIds);
+            InputStream is = myFileService.getFileService().getFile(fileIds);
+            FileCopyUtils.copy(is, response.getOutputStream());
+            response.flushBuffer();
+        } catch (Exception e) {
+            logger.error("Failed to getFile. Error Exception! " ,e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,e.toString());
+            throw new IOException(e);
+        }
+    }
+
+    @Override
+    @RequestMapping(value = "/results/download/{fileIds}", method = RequestMethod.GET)
+    public void downloadFileV1(@PathVariable("fileIds") String fileIds,HttpServletResponse response) throws IOException  {
+        try {
+            logger.info("downloadFileV1 - fileIds : " + fileIds);
+            InputStream is = myFileService.getFileService().getFile(fileIds);
+            FileMetaBean fileDetails = myFileService.getFileService().getFileInfoById(fileIds);
+            String fileName = fileDetails.getFileName();
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName );
+            FileCopyUtils.copy(is, response.getOutputStream());
+            response.flushBuffer();
+        } catch (Exception e) {
+            logger.error("Failed to downloadFileV1. Error Exception! " ,e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,e.toString());
+            throw new IOException(e);
+        }
+    }
+
+    @Override
+    @RequestMapping(value = "/results/file/{fileId}", method = RequestMethod.DELETE)
+    public ResponseEntity<ApiCallResult> deleteFile(@PathVariable("fileId") String fileId,@RequestParam("userName") String userName) {
+        ApiCallResult callResult = new ApiCallResult();
+        try {
+            logger.info("deleteFile - fileId : " + fileId);
+            boolean b = myFileService.getFileService().deleteFile(fileId,userName);
+            callResult.setContent(b);
+            return new ResponseEntity<>(callResult,HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Failed to deleteFile. Error Exception! " ,e);
+            callResult.setMessage("Failed to deleteFile. Error Exception! "+e.toString());
+        }
+        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    @RequestMapping(value = "/results/fileInfo/{fileIds}", method = RequestMethod.GET)
+    public ResponseEntity<ApiCallResult> getFileInfo(@PathVariable("fileIds") String fileIds) {
+        ApiCallResult callResult = new ApiCallResult();
+        try {
+            logger.info("getFileInfo - fileIds : " + fileIds);
+            FileMetaBean result = myFileService.getFileService().getFileInfoById(fileIds);
+            String caption = result.getComments();
+            callResult.setContent(caption);
+            return new ResponseEntity<>(callResult,HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Failed to getFileInfo. Error Exception! " ,e);
+            callResult.setMessage("Failed to getFileInfo. Error Exception! "+e.toString());
+        }
+        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    @RequestMapping(value = "/results/fileName/{fileIds}", method = RequestMethod.GET)
+    public ResponseEntity<ApiCallResult> getFileName(@PathVariable("fileIds") String fileIds) {
+        ApiCallResult callResult = new ApiCallResult();
+        try {
+            logger.info("getFileName - fileIds : " + fileIds);
+            FileMetaBean result = myFileService.getFileService().getFileInfoById(fileIds);
+            String caption = result.getFileName();
+            callResult.setContent(caption);
+            return new ResponseEntity<>(callResult,HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Failed to get FileName.Error Exception! " ,e);
+            callResult.setMessage("Failed to get FileName.Error Exception! "+e.toString());
+        }
+        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class offlineVM implements Serializable {
+
+        private static final long serialVersionUID = 511137310600169111L;
+
+        private String id;
+        private String caption;
+        private String data;
+        private String filename;
+
+        public offlineVM() {
+        }
+        public String getId() {
+            return id;
+        }
+        public void setId(String id) {
+            this.id = id;
+        }
+        public String getCaption() {
+            return caption;
+        }
+        public void setCaption(String caption) {
+            this.caption = caption;
+        }
+        public String getData() {
+            return data;
+        }
+        public void setData(String data) {
+            this.data = data;
+        }
+        public String getFilename() {
+            return filename;
+        }
+        public void setFilename(String filename) {
+            this.filename = filename;
+        }
+
+        @Override
+        public String toString() {
+            return "InspResultForm [id=" + id + ", caption="
+                    + caption + ", data=" + data + ", filename=" + filename + "]";
+        }
+
+
+    }
+
+    private static byte[] decodeImage(String imageDataString) {
+        return org.apache.commons.codec.binary.Base64.decodeBase64(imageDataString);
+    }
+
+    private static String encodeImage(byte[] imageByteArray) {
+        return Base64.encodeBase64URLSafeString(imageByteArray);
     }
 }
