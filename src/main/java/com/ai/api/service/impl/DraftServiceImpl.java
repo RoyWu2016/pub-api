@@ -75,7 +75,8 @@ public class DraftServiceImpl implements DraftService {
 	}
 
 	@Override
-	public InspectionBookingBean createDraftFromPreviousOrder(String userId, String orderId) throws Exception{
+	public InspectionBookingBean createDraftFromPreviousOrder(String userId,
+	                                                          String orderId, String serviceType) throws Exception{
 		String companyId = "null";
 		String parentId = "null";
 		UserBean user = userService.getCustById(userId);
@@ -84,7 +85,8 @@ public class DraftServiceImpl implements DraftService {
 			if (parentId == null) parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		return draftDao.createDraftFromPreviousOrder(userId,companyId,parentId,orderId);
+		return draftDao.createDraftFromPreviousOrder(userId, companyId, parentId,
+				orderId, ConstMap.serviceTypeMap.get(serviceType));
 	}
 
 	@Override

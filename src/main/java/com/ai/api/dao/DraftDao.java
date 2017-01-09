@@ -33,7 +33,8 @@ public interface DraftDao {
 
     InspectionBookingBean createDraft(String userId, String compId, String parentId, String serviceTypeStrValue);
 
-    InspectionBookingBean createDraftFromPreviousOrder(String userId, String companyId, String parentId, String orderId);
+    InspectionBookingBean createDraftFromPreviousOrder(String userId, String companyId,
+                                                       String parentId, String orderId, String serviceType);
 
     InspectionBookingBean getDraft(String userId,String compId, String parentId, String draftId);
 
