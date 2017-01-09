@@ -108,13 +108,16 @@ public class DraftDaoImpl implements DraftDao {
 	}
 
 	@Override
-	public InspectionBookingBean createDraftFromPreviousOrder(String userId, String companyId, String parentId, String orderId) {
+	public InspectionBookingBean createDraftFromPreviousOrder(String userId, String companyId,
+	                                                          String parentId, String orderId,
+	                                                          String serviceTypeStrValue) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
         url.append("/draft/api/createDraftFromPreviousOrder");
         url.append("?userId=").append(userId);
         url.append("&companyId=").append(companyId);
         url.append("&parentId=").append(parentId);
         url.append("&orderId=").append(orderId);
+		url.append("&serviceType=").append(serviceTypeStrValue);
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,orderId);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
