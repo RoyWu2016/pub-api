@@ -18,4 +18,6 @@ public interface Finance {
     ResponseEntity<ApiCallResult> processCreditOrDebitMemos(String cndnMap);
 
     ResponseEntity<ApiCallResult> processInvoice(String invMap);
+
+    ResponseEntity<ApiCallResult> processPayments(String payment);
 }

@@ -16,12 +16,13 @@ import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.InspectorResultController;
 import com.ai.api.service.APIFileService;
 import com.ai.commons.HttpUtil;
+import com.ai.commons.HttpUtils;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.ai.commons.beans.fileservice.FileType;
-import com.ai.userservice.common.http.SimpleFileObject;
+import com.ai.commons.helpers.http.beans.ServiceResponse;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * Project Name    : Public-API
@@ -210,7 +212,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
         }
         try {
             logger.info("createMapWithFileids requesting: " + url.toString());
-            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,map);
+            ServiceResponse result = HttpUtils.postJson(url.toString(),null,map);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setContent(result.getResponseString());
                 return new ResponseEntity<>(callResult, HttpStatus.OK);
@@ -237,7 +239,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
         }
         try {
             logger.info("approveReport requesting: " + url.toString());
-            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,map);
+            ServiceResponse result = HttpUtils.postJson(url.toString(),null,map);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setContent(result.getResponseString());
                 return new ResponseEntity<>(callResult, HttpStatus.OK);
@@ -264,7 +266,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
         }
         try {
             logger.info("saveProtocolSupervisorData requesting: " + url.toString());
-            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,map);
+            ServiceResponse result = HttpUtils.postJson(url.toString(),null,map);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setContent(result.getResponseString());
                 return new ResponseEntity<>(callResult, HttpStatus.OK);
@@ -284,68 +286,69 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                                                     @RequestParam(value="username", required=false) String username,
                                                     MultipartHttpServletRequest request) {
         ApiCallResult callResult = new ApiCallResult();
-        Map<String,List<MultipartFile>> mapFileList = new HashMap<String,List<MultipartFile>>();
-        List<String> idList = new ArrayList<String>();
-        List<SimpleFileObject> fileList = new ArrayList<SimpleFileObject>();
-        List<File>  tobeDeleted = new ArrayList<File>();
         try{
+            logger.info("ready to uploadFile ...");
+            Map<String,List<FileMetaBean>> fileMetaList = new HashMap<>();
+            Map<String, List> mapFileList = new HashMap<>();
             Iterator<String> itr = request.getFileNames();
             while(itr.hasNext()) {
-                List<MultipartFile> multiList = new ArrayList<MultipartFile>();
                 MultipartFile mpf = request.getFile(itr.next());
+                Map map = new HashMap<>();
                 String keyName = mpf.getName();
+                logger.info("keyName:"+keyName);
+                String caption = request.getParameter(keyName);
                 String[] key = keyName.split(":");
+                List list2 = new ArrayList<>();
+                map.put("multipartFile", mpf);
+                map.put("caption", caption);
                 if(mapFileList.get(key[0]) == null ){
-                    multiList.add(mpf);
-                    mapFileList.put(key[0],multiList);
+                    list2.add(map);
+                    mapFileList.put(key[0], list2);
                 }else {
-                    mapFileList.get(key[0]).add(mpf);
+                    mapFileList.get(key[0]).add(map);
                 }
             }
+            logger.info("mapFileList size :"+mapFileList.size());
 
-            Map<String,List<FileMetaBean>> fileMetaList = new HashMap<String,List<FileMetaBean>>();
-            for (Map.Entry<String,List<MultipartFile>> map : mapFileList.entrySet())
+            for (Map.Entry<String, List> map : mapFileList.entrySet())
             {
-                List<FileMetaBean> beanList = new ArrayList<FileMetaBean>();
-                for(MultipartFile mpf : map.getValue()) {
-                    double sizeM = mpf.getSize() / (1024 * 1000);
+                logger.info("get each mapFile " + map.getKey()+" -- "+map.getValue());
+                List<FileMetaBean> beanList = new ArrayList<>();
+                List<File>  toBeDeleted = new ArrayList<>();
+                for(Object mpf : map.getValue()){
+                    MultipartFile _mpf = ((CommonsMultipartFile)((Map)mpf).get("multipartFile"));
+                    String caption = ((Map)mpf).get("caption").toString();
+                    String[] keys = _mpf.getName().split(":")[0].split("@");
+                    logger.info("get MultipartFile "+_mpf.getName()+" || caption:"+caption+" || keys:"+keys);
+                    String fileType = FileType.INSP_RESULT_FILE.getType();
+                    if(keys[1].equals("Upload_Product_Image")){
+                        fileType = FileType.PROD_REPORT_PICTURE.getType();
+                    }
+                    double sizeM = _mpf.getSize() / (1024 * 1000);
                     if (sizeM > serviceConfig.getFileMaximumSize()) {
                         callResult.setMessage("Max of file size is :"+serviceConfig.getFileMaximumSize()+"M");
                         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
-                    } else {
+                    }else {
                         File tempDir = new File(myFileService.getFileService().getLocalTempDir() + sourceId);
                         if (!tempDir.exists()) {
                             tempDir.mkdir();
                         }
-                        String filePath = com.ai.commons.FileUtils.copyFileToDirectory(mpf, tempDir);
-                        File uploaded = new File(tempDir + System.getProperty("file.separator") + filePath);
-                        SimpleFileObject fileUplodedObject = new SimpleFileObject(uploaded);
-                        fileList.add(fileUplodedObject);
-                        idList.add(sourceId);
-                        tobeDeleted.add(uploaded);
+                        logger.info("ready to copy file to api temp ...");
+                        logger.info(_mpf.getName()+" || "+tempDir.getAbsolutePath());
+                        String filePath = com.ai.commons.FileUtils.copyFileToDirectory(_mpf, tempDir);
+                        File uploadedFile=new File(tempDir + System.getProperty("file.separator") + filePath);
+                        logger.info("uploaded to API temp ["+uploadedFile.getAbsolutePath()+"]");
+//                        SimpleFileObject fileUploadedObject = new SimpleFileObject(uploadedFile);
+                        FileMetaBean ftb = myFileService.getFileService().upload(sourceId, fileType, "insp-result-file", username, caption, uploadedFile);
+                        toBeDeleted.add(uploadedFile);
+                        beanList.add(ftb);
                     }
                 }
-	            logger.error("======================== uploaded to api server =================");
-	            for (SimpleFileObject file: fileList) {
-		            logger.error(file.getFilename());
-	            }
-	            logger.error("======================== uploaded to api server end =================");
-	            logger.error("======================== uploaded to api server id list start =================");
-	            for (String file: idList) {
-		            logger.error(file);
-	            }
-	            logger.error("======================== uploaded to api server id list end =================");
-
-
-	            logger.error("======================== uploaded to FILE SERVICE start =================");
-	            beanList.addAll(myFileService.getFileService().uploadFiles("insp-result-file", FileType.GI_CONTENT_FILE.getType(), idList, fileList, username));
-	            logger.error("======================== uploaded to FILE SERVICE end =================");
-				fileMetaList.put(map.getKey(), beanList);
-				for(File f : tobeDeleted) {
-					if(f.exists()){
-						f.delete();
-					}
-				}
+                logger.info("all files uploaded to FILE_SERVICE !");
+                logger.info("tobeDeleted size :"+toBeDeleted.size());
+                fileMetaList.put(map.getKey(), beanList);
+                toBeDeleted.stream().filter(File::exists).forEach(File::delete);
+                logger.info("delete done!");
             }
             callResult.setContent(fileMetaList);
             return new ResponseEntity<>(callResult,HttpStatus.OK);
