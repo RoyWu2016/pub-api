@@ -105,4 +105,28 @@ public class FinanceImpl implements Finance {
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/finance/net-suite/payment", method = RequestMethod.POST)
+    public ResponseEntity<ApiCallResult> processPayments(@RequestBody String payment){
+        StringBuilder url = new StringBuilder(config.getFinanceServiceBaseUrl()).append("/netsuite/payment/save");
+        ApiCallResult callResult = new ApiCallResult();
+        try {
+            logger.info("processPayments requesting: " + url.toString());
+            ServiceResponse result = HttpUtils.postJson(url.toString(),null,payment);
+            if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                logger.info("processPayments done!");
+                callResult.setMessage(result.getResponseString());
+                return new ResponseEntity<>(callResult, HttpStatus.OK);
+            } else {
+                logger.error("finance-service failed : " + result.getStatusCode() + ", "+ result.getResponseString());
+                callResult.setMessage("failed! : [" + result.getStatusCode() + "] "+ result.getResponseString());
+            }
+        } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+            callResult.setMessage("Exception: " + e.toString());
+        }
+        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
