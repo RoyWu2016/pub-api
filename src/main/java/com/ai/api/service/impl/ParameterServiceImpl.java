@@ -114,5 +114,10 @@ public class ParameterServiceImpl implements ParameterService {
     public boolean isACAUser(String userName) {
             return customerDao.isACAUser(userName);
     }
+    
+    @Override
+    public boolean checkIfUserNameExist(String userName) {
+    	return customerDao.checkIfUserNameExist(userName);
+    }
 }
 

@@ -376,4 +376,28 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 		}
 		return null;
 	}
+
+	@Override
+	public boolean checkIfUserNameExist(String userName) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder("http://prod-load-balancer-8090-754838643.ap-southeast-1.elb.amazonaws.com/customer-service/customer-legacy/is-login-exist?login=");
+		try {
+			String login = URLEncoder.encode(userName, "UTF-8");
+			url.append(login);
+			LOGGER.info("requseting: " + url.toString());
+			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				LOGGER.info("Check if ACA Accessible login:" + userName + " || result:" + result.getResponseString());
+				if (result.getResponseString().equalsIgnoreCase("true")) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		} catch (IOException e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return false;
+	}
 }

@@ -45,4 +45,6 @@ public interface ParameterService {
 
 	boolean isACAUser(String userName);
 
+	boolean checkIfUserNameExist(String userName);
+
 }
