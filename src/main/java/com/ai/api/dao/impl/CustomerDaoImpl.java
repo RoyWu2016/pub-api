@@ -380,10 +380,10 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 	@Override
 	public boolean checkIfUserNameExist(String userName) {
 		// TODO Auto-generated method stub
-		StringBuilder url = new StringBuilder(config.getCustomerServiceUrl() + "/customer-service/customer-legacy/is-login-exist?login=");
+		StringBuilder url = new StringBuilder(config.getCustomerServiceUrl() + "/customer-legacy/is-login-exist?login=");
 		try {
-			String login = URLEncoder.encode(userName, "UTF-8");
-			url.append(login);
+//			String login = URLEncoder.encode(userName, "UTF-8");
+			url.append(userName);
 			LOGGER.info("requseting: " + url.toString());
 			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
