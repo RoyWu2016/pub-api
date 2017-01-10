@@ -206,7 +206,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                                                               @RequestBody String map,HttpServletRequest request) {
         ApiCallResult callResult = new ApiCallResult();
         StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
-                .append("/results/").append(sourceId).append("uploadMapWithFileids");
+                .append("/results/").append(sourceId).append("/").append("uploadMapWithFileids");
         if (StringUtils.isNotBlank(username)){
             url.append("?username=").append(username);
         }
@@ -233,7 +233,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                                                               @RequestBody String map,HttpServletRequest request) {
         ApiCallResult callResult = new ApiCallResult();
         StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
-                .append("/results/").append(sourceId).append("updateDataWithFileids");
+                .append("/results/").append(sourceId).append("/").append("updateDataWithFileids");
         if (StringUtils.isNotBlank(username)){
             url.append("?username=").append(username);
         }
@@ -260,7 +260,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                                                        @RequestBody String map,HttpServletRequest request) {
         ApiCallResult callResult = new ApiCallResult();
         StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
-                .append("/results/").append(sourceId).append("saveProtocolSupervisorData");
+                .append("/results/").append(sourceId).append("/").append("saveProtocolSupervisorData");
         if (StringUtils.isNotBlank(username)){
             url.append("?username=").append(username);
         }
