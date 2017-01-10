@@ -1,5 +1,17 @@
 package com.ai.api.controller.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.InspectorResultController;
 import com.ai.api.service.APIFileService;
@@ -9,30 +21,24 @@ import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.ai.commons.beans.fileservice.FileType;
-import com.ai.commons.beans.psi.InspResultForm;
-import com.ai.dto.JsonResponse;
 import com.ai.userservice.common.http.SimpleFileObject;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.apache.commons.codec.binary.*;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.util.*;
 
 /**
  * Project Name    : Public-API
@@ -318,14 +324,28 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                         idList.add(sourceId);
                         tobeDeleted.add(uploaded);
                     }
-                    beanList.addAll(myFileService.getFileService().uploadFiles("insp-result-file", FileType.GI_CONTENT_FILE.getType(), idList, fileList, username));
-                    fileMetaList.put(map.getKey(), beanList);
-                    for(File f : tobeDeleted) {
-                        if(f.exists()){
-                            f.delete();
-                        }
-                    }
                 }
+	            logger.error("======================== uploaded to api server =================");
+	            for (SimpleFileObject file: fileList) {
+		            logger.error(file.getFilename());
+	            }
+	            logger.error("======================== uploaded to api server end =================");
+	            logger.error("======================== uploaded to api server id list start =================");
+	            for (String file: idList) {
+		            logger.error(file);
+	            }
+	            logger.error("======================== uploaded to api server id list end =================");
+
+
+	            logger.error("======================== uploaded to FILE SERVICE start =================");
+	            beanList.addAll(myFileService.getFileService().uploadFiles("insp-result-file", FileType.GI_CONTENT_FILE.getType(), idList, fileList, username));
+	            logger.error("======================== uploaded to FILE SERVICE end =================");
+				fileMetaList.put(map.getKey(), beanList);
+				for(File f : tobeDeleted) {
+					if(f.exists()){
+						f.delete();
+					}
+				}
             }
             callResult.setContent(fileMetaList);
             return new ResponseEntity<>(callResult,HttpStatus.OK);
