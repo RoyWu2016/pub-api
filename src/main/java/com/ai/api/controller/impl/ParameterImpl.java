@@ -4,13 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
-import com.ai.aims.services.model.OfficeMaster;
-import com.ai.aims.services.model.ProgramMaster;
 import com.ai.api.bean.ChecklistSampleSize;
 import com.ai.api.bean.ChecklistSampleSizeChildren;
 import com.ai.api.bean.ChinaTimeBean;
@@ -37,7 +32,6 @@ import com.ai.api.bean.TextileDropdownListOptionBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.Parameter;
 import com.ai.api.service.ParameterService;
-import com.ai.api.util.AIUtil;
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
@@ -53,8 +47,6 @@ import com.ai.commons.beans.params.product.SysProductTypeBean;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
-
-import io.swagger.annotations.ApiOperation;
 
 /**
  * Created by Administrator on 2016/6/21 0021.
@@ -543,12 +535,18 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	@RequestMapping(value = "/parameter/{userName}/is-aca-user", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> isACAUser(@PathVariable("userName") String userName) {
-		logger.info("check isACAUser userName:" + userName);
-		Boolean b = parameterService.isACAUser(userName);
-		JSONObject object = new JSONObject();
-		object.put("isACAUser", b);
-		return new ResponseEntity<>(object, HttpStatus.OK);
+	public ResponseEntity<ApiCallResult> isACAUser(@PathVariable("userName") String userName) {
+		logger.info("invoke: " + "/parameter/" + userName + "/is-aca-user");
+		logger.info("check if userName exist: " + userName);
+		ApiCallResult result = new ApiCallResult();
+		boolean isUsrNameExist = parameterService.checkIfUserNameExist(userName);
+		if(isUsrNameExist) {
+			boolean isAcaUser = parameterService.isACAUser(userName);
+			result.setContent(isAcaUser);
+		}else {
+			result.setMessage(userName + " is not exist.");;
+		}
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	@Override

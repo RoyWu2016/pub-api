@@ -38,4 +38,6 @@ public interface CustomerDao {
 
 	ServiceCallResult resetPassword(String login);
 
+	boolean checkIfUserNameExist(String userName);
+
 }
