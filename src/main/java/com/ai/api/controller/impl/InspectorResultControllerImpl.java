@@ -299,8 +299,8 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                 String caption = request.getParameter(keyName);
                 String[] key = keyName.split(":");
                 List list2 = new ArrayList<>();
-                map.put("multipartFile :", mpf);
-                map.put("caption :", caption);
+                map.put("multipartFile", mpf);
+                map.put("caption", caption);
                 if(mapFileList.get(key[0]) == null ){
                     list2.add(map);
                     mapFileList.put(key[0], list2);
