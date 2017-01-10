@@ -213,23 +213,17 @@ public class SupplierImpl implements Supplier {
 						logger.error("change SupplierProductLines from String to Array failed! ", e);
 					}
 					try {
-						OrderFactoryBean factory = factoryService
-								.getOrderFactory(orderBean.getOrder().getOrderSupplier().getSupplierId());
-						if (null != factory) {
+						OrderFactoryBean factory = orderBean.getOrder().getOrderFactory();
+						if (null == factory) {
+							factory = factoryService
+									.getOrderFactory(orderBean.getOrder().getOrderSupplier().getSupplierId());
 							object.getJSONObject("order").put("orderFactory", factory);
-							String str = factory.getFactoryProductLines();
-							if (null != str) {
-								String[] strArray = str.split(";");
-								object.getJSONObject("order").getJSONObject("orderFactory").put("factoryProductLines",
-										strArray);
-							}
-						} else {
-							String str = orderBean.getOrder().getOrderFactory().getFactoryProductLines();
-							if (null != str) {
-								String[] strArray = str.split(";");
-								object.getJSONObject("order").getJSONObject("orderFactory").put("factoryProductLines",
-										strArray);
-							}
+						} 
+						String str = factory.getFactoryProductLines();
+						if (null != str) {
+							String[] strArray = str.split(";");
+							object.getJSONObject("order").getJSONObject("orderFactory").put("factoryProductLines",
+									strArray);
 						}
 					} catch (Exception e) {
 						logger.error("change factoryProductLines from String to Array failed! ", e);
