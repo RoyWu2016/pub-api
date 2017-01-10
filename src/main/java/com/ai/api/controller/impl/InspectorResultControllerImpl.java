@@ -16,13 +16,13 @@ import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.InspectorResultController;
 import com.ai.api.service.APIFileService;
 import com.ai.commons.HttpUtil;
+import com.ai.commons.HttpUtils;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.ai.commons.beans.fileservice.FileType;
-import com.ai.dto.JsonResponse;
-import com.ai.userservice.common.http.SimpleFileObject;
+import com.ai.commons.helpers.http.beans.ServiceResponse;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -212,7 +212,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
         }
         try {
             logger.info("createMapWithFileids requesting: " + url.toString());
-            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,map);
+            ServiceResponse result = HttpUtils.postJson(url.toString(),null,map);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setContent(result.getResponseString());
                 return new ResponseEntity<>(callResult, HttpStatus.OK);
@@ -239,7 +239,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
         }
         try {
             logger.info("approveReport requesting: " + url.toString());
-            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,map);
+            ServiceResponse result = HttpUtils.postJson(url.toString(),null,map);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setContent(result.getResponseString());
                 return new ResponseEntity<>(callResult, HttpStatus.OK);
@@ -266,7 +266,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
         }
         try {
             logger.info("saveProtocolSupervisorData requesting: " + url.toString());
-            ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,map);
+            ServiceResponse result = HttpUtils.postJson(url.toString(),null,map);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setContent(result.getResponseString());
                 return new ResponseEntity<>(callResult, HttpStatus.OK);
