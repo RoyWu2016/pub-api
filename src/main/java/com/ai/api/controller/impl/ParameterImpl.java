@@ -544,7 +544,7 @@ public class ParameterImpl implements Parameter {
 			boolean isAcaUser = parameterService.isACAUser(userName);
 			result.setContent(isAcaUser);
 		}else {
-			result.setMessage(userName + " is not exist.");;
+			result.setMessage(userName + " does not exist.");;
 		}
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
