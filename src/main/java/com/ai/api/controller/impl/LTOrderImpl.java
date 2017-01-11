@@ -1,8 +1,11 @@
 package com.ai.api.controller.impl;
 
+import io.swagger.annotations.ApiOperation;
+
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
-import com.ai.api.bean.OrderSearchBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +21,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.LTOrder;
 import com.ai.api.lab.service.LTOrderService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
-
-import io.swagger.annotations.ApiOperation;
-
-import java.util.List;
 
 @SuppressWarnings({"rawtypes"})
 @RestController
@@ -46,10 +46,10 @@ public class LTOrderImpl implements LTOrder {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt-orders", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> addOrder(HttpServletRequest request, @PathVariable String userId, @RequestBody OrderMaster order) {
+	public ResponseEntity<ApiCallResult> addOrder(HttpServletRequest request, @PathVariable String userId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-			callResult = ltOrderService.saveOrder(userId, order);
+			callResult = ltOrderService.saveOrder(userId, new OrderMaster());
 		} catch (Exception e) {
 			logger.error("create order error: " + ExceptionUtils.getFullStackTrace(e));
 			callResult.setMessage("can't save LT order");

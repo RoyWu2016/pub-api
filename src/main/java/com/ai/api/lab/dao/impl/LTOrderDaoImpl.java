@@ -79,7 +79,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 			orderSearch.setServiceTypeText("LT");
 			orderSearch.setPoNumbers(order.getClientPONo());
 			orderSearch.setStatus(order.getStatusCode());
-			orderSearch.setStatusText(order.getOrderStatus());
+			orderSearch.setBookingStatus(order.getBookingStatusCode());
 			orderSearch.setBookingDate("Pending".equalsIgnoreCase(order.getOrderStatus())
 					? DateUtils.formatDate(order.getUpdateTime(), "MM/dd/yyyy") : null);
 			orderSearch.setProductNames(StringUtils.stripToEmpty(order.getDescription()));
