@@ -20,4 +20,6 @@ public interface InspectorController {
     ResponseEntity<ApiCallResult> getAllReports(String inspectorId);
     ResponseEntity<ApiCallResult> getTestDetails(String productId);
     ResponseEntity<ApiCallResult> getDefectsDetails(String productId);
+    ResponseEntity<ApiCallResult> getAllProductsForProtocol();
+    ResponseEntity<ApiCallResult> getAllReportsForSupervisor();
 }
