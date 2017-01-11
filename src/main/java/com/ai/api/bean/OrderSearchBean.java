@@ -15,6 +15,7 @@ public class OrderSearchBean extends SimpleOrderSearchBean implements Serializab
     private String program;
     private String reportIssueDate;
     private String decision;
+    private Integer bookingStatus;
     
     public OrderSearchBean() {
     	super();
@@ -58,5 +59,13 @@ public class OrderSearchBean extends SimpleOrderSearchBean implements Serializab
 
 	public void setDecision(String decision) {
 		this.decision = decision;
+	}
+
+	public Integer getBookingStatus() {
+		return bookingStatus;
+	}
+
+	public void setBookingStatus(Integer bookingStatus) {
+		this.bookingStatus = bookingStatus;
 	}
 }
