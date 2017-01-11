@@ -4,8 +4,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.DraftDao;
+import com.ai.commons.util.BeanUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.PageBean;
@@ -18,13 +27,6 @@ import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 /***************************************************************************
  * <PRE>
@@ -170,11 +172,15 @@ public class DraftDaoImpl implements DraftDao {
 //				ObjectNode node = (ObjectNode) new ObjectMapper().readTree(result.getResponseString());
 				String data = JsonUtil.mapToJson(re.get("content"));
 //				String content = re.get("content").asText();
-				System.out.println(data);
+				System.out.println(re);
 //				ApiInspectionBookingBean draft  = objectMapper.treeToValue(re.get("content"), ApiInspectionBookingBean.class);
 
-				ApiInspectionBookingBean smallObj = objectMapper.readValue(data, ApiInspectionBookingBean.class);
-				return smallObj;
+				InspectionBookingBean smallObj = objectMapper.readValue(data, InspectionBookingBean.class);
+				ApiInspectionBookingBean finalRe = new ApiInspectionBookingBean();
+				BeanUtil.convert2ApiInspectionBookingBean(finalRe, smallObj);
+				return finalRe;
+//				ApiInspectionBookingBean smallObj = objectMapper.readValue(data, ApiInspectionBookingBean.class);
+//				return smallObj;
 //				return JsonUtil.mapToObject(data, ApiInspectionBookingBean.class);
 //				return draft;
 //				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
