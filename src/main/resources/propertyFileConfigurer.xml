@@ -9,9 +9,9 @@
     		<!--p:location="file:${environmentConfig_apiConfig}" />-->
 
     <!-- DataSource Configuration -->
-    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="java:comp/env/jdbc/dataSource" />
-    </bean>
+    <!--<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">-->
+        <!--<property name="jndiName" value="java:comp/env/jdbc/dataSource" />-->
+    <!--</bean>-->
 
     <!--<bean id="dataSource2"
                  class="com.mchange.v2.c3p0.ComboPooledDataSource"
@@ -27,39 +27,39 @@
                  p:maxIdleTime="25000" />-->
 
     <!-- for commons-configuration start -->
-    <bean name="propertyPlaceholderConfigurer"
-        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="properties" ref="commonsConfigurationFactoryBean" />
-    </bean>
+    <!--<bean name="propertyPlaceholderConfigurer"-->
+        <!--class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">-->
+        <!--<property name="properties" ref="commonsConfigurationFactoryBean" />-->
+    <!--</bean>-->
 
-    <bean name="commonsConfigurationFactoryBean"
-        class="org.springmodules.commons.configuration.CommonsConfigurationFactoryBean">
-        <constructor-arg ref="databaseConfiguration" />
-<!-- 		<property name="locations">
-			<list>
-				<value>classpath:api-urls.properties</value>
-			</list>
-		</property> -->
-    </bean>
+    <!--<bean name="commonsConfigurationFactoryBean"-->
+        <!--class="org.springmodules.commons.configuration.CommonsConfigurationFactoryBean">-->
+        <!--<constructor-arg ref="databaseConfiguration" />-->
+ 		<!--<property name="locations">-->
+			<!--<list>-->
+				<!--<value>classpath:api-urls.properties</value>-->
+			<!--</list>-->
+		<!--</property> -->
+    <!--</bean>-->
 
-    <bean name="databaseConfiguration"
-        class="org.apache.commons.configuration.DatabaseConfiguration">
-        <constructor-arg name="datasource" ref="dataSource" />
-        <constructor-arg name="table" value="PARM_GLOBAL_APP_CONFIG" />
-        <constructor-arg name="keyColumn" value="PROP_KEY" />
-        <constructor-arg name="valueColumn" value="PROP_VALUE" />
-    </bean>
+    <!--<bean name="databaseConfiguration"-->
+        <!--class="org.apache.commons.configuration.DatabaseConfiguration">-->
+        <!--<constructor-arg name="datasource" ref="dataSource" />-->
+        <!--<constructor-arg name="table" value="PARM_GLOBAL_APP_CONFIG" />-->
+        <!--<constructor-arg name="keyColumn" value="PROP_KEY" />-->
+        <!--<constructor-arg name="valueColumn" value="PROP_VALUE" />-->
+    <!--</bean>-->
     <!-- for commons-configuration ends -->
 
     <!-- Transactions with JdbcTemplate -->
-    <bean id="jdbcTransactionManager"
-          class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
-          scope="singleton">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+    <!--<bean id="jdbcTransactionManager"-->
+          <!--class="org.springframework.jdbc.datasource.DataSourceTransactionManager"-->
+          <!--scope="singleton">-->
+        <!--<property name="dataSource" ref="dataSource"/>-->
+    <!--</bean>-->
+    <!--<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">-->
+        <!--<property name="dataSource" ref="dataSource"/>-->
+    <!--</bean>-->
 
 
 </beans>
