@@ -13,6 +13,20 @@ import java.util.HashMap;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.api.bean.EmployeeBean;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.dao.CustomerDao;
+import com.ai.api.util.RedisUtil;
+import com.ai.commons.HttpUtil;
+import com.ai.commons.JsonUtil;
+import com.ai.commons.StringUtils;
+import com.ai.commons.beans.GetRequest;
+import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.customer.DashboardBean;
+import com.ai.commons.beans.customer.GeneralUserViewBean;
+import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.user.GeneralUserBean;
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -29,23 +43,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.ai.api.bean.EmployeeBean;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.dao.CustomerDao;
-import com.ai.api.util.RedisUtil;
-import com.ai.commons.HttpUtil;
-import com.ai.commons.JsonUtil;
-import com.ai.commons.StringUtils;
-import com.ai.commons.beans.GetRequest;
-import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.customer.DashboardBean;
-import com.ai.commons.beans.customer.GeneralUserViewBean;
-import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.ai.commons.beans.user.GeneralUserBean;
-import com.alibaba.fastjson.JSON;
 
 /***************************************************************************
  * <PRE>
@@ -68,7 +66,7 @@ import com.alibaba.fastjson.JSON;
  * </PRE>
  ***************************************************************************/
 
-public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
+public class CustomerDaoImpl implements CustomerDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerDaoImpl.class);
 
 	@Autowired
@@ -119,7 +117,7 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 					&& result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return true;
 			} else {
-				logger.info("update user fail! error from customerService :" + result.getResponseString() + " || code:"
+				LOGGER.info("update user fail! error from customerService :" + result.getResponseString() + " || code:"
 						+ result.getStatusCode());
 			}
 		} catch (IOException e) {
@@ -157,7 +155,7 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(60000)
 					.setSocketTimeout(60000).setConnectTimeout(60000).build();
 			httpGet.setConfig(requestConfig);
-			logger.info("get companyLogo doGet----url:[" + url + "]");
+			LOGGER.info("get companyLogo doGet----url:[" + url + "]");
 			response = httpClient.execute(httpGet);
 			if (null == response)
 				return null;
@@ -170,7 +168,7 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			// "UTF-8");
 			// logger.info("get logo responseJson:"+responseJson);
 		} catch (Exception e) {
-			logger.error("ERROR from-Dao[getCompanyLogo]", e);
+			LOGGER.error("ERROR from-Dao[getCompanyLogo]", e);
 		} /*
 			 * finally { try { if (response != null) { response.close(); } if
 			 * (httpClient != null) { httpClient.close(); } }catch (Exception
@@ -197,15 +195,15 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 
 			httpPost.setEntity(entity.build());
 			httpPost.setConfig(requestConfig);
-			logger.info("update companyLogo doPost----url:[" + url + "]");
+			LOGGER.info("update companyLogo doPost----url:[" + url + "]");
 			response = httpClient.execute(httpPost);
 			if (response.getStatusLine().getStatusCode() == 200) {
 				b = true;
 			}
 			String responseJson = EntityUtils.toString(response.getEntity(), "UTF-8");
-			logger.info("update logo responseJson:" + responseJson);
+			LOGGER.info("update logo responseJson:" + responseJson);
 		} catch (Exception e) {
-			logger.error("ERROR", e);
+			LOGGER.error("ERROR", e);
 		} /*
 			 * finally { try { if (response != null) { response.close(); } if
 			 * (httpClient != null) { httpClient.close(); } }catch (Exception
@@ -227,16 +225,16 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 			RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(60000)
 					.setSocketTimeout(60000).setConnectTimeout(60000).build();
 			httpDelete.setConfig(requestConfig);
-			logger.info("delete companyLogo doDelete----url:[" + url + "]");
+			LOGGER.info("delete companyLogo doDelete----url:[" + url + "]");
 			response = httpClient.execute(httpDelete);
 			if (response.getStatusLine().getStatusCode() == 200) {
 				b = true;
 			}
 			String responseJson = EntityUtils.toString(response.getEntity(), "UTF-8");
-			logger.info("delete logo responseJson:" + responseJson);
+			LOGGER.info("delete logo responseJson:" + responseJson);
 
 		} catch (Exception e) {
-			logger.error("ERROR", e);
+			LOGGER.error("ERROR", e);
 		} /*
 			 * finally { try { if (response != null) { response.close(); } if
 			 * (httpClient != null) { httpClient.close(); } }catch (Exception
@@ -282,26 +280,26 @@ public class CustomerDaoImpl extends JdbcDaoSupport implements CustomerDao {
 		GetRequest request = GetRequest.newInstance().setUrl(sb.toString());
 		try {
 			if (null == generalUserBean) {
-				logger.info("requesting url: " + sb.toString());
+				LOGGER.info("requesting url: " + sb.toString());
 				ServiceCallResult result = HttpUtil.issueGetRequest(request);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					if (StringUtils.isBlank(result.getResponseString())) {
-						logger.error("getEmployeeProfile from user-service response 200  but EmployeeBean is null");
+						LOGGER.error("getEmployeeProfile from user-service response 200  but EmployeeBean is null");
 						return null;
 					}
 					generalUserBean = JsonUtil.mapToObject(result.getResponseString(), EmployeeBean.class);
-					logger.info("saving employee into redis employee id: " + employeeId);
+					LOGGER.info("saving employee into redis employee id: " + employeeId);
 					RedisUtil.hset("employeeCache", employeeId, JSON.toJSONString(generalUserBean), RedisUtil.HOUR * 2);
 					// RedisUtil.set("employeeCache",
 					// JSON.toJSONString(generalUserBean),RedisUtil.HOUR * 2);
 					return generalUserBean;
 				} else {
-					logger.error("getEmployeeProfile from user-service error: " + result.getStatusCode() + ", "
+					LOGGER.error("getEmployeeProfile from user-service error: " + result.getStatusCode() + ", "
 							+ result.getResponseString());
 					return null;
 				}
 			} else {
-				logger.info("get employee from redis successfully employee id: " + employeeId);
+				LOGGER.info("get employee from redis successfully employee id: " + employeeId);
 				return generalUserBean;
 			}
 		} catch (IOException e) {

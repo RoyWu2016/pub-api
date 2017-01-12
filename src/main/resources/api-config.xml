@@ -8,6 +8,9 @@
     <context:spring-configured/>
     <!--<bean id="contextApplicationContextProvider" class="com.ai.commons.spring.ApplicationContextProvider"/>-->
  	<context:component-scan base-package="com.ai.commons.service" />
+    <context:property-placeholder
+            location="classpath:env/profile-${active.profile}.properties"
+            ignore-unresolvable="true" />
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 
     <bean id="tokenJWTService" class="com.ai.commons.services.TokenJWTService" />
@@ -61,17 +64,15 @@
     <bean id="orderService" class="com.ai.api.service.impl.OrderServiceImpl" />
     <bean id="reportService" class="com.ai.api.service.impl.ReportServiceImpl" />
 
-    <bean id="customerDao" class="com.ai.api.dao.impl.CustomerDaoImpl">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+    <bean id="customerDao" class="com.ai.api.dao.impl.CustomerDaoImpl"/>
 
-    <bean id="userDao" class="com.ai.api.dao.impl.UserDaoImpl">
-        <property name="jdbcTemplate" ref="jdbcTemplate"/>
-    </bean>
+    <!--<bean id="userDao" class="com.ai.api.dao.impl.UserDaoImpl">-->
+        <!--<property name="jdbcTemplate" ref="jdbcTemplate"/>-->
+    <!--</bean>-->
 
-    <bean id="loginLogDao" class="com.ai.api.dao.impl.LoginLogDaoImpl">
-        <property name="jdbcTemplate" ref="jdbcTemplate"/>
-    </bean>
+    <!--<bean id="loginLogDao" class="com.ai.api.dao.impl.LoginLogDaoImpl">-->
+        <!--<property name="jdbcTemplate" ref="jdbcTemplate"/>-->
+    <!--</bean>-->
 
     <bean id="draftDao" class="com.ai.api.dao.impl.DraftDaoImpl"/>
     <bean id="tokenJWTDao" class="com.ai.api.dao.impl.TokenJWTDaoImpl"/>
