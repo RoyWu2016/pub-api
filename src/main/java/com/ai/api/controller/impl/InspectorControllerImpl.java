@@ -4,7 +4,8 @@ import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.InspectorController;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.psi.OrderReportList;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -18,10 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Project Name    : Public-API
@@ -111,31 +108,6 @@ public class InspectorControllerImpl implements InspectorController {
     }
 
     @Override
-    @RequestMapping(value = "/report/reports-for-inspector/{inspectorId}", method = RequestMethod.GET)
-    public ResponseEntity<ApiCallResult> getAllReportsByInspectorId(@PathVariable("inspectorId") String inspectorId) {
-        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
-                .append("/report/reports-for-inspector/").append(inspectorId);
-        ApiCallResult callResult = new ApiCallResult();
-        try {
-            logger.info("getAllReportsByInspectorId requesting: " + url.toString());
-            RestTemplate restTemplate = new RestTemplate();
-//            OrderReportList[] result = restTemplate.getForObject(url.toString(),OrderReportList[].class);
-//            if (null!=result && result.length>0) {
-            JSONObject result = restTemplate.getForObject(url.toString(),JSONObject.class);
-            if (null!=result) {
-                callResult.setContent(result);
-            }else {
-                callResult.setMessage("get empty result from ip-service!");
-            }
-            return new ResponseEntity<>(callResult, HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-            callResult.setMessage("Exception: " + e.toString());
-            return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
     @RequestMapping(value = "/report/{orderId}/{productId}/{orderNumber}", method = RequestMethod.GET)
     public ResponseEntity<ApiCallResult> getReportDetail(@PathVariable("orderId") String orderId,
                                                          @PathVariable("productId") String productId,
@@ -147,30 +119,6 @@ public class InspectorControllerImpl implements InspectorController {
             logger.info("getReportDetail requesting: " + url.toString());
             RestTemplate restTemplate = new RestTemplate();
 //            Map<String,String> result = restTemplate.getForObject(url.toString(),HashMap.class);
-            JSONObject result = restTemplate.getForObject(url.toString(),JSONObject.class);
-            if (null!=result) {
-                callResult.setContent(result);
-            }else {
-                callResult.setMessage("get empty result from ip-service!");
-            }
-            return new ResponseEntity<>(callResult, HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-            callResult.setMessage("Exception: " + e.toString());
-            return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    @RequestMapping(value = "/report/list-reports-for-inspector/{inspectorId}", method = RequestMethod.GET)
-    public ResponseEntity<ApiCallResult> getAllReports(@PathVariable("inspectorId") String inspectorId) {
-        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
-                .append("/report/list-reports-for-inspector/").append(inspectorId);
-        ApiCallResult callResult = new ApiCallResult();
-        try {
-            logger.info("getAllReports requesting: " + url.toString());
-            RestTemplate restTemplate = new RestTemplate();
-//            Map<String,Map<String,String>> result = restTemplate.getForObject(url.toString(),HashMap.class);
             JSONObject result = restTemplate.getForObject(url.toString(),JSONObject.class);
             if (null!=result) {
                 callResult.setContent(result);
@@ -232,7 +180,7 @@ public class InspectorControllerImpl implements InspectorController {
     }
 
     @Override
-    @RequestMapping(value = "/inspector/products-for-protocol", method = RequestMethod.GET)
+    @RequestMapping(value = "/orders/protocol", method = RequestMethod.GET)
     public ResponseEntity<ApiCallResult> getAllProductsForProtocol() {
         StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
                 .append("/report/products-for-protocol");
@@ -240,7 +188,7 @@ public class InspectorControllerImpl implements InspectorController {
         try {
             logger.info("getAllProductsForProtocol requesting: " + url.toString());
             RestTemplate restTemplate = new RestTemplate();
-            JSONObject result = restTemplate.getForObject(url.toString(),JSONObject.class);
+            JSONArray result = restTemplate.getForObject(url.toString(),JSONArray.class);
             if (null!=result) {
                 callResult.setContent(result);
             }else {
@@ -255,7 +203,7 @@ public class InspectorControllerImpl implements InspectorController {
     }
 
     @Override
-    @RequestMapping(value = "/inspector/reports-for-supervisor", method = RequestMethod.GET)
+    @RequestMapping(value = "/orders/supervision", method = RequestMethod.GET)
     public ResponseEntity<ApiCallResult> getAllReportsForSupervisor() {
         StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
                 .append("/report/reports-for-supervisor");
@@ -263,7 +211,56 @@ public class InspectorControllerImpl implements InspectorController {
         try {
             logger.info("getAllReportsForSupervisor requesting: " + url.toString());
             RestTemplate restTemplate = new RestTemplate();
-            JSONObject result = restTemplate.getForObject(url.toString(),JSONObject.class);
+            JSONArray result = restTemplate.getForObject(url.toString(),JSONArray.class);
+            if (null!=result) {
+                callResult.setContent(result);
+            }else {
+                callResult.setMessage("get empty result from ip-service!");
+            }
+            return new ResponseEntity<>(callResult, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+            callResult.setMessage("Exception: " + e.toString());
+            return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    @RequestMapping(value = "/orders/inspection/{inspectorId}", method = RequestMethod.GET)
+    public ResponseEntity<ApiCallResult> getAllReportsByInspectorId(@PathVariable("inspectorId") String inspectorId) {
+        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
+                .append("/report/reports-for-inspector/").append(inspectorId);
+        ApiCallResult callResult = new ApiCallResult();
+        try {
+            logger.info("getAllReportsByInspectorId requesting: " + url.toString());
+            RestTemplate restTemplate = new RestTemplate();
+//            OrderReportList[] result = restTemplate.getForObject(url.toString(),OrderReportList[].class);
+//            if (null!=result && result.length>0) {
+            JSONArray result = restTemplate.getForObject(url.toString(),JSONArray.class);
+            if (null!=result) {
+                callResult.setContent(result);
+            }else {
+                callResult.setMessage("get empty result from ip-service!");
+            }
+            return new ResponseEntity<>(callResult, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+            callResult.setMessage("Exception: " + e.toString());
+            return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    @RequestMapping(value = "/orders-map/inspection/{inspectorId}", method = RequestMethod.GET)
+    public ResponseEntity<ApiCallResult> getAllReports(@PathVariable("inspectorId") String inspectorId) {
+        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
+                .append("/report/list-reports-for-inspector/").append(inspectorId);
+        ApiCallResult callResult = new ApiCallResult();
+        try {
+            logger.info("getAllReports requesting: " + url.toString());
+            RestTemplate restTemplate = new RestTemplate();
+//            Map<String,Map<String,String>> result = restTemplate.getForObject(url.toString(),HashMap.class);
+            String result = restTemplate.getForObject(url.toString(),String.class);
             if (null!=result) {
                 callResult.setContent(result);
             }else {
