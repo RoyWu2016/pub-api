@@ -4,24 +4,25 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.lab.dao;
+package com.ai.api.lab.service;
 
 import java.io.IOException;
 import java.util.List;
 
-import com.ai.aims.services.model.OrderAttachment;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ai.aims.services.model.OrderMaster;
-import com.ai.aims.services.model.OrderTestAssignment;
 import com.ai.api.bean.OrderSearchBean;
+import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
 
 /***************************************************************************
  * <PRE>
  *  Project Name    : api
  *
- *  Package Name    : com.ai.api.lab.dao
+ *  Package Name    : com.ai.api.lab.service
  *
- *  File Name       : LTOrderDao.java
+ *  File Name       : LTOrderService.java
  *
  *  Creation Date   : Dec 6, 2016
  *
@@ -34,20 +35,17 @@ import com.ai.commons.beans.ApiCallResult;
  *
  * </PRE>
  ***************************************************************************/
+
 @SuppressWarnings("rawtypes")
-public interface LTOrderDao {
-	
-	public List<OrderSearchBean> searchLTOrders(String compId, String orderStatus, Integer pageNumber, Integer pageSize, String direction) throws IOException;
-	
-	public OrderMaster findOrder(String orderId) throws IOException;
-	
-	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException;
-	
-	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException;
+public interface LTReportService {
 
-	public ApiCallResult editOrderStatus(String userId, OrderMaster order) throws IOException;
+	public List<OrderSearchBean> findReports(String userId, Integer pageNumber, Integer pageSize) throws IOException, AIException;
+	
+	public OrderMaster findReport(String reportId) throws IOException;
 
-	public ApiCallResult editOrderTestAssignmentStatus(String userId, OrderTestAssignment testAssignment) throws IOException;
+	public ApiCallResult editReportStatus(String userId, String orderId, String status) throws IOException;
 
-	public OrderAttachment getOrderAttachment(String attachmentId) throws IOException;
+	public ApiCallResult editReportTestStatus(String userId, String reportId, String testId, String status) throws IOException;
+
+	public void downloadReportAttachment(String attachmentId, HttpServletResponse response) throws IOException;
 }
