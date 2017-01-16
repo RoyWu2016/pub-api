@@ -364,6 +364,9 @@ public class InspectorResultControllerImpl implements InspectorResultController 
         try {
             logger.info("getFile - fileIds : " + fileIds);
             InputStream is = myFileService.getFileService().getFile(fileIds);
+            FileMetaBean fileDetails = myFileService.getFileService().getFileInfoById(fileIds);
+            String fileName = fileDetails.getFileName();
+            response.setHeader("Content-Type", "image/jpeg; filename=\"" + fileName );
             FileCopyUtils.copy(is, response.getOutputStream());
             response.flushBuffer();
         } catch (Exception e) {
