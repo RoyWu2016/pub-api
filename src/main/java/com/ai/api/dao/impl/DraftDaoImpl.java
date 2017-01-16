@@ -160,48 +160,6 @@ public class DraftDaoImpl implements DraftDao {
 	}
 
 	@Override
-	public ApiInspectionBookingBean getDraftNew(String userId,String compId, String parentId, String draftId) {
-		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		url.append("/draft/api/getDraft/").append(userId).append("/").append(draftId);
-		try {
-			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-
-				ObjectMapper objectMapper = new ObjectMapper();
-				JsonNode re = objectMapper.readTree(result.getResponseString());
-//				ObjectNode node = (ObjectNode) new ObjectMapper().readTree(result.getResponseString());
-				String data = JsonUtil.mapToJson(re.get("content"));
-//				String content = re.get("content").asText();
-				System.out.println(re);
-//				ApiInspectionBookingBean draft  = objectMapper.treeToValue(re.get("content"), ApiInspectionBookingBean.class);
-
-				InspectionBookingBean smallObj = objectMapper.readValue(data, InspectionBookingBean.class);
-				ApiInspectionBookingBean finalRe = new ApiInspectionBookingBean();
-				BeanUtil.convert2ApiInspectionBookingBean(finalRe, smallObj);
-				return finalRe;
-//				ApiInspectionBookingBean smallObj = objectMapper.readValue(data, ApiInspectionBookingBean.class);
-//				return smallObj;
-//				return JsonUtil.mapToObject(data, ApiInspectionBookingBean.class);
-//				return draft;
-//				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
-//				ApiCallResult re = JSONObject.parseObject(result.getResponseString(), ApiCallResult.class);
-//				JSONObject object = JSONObject.parseObject(result.getResponseString());
-//				Object arrayStr = object.get("content");
-//				return JsonUtil.mapToObject(arrayStr + "", ApiInspectionBookingBean.class);
-
-			} else {
-				logger.error("create draft error from psi service : " + result.getStatusCode() +
-						", " + result.getResponseString());
-			}
-
-		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-		}
-		return null;
-	}
-
-
-	@Override
 	public boolean saveDraft(String userId,String companyId,String parentId,InspectionBookingBean draft) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		url.append("/draft/api/updateDraft/");
