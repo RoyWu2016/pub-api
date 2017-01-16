@@ -103,20 +103,6 @@ public class DraftServiceImpl implements DraftService {
 	}
 
 	@Override
-	public ApiInspectionBookingBean getDraftNew(String userId, String draftId) throws Exception {
-		String companyId = "null";
-		String parentId = "null";
-		UserBean user = userService.getCustById(userId);
-		if (null!=user){
-			parentId = user.getCompany().getParentCompanyId();
-			if (parentId == null) parentId = "";
-			companyId = user.getCompany().getId();
-		}
-		return draftDao.getDraftNew(userId,companyId,parentId, draftId);
-	}
-
-
-	@Override
 	public boolean saveDraft(String userId,InspectionBookingBean draft) throws Exception {
 		String companyId = "null";
 		String parentId = "null";

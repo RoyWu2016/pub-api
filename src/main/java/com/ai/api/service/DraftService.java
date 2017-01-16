@@ -28,35 +28,32 @@ import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
  * </PRE>
  ***************************************************************************/
 
-
 public interface DraftService {
 
 	boolean deleteDraftFromPsi(String userId, String draftIds) throws Exception;
 
-    InspectionBookingBean createDraft(String userId, String serviceType) throws Exception;
+	InspectionBookingBean createDraft(String userId, String serviceType) throws Exception;
 
-    InspectionBookingBean createDraftFromPreviousOrder(String userId, String orderId,
-                                                       String serviceType) throws Exception;
+	InspectionBookingBean createDraftFromPreviousOrder(String userId, String orderId, String serviceType)
+			throws Exception;
 
-    InspectionBookingBean getDraft(String userId, String draftId) throws Exception;
+	InspectionBookingBean getDraft(String userId, String draftId) throws Exception;
 
-	ApiInspectionBookingBean getDraftNew(String userId, String draftId) throws Exception;
+	boolean saveDraft(String userId, InspectionBookingBean draft) throws Exception;
 
-	boolean saveDraft(String userId,InspectionBookingBean draft) throws Exception;
+	InspectionProductBookingBean addProduct(String userId, String draftId) throws Exception;
 
-    InspectionProductBookingBean addProduct(String userId,String draftId) throws Exception;
+	boolean deleteProduct(String userId, String productId) throws Exception;
 
+	OrderPriceMandayViewBean calculatePricing(String userId, String draftId, String samplingLevel,
+			String measurementSamplingSize) throws Exception;
 
-    boolean deleteProduct(String userId,String productId) throws Exception;
-    
-    OrderPriceMandayViewBean calculatePricing(String userId, String draftId,
-			String samplingLevel,String measurementSamplingSize) throws Exception;
-	
-	 List<DraftOrder> searchDraft(String userId, String serviceType,String startDate, String endDate, String keyWord, String pageNumber, String pageSize)  throws IOException, AIException;
+	List<DraftOrder> searchDraft(String userId, String serviceType, String startDate, String endDate, String keyWord,
+			String pageNumber, String pageSize) throws IOException, AIException;
 
 	/*
-	boolean saveProduct(String userId,InspectionProductBookingBean draftProduct) throws Exception;
-	boolean saveDraftStep(String userId,String draftId,List<DraftStepBean> draftSteps) throws Exception;
-	*/
+	 * boolean saveProduct(String userId,InspectionProductBookingBean
+	 * draftProduct) throws Exception; boolean saveDraftStep(String
+	 * userId,String draftId,List<DraftStepBean> draftSteps) throws Exception;
+	 */
 }
-

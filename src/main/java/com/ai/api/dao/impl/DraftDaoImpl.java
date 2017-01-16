@@ -4,8 +4,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.DraftDao;
+import com.ai.commons.util.BeanUtil;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.PageBean;
@@ -18,13 +27,6 @@ import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 /***************************************************************************
  * <PRE>
@@ -156,44 +158,6 @@ public class DraftDaoImpl implements DraftDao {
 		}
 		return null;
 	}
-
-	@Override
-	public ApiInspectionBookingBean getDraftNew(String userId,String compId, String parentId, String draftId) {
-		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		url.append("/draft/api/getDraft/").append(userId).append("/").append(draftId);
-		try {
-			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-
-				ObjectMapper objectMapper = new ObjectMapper();
-				JsonNode re = objectMapper.readTree(result.getResponseString());
-//				ObjectNode node = (ObjectNode) new ObjectMapper().readTree(result.getResponseString());
-				String data = JsonUtil.mapToJson(re.get("content"));
-//				String content = re.get("content").asText();
-				System.out.println(data);
-//				ApiInspectionBookingBean draft  = objectMapper.treeToValue(re.get("content"), ApiInspectionBookingBean.class);
-
-				ApiInspectionBookingBean smallObj = objectMapper.readValue(data, ApiInspectionBookingBean.class);
-				return smallObj;
-//				return JsonUtil.mapToObject(data, ApiInspectionBookingBean.class);
-//				return draft;
-//				return JsonUtil.mapToObject(result.getResponseString(), InspectionBookingBean.class);
-//				ApiCallResult re = JSONObject.parseObject(result.getResponseString(), ApiCallResult.class);
-//				JSONObject object = JSONObject.parseObject(result.getResponseString());
-//				Object arrayStr = object.get("content");
-//				return JsonUtil.mapToObject(arrayStr + "", ApiInspectionBookingBean.class);
-
-			} else {
-				logger.error("create draft error from psi service : " + result.getStatusCode() +
-						", " + result.getResponseString());
-			}
-
-		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-		}
-		return null;
-	}
-
 
 	@Override
 	public boolean saveDraft(String userId,String companyId,String parentId,InspectionBookingBean draft) {

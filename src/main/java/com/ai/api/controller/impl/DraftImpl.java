@@ -130,31 +130,6 @@ public class DraftImpl implements Draft {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/draft-new/{draftId}", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getDraftNew(@PathVariable final String userId,
-	                                              @PathVariable final String draftId) {
-
-		ApiCallResult result = new ApiCallResult();
-		if (userId == null || userId.isEmpty() || draftId == null || draftId.isEmpty()) {
-			logger.error("userId:" + userId + ", draftId:" + draftId + " can't be null!");
-			result.setMessage("User ID or draft ID can't be empty!");
-			return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
-		}
-
-		try {
-			ApiInspectionBookingBean draft = draftService.getDraftNew(userId, draftId);
-			result.setContent(draft);
-			return new ResponseEntity<>(result, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("get draft error: " + ExceptionUtils.getFullStackTrace(e));
-			result.setMessage("Get error while getting draft " + draftId);
-		}
-		return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-
-
-	@Override
-	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/draft/{draftId}", method = RequestMethod.PUT)
 	public ResponseEntity<Boolean> saveDraft(@PathVariable("userId") String userId,
 	                                         @PathVariable("draftId") String draftId,

@@ -38,8 +38,6 @@ public interface DraftDao {
 
     InspectionBookingBean getDraft(String userId,String compId, String parentId, String draftId);
 
-	ApiInspectionBookingBean getDraftNew(String userId,String compId, String parentId, String draftId);
-
 	boolean saveDraft(String userId,String companyId,String parentId,InspectionBookingBean draft);
 
     InspectionProductBookingBean addProduct(String userId,String companyId,String parentId,String draftId);
