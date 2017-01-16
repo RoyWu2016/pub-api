@@ -2,7 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
 
     <context:annotation-config/>
     <context:spring-configured/>
@@ -97,7 +100,18 @@
     
      <bean id="fileService" class="com.ai.commons.services.FileService" p:fileServiceUrl="${file.service.lb.url}" p:localTempDir="${local.temp.folder}"/>
 
-  
+    <bean id="controllerLog" class="com.ai.api.util.ControllerLog" />
+    <!-- AOP configuration -->
+    <aop:config>
+        <!-- Pointcuts -->
+        <aop:pointcut id="controllerLogPointcut" expression="execution(* com.ai.api.controller.impl.*.*(..) )" />
+        <!-- Aspects -->
+        <aop:aspect id="controllerLogAspect" ref="controllerLog">
+             <!--<aop:before method="log" pointcut="execution(* *.*.*.*.*.*.getUserProfile(..))" />-->
+            <!-- <aop:after method="logAfter" pointcut-ref="controllerLogPointcut" /> -->
+             <aop:around method="logAround" pointcut-ref="controllerLogPointcut" />
+        </aop:aspect>
+    </aop:config>
     
  	
     <!-- Version bean for application information -->
