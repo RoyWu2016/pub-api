@@ -1,6 +1,6 @@
 package com.ai.api.dao;
 
-import com.ai.api.bean.LoginLog;
+import com.ai.commons.beans.LoginLogBean;
 
 /**
  * Project Name    : Public-API
@@ -11,5 +11,5 @@ import com.ai.api.bean.LoginLog;
  * History         : TODO
  */
 public interface LoginLogDao {
-    int addLog(LoginLog loginLog);
+    int addLog(LoginLogBean loginLog);
 }

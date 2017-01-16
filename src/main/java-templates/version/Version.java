@@ -41,9 +41,9 @@ public class Version {
 	private static final String BUILD_DATE = "${timestamp}";
 	private static final String BUILD_VERSION = "${project.version}";
 
-	@Autowired
-	@Qualifier("dataSource")
-	private DataSource dataSource;
+//	@Autowired
+//	@Qualifier("dataSource")
+//	private DataSource dataSource;
 
 	/**
 	 * Create a new instance of the Version class.
@@ -77,7 +77,6 @@ public class Version {
 
 	/**
 	 * Use this api to test the database connection.
-	 */
 	@ResponseBody
 	@RequestMapping(value = { "/base/db" }, method = RequestMethod.GET, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String testDbConnection() {
@@ -105,4 +104,5 @@ public class Version {
 			}
 		}
 	}
+	 */
 }
