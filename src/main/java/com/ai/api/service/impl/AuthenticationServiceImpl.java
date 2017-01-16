@@ -72,8 +72,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         ServiceCallResult result = new ServiceCallResult();
         if (userType.toLowerCase().equals(Consts.Http.USER_TYPE_CLIENT)){
 	        //password should be in MD5 format
-            String pwdMd5 = DigestUtils.shaHex(password);
-            logger.info("getting client from DB ... userName:"+userName);
+//            String pwdMd5 = DigestUtils.shaHex(password);
+            logger.info("getting client from user-service ... userName:"+userName);
             GeneralUserBean client = null;
             try {
                 StringBuilder url = new StringBuilder(config.getSsoUserServiceUrl())
@@ -86,61 +86,71 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 if (httpResult.getStatusCode() == HttpStatus.OK.value() && httpResult.getReasonPhase().equalsIgnoreCase("OK")) {
                     ApiCallResult callResult = JSON.parseObject(httpResult.getResponseString(), ApiCallResult.class);
                     client = JSON.toJavaObject((JSONObject)callResult.getContent(),GeneralUserBean.class);
+                }else {
+                    logger.info("can't get client from user-service!["+httpResult.getStatusCode()+"]"+httpResult.getResponseString());
+                    result.setResponseString(httpResult.getResponseString());
+                    result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+                    result.setReasonPhase(httpResult.getResponseString());
+                    return result;
                 }
 //                client = userDBDao.getClientUser(userName);
             }catch (Exception e){
-                logger.error("can not get client!",e);
+                logger.error("Error Exception!can't get client from user-service!",e);
+                result.setResponseString("Error Exception!can't get client from user-service!"+e);
+                result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+                result.setReasonPhase("Error Exception!can't get client from user-service!"+e);
+                return result;
             }
             if (null!=client && null!=client.getUserId()) {
-                if (password.equalsIgnoreCase(client.getPassword()) || pwdMd5.equalsIgnoreCase(client.getPassword())){
+//                if (password.equalsIgnoreCase(client.getPassword()) || pwdMd5.equalsIgnoreCase(client.getPassword())){
                     //Generate the token based on the User
-                    TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(), client.getUserId(),
-                            IDGenerator.uuid(), userType);
-                    if (tokenSession != null) {
-                        String token = JSON.toJSONString(tokenSession);
-                        result.setResponseString(token);
-                        result.setStatusCode(HttpServletResponse.SC_OK);
-                        result.setReasonPhase("User credential verified and token generated.");
-                        try {
-                            LoginLogBean loginLog = new LoginLogBean();
-                            loginLog.setLogin(userName);
-                            loginLog.setLoginType("Login");
-                            loginLog.setLoginTime(new Date());
-                            loginLog.setLoginServer("PublicAPI");
-                            loginLog.setLoginIP(HttpUtil.getIpAddr(request));
-                            StringBuilder url = new StringBuilder(config.getSsoUserServiceUrl())
-                                    .append("/history/login-history");
-                            ServiceCallResult httpResult = HttpUtil.issuePostRequest(url.toString(),null,loginLog);
-                            if (httpResult.getStatusCode() == HttpStatus.OK.value() && httpResult.getReasonPhase().equalsIgnoreCase("OK")) {
-                                ApiCallResult<Boolean> callResult = JSON.parseObject(httpResult.getResponseString(), ApiCallResult.class);
-                                boolean b = callResult.getContent();
-                                logger.info("add loginLog done! "+(b?"success!":"failed!"+callResult.getMessage()));
-                            }
+                TokenSession tokenSession = tokenJWTDao.generateToken(client.getLogin(), client.getUserId(),
+                        IDGenerator.uuid(), userType);
+                if (tokenSession != null) {
+                    String token = JSON.toJSONString(tokenSession);
+                    result.setResponseString(token);
+                    result.setStatusCode(HttpServletResponse.SC_OK);
+                    result.setReasonPhase("User credential verified and token generated.");
+                    try {
+                        LoginLogBean loginLog = new LoginLogBean();
+                        loginLog.setLogin(userName);
+                        loginLog.setLoginType("Login");
+                        loginLog.setLoginTime(new Date());
+                        loginLog.setLoginServer("PublicAPI");
+                        loginLog.setLoginIP(HttpUtil.getIpAddr(request));
+                        StringBuilder url = new StringBuilder(config.getSsoUserServiceUrl())
+                                .append("/history/login-history");
+                        ServiceCallResult httpResult = HttpUtil.issuePostRequest(url.toString(),null,loginLog);
+                        if (httpResult.getStatusCode() == HttpStatus.OK.value() && httpResult.getReasonPhase().equalsIgnoreCase("OK")) {
+                            ApiCallResult<Boolean> callResult = JSON.parseObject(httpResult.getResponseString(), ApiCallResult.class);
+                            boolean b = callResult.getContent();
+                            logger.info("add loginLog done! "+(b?"success!":"failed!"+callResult.getMessage()));
+                        }
 //                            int i =loginLogDao.addLog(loginLog);
 //                            if (i>0){
 //                                logger.info("add loginLog done! "+loginLog);
 //                            }
-                        }catch (Exception e){
-                            logger.error("add loginLog failed.",e);
-                        }
-                    } else {
-                        result.setResponseString("");
-                        result.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                        result.setReasonPhase("Error occurred while generating token.");
+                    }catch (Exception e){
+                        logger.error("add loginLog failed.",e);
                     }
-                }else {
-                    logger.info("The username and password doesn't match! input-PW:{"+password+"},SHA-PW:{"+pwdMd5+"},DB-PW:{"+client.getPassword()+"}");
-                    result.setResponseString("The username and password doesn't match");
-                    result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                    result.setReasonPhase("The username and password doesn't match.");
+                } else {
+                    result.setResponseString("");
+                    result.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    result.setReasonPhase("Error occurred while generating token.");
                 }
+//                }else {
+//                    logger.info("The username and password doesn't match! input-PW:{"+password+"},SHA-PW:{"+pwdMd5+"},DB-PW:{"+client.getPassword()+"}");
+//                    result.setResponseString("The username and password doesn't match");
+//                    result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+//                    result.setReasonPhase("The username and password doesn't match.");
+//                }
             }else {
-                result.setResponseString("The user doesn't exist");
+                result.setResponseString("convert response result to clientBean failed!");
                 result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-                result.setReasonPhase("The user doesn't exist.");
+                result.setReasonPhase("convert response result to clientBean failed!");
             }
         }else if(userType.toLowerCase().equals(Consts.Http.USER_TYPE_EMPLOYEE)){
-            logger.info("getting employee from DB ... userName:"+userName);
+            logger.info("getting employee from user-service ... userName:"+userName);
             UserForToken user = null;
             try {
                 StringBuilder url = new StringBuilder(config.getSsoUserServiceUrl())
@@ -153,14 +163,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 if (httpResult.getStatusCode() == HttpStatus.OK.value() && httpResult.getReasonPhase().equalsIgnoreCase("OK")) {
                     ApiCallResult callResult = JSON.parseObject(httpResult.getResponseString(), ApiCallResult.class);
                     user = JSON.toJavaObject((JSONObject)callResult.getContent(),UserForToken.class);
+                }else {
+                    logger.info("can't get user from user-service!["+httpResult.getStatusCode()+"]"+httpResult.getResponseString());
+                    result.setResponseString(httpResult.getResponseString());
+                    result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+                    result.setReasonPhase(httpResult.getResponseString());
+                    return result;
                 }
 //                user = userDBDao.getEmployeeUser(userName);
             }catch (Exception e){
-                logger.error("can not get user!",e);
+                logger.error("Error Exception!can't get user from user-service!",e);
+                result.setResponseString("Error Exception!can't get user from user-service!"+e);
+                result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+                result.setReasonPhase("Error Exception!can't get user from user-service!"+e);
+                return result;
             }
 //            logger.info("employee-----userId-[ "+user.getUserId()+"] pw-["+user.getPassword()+"]");
 	        //password should be in MD5 format
-            if (null!=user && null != user.getUserId() && password.equalsIgnoreCase(user.getPassword())){
+//            if (null!=user && null != user.getUserId() && password.equalsIgnoreCase(user.getPassword())){
+            if (null!=user && null != user.getUserId()){
                 //Generate the token based on the User
                 TokenSession tokenSession = tokenJWTDao.generateToken(user.getLogin(), user.getUserId(),
 		                IDGenerator.uuid(), userType);
