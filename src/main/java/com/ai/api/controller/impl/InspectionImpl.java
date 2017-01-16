@@ -92,11 +92,11 @@ public class InspectionImpl implements Inspection {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/inspection-psi-order", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/inspection-order", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createOrderByDraft(@PathVariable("userId") String userId,
 			@RequestParam("draftId") String draftId) {
 		// TODO Auto-generated method stub
-		logger.info("invoke: " + "/user/" + userId + "/inspection-psi-order?draftId=" + draftId);
+		logger.info("invoke: " + "/user/" + userId + "/inspection-order?draftId=" + draftId);
 		ApiCallResult result = inspectionService.createOrderByDraft(userId, draftId);
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
@@ -107,11 +107,11 @@ public class InspectionImpl implements Inspection {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/inspection-psi-order/{orderId}/editing", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/inspection-order/{orderId}/editing", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> editOrder(@PathVariable("userId") String userId,
 			@PathVariable("orderId") String orderId) {
 		// TODO Auto-generated method stub
-		logger.info("invoke: " + "/user/" + userId + "/inspection-psi-order/" + orderId + "/editing");
+		logger.info("invoke: " + "/user/" + userId + "/inspection-order/" + orderId + "/editing");
 		ApiCallResult result = inspectionService.editOrder(userId, orderId);
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
@@ -122,11 +122,11 @@ public class InspectionImpl implements Inspection {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/inspection-psi-order/{orderId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/inspection-order/{orderId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getOrderDetail(@PathVariable("userId") String userId,
 			@PathVariable("orderId") String orderId) {
 		// TODO Auto-generated method stub
-		logger.info("invoke: " + "/user/" + userId + "/inspection-psi-order/" + orderId);
+		logger.info("invoke: " + "/user/" + userId + "/inspection-order/" + orderId);
 		ApiCallResult result = inspectionService.getOrderDetail(userId, orderId);
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
@@ -137,11 +137,11 @@ public class InspectionImpl implements Inspection {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/inspection-psi-order/{orderId}/inspection-draft/{draftId}/saved", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/inspection-order/{orderId}/inspection-draft/{draftId}/saved", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> saveOrderByDraft(@PathVariable("userId") String userId,
 			@PathVariable("draftId") String draftId, @PathVariable("orderId") String orderId) {
 		// TODO Auto-generated method stub
-		logger.info("invoke: " + "/user/" + userId + "/inspection-psi-order/" + orderId + "/inspection-draft/" + draftId
+		logger.info("invoke: " + "/user/" + userId + "/inspection-order/" + orderId + "/inspection-draft/" + draftId
 				+ "/saved");
 		ApiCallResult result = inspectionService.saveOrderByDraft(userId, draftId, orderId);
 		if (null == result.getMessage()) {
