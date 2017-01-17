@@ -33,6 +33,8 @@
 		<quartz.version>2.2.1</quartz.version>
 		<aims.service.model.version>1.0-SNAPSHOT</aims.service.model.version>
 		<program.service.model.version>0.0.1-SNAPSHOT</program.service.model.version>
+        <!-- AspectJ -->
+        <aspectj.version>1.7.4</aspectj.version>
 	</properties>
 
 
@@ -205,7 +207,25 @@
 			<groupId>com.ai.program</groupId>
 			<artifactId>program-services-model</artifactId>
 			<version>${program.service.model.version}</version>
-		</dependency>				
+		</dependency>
+
+        <!-- AspectJ dependencies -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>${aspectj.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
 	</dependencies>
 
 	<repositories>

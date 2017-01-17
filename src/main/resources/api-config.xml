@@ -5,29 +5,34 @@
        xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
 
     <context:annotation-config/>
     <context:spring-configured/>
     <!--<bean id="contextApplicationContextProvider" class="com.ai.commons.spring.ApplicationContextProvider"/>-->
- 	<context:component-scan base-package="com.ai.commons.service" />
+    <context:component-scan base-package="com.ai.commons.service"/>
+
+    <!-- Enable AspectJ style of Spring AOP -->
+    <aop:aspectj-autoproxy />
+
     <context:property-placeholder
             location="classpath:env/profile-${active.profile}.properties"
-            ignore-unresolvable="true" />
+            ignore-unresolvable="true"/>
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="maxUploadSize" value="209715200" />
-        <property name="defaultEncoding" value="UTF-8" />
+        <property name="maxUploadSize" value="209715200"/>
+        <property name="defaultEncoding" value="UTF-8"/>
     </bean>
 
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 
-    <bean id="tokenJWTService" class="com.ai.commons.services.TokenJWTService" />
+    <bean id="tokenJWTService" class="com.ai.commons.services.TokenJWTService"/>
 
     <!--<bean id="customerService" class="com.ai.api.service.impl.CustomerServiceImpl" />-->
 
     <!--<bean id="permissionHandler" class="com.ai.commons.security.PermissionHandler"-->
-          <!--p:userServiceUrl="${user.service.url}" p:module="${securityModule}"/>-->
+    <!--p:userServiceUrl="${user.service.url}" p:module="${securityModule}"/>-->
 
     <!--
     <bean id="permissionHandler" class="com.ai.commons.security.PermissionHandler"
@@ -62,62 +67,66 @@
           p:excleLoggoCommonSource="${resource.share.folder}"
           p:lotusApiUrl="${lotus.api.url}"/>
 
-    <bean id="redisUtil" class="com.ai.api.util.RedisUtil" >
+    <bean id="redisUtil" class="com.ai.api.util.RedisUtil">
         <property name="serviceConfig" ref="serviceConfig"/>
     </bean>
 
     <bean id="app" class="com.ai.api.App"/>
-    <bean id="draftService" class="com.ai.api.service.impl.DraftServiceImpl" />
-    <bean id="userService" class="com.ai.api.service.impl.UserServiceImpl" />
-    <bean id="parameterService" class="com.ai.api.service.impl.ParameterServiceImpl" />
-    <bean id="orderService" class="com.ai.api.service.impl.OrderServiceImpl" />
-    <bean id="reportService" class="com.ai.api.service.impl.ReportServiceImpl" />
+    <bean id="draftService" class="com.ai.api.service.impl.DraftServiceImpl"/>
+    <bean id="userService" class="com.ai.api.service.impl.UserServiceImpl"/>
+    <bean id="parameterService" class="com.ai.api.service.impl.ParameterServiceImpl"/>
+    <bean id="orderService" class="com.ai.api.service.impl.OrderServiceImpl"/>
+    <bean id="reportService" class="com.ai.api.service.impl.ReportServiceImpl"/>
 
     <bean id="customerDao" class="com.ai.api.dao.impl.CustomerDaoImpl"/>
 
     <!--<bean id="userDao" class="com.ai.api.dao.impl.UserDaoImpl">-->
-        <!--<property name="jdbcTemplate" ref="jdbcTemplate"/>-->
+    <!--<property name="jdbcTemplate" ref="jdbcTemplate"/>-->
     <!--</bean>-->
 
     <!--<bean id="loginLogDao" class="com.ai.api.dao.impl.LoginLogDaoImpl">-->
-        <!--<property name="jdbcTemplate" ref="jdbcTemplate"/>-->
+    <!--<property name="jdbcTemplate" ref="jdbcTemplate"/>-->
     <!--</bean>-->
 
     <bean id="draftDao" class="com.ai.api.dao.impl.DraftDaoImpl"/>
     <bean id="tokenJWTDao" class="com.ai.api.dao.impl.TokenJWTDaoImpl"/>
     <bean id="paramDao" class="com.ai.api.dao.impl.ParameterDaoImpl"/>
     <bean id="companyDao" class="com.ai.api.dao.impl.CompanyDaoImpl"/>
-    <bean id="ssoUserServiceDao" class="com.ai.api.dao.impl.SSOUserServiceDaoImpl" />
+    <bean id="ssoUserServiceDao" class="com.ai.api.dao.impl.SSOUserServiceDaoImpl"/>
     <bean id="factoryDao" class="com.ai.api.dao.impl.FactoryDaoImpl"/>
     <bean id="orderDao" class="com.ai.api.dao.impl.OrderDaoImpl"/>
     <bean id="featureDao" class="com.ai.api.dao.impl.FeatureDaoImpl"/>
     <bean id="reportDao" class="com.ai.api.dao.impl.ReportDaoImpl"/>
     <bean id="callResult" class="com.ai.commons.beans.ApiCallResult"/>
 
-    <bean id="cacheManager" class="com.ai.commons.cache.CacheManager" />
-    <bean id="commonParamService" class="com.ai.commons.services.ParameterService" p:PARAMETER_SERVICE_URL="${parameter.service.lb.url}"/>
+    <bean id="cacheManager" class="com.ai.commons.cache.CacheManager"/>
+    <bean id="commonParamService" class="com.ai.commons.services.ParameterService"
+          p:PARAMETER_SERVICE_URL="${parameter.service.lb.url}"/>
 
-    
-     <bean id="fileService" class="com.ai.commons.services.FileService" p:fileServiceUrl="${file.service.lb.url}" p:localTempDir="${local.temp.folder}"/>
 
-    <bean id="controllerLog" class="com.ai.api.util.ControllerLog" />
+    <bean id="fileService" class="com.ai.commons.services.FileService" p:fileServiceUrl="${file.service.lb.url}"
+          p:localTempDir="${local.temp.folder}"/>
+
+    <bean id="performanceMonitorAspect" class="com.ai.api.bean.aop.PerformanceMonitorAspect" />
+
+    <!--<bean id="controllerLog" class="com.ai.api.util.ControllerLog"/>-->
     <!-- AOP configuration -->
-    <aop:config>
-        <!-- Pointcuts -->
-        <aop:pointcut id="controllerLogPointcut" expression="execution(* com.ai.api.controller.impl.*.*(..) )" />
-        <!-- Aspects -->
-        <aop:aspect id="controllerLogAspect" ref="controllerLog">
-             <!--<aop:before method="log" pointcut="execution(* *.*.*.*.*.*.getUserProfile(..))" />-->
-            <!-- <aop:after method="logAfter" pointcut-ref="controllerLogPointcut" /> -->
-             <aop:around method="logAround" pointcut-ref="controllerLogPointcut" />
-        </aop:aspect>
-    </aop:config>
-    
- 	
+    <!--<aop:config>-->
+        <!--&lt;!&ndash; Pointcuts &ndash;&gt;-->
+        <!--<aop:pointcut id="controllerLogPointcut" expression="execution(public * com.ai.api.controller.impl.*.*(..) )"/>-->
+        <!--&lt;!&ndash; Aspects &ndash;&gt;-->
+        <!--<aop:aspect id="controllerLogAspect" ref="controllerLog">-->
+            <!--&lt;!&ndash;<aop:before method="log" pointcut="execution(* *.*.*.*.*.*.getUserProfile(..))" />&ndash;&gt;-->
+            <!--&lt;!&ndash; <aop:after method="logAfter" pointcut-ref="controllerLogPointcut" /> &ndash;&gt;-->
+            <!--<aop:around method="logAround" pointcut-ref="controllerLogPointcut"/>-->
+        <!--</aop:aspect>-->
+    <!--</aop:config>-->
+
+
     <!-- Version bean for application information -->
     <!--<bean id="versionBean" class="version.Version"/>-->
 
 
     <!-- Scheduler configuration -->
-    <import resource="spring-scheduler.xml" />
+    <import resource="spring-scheduler.xml"/>
 </beans>
