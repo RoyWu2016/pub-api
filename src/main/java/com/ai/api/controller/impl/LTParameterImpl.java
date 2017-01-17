@@ -20,7 +20,7 @@ import com.ai.aims.services.model.TagTestMap;
 import com.ai.aims.services.model.TestMaster;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.LTParameter;
-import com.ai.api.lab.service.LTParameterService;
+import com.ai.api.service.LTParameterService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.program.model.Program;
@@ -44,6 +44,7 @@ import com.ai.program.model.Program;
  *
  * </PRE>
  ***************************************************************************/
+
 
 import io.swagger.annotations.ApiOperation;
 

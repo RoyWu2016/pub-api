@@ -15,7 +15,9 @@ public class OrderSearchBean extends SimpleOrderSearchBean implements Serializab
     private String program;
     private String reportIssueDate;
     private String decision;
+    private String labOrderNo;
     private Integer bookingStatus;
+    private String manufacturerStyleNo;
     
     public OrderSearchBean() {
     	super();
@@ -61,11 +63,27 @@ public class OrderSearchBean extends SimpleOrderSearchBean implements Serializab
 		this.decision = decision;
 	}
 
+	public String getLabOrderNo() {
+		return labOrderNo;
+	}
+
+	public void setLabOrderNo(String labOrderNo) {
+		this.labOrderNo = labOrderNo;
+	}
+
 	public Integer getBookingStatus() {
 		return bookingStatus;
 	}
 
 	public void setBookingStatus(Integer bookingStatus) {
 		this.bookingStatus = bookingStatus;
+	}
+
+	public String getManufacturerStyleNo() {
+		return manufacturerStyleNo;
+	}
+
+	public void setManufacturerStyleNo(String manufacturerStyleNo) {
+		this.manufacturerStyleNo = manufacturerStyleNo;
 	}
 }

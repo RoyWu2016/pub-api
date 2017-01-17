@@ -1,6 +1,7 @@
 package com.ai.api.controller.impl;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.LTOrder;
-import com.ai.api.lab.service.LTOrderService;
+import com.ai.api.service.LTOrderService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 
@@ -45,8 +46,9 @@ public class LTOrderImpl implements LTOrder {
 	@ApiOperation(value = "Order Add API", produces = "application/json", response = OrderMaster.class, httpMethod = "POST")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/lt-orders", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> addOrder(HttpServletRequest request, @PathVariable String userId) {
+	@RequestMapping(value = "/user/{userId}/lt/order", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> addOrder(HttpServletRequest request, 
+			@ApiParam(value="User ID") @PathVariable String userId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			callResult = ltOrderService.saveOrder(userId, new OrderMaster());
@@ -58,15 +60,16 @@ public class LTOrderImpl implements LTOrder {
 		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 	}
 
-	@ApiOperation(value = "Get Orders API", produces = "application/json", response = OrderMaster.class, httpMethod = "GET", responseContainer = "List")
+	@SuppressWarnings("unchecked")
+	@ApiOperation(value = "Get Orders API", produces = "application/json", response = OrderSearchBean.class, httpMethod = "GET", responseContainer = "List")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/lt-orders/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/lt/orders", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchLTOrders(
-			@PathVariable("userId") String userId,
-			@RequestParam(value = "orderStatus", required = false, defaultValue = "") String orderStatus,
-			@RequestParam(value = "pageNo", required = false, defaultValue = "1") Integer pageNumber,
-			@RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
+			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="Order Status") @RequestParam(value = "orderStatus", required = false, defaultValue = "") String orderStatus,
+			@ApiParam(value="Page Number") @RequestParam(value = "pageNo", required = false, defaultValue = "1") Integer pageNumber,
+			@ApiParam(value="Page Size") @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			List<OrderSearchBean> list = ltOrderService.searchLTOrders(userId, orderStatus, pageSize, pageNumber);
@@ -85,11 +88,13 @@ public class LTOrderImpl implements LTOrder {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@ApiOperation(value = "Get Order API", produces = "application/json", response = OrderMaster.class, httpMethod = "GET")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/lt-orders/list/{orderId}", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> findOrder(@PathVariable("orderId") String orderId) {
+	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> findOrder(
+			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
             OrderMaster order = ltOrderService.findOrder(orderId);
@@ -110,8 +115,10 @@ public class LTOrderImpl implements LTOrder {
 	@ApiOperation(value = "Order Edit API", produces = "application/json", response = OrderMaster.class, httpMethod = "PUT")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/lt-orders", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> editOrder(HttpServletRequest request, @PathVariable String userId, @RequestBody OrderMaster order) {
+	@RequestMapping(value = "/user/{userId}/lt/order", method = RequestMethod.PUT)
+	public ResponseEntity<ApiCallResult> editOrder(HttpServletRequest request, 
+			@ApiParam(value="User ID") @PathVariable String userId, 
+			@RequestBody OrderMaster order) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			callResult = ltOrderService.editOrder(userId, order);

@@ -4,21 +4,23 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.lab.dao;
+package com.ai.api.service;
 
 import java.io.IOException;
+import java.util.List;
 
-import com.ai.aims.services.model.search.SearchTagTestCriteria;
+import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
+import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
-import com.ai.program.search.criteria.SearchProgramCriteria;
 
 /***************************************************************************
  * <PRE>
  *  Project Name    : api
  *
- *  Package Name    : com.ai.api.lab.dao
+ *  Package Name    : com.ai.api.lab.service
  *
- *  File Name       : LTParameterDao.java
+ *  File Name       : LTOrderService.java
  *
  *  Creation Date   : Dec 6, 2016
  *
@@ -31,16 +33,15 @@ import com.ai.program.search.criteria.SearchProgramCriteria;
  *
  * </PRE>
  ***************************************************************************/
-@SuppressWarnings("rawtypes")
-public interface LTParameterDao {
 
-	public ApiCallResult searchOffice() throws IOException;
+@SuppressWarnings("rawtypes")
+public interface LTOrderService {
+
+	public List<OrderSearchBean> searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException;
 	
-	public ApiCallResult searchPrograms(SearchProgramCriteria criteria) throws IOException;
+	public OrderMaster findOrder(String orderId) throws IOException;
 	
-	public ApiCallResult searchTestsByTag(SearchTagTestCriteria criteria) throws IOException;
+	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException;
 	
-	public ApiCallResult searchTestsByName(String testName) throws IOException;
-	
-	public ApiCallResult searchTest(String testId) throws IOException;
+	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException;
 }

@@ -4,12 +4,14 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.lab.dao;
+package com.ai.api.dao;
 
 import java.io.IOException;
 import java.util.List;
 
+import com.ai.aims.services.model.OrderAttachment;
 import com.ai.aims.services.model.OrderMaster;
+import com.ai.aims.services.model.OrderTestAssignment;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.commons.beans.ApiCallResult;
 
@@ -42,4 +44,10 @@ public interface LTOrderDao {
 	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException;
 	
 	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException;
+
+	public ApiCallResult editOrderStatus(String userId, OrderMaster order) throws IOException;
+
+	public ApiCallResult editOrderTestAssignmentStatus(String userId, OrderTestAssignment testAssignment) throws IOException;
+
+	public OrderAttachment getOrderAttachment(String attachmentId) throws IOException;
 }

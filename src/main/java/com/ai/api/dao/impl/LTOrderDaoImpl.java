@@ -4,7 +4,7 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.lab.dao.impl;
+package com.ai.api.dao.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.utils.DateUtils;
@@ -21,10 +22,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.ai.aims.services.model.OrderAttachment;
 import com.ai.aims.services.model.OrderMaster;
+import com.ai.aims.services.model.OrderStyleInfo;
+import com.ai.aims.services.model.OrderTestAssignment;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.config.ServiceConfig;
-import com.ai.api.lab.dao.LTOrderDao;
+import com.ai.api.dao.LTOrderDao;
 import com.ai.api.util.AIUtil;
 import com.ai.commons.beans.ApiCallResult;
 
@@ -83,6 +87,13 @@ public class LTOrderDaoImpl implements LTOrderDao {
 			orderSearch.setBookingDate("Pending".equalsIgnoreCase(order.getOrderStatus())
 					? DateUtils.formatDate(order.getUpdateTime(), "MM/dd/yyyy") : null);
 			orderSearch.setProductNames(StringUtils.stripToEmpty(order.getDescription()));
+			orderSearch.setLabOrderNo(order.getLabOrderno());
+			Set<OrderStyleInfo> styleInfo = order.getStyleInfo();
+			if (null != styleInfo && !styleInfo.isEmpty()) {
+				orderSearch.setManufacturerStyleNo(styleInfo.iterator().next().getManufacturerStyleNo());
+			}
+			orderSearch.setProgram(null != order.getProgram() ? order.getProgram().getProgramName() : null);
+			orderSearch.setTestStartDate(null != order.getTestStartDate() ? DateUtils.formatDate(order.getTestStartDate(), "MM/dd/yyyy") : null);
 			orderSearchList.add(orderSearch);
 		}
 //		callResult.setContent(orderSearchList);
@@ -144,4 +155,44 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		callResult.setContent(order);
 		return callResult;
 	}
+	
+	@Override
+	public ApiCallResult editOrderStatus(String userId, OrderMaster order) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		
+		ApiCallResult callResult = new ApiCallResult();
+		Map<String, String> vars = new HashMap<String, String>();
+		vars.put("userId", userId);
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/status/")
+ 				.append(userId).toString();
+		restTemplate.put(url, order, vars);
+		order = findOrder(order.getId());
+		callResult.setContent(order);
+		return callResult;
+	}
+	
+	@Override
+	public ApiCallResult editOrderTestAssignmentStatus(String userId, OrderTestAssignment testAssignment) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		
+		ApiCallResult callResult = new ApiCallResult();
+		Map<String, String> vars = new HashMap<String, String>();
+		vars.put("userId", userId);
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/testassign/status/")
+ 				.append(userId).toString();
+		restTemplate.put(url, testAssignment, vars);
+		OrderMaster order = findOrder(testAssignment.getOrder().getId());
+		callResult.setContent(order);
+		return callResult;
+	}
+	
+	@Override
+	public OrderAttachment getOrderAttachment(String attachmentId) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		OrderAttachment attachment = restTemplate.getForObject(config.getAimsServiceBaseUrl() + "/api/ordermanagement/order/attachment/" + attachmentId, OrderAttachment.class);
+		return attachment;
+	} 
 }
