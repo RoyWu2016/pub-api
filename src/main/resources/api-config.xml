@@ -105,7 +105,7 @@
     <bean id="fileService" class="com.ai.commons.services.FileService" p:fileServiceUrl="${file.service.lb.url}"
           p:localTempDir="${local.temp.folder}"/>
 
-    <bean id="performanceMonitorAspect" class="com.ai.api.bean.aop.PerformanceMonitorAspect" />
+    <!--<bean id="performanceMonitorAspect" class="com.ai.api.bean.aop.PerformanceMonitorAspect" />-->
 
     <bean id="controllerLog" class="com.ai.api.util.ControllerLog"/>
 
