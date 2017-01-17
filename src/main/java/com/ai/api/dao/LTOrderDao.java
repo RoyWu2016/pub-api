@@ -11,7 +11,6 @@ import java.util.List;
 
 import com.ai.aims.services.model.OrderAttachment;
 import com.ai.aims.services.model.OrderMaster;
-import com.ai.aims.services.model.OrderTestAssignment;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.commons.beans.ApiCallResult;
 
@@ -41,13 +40,13 @@ public interface LTOrderDao {
 	
 	public OrderMaster findOrder(String orderId) throws IOException;
 	
-	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException;
+	public OrderMaster saveOrder(String userId, OrderMaster order) throws IOException;
 	
 	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException;
 
 	public ApiCallResult editOrderStatus(String userId, OrderMaster order) throws IOException;
 
-	public ApiCallResult editOrderTestAssignmentStatus(String userId, OrderTestAssignment testAssignment) throws IOException;
+	public ApiCallResult editOrderTestAssignmentStatus(String orderId, String testAssignmentId, String userId, String status) throws IOException;
 
 	public OrderAttachment getOrderAttachment(String attachmentId) throws IOException;
 }
