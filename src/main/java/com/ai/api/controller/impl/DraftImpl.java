@@ -1,17 +1,9 @@
 
 package com.ai.api.controller.impl;
 
+import java.util.Date;
 import java.util.List;
 
-import com.ai.api.controller.Draft;
-import com.ai.api.service.DraftService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.order.draft.DraftOrder;
-import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
-import com.ai.commons.beans.psi.InspectionBookingBean;
-import com.ai.commons.beans.psi.InspectionProductBookingBean;
-import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ai.api.controller.Draft;
+import com.ai.api.service.DraftService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
+import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.InspectionProductBookingBean;
 
 /***************************************************************************
  * <PRE>
@@ -118,6 +118,7 @@ public class DraftImpl implements Draft {
 		try {
 			InspectionBookingBean draft = draftService.getDraft(userId, draftId);
 			if (null != draft) {
+				draft.getOrder().getOrderGeneralInfo().setBookingDate(new Date());
 				return new ResponseEntity<>(draft, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
