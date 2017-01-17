@@ -41,7 +41,7 @@ public interface LTOrderService {
 	
 	public OrderMaster findOrder(String orderId) throws IOException;
 	
-	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException;
+	public OrderMaster saveOrder(String userId, OrderMaster order) throws IOException;
 	
 	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException;
 }

@@ -25,7 +25,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.ai.aims.services.model.OrderAttachment;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.aims.services.model.OrderStyleInfo;
-import com.ai.aims.services.model.OrderTestAssignment;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.LTOrderDao;
@@ -126,7 +125,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 	}
 
 	@Override
-	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException {
+	public OrderMaster saveOrder(String userId, OrderMaster order) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		
@@ -137,8 +136,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		Map<String, String> vars = new HashMap<String, String>();
 		vars.put("userId", userId);		
 		order = restTemplate.postForObject(url, order, OrderMaster.class, vars);
-		callResult.setContent(order);					
-		return callResult;
+		return order;
 	}
 
 	@Override
@@ -173,17 +171,19 @@ public class LTOrderDaoImpl implements LTOrderDao {
 	}
 	
 	@Override
-	public ApiCallResult editOrderTestAssignmentStatus(String userId, OrderTestAssignment testAssignment) throws IOException {
+	public ApiCallResult editOrderTestAssignmentStatus(String orderId, String testAssignmentId, String userId, String status) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		
 		ApiCallResult callResult = new ApiCallResult();
 		Map<String, String> vars = new HashMap<String, String>();
 		vars.put("userId", userId);
-		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/testassign/status/")
- 				.append(userId).toString();
-		restTemplate.put(url, testAssignment, vars);
-		OrderMaster order = findOrder(testAssignment.getOrder().getId());
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/").append(orderId)
+				.append("/testassign/").append(testAssignmentId)
+				.append("/user/").append(userId)
+				.append("/status/").append(status).toString();
+		restTemplate.put(url, null, vars);
+		OrderMaster order = findOrder(orderId);
 		callResult.setContent(order);
 		return callResult;
 	}

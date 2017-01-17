@@ -9,8 +9,6 @@ package com.ai.api.service.impl;
 import java.io.IOException;
 import java.util.List;
 
-import com.ai.api.bean.OrderSearchBean;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.LTOrderDao;
@@ -90,7 +89,7 @@ public class LTOrderServiceImpl implements LTOrderService {
 	}
 
 	@Override
-	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException {
+	public OrderMaster saveOrder(String userId, OrderMaster order) throws IOException {
 		return ltorderDao.saveOrder(userId, order);
 	}
 
