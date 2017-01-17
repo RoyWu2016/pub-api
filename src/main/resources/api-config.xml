@@ -2,19 +2,17 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/aop
-       http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:annotation-config/>
     <context:spring-configured/>
     <!--<bean id="contextApplicationContextProvider" class="com.ai.commons.spring.ApplicationContextProvider"/>-->
-    <context:component-scan base-package="com.ai.commons.service"/>
-
-    <!-- Enable AspectJ style of Spring AOP -->
-    <aop:aspectj-autoproxy />
+    <context:component-scan base-package="com.ai.commons.service, com.ai.api">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+        <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController" />
+        <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+    </context:component-scan>
 
     <context:property-placeholder
             location="classpath:env/profile-${active.profile}.properties"
@@ -109,18 +107,7 @@
 
     <bean id="performanceMonitorAspect" class="com.ai.api.bean.aop.PerformanceMonitorAspect" />
 
-    <!--<bean id="controllerLog" class="com.ai.api.util.ControllerLog"/>-->
-    <!-- AOP configuration -->
-    <!--<aop:config>-->
-        <!--&lt;!&ndash; Pointcuts &ndash;&gt;-->
-        <!--<aop:pointcut id="controllerLogPointcut" expression="execution(public * com.ai.api.controller.impl.*.*(..) )"/>-->
-        <!--&lt;!&ndash; Aspects &ndash;&gt;-->
-        <!--<aop:aspect id="controllerLogAspect" ref="controllerLog">-->
-            <!--&lt;!&ndash;<aop:before method="log" pointcut="execution(* *.*.*.*.*.*.getUserProfile(..))" />&ndash;&gt;-->
-            <!--&lt;!&ndash; <aop:after method="logAfter" pointcut-ref="controllerLogPointcut" /> &ndash;&gt;-->
-            <!--<aop:around method="logAround" pointcut-ref="controllerLogPointcut"/>-->
-        <!--</aop:aspect>-->
-    <!--</aop:config>-->
+    <bean id="controllerLog" class="com.ai.api.util.ControllerLog"/>
 
 
     <!-- Version bean for application information -->
