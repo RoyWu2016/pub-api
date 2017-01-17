@@ -47,17 +47,16 @@ public class LTOrderImpl implements LTOrder {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/order", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> addOrder(HttpServletRequest request, 
+	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, 
 			@ApiParam(value="User ID") @PathVariable String userId) {
-		ApiCallResult callResult = new ApiCallResult();
+		OrderMaster order = null;
 		try {
-			callResult = ltOrderService.saveOrder(userId, new OrderMaster());
+			order = ltOrderService.saveOrder(userId, new OrderMaster());
 		} catch (Exception e) {
 			logger.error("create order error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("can't save LT order");
-			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<OrderMaster>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		return new ResponseEntity<OrderMaster>(order, HttpStatus.OK);
 	}
 
 	@SuppressWarnings("unchecked")

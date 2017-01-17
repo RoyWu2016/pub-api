@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import com.ai.aims.constants.OrderStatus;
 import com.ai.aims.services.model.OrderAttachment;
 import com.ai.aims.services.model.OrderMaster;
-import com.ai.aims.services.model.OrderTestAssignment;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.dao.LTOrderDao;
@@ -91,11 +90,7 @@ public class LTReportServiceImpl implements LTReportService {
 	
 	@Override
 	public ApiCallResult editReportTestStatus(String userId, String orderId, String testId, String status) throws IOException {
-		OrderTestAssignment testAssignment = new OrderTestAssignment();
-		testAssignment.setId(testId);
-		testAssignment.setClientStatus(status);
-		testAssignment.setOrder(new OrderMaster(orderId));
-		return ltOrderDao.editOrderTestAssignmentStatus(userId, testAssignment);
+		return ltOrderDao.editOrderTestAssignmentStatus(orderId, testId, userId, status);
 	}
 	
 	@Override
