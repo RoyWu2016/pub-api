@@ -2,9 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
-http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
 
 	<mvc:annotation-driven />
 	<!--<mvc:annotation-driven enable-matrix-variables="true"
@@ -18,7 +20,26 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		<property name="ignoreAcceptHeader" value="false" />
 		<property name="useJaf" value="false" />
 	</bean> -->
-	<context:component-scan base-package="com.ai.api, version" />
+	<context:component-scan base-package="com.ai.api, version" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
+        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+
+	<!-- Enable AspectJ style of Spring AOP -->
+	<aop:aspectj-autoproxy proxy-target-class="true"/>
+	<!--<aop:aspectj-autoproxy expose-proxy="true"></aop:aspectj-autoproxy>-->
+	<!-- AOP configuration -->
+	<aop:config>
+		<!-- Pointcuts -->
+		<aop:pointcut id="controllerLogPointcut" expression="execution(public * com.ai.api.controller.*.*(..) )"/>
+		<!-- Aspects -->
+		<aop:aspect id="controllerLogAspect" ref="controllerLog">
+			<!--&lt;!&ndash;<aop:before method="log" pointcut="execution(* *.*.*.*.*.*.getUserProfile(..))" />&ndash;&gt;-->
+			<!--&lt;!&ndash; <aop:after method="logAfter" pointcut-ref="controllerLogPointcut" /> &ndash;&gt;-->
+			<aop:around method="logAround" pointcut-ref="controllerLogPointcut"/>
+		</aop:aspect>
+	</aop:config>
 
 	<!--, com.ai.commons.services.TokenJWTService -->
 	<!--com.ai.api, -->

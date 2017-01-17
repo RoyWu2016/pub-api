@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
  * Created by Administrator on 2016/6/29 0029.
  */
 
-@Service("factoryService")
+@Service("apiFactoryService")
 public class FactoryServiceImpl implements FactoryService {
 
 	protected Logger logger = LoggerFactory.getLogger(FactoryServiceImpl.class);
