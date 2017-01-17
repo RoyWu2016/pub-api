@@ -4,21 +4,21 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.lab.service;
+package com.ai.api.dao;
 
 import java.io.IOException;
-import java.util.List;
 
-import com.ai.api.exception.AIException;
+import com.ai.aims.services.model.search.SearchTagTestCriteria;
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.program.search.criteria.SearchProgramCriteria;
 
 /***************************************************************************
  * <PRE>
  *  Project Name    : api
  *
- *  Package Name    : com.ai.api.lab.service
+ *  Package Name    : com.ai.api.lab.dao
  *
- *  File Name       : LTParameterService.java
+ *  File Name       : LTParameterDao.java
  *
  *  Creation Date   : Dec 6, 2016
  *
@@ -31,19 +31,16 @@ import com.ai.commons.beans.ApiCallResult;
  *
  * </PRE>
  ***************************************************************************/
-
 @SuppressWarnings("rawtypes")
-public interface LTParameterService {
+public interface LTParameterDao {
 
 	public ApiCallResult searchOffice() throws IOException;
 	
-	public ApiCallResult searchPrograms(String userId) throws IOException, AIException;
+	public ApiCallResult searchPrograms(SearchProgramCriteria criteria) throws IOException;
 	
-	public ApiCallResult searchProgram(String programId) throws IOException;
-	
-	public ApiCallResult searchTestsByTag(List<String> countries, List<String> testNames, List<String> regions, String tagLevel, String productCategory) throws IOException;
-	
-	public ApiCallResult searchTest(String testId) throws IOException;
+	public ApiCallResult searchTestsByTag(SearchTagTestCriteria criteria) throws IOException;
 	
 	public ApiCallResult searchTestsByName(String testName) throws IOException;
+	
+	public ApiCallResult searchTest(String testId) throws IOException;
 }

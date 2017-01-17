@@ -4,12 +4,13 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.lab.service.impl;
+package com.ai.api.service.impl;
 
 import java.io.IOException;
 import java.util.List;
 
 import com.ai.api.bean.OrderSearchBean;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,9 @@ import org.springframework.stereotype.Service;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
+import com.ai.api.dao.LTOrderDao;
 import com.ai.api.exception.AIException;
-import com.ai.api.lab.dao.LTOrderDao;
-import com.ai.api.lab.service.LTOrderService;
+import com.ai.api.service.LTOrderService;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.ApiCallResult;
 

@@ -4,7 +4,7 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.lab.dao.impl;
+package com.ai.api.dao.impl;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,7 +23,7 @@ import com.ai.aims.services.model.TagTestMap;
 import com.ai.aims.services.model.TestMaster;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
 import com.ai.api.config.ServiceConfig;
-import com.ai.api.lab.dao.LTParameterDao;
+import com.ai.api.dao.LTParameterDao;
 import com.ai.api.util.AIUtil;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.program.model.Program;

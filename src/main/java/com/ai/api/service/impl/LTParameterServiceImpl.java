@@ -4,7 +4,7 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.lab.service.impl;
+package com.ai.api.service.impl;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,9 +19,9 @@ import org.springframework.stereotype.Service;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
+import com.ai.api.dao.LTParameterDao;
 import com.ai.api.exception.AIException;
-import com.ai.api.lab.dao.LTParameterDao;
-import com.ai.api.lab.service.LTParameterService;
+import com.ai.api.service.LTParameterService;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.program.search.criteria.SearchProgramCriteria;

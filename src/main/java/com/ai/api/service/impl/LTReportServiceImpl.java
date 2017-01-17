@@ -1,4 +1,4 @@
-package com.ai.api.lab.service.impl;
+package com.ai.api.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,17 +16,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
-import com.ai.aims.constants.AttachmentLabels;
 import com.ai.aims.constants.OrderStatus;
 import com.ai.aims.services.model.OrderAttachment;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.aims.services.model.OrderTestAssignment;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.UserBean;
+import com.ai.api.dao.LTOrderDao;
 import com.ai.api.exception.AIException;
-import com.ai.api.lab.dao.LTOrderDao;
-import com.ai.api.lab.service.LTReportService;
 import com.ai.api.service.APIFileService;
+import com.ai.api.service.LTReportService;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
@@ -75,7 +74,7 @@ public class LTReportServiceImpl implements LTReportService {
 			// SET REPORT ATTACHMENTS
 			Set<OrderAttachment> attachments = order.getAttachments();
 			OrderAttachment attachment = attachments.parallelStream()
-					.filter(a -> AttachmentLabels.CLIENT_REPORT.equals(a.getLabel())).findFirst().get();
+					.filter(a -> "Client report".equalsIgnoreCase(a.getLabel())).findFirst().get();
 			attachments.clear();
 			attachments.add(attachment);
 			order.setAttachments(attachments);

@@ -4,7 +4,7 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.lab.dao;
+package com.ai.api.dao;
 
 import java.io.IOException;
 import java.util.List;
