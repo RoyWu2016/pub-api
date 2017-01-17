@@ -21,7 +21,7 @@ public class ControllerLog {
         String calledMethod = joinPoint.getSignature().toShortString();
 //        Object[] args = joinPoint.getArgs();
         long elapsedTime = System.currentTimeMillis() - start;
-        logger.info(calledMethod+"-------------"+elapsedTime);
+        logger.info(calledMethod+"\t\t"+elapsedTime);
         return output;
     }
 
