@@ -4,7 +4,7 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.lab.dao.impl;
+package com.ai.api.dao.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import com.ai.aims.services.model.OrderStyleInfo;
 import com.ai.aims.services.model.OrderTestAssignment;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.config.ServiceConfig;
-import com.ai.api.lab.dao.LTOrderDao;
+import com.ai.api.dao.LTOrderDao;
 import com.ai.api.util.AIUtil;
 import com.ai.commons.beans.ApiCallResult;
 

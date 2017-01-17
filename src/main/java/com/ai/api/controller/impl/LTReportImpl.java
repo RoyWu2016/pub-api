@@ -25,7 +25,7 @@ import com.ai.aims.services.model.OrderMaster;
 import com.ai.aims.services.model.OrderTestAssignment;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.controller.LTReport;
-import com.ai.api.lab.service.LTReportService;
+import com.ai.api.service.LTReportService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 

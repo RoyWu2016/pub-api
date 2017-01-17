@@ -4,12 +4,10 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.lab.service;
+package com.ai.api.service;
 
 import java.io.IOException;
 import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
 
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
@@ -37,15 +35,13 @@ import com.ai.commons.beans.ApiCallResult;
  ***************************************************************************/
 
 @SuppressWarnings("rawtypes")
-public interface LTReportService {
+public interface LTOrderService {
 
-	public List<OrderSearchBean> findReports(String userId, Integer pageNumber, Integer pageSize) throws IOException, AIException;
+	public List<OrderSearchBean> searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException;
 	
-	public OrderMaster findReport(String reportId) throws IOException;
-
-	public ApiCallResult editReportStatus(String userId, String orderId, String status) throws IOException;
-
-	public ApiCallResult editReportTestStatus(String userId, String reportId, String testId, String status) throws IOException;
-
-	public void downloadReportAttachment(String attachmentId, HttpServletResponse response) throws IOException;
+	public OrderMaster findOrder(String orderId) throws IOException;
+	
+	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException;
+	
+	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException;
 }
