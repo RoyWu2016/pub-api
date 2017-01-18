@@ -39,8 +39,8 @@ public interface LTOrderDao {
 	public List<OrderSearchBean> searchLTOrders(String compId, String orderStatus, Integer pageNumber, Integer pageSize, String direction) throws IOException;
 	
 	public OrderMaster findOrder(String orderId) throws IOException;
-	
-	public OrderMaster saveOrder(String userId, OrderMaster order) throws IOException;
+
+	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException;
 	
 	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException;
 
