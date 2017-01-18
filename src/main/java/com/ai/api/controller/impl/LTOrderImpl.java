@@ -115,12 +115,14 @@ public class LTOrderImpl implements LTOrder {
 	@ApiOperation(value = "Order Edit API", produces = "application/json", response = OrderMaster.class, httpMethod = "PUT")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/lt/order", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> editOrder(HttpServletRequest request, 
 			@ApiParam(value="User ID") @PathVariable String userId, 
+			@ApiParam(value="Order ID") @PathVariable String orderId, 
 			@RequestBody OrderMaster order) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
+			order.setId(orderId);
 			callResult = ltOrderService.editOrder(userId, order);
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
