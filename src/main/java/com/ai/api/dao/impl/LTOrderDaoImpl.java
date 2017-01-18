@@ -125,7 +125,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 	}
 
 	@Override
-	public OrderMaster saveOrder(String userId, OrderMaster order) throws IOException {
+	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		
@@ -136,7 +136,8 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		Map<String, String> vars = new HashMap<String, String>();
 		vars.put("userId", userId);		
 		order = restTemplate.postForObject(url, order, OrderMaster.class, vars);
-		return order;
+		callResult.setContent(order);					
+		return callResult;
 	}
 
 	@Override

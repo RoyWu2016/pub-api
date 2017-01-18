@@ -10,7 +10,7 @@ import com.ai.commons.beans.ApiCallResult;
 @SuppressWarnings("rawtypes")
 public interface LTOrder {
 
-	public ResponseEntity<OrderMaster> addOrder(HttpServletRequest request, String userId);
+	public ResponseEntity<ApiCallResult> addOrder(HttpServletRequest request, String userId);
 	
 	public ResponseEntity<ApiCallResult> editOrder(HttpServletRequest request, String userId, String orderId, OrderMaster order);
 	
