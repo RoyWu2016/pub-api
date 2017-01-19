@@ -29,21 +29,23 @@ public class ControllerAspect {
 
 
 	    Object[] args = joinPoint.getArgs();
-	    String[] checkUserIdStr = args[0].toString().split(Consts.DASH);
-	    //logic for handling super master account access master account data
-	    if (checkUserIdStr.length == 2
-			    && checkUserIdStr[1].length() == checkUserIdStr[0].length()) {
-		    //super master user id should have same length as master account id
-		    String superUserId = checkUserIdStr[0];
-		    String masterUserId = checkUserIdStr[1];
-		    //check the relation is valid
-			if (userService.isMasterOfSuperMaster(superUserId, masterUserId)) {
-				args[0] = checkUserIdStr[1];
-				mainLogger.info("Super master access of user id" + args[0] + " working fine.");
-			} else {
-				mainLogger.error("Super master access of user id" + args[0] + " is not allowed!");
-			}
+	    if (args.length > 0 ) {
+		    String[] checkUserIdStr = args[0].toString().split(Consts.DASH);
+		    //logic for handling super master account access master account data
+		    if (checkUserIdStr.length == 2
+				    && checkUserIdStr[1].length() == checkUserIdStr[0].length()) {
+			    //super master user id should have same length as master account id
+			    String superUserId = checkUserIdStr[0];
+			    String masterUserId = checkUserIdStr[1];
+			    //check the relation is valid
+			    if (userService.isMasterOfSuperMaster(superUserId, masterUserId)) {
+				    args[0] = checkUserIdStr[1];
+				    mainLogger.info("Super master access of user id" + args[0] + " working fine.");
+			    } else {
+				    mainLogger.error("Super master access of user id" + args[0] + " is not allowed!");
+			    }
 
+		    }
 	    }
 	    Object output = joinPoint.proceed(args);
 	    //modify passed super master account user id to master user id
