@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.ai.aims.services.model.CrmCompany;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
@@ -90,7 +91,15 @@ public class LTOrderServiceImpl implements LTOrderService {
 	}
 
 	@Override
-	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException {
+	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException, AIException {
+		String companyId = null;
+		UserBean user = userService.getCustById(userId);
+		companyId = user.getCompany().getId();
+		if (null != companyId){
+			CrmCompany client = new CrmCompany();
+			client.setId(companyId);
+			order.setClient(client);
+		}
 		return ltorderDao.saveOrder(userId, order);
 	}
 
