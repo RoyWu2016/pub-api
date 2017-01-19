@@ -107,7 +107,7 @@
 
     <!--<bean id="performanceMonitorAspect" class="com.ai.api.bean.aop.PerformanceMonitorAspect" />-->
 
-    <bean id="controllerLog" class="com.ai.api.util.ControllerLog"/>
+    <bean id="controllerAspect" class="com.ai.api.bean.aop.ControllerAspect"/>
 
 
     <!-- Version bean for application information -->
