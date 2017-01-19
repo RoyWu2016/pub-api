@@ -1,5 +1,6 @@
-package com.ai.api.util;
+package com.ai.api.bean.aop;
 
+import com.ai.commons.Consts;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,17 +12,25 @@ import org.slf4j.LoggerFactory;
  * Purpose         : TODO
  * History         : TODO
  */
-public class ControllerLog {
+public class ControllerAspect {
 
     private static Logger logger = LoggerFactory.getLogger("CONTROLLER_LOGGER");
 
-    public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
+	private StringBuilder sb = new StringBuilder();
+
+
+    public Object aroundInController(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();
+	    String calledMethod = joinPoint.getSignature().toShortString();
+
         Object output = joinPoint.proceed();
-        String calledMethod = joinPoint.getSignature().toShortString();
 //        Object[] args = joinPoint.getArgs();
         long elapsedTime = System.currentTimeMillis() - start;
-        logger.info(calledMethod+"\t\t"+elapsedTime);
+
+	    //log should be delimited by ; to be easily imported to excel for analysis
+        logger.info(sb.append(calledMethod).
+		        append(Consts.SEMICOLON).
+		        append(elapsedTime).toString());
         return output;
     }
 

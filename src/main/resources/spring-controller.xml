@@ -32,12 +32,12 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 	<!-- AOP configuration -->
 	<aop:config>
 		<!-- Pointcuts -->
-		<aop:pointcut id="controllerLogPointcut" expression="execution(public * com.ai.api.controller.*.*(..) )"/>
+		<aop:pointcut id="controllerPointcut" expression="execution(public * com.ai.api.controller.*.*(..) )"/>
 		<!-- Aspects -->
-		<aop:aspect id="controllerLogAspect" ref="controllerLog">
+		<aop:aspect id="controllerAspect1" ref="controllerAspect">
 			<!--&lt;!&ndash;<aop:before method="log" pointcut="execution(* *.*.*.*.*.*.getUserProfile(..))" />&ndash;&gt;-->
 			<!--&lt;!&ndash; <aop:after method="logAfter" pointcut-ref="controllerLogPointcut" /> &ndash;&gt;-->
-			<aop:around method="logAround" pointcut-ref="controllerLogPointcut"/>
+			<aop:around method="aroundInController" pointcut-ref="controllerPointcut"/>
 		</aop:aspect>
 	</aop:config>
 
