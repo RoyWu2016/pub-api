@@ -17,24 +17,12 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import com.ai.api.bean.ApiMasterBean;
 import com.ai.api.bean.AqlAndSamplingSizeBean;
 import com.ai.api.bean.BillingBean;
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.CompanyRelationshipBean;
 import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.bean.CustomAQLBean;
 import com.ai.api.bean.CustomizedProductType;
@@ -72,7 +60,6 @@ import com.ai.commons.beans.customer.ApproverBean;
 import com.ai.commons.beans.customer.CompanyEntireBean;
 import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.CrmCompanyBean;
-import com.ai.commons.beans.customer.CrmCompanyRelationshipBean;
 import com.ai.commons.beans.customer.CrmSaleInChargeBean;
 import com.ai.commons.beans.customer.CustomerFeatureBean;
 import com.ai.commons.beans.customer.DashboardBean;
@@ -92,6 +79,16 @@ import com.ai.commons.beans.user.GeneralUserBean;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /***************************************************************************
  * <PRE>
@@ -681,7 +678,6 @@ public class UserServiceImpl implements UserService {
 		return newUserBean;
 	}
 
-	// @Cacheable("userBeanCache")
 	@Override
 	public UserBean getCustById(String userId) throws IOException, AIException {
 		logger.info("try to get userBean from redis ...");
@@ -705,7 +701,6 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
-	// @CachePut(value = "userBeanCache", key = "#userId")
 	@Override
 	public UserBean updateCompany(CompanyBean newComp, String userId) throws IOException, AIException {
 		CompanyBean redisCompany = getCustById(userId).getCompany();
@@ -728,7 +723,6 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
-	// @CachePut(value = "userBeanCache", key = "#userId")
 	@Override
 	public UserBean updateContact(ContactInfoBean newContact, String userId) throws IOException, AIException {
 		// get general user bean
@@ -1002,4 +996,28 @@ public class UserServiceImpl implements UserService {
 		return customerDao.resetPassword(login);
 	}
 
+
+	@Override
+	public boolean isMasterOfSuperMaster(String superUserId, String masterUserId) throws IOException {
+		String jsonStr = RedisUtil.hget("userBeanCache", superUserId);
+		UserBean user = JSON.parseObject(jsonStr, UserBean.class);
+		if (user != null && StringUtils.isNotBlank(user.getId())) {
+			logger.info("success get userBean from redis.");
+		} else {
+			logger.info("can't find user " + superUserId + " in cache. Will get from customer service. ");
+			user = this.getUserBeanByService(superUserId);
+			logger.info("saving userBean to redis ...");
+			RedisUtil.hset("userBeanCache", superUserId, JSON.toJSONString(user, SerializerFeature.WriteMapNullValue),
+					RedisUtil.MINUTE * 30);
+			logger.info("saving success !!!");
+		}
+		if (user != null && user.getCompany().getMaster().getSuperMaster().isSuperMaster()) {
+			for (MasterCompanyBean master: user.getCompany().getMaster().getSuperMaster().getMasterCompanies()) {
+				if (master.getUserId().equalsIgnoreCase(masterUserId)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
