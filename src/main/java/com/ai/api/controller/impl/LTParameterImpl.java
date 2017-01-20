@@ -92,37 +92,7 @@ public class LTParameterImpl implements LTParameter {
 		}*/
 	}
 
-	@Override
-	@ApiOperation(value = "Search LT Program API", produces = "application/json", response = Program.class, httpMethod = "GET", responseContainer = "List")
-	@TokenSecured
-	@RequestMapping(value = "/{userId}/parameter/lt-programs", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> searchPrograms(
-			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh,
-			@PathVariable String userId) {
-		ApiCallResult callResult = new ApiCallResult();
-		/*if (!refresh) {
-			logger.info("try to searchPrograms from redis ...");
-			String jsonStringTextileProductCategory = RedisUtil.get("ltProgramsCache");
-			programs = JSON.parseArray(jsonStringTextileProductCategory, Program.class);
-		}
-		if (null == programs) {*/
-			try {
-				callResult = ltparameterService.searchPrograms(userId);
-				logger.info("saving searchPrograms");
-				//RedisUtil.set("ltProgramsCache", JSON.toJSONString(programs), RedisUtil.HOUR * 24);
 
-				return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
-			} catch (Exception e) {
-				logger.error("search Programs error: " + ExceptionUtils.getFullStackTrace(e));
-				callResult.setMessage("can't get LT programs:");
-				return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		/*} else {
-			logger.info("get lt programs from redis successfully");
-			return new ResponseEntity<List<Program>>(programs, HttpStatus.OK);
-		}*/
-	}
-	
 	@Override
 	@ApiOperation(value = "Search LT Program API", produces = "application/json", response = Program.class, httpMethod = "GET")
 	@TokenSecured

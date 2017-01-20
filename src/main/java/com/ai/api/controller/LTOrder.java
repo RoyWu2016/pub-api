@@ -16,5 +16,7 @@ public interface LTOrder {
 	
 	public ResponseEntity<ApiCallResult> searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize);
 	
-	public ResponseEntity<ApiCallResult> findOrder(String orderId);
+	public ResponseEntity<ApiCallResult> findOrder(String orderId, String userId);
+
+	public ResponseEntity<ApiCallResult> searchPrograms(String userId);
 }
