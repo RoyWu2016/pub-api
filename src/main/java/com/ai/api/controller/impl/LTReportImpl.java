@@ -4,11 +4,15 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.http.client.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +26,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.aims.services.model.OrderMaster;
+import com.ai.aims.services.model.OrderStyleInfo;
 import com.ai.aims.services.model.OrderTestAssignment;
 import com.ai.api.bean.OrderSearchBean;
+import com.ai.api.bean.OrderTestBean;
 import com.ai.api.controller.LTReport;
 import com.ai.api.service.LTReportService;
 import com.ai.commons.annotation.TokenSecured;
@@ -67,7 +73,7 @@ public class LTReportImpl implements LTReport {
 	}
 
 	@Override
-	@ApiOperation(value = "Find Report API", produces = "application/json", response = OrderMaster.class, httpMethod = "GET")
+	@ApiOperation(value = "Find Report API", produces = "application/json", response = OrderSearchBean.class, httpMethod = "GET")
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/report/{reportId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> findReport(
@@ -78,7 +84,7 @@ public class LTReportImpl implements LTReport {
 		try {
 			OrderMaster report = ltReportService.findReport(reportId);
 			if (null != report) {
-				result.setContent(report);
+				result.setContent(wrapReportObj(report));
 			} else {
 				result.setContent(report);
 				result.setMessage("Report not found.");
@@ -149,5 +155,49 @@ public class LTReportImpl implements LTReport {
             respStatus =  HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 		return new ResponseEntity(respStatus);
+	}
+	
+	private OrderSearchBean wrapReportObj(OrderMaster order) {
+		OrderSearchBean orderSearch = new OrderSearchBean();
+		orderSearch.setOrderId(order.getId());
+		orderSearch.setSupplierName(null != order.getSupplier() ? StringUtils.stripToEmpty(order.getSupplier().getCompanyName()) : null );
+		orderSearch.setServiceType("LT");
+		orderSearch.setServiceTypeText("LT");
+		orderSearch.setPoNumbers(order.getClientPONo());
+		orderSearch.setStatus(order.getStatusCode());
+		orderSearch.setBookingStatus(order.getBookingStatusCode());
+		orderSearch.setBookingDate("Pending".equalsIgnoreCase(order.getOrderStatus())
+				? DateUtils.formatDate(order.getUpdateTime(), "dd-MMM-yyyy") : null);
+		orderSearch.setReportDueDate(null != order.getReportDueDate() ? 
+				DateUtils.formatDate(order.getReportDueDate(), "dd-MMM-yyyy") : null);
+		orderSearch.setOffice(null != order.getOffice() ? order.getOffice().getName() : null);
+		orderSearch.setProductNames(StringUtils.stripToEmpty(order.getDescription()));
+		orderSearch.setLabOrderNo(order.getLabOrderno());
+		Set<OrderStyleInfo> styleInfo = order.getStyleInfo();
+		if (null != styleInfo && !styleInfo.isEmpty()) {
+			orderSearch.setManufacturerStyleNo(styleInfo.iterator().next().getManufacturerStyleNo());
+		}
+		orderSearch.setProgram(null != order.getProgram() ? order.getProgram().getProgramName() : null);
+		orderSearch.setTestStartDate(null != order.getTestStartDate() ? 
+				DateUtils.formatDate(order.getTestStartDate(), "dd-MMM-yyyy") : null);
+		orderSearch.setOverallRating(order.getOverallRating());
+		orderSearch.setClientStatus(order.getClientStatus());
+		if (null != order.getAttachments()) {
+			orderSearch.setAttachmentId(order.getAttachments().stream().findFirst().get().getId());
+		}
+		if (null != order.getTestAssignments()) {
+			List<OrderTestBean> orderTests = new ArrayList<OrderTestBean>();
+			for (OrderTestAssignment testAssign : order.getTestAssignments()) {
+				OrderTestBean orderTest = new OrderTestBean();
+				orderTest.setId(testAssign.getId());
+				orderTest.setFailureStmt(testAssign.getFailureStatement());
+				orderTest.setName(testAssign.getTest().getName());
+				orderTest.setRating(null != testAssign.getTestAssignRating() ? testAssign.getTestAssignRating().getDescription() : null);
+				orderTest.setClientStatus(testAssign.getClientStatus());
+				orderTests.add(orderTest);
+			}
+			orderSearch.setTests(orderTests);
+		}
+		return orderSearch;
 	}
 }
