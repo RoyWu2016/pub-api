@@ -1,11 +1,13 @@
 package com.ai.api.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings("rawtypes")
 public class OrderSearchBean extends SimpleOrderSearchBean implements Serializable {
 
 	private static final long serialVersionUID = -8209861354874434803L;
@@ -13,11 +15,15 @@ public class OrderSearchBean extends SimpleOrderSearchBean implements Serializab
     private String testStartDate;
     private String office;
     private String program;
-    private String reportIssueDate;
+    private String reportDueDate;
     private String decision;
     private String labOrderNo;
     private Integer bookingStatus;
     private String manufacturerStyleNo;
+    private String overallRating;
+    private String clientStatus;
+    private String attachmentId;
+	private List tests;
     
     public OrderSearchBean() {
     	super();
@@ -47,12 +53,12 @@ public class OrderSearchBean extends SimpleOrderSearchBean implements Serializab
 		this.program = program;
 	}
 
-	public String getReportIssueDate() {
-		return reportIssueDate;
+	public String getReportDueDate() {
+		return reportDueDate;
 	}
 
-	public void setReportIssueDate(String reportIssueDate) {
-		this.reportIssueDate = reportIssueDate;
+	public void setReportDueDate(String reportDueDate) {
+		this.reportDueDate = reportDueDate;
 	}
 
 	public String getDecision() {
@@ -85,5 +91,37 @@ public class OrderSearchBean extends SimpleOrderSearchBean implements Serializab
 
 	public void setManufacturerStyleNo(String manufacturerStyleNo) {
 		this.manufacturerStyleNo = manufacturerStyleNo;
+	}
+
+	public String getOverallRating() {
+		return overallRating;
+	}
+
+	public void setOverallRating(String overallRating) {
+		this.overallRating = overallRating;
+	}
+
+	public String getClientStatus() {
+		return clientStatus;
+	}
+
+	public void setClientStatus(String clientStatus) {
+		this.clientStatus = clientStatus;
+	}
+
+	public String getAttachmentId() {
+		return attachmentId;
+	}
+
+	public void setAttachmentId(String attachmentId) {
+		this.attachmentId = attachmentId;
+	}
+
+	public List getTests() {
+		return tests;
+	}
+
+	public void setTests(List tests) {
+		this.tests = tests;
 	}
 }
