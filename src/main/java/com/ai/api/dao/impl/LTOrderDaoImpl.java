@@ -84,7 +84,10 @@ public class LTOrderDaoImpl implements LTOrderDao {
 			orderSearch.setStatus(order.getStatusCode());
 			orderSearch.setBookingStatus(order.getBookingStatusCode());
 			orderSearch.setBookingDate("Pending".equalsIgnoreCase(order.getOrderStatus())
-					? DateUtils.formatDate(order.getUpdateTime(), "MM/dd/yyyy") : null);
+					? DateUtils.formatDate(order.getUpdateTime(), "dd-MMM-yyyy") : null);
+			orderSearch.setReportDueDate(null != order.getReportDueDate() ? 
+					DateUtils.formatDate(order.getReportDueDate(), "dd-MMM-yyyy") : null);
+			orderSearch.setOffice(null != order.getOffice() ? order.getOffice().getName() : null);
 			orderSearch.setProductNames(StringUtils.stripToEmpty(order.getDescription()));
 			orderSearch.setLabOrderNo(order.getLabOrderno());
 			Set<OrderStyleInfo> styleInfo = order.getStyleInfo();
@@ -92,7 +95,10 @@ public class LTOrderDaoImpl implements LTOrderDao {
 				orderSearch.setManufacturerStyleNo(styleInfo.iterator().next().getManufacturerStyleNo());
 			}
 			orderSearch.setProgram(null != order.getProgram() ? order.getProgram().getProgramName() : null);
-			orderSearch.setTestStartDate(null != order.getTestStartDate() ? DateUtils.formatDate(order.getTestStartDate(), "MM/dd/yyyy") : null);
+			orderSearch.setTestStartDate(null != order.getTestStartDate() ? 
+					DateUtils.formatDate(order.getTestStartDate(), "dd-MMM-yyyy") : null);
+			orderSearch.setOverallRating(order.getOverallRating());
+			orderSearch.setClientStatus(order.getClientStatus());
 			orderSearchList.add(orderSearch);
 		}
 //		callResult.setContent(orderSearchList);
