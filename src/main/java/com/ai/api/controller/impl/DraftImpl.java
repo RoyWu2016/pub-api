@@ -118,8 +118,7 @@ public class DraftImpl implements Draft {
 		try {
 			InspectionBookingBean draft = draftService.getDraft(userId, draftId);
 			if (null != draft) {
-//				draft.getOrder().getOrderGeneralInfo().setBookingDate(new Date());
-				draft.getOrder().getOrderGeneralInfo().setClientRefNb("990 test");
+				draft.getOrder().getOrderGeneralInfo().setBookingDate(new Date());
 				return new ResponseEntity<>(draft, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
