@@ -30,9 +30,7 @@ import com.ai.commons.beans.ApiCallResult;
 public interface LTParameter {
 	
 	public ResponseEntity<ApiCallResult> searchOffice(boolean refresh);
-	
-	public ResponseEntity<ApiCallResult> searchPrograms(boolean refresh, String userId);
-	
+
 	public ResponseEntity<ApiCallResult> searchProgram(boolean refresh, String programId);
 	
 	public ResponseEntity<ApiCallResult> searchTestsByTag(boolean refresh, List<String> countries, List<String> testNames, List<String> regions, String tagLevel, String productCategory);
