@@ -369,6 +369,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             response.setHeader("Content-Type", "image/jpeg");
             response.setHeader("X-File-Name",fileName);
             response.setHeader("X-File-Caption",fileDetails.getComments()+" ");
+            response.setHeader("Access-Control-Expose-Headers","X-File-Name, X-File-Caption");
             FileCopyUtils.copy(is, response.getOutputStream());
             response.flushBuffer();
         } catch (Exception e) {
