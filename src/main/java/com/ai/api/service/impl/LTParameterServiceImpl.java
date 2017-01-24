@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.ai.aims.services.model.search.SearchTagCriteria;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
@@ -123,5 +124,17 @@ public class LTParameterServiceImpl implements LTParameterService {
 	@Override
 	public ApiCallResult searchTestsByName(String testName) throws IOException {
 		return ltparameterDao.searchTestsByName(testName);
+	}
+
+	@Override
+	public ApiCallResult searchCategories() throws IOException {
+		return ltparameterDao.searchCategories();
+	}
+
+	@Override
+	public ApiCallResult searchTags(String categoryId) throws IOException {
+		SearchTagCriteria criteria = new SearchTagCriteria();
+		criteria.setCategoryId(categoryId);
+		return ltparameterDao.searchTags(criteria);
 	}
 }

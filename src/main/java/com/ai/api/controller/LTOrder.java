@@ -19,4 +19,8 @@ public interface LTOrder {
 	public ResponseEntity<ApiCallResult> findOrder(String orderId, String userId);
 
 	public ResponseEntity<ApiCallResult> searchPrograms(String userId);
+
+	public ResponseEntity<ApiCallResult> searchCategories(String userId);
+
+	public ResponseEntity<ApiCallResult> searchTagsByCategory(String userId, String categoryId);
 }

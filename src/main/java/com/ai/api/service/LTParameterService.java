@@ -46,4 +46,8 @@ public interface LTParameterService {
 	public ApiCallResult searchTest(String testId) throws IOException;
 	
 	public ApiCallResult searchTestsByName(String testName) throws IOException;
+	
+	public ApiCallResult searchCategories() throws IOException;
+
+	public ApiCallResult searchTags(String categoryId) throws IOException;
 }
