@@ -30,6 +30,7 @@ import com.ai.aims.services.model.search.SearchTagResponse;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.TagSearchBean;
+import com.ai.api.bean.TestSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.LTParameterDao;
 import com.ai.api.util.AIUtil;
@@ -90,12 +91,30 @@ public class LTParameterDaoImpl implements LTParameterDao {
 	}
 	
 	@Override
-	public ApiCallResult searchTestsByTag(SearchTagTestCriteria criteria) throws IOException {
+	public ApiCallResult searchTests(SearchTagTestCriteria criteria) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		ApiCallResult callResult = new ApiCallResult();
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/tag/search/tests").toString();		
-		List<TagTestMap> tests = Arrays.asList(restTemplate.getForObject(buildTagTestSearchCriteria(criteria, url).build().encode().toUri(), TagTestMap[].class));	
+		List<TagTestMap> tagTests = Arrays.asList(restTemplate.getForObject(buildTagTestSearchCriteria(criteria, url).build().encode().toUri(), TagTestMap[].class));
+		List<TestSearchBean> tests = new ArrayList<TestSearchBean>(0);
+		for (TagTestMap tagTest : tagTests) {
+			TestMaster test = tagTest.getTest();
+			if (null != test) {
+				TestSearchBean testBean = new TestSearchBean();
+				testBean.setTestId(test.getId());
+				testBean.setTestName(test.getName());
+				testBean.setCategory(tagTest.getProductCategory());
+				testBean.setCountry(tagTest.getCountry());
+				testBean.setPrice(null != test.getPricingDetails() && null != criteria.getOffice() ? test.getPricingDetails().parallelStream().filter(
+						p -> criteria.getOffice().equals(p.getOffice().getId())).findFirst().get().getPrice() : 0);
+				List<String> tags = new ArrayList<String>(0);
+				tagTests.parallelStream().filter(t -> (test.getId().equals(t.getTestId()) 
+						&& null != t.getTagName())).forEach(t -> tags.add(t.getTagName()));
+				testBean.setTags(tags);
+				tests.add(testBean);
+			}
+		}			
 		callResult.setContent(tests);
 		return callResult;
 	}
@@ -197,8 +216,8 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		        .queryParam("page", criteria.getPage() != 0 ? criteria.getPage() - 1 : 0)
 		        .queryParam("size", criteria.getPageSize() != 0 ? criteria.getPageSize() : 1000000);
 		
-		if(null != criteria.getTagLevel() && !criteria.getTagLevel().isEmpty())
-			builder.queryParam("tagLevel", criteria.getTagLevel());
+		if(null != criteria.getTagIds() && !criteria.getTagIds().isEmpty())
+			builder.queryParam("tagIds", criteria.getTagIds());
 		
 		if(null != criteria.getProductCategory() && !criteria.getProductCategory().isEmpty())
 			builder.queryParam("productCategory", criteria.getProductCategory());
