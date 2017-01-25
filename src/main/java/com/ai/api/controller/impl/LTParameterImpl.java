@@ -224,7 +224,7 @@ public class LTParameterImpl implements LTParameter {
 	@ApiOperation(value = "Order Product Categories Get API", produces = "application/json", response = ProductCategoryDtoBean.class, httpMethod = "GET")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/parameter/lt/categories", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/lt-categories", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchCategories(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh ) {
 		ApiCallResult callResult = new ApiCallResult();
@@ -241,7 +241,7 @@ public class LTParameterImpl implements LTParameter {
 	@ApiOperation(value = "Order Tags Get API", produces = "application/json", response = TagSearchBean.class, httpMethod = "GET")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/parameter/lt/category/{categoryId}/tags", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/lt-category/{categoryId}/tags", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchTagsByCategory(
 			@ApiParam(value="Product Category ID") @PathVariable String categoryId,
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh
