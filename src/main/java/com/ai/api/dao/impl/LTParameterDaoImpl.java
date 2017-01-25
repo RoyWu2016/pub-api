@@ -7,7 +7,9 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,9 +21,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ai.aims.constants.Status;
 import com.ai.aims.services.model.OfficeMaster;
+import com.ai.aims.services.model.ProductCategory;
+import com.ai.aims.services.model.Tag;
 import com.ai.aims.services.model.TagTestMap;
 import com.ai.aims.services.model.TestMaster;
+import com.ai.aims.services.model.search.SearchTagCriteria;
+import com.ai.aims.services.model.search.SearchTagResponse;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
+import com.ai.api.bean.ProductCategoryDtoBean;
+import com.ai.api.bean.TagSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.LTParameterDao;
 import com.ai.api.util.AIUtil;
@@ -87,7 +95,7 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		ApiCallResult callResult = new ApiCallResult();
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/tag/search/tests").toString();		
-		List<TagTestMap> tests = Arrays.asList(restTemplate.getForObject(buildTagSearchCriteria(criteria, url).build().encode().toUri(), TagTestMap[].class));	
+		List<TagTestMap> tests = Arrays.asList(restTemplate.getForObject(buildTagTestSearchCriteria(criteria, url).build().encode().toUri(), TagTestMap[].class));	
 		callResult.setContent(tests);
 		return callResult;
 	}
@@ -111,7 +119,56 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/testmanagement/").append(testId).toString();					
 		TestMaster test = restTemplate.getForObject(url, TestMaster.class);
 		callResult.setContent(test);
-		return callResult;		
+		return callResult;
+	}
+	
+	@Override
+	public ApiCallResult searchCategories() throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		ApiCallResult callResult = new ApiCallResult();
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/product/category/search/all").toString();
+		List<ProductCategory> categories = Arrays.asList(restTemplate.getForObject(url, ProductCategory[].class, new HashMap()));
+		List<ProductCategoryDtoBean> categoryData = new ArrayList<ProductCategoryDtoBean>();
+		for (ProductCategory category : categories) {
+			ProductCategoryDtoBean categoryObj = new ProductCategoryDtoBean();
+			categoryObj.setId(category.getId());
+			categoryObj.setName(category.getProductCategory());
+			categoryData.add(categoryObj);
+		}
+		callResult.setContent(categoryData);
+		return callResult;
+	}
+	
+	@Override
+	public ApiCallResult searchTags(SearchTagCriteria criteria) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		ApiCallResult callResult = new ApiCallResult();
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/tag/search/filter").toString();
+		SearchTagResponse response = restTemplate.getForObject(buildTagSearchCriteria(criteria, url).build().encode().toUri(), SearchTagResponse.class);
+		List<Tag> tags = null != response.getData() ? response.getData() : new ArrayList<Tag>(0);
+		List<TagSearchBean> tagData = new ArrayList<TagSearchBean>();
+		for (Tag tag : tags) {
+			TagSearchBean tagObj = new TagSearchBean();
+			tagObj.setId(tag.getId());
+			tagObj.setName(tag.getName());
+			tagObj.setDescription(tag.getDescription());
+			tagObj.setTagLevel(tag.getTagLevel());
+			tagData.add(tagObj);
+		}
+		callResult.setContent(tagData);
+		return callResult;
+	}
+
+	private UriComponentsBuilder buildTagSearchCriteria(SearchTagCriteria criteria, String url) {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+		        .queryParam("page", criteria.getPage() != 0 ? criteria.getPage() - 1 : 0)
+		        .queryParam("pageSize", criteria.getPageSize() != 0 ? criteria.getPageSize() : 1000000);
+		
+		if (!StringUtils.stripToEmpty(criteria.getCategoryId()).trim().isEmpty())
+			builder.queryParam("categoryId", criteria.getCategoryId().trim());
+		return builder;
 	}
 
 	private UriComponentsBuilder buildProgramSearchCriteria(SearchProgramCriteria criteria, String url) {
@@ -135,7 +192,7 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		return builder;
 	}
 	
-	private UriComponentsBuilder buildTagSearchCriteria(SearchTagTestCriteria criteria, String url) {
+	private UriComponentsBuilder buildTagTestSearchCriteria(SearchTagTestCriteria criteria, String url) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
 		        .queryParam("page", criteria.getPage() != 0 ? criteria.getPage() - 1 : 0)
 		        .queryParam("size", criteria.getPageSize() != 0 ? criteria.getPageSize() : 1000000);

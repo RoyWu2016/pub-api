@@ -1,20 +1,12 @@
 package com.ai.api.controller.impl;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ai.aims.services.model.OrderMaster;
-import com.ai.api.bean.OrderSearchBean;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.controller.LTOrder;
-import com.ai.api.service.LTOrderService;
-import com.ai.api.service.LTParameterService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.program.model.Program;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +20,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ai.aims.services.model.OrderMaster;
+import com.ai.aims.services.model.Tag;
+import com.ai.api.bean.OrderSearchBean;
+import com.ai.api.bean.ProductCategoryDtoBean;
+import com.ai.api.bean.TagSearchBean;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.controller.LTOrder;
+import com.ai.api.service.LTOrderService;
+import com.ai.api.service.LTParameterService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.program.model.Program;
 
 @SuppressWarnings({"rawtypes"})
 @RestController
@@ -140,7 +145,7 @@ public class LTOrderImpl implements LTOrder {
 	@Override
 	@ApiOperation(value = "Search User's LT Program API", produces = "application/json", response = Program.class, httpMethod = "GET", responseContainer = "List")
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/parameter/lt-programs", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/lt/programs", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchPrograms(
 //			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh,
 			@PathVariable String userId) {
@@ -166,6 +171,40 @@ public class LTOrderImpl implements LTOrder {
 			logger.info("get lt programs from redis successfully");
 			return new ResponseEntity<List<Program>>(programs, HttpStatus.OK);
 		}*/
+	}
+
+	@ApiOperation(value = "Order Product Categories Get API", produces = "application/json", response = ProductCategoryDtoBean.class, httpMethod = "GET")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/parameter/lt/categories", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchCategories(@ApiParam(value="User ID") @PathVariable String userId) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltparameterService.searchCategories();
+		} catch (Exception e) {
+			logger.error("get product categories search error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't get LT product categories");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Order Tags Get API", produces = "application/json", response = TagSearchBean.class, httpMethod = "GET")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/parameter/lt/category/{categoryId}/tags", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchTagsByCategory(
+			@ApiParam(value="User ID") @PathVariable String userId,
+			@ApiParam(value="Product Category ID") @PathVariable String categoryId) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltparameterService.searchTags(categoryId);
+		} catch (Exception e) {
+			logger.error("get tags search error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't get LT tags");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 	}
 
 }
