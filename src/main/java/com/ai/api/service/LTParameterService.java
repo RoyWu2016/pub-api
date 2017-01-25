@@ -7,7 +7,6 @@
 package com.ai.api.service;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
@@ -41,7 +40,8 @@ public interface LTParameterService {
 	
 	public ApiCallResult searchProgram(String programId) throws IOException;
 	
-	public ApiCallResult searchTestsByTag(List<String> countries, List<String> testNames, List<String> regions, String tagLevel, String productCategory) throws IOException;
+	public ApiCallResult searchTestWithFilters(String countries, String regions, String testNames, 
+			String tags, String productCategory, String office) throws IOException;
 	
 	public ApiCallResult searchTest(String testId) throws IOException;
 	
