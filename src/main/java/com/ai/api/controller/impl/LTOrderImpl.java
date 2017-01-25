@@ -145,7 +145,7 @@ public class LTOrderImpl implements LTOrder {
 	@Override
 	@ApiOperation(value = "Search User's LT Program API", produces = "application/json", response = Program.class, httpMethod = "GET", responseContainer = "List")
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/parameter/lt/programs", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/lt/programs", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchPrograms(
 //			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh,
 			@PathVariable String userId) {
