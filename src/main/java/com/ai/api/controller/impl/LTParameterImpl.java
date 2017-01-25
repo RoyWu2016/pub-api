@@ -2,6 +2,19 @@ package com.ai.api.controller.impl;
 
 import java.util.List;
 
+import com.ai.aims.services.model.OfficeMaster;
+import com.ai.aims.services.model.TagTestMap;
+import com.ai.aims.services.model.TestMaster;
+import com.ai.api.bean.ProductCategoryDtoBean;
+import com.ai.api.bean.TagSearchBean;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.controller.LTParameter;
+import com.ai.api.service.LTParameterService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.program.model.Program;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,38 +28,25 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ai.aims.services.model.OfficeMaster;
-import com.ai.aims.services.model.TagTestMap;
-import com.ai.aims.services.model.TestMaster;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.controller.LTParameter;
-import com.ai.api.service.LTParameterService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.program.model.Program;
-
 /***************************************************************************
  * <PRE>
- *  Project Name    : api
- *
- *  Package Name    : com.ai.api.lab.controller.impl
- *
- *  File Name       : LTParameterImpl.java
- *
- *  Creation Date   : Dec 6, 2016
- *
- *  Author          : Aashish Thakran
- *
- *  Purpose         : TODO
- *
- *
- *  History         : TODO
- *
+ * Project Name    : api
+ * <p>
+ * Package Name    : com.ai.api.lab.controller.impl
+ * <p>
+ * File Name       : LTParameterImpl.java
+ * <p>
+ * Creation Date   : Dec 6, 2016
+ * <p>
+ * Author          : Aashish Thakran
+ * <p>
+ * Purpose         : TODO
+ * <p>
+ * <p>
+ * History         : TODO
+ * <p>
  * </PRE>
  ***************************************************************************/
-
-
-import io.swagger.annotations.ApiOperation;
 
 @SuppressWarnings({"rawtypes"})
 @RestController
@@ -219,5 +219,41 @@ public class LTParameterImpl implements LTParameter {
 			logger.info("get lt test from redis successfully");
 			return new ResponseEntity<TestMaster>(test, HttpStatus.OK);
 		}*/		
+	}
+
+	@ApiOperation(value = "Order Product Categories Get API", produces = "application/json", response = ProductCategoryDtoBean.class, httpMethod = "GET")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/parameter/lt/categories", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchCategories(
+			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh ) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltparameterService.searchCategories();
+		} catch (Exception e) {
+			logger.error("get product categories search error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't get LT product categories");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Order Tags Get API", produces = "application/json", response = TagSearchBean.class, httpMethod = "GET")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/parameter/lt/category/{categoryId}/tags", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchTagsByCategory(
+			@ApiParam(value="Product Category ID") @PathVariable String categoryId,
+			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh
+			) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltparameterService.searchTags(categoryId);
+		} catch (Exception e) {
+			logger.error("get tags search error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't get LT tags");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 	}
 }
