@@ -157,6 +157,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/")
  				.append(userId).toString();
 		restTemplate.put(url, order, vars);
+		order = findOrder(order.getId());
 		callResult.setContent(order);
 		return callResult;
 	}
@@ -172,8 +173,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/status/")
  				.append(userId).toString();
 		restTemplate.put(url, order, vars);
-		order = findOrder(order.getId());
-		callResult.setContent(order);
+		callResult.setMessage("Status updated successfully");
 		return callResult;
 	}
 	
@@ -190,8 +190,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 				.append("/user/").append(userId)
 				.append("/status/").append(status).toString();
 		restTemplate.put(url, null, vars);
-		OrderMaster order = findOrder(orderId);
-		callResult.setContent(order);
+		callResult.setMessage("Status updated successfully");
 		return callResult;
 	}
 	
