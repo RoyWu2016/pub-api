@@ -12,11 +12,36 @@ public class TestSearchBean implements Serializable {
 
 	private String testId;
 	private String testName;
-	private String category;
+	private List<String> categories;
 	private String country;
 	private List<String> tags;
     private Double price;
     
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((testId == null) ? 0 : testId.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TestSearchBean other = (TestSearchBean) obj;
+		if (testId == null) {
+			if (other.testId != null)
+				return false;
+		} else if (!testId.equals(other.testId))
+			return false;
+		return true;
+	}
+	
 	public String getTestId() {
 		return testId;
 	}
@@ -29,11 +54,11 @@ public class TestSearchBean implements Serializable {
 	public void setTestName(String testName) {
 		this.testName = testName;
 	}
-	public String getCategory() {
-		return category;
+	public List<String> getCategories() {
+		return categories;
 	}
-	public void setCategory(String category) {
-		this.category = category;
+	public void setCategories(List<String> categories) {
+		this.categories = categories;
 	}
 	public String getCountry() {
 		return country;
