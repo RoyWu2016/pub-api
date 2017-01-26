@@ -128,12 +128,12 @@ public class LTParameterImpl implements LTParameter {
 	@TokenSecured
 	@RequestMapping(value = "/parameter/lt/tests", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchTestsWithFilters(			
-			@RequestParam(value = "Countries", required = false, defaultValue = "") String countries, 
-			@RequestParam(value = "Regions", required = false, defaultValue = "") String regions, 
-			@RequestParam(value = "Test Names", required = false, defaultValue = "") String testNames,
-			@RequestParam(value = "Tag IDs", required = false, defaultValue = "") String tags,
-			@RequestParam(value = "Product Category ID", required = false, defaultValue = "") String productCategory,
-			@RequestParam(value = "Office ID", required = false, defaultValue = "") String office) {
+			@ApiParam(value="Countries") @RequestParam(value = "countries", required = false, defaultValue = "") String countries, 
+			@ApiParam(value="Regions") @RequestParam(value = "regions", required = false, defaultValue = "") String regions, 
+			@ApiParam(value="Test Names") @RequestParam(value = "testNames", required = false, defaultValue = "") String testNames,
+			@ApiParam(value="Tag IDs") @RequestParam(value = "tags", required = false, defaultValue = "") String tags,
+			@ApiParam(value="Product Category ID") @RequestParam(value = "productCategory", required = false, defaultValue = "") String productCategory,
+			@ApiParam(value="Office ID") @RequestParam(value = "office", required = false, defaultValue = "") String office) {
 		ApiCallResult callResult = new ApiCallResult();
 		/*if (!refresh) {
 			logger.info("try to searchTests from redis ...");
