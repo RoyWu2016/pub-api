@@ -99,7 +99,7 @@ public class LTReportImpl implements LTReport {
 	}
 
 	@Override
-	@ApiOperation(value = "Update Report Status API", produces = "application/json", response = OrderMaster.class, httpMethod = "PUT")
+	@ApiOperation(value = "Update Report Status API", produces = "application/json", httpMethod = "PUT")
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/report/{reportId}/status/{status}", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> editReportStatus(
@@ -119,7 +119,7 @@ public class LTReportImpl implements LTReport {
 	}
 	
 	@Override
-	@ApiOperation(value = "Update Report Test Status API", produces = "application/json", response = OrderTestAssignment.class, httpMethod = "PUT")
+	@ApiOperation(value = "Update Report Test Status API", produces = "application/json", httpMethod = "PUT")
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/report/{reportId}/test/{testId}/status/{status}", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> editReportTestStatus(
