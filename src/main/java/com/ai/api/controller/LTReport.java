@@ -17,5 +17,5 @@ public interface LTReport {
 	
 	public ResponseEntity<ApiCallResult> editReportTestStatus(String userId, String reportId, String testId, String status);
 
-	ResponseEntity downloadPDF(String userId, String attachmentId, HttpServletResponse response);
+	public ResponseEntity<ApiCallResult> downloadPDF(String userId, String attachmentId, HttpServletResponse response);
 }
