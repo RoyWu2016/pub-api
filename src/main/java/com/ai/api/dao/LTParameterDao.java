@@ -39,7 +39,7 @@ public interface LTParameterDao {
 	
 	public ApiCallResult searchPrograms(SearchProgramCriteria criteria) throws IOException;
 	
-	public ApiCallResult searchTestsByTag(SearchTagTestCriteria criteria) throws IOException;
+	public ApiCallResult searchTests(SearchTagTestCriteria criteria) throws IOException;
 	
 	public ApiCallResult searchTestsByName(String testName) throws IOException;
 	

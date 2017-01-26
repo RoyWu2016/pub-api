@@ -7,7 +7,6 @@
 package com.ai.api.service.impl;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -88,25 +87,22 @@ public class LTParameterServiceImpl implements LTParameterService {
 	}
 
 	@Override
-	public ApiCallResult searchTestsByTag(List<String> countries, List<String> testNames, List<String> regions, String tagLevel, String productCategory) throws IOException {
+	public ApiCallResult searchTestWithFilters(String countries, String regions, String testNames, 
+			String tags, String productCategory, String office) throws IOException {
 		SearchTagTestCriteria criteria = new SearchTagTestCriteria();
-		if(null != countries) {
-			criteria.setCountries(countries);	
-		}
-		if(null != testNames) {
-			criteria.setTestnames(testNames);	
-		}	
-		
-		if(null != regions)
+		if(!StringUtils.stripToEmpty(countries).isEmpty())
+			criteria.setCountries(countries);
+		if(!StringUtils.stripToEmpty(testNames).isEmpty())
+			criteria.setTestnames(testNames);
+		if(!StringUtils.stripToEmpty(regions).isEmpty())
 			criteria.setRegions(regions);
-		
-		if(!StringUtils.stripToEmpty(tagLevel).isEmpty())
-			criteria.setTagLevel(tagLevel);
-		
+		if(!StringUtils.stripToEmpty(tags).isEmpty())
+			criteria.setTagIds(tags);
 		if(!StringUtils.stripToEmpty(productCategory).isEmpty())
 			criteria.setProductCategory(productCategory);
-		
-		return ltparameterDao.searchTestsByTag(criteria);
+		if(!StringUtils.stripToEmpty(office).isEmpty())
+			criteria.setOffice(office);
+		return ltparameterDao.searchTests(criteria);
 	}
 
 	@Override
