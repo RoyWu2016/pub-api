@@ -148,13 +148,14 @@ public class LTReportImpl implements LTReport {
 			@ApiParam(value="Report Attachment ID") @PathVariable("attachmentId") String attachmentId,
 			HttpServletResponse response) {
 		HttpStatus respStatus = HttpStatus.OK;
+		ApiCallResult result = new ApiCallResult();
 		try {
-			ltReportService.downloadReportAttachment(attachmentId, response);
+			result = ltReportService.downloadReportAttachment(attachmentId, response);
 		} catch (Exception e) {
 			logger.error("Report update error: " + ExceptionUtils.getFullStackTrace(e));
             respStatus =  HttpStatus.INTERNAL_SERVER_ERROR;
 		}
-		return new ResponseEntity(respStatus);
+		return new ResponseEntity<ApiCallResult>(result, respStatus);
 	}
 	
 	private OrderSearchBean wrapReportObj(OrderMaster order) {
