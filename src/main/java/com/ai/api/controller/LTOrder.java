@@ -20,4 +20,5 @@ public interface LTOrder {
 
 	public ResponseEntity<ApiCallResult> searchPrograms(String userId);
 
+	public ResponseEntity<ApiCallResult> deleteOrders(HttpServletRequest request, String userId, String orderIds);
 }

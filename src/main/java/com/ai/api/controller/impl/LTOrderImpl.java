@@ -136,6 +136,24 @@ public class LTOrderImpl implements LTOrder {
 		}
 		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 	}
+	
+	@ApiOperation(value = "Order Delete API", produces = "application/json", httpMethod = "DELETE")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/lt/orders", method = RequestMethod.DELETE)
+	public ResponseEntity<ApiCallResult> deleteOrders(HttpServletRequest request,
+			@ApiParam(value="User ID") @PathVariable String userId,
+			@ApiParam(value="Order IDs") @RequestParam String orderIds) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltOrderService.deleteOrders(userId, orderIds);
+		} catch (Exception e) {
+			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't edit LT order");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+	}
 
 	@Override
 	@ApiOperation(value = "Search User's LT Program API", produces = "application/json", response = Program.class, httpMethod = "GET", responseContainer = "List")

@@ -201,4 +201,17 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		OrderAttachment attachment = restTemplate.getForObject(config.getAimsServiceBaseUrl() + "/api/ordermanagement/order/attachment/" + attachmentId, OrderAttachment.class);
 		return attachment;
 	} 
+
+	@Override
+	public ApiCallResult deleteOrders(String userId, String orderIds) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		ApiCallResult callResult = new ApiCallResult();
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/orders/")
+ 				.append(userId).toString();
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("orderIds", orderIds);
+		restTemplate.delete(builder.build().toUri());
+		callResult.setMessage("Orders deleted successfully");
+		return callResult;
+	}
 }

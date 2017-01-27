@@ -107,4 +107,9 @@ public class LTOrderServiceImpl implements LTOrderService {
 	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException {
 		return ltorderDao.editOrder(userId, order);
 	}
+	
+	@Override
+	public ApiCallResult deleteOrders(String userId, String orderIds) throws IOException {
+		return ltorderDao.deleteOrders(userId, orderIds);
+	}
 }
