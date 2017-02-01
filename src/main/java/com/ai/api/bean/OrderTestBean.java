@@ -2,6 +2,8 @@ package com.ai.api.bean;
 
 import java.io.Serializable;
 
+import com.ai.aims.services.dto.LabFilterDTO;
+import com.ai.aims.services.dto.TestFilterDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -14,6 +16,9 @@ public class OrderTestBean implements Serializable {
     private String failureStmt;
     private String rating;
     private String clientStatus;
+	private TestFilterDTO test;
+	private LabFilterDTO lab;	
+	private Double price;
     
     public OrderTestBean() {
     	super();
@@ -57,5 +62,29 @@ public class OrderTestBean implements Serializable {
 
 	public void setClientStatus(String clientStatus) {
 		this.clientStatus = clientStatus;
+	}
+
+	public TestFilterDTO getTest() {
+		return test;
+	}
+
+	public void setTest(TestFilterDTO test) {
+		this.test = test;
+	}
+
+	public LabFilterDTO getLab() {
+		return lab;
+	}
+
+	public void setLab(LabFilterDTO lab) {
+		this.lab = lab;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
 	}
 }

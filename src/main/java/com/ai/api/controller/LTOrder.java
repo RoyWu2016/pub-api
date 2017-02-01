@@ -21,4 +21,10 @@ public interface LTOrder {
 	public ResponseEntity<ApiCallResult> searchPrograms(String userId);
 
 	public ResponseEntity<ApiCallResult> deleteOrders(HttpServletRequest request, String userId, String orderIds);
+
+	public ResponseEntity<ApiCallResult> findOrderTestAssignments(String orderId, String userId);
+
+	public ResponseEntity<ApiCallResult> addOrderTestAssignments(String userId, String orderId, String testIds);
+
+	public ResponseEntity<ApiCallResult> deleteOrderTestAssignment(String userId, String orderId, String testId);
 }

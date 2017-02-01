@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,16 +20,25 @@ import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.ai.aims.services.dto.LabFilterDTO;
+import com.ai.aims.services.dto.TestFilterDTO;
+import com.ai.aims.services.model.LabMaster;
 import com.ai.aims.services.model.OrderAttachment;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.aims.services.model.OrderStyleInfo;
+import com.ai.aims.services.model.OrderTestAssignment;
+import com.ai.aims.services.model.TestMaster;
+import com.ai.aims.services.model.TestPricingDetail;
 import com.ai.api.bean.OrderSearchBean;
+import com.ai.api.bean.OrderTestBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.LTOrderDao;
 import com.ai.api.util.AIUtil;
+import com.ai.commons.Consts;
 import com.ai.commons.beans.ApiCallResult;
 
 /***************************************************************************
@@ -207,11 +217,101 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		ApiCallResult callResult = new ApiCallResult();
-		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/orders/")
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/orders/user/")
  				.append(userId).toString();
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("orderIds", orderIds);
 		restTemplate.delete(builder.build().toUri());
 		callResult.setMessage("Orders deleted successfully");
 		return callResult;
+	}
+	
+	@Override
+	public ApiCallResult findOrderTestAssignments(String orderId) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		ApiCallResult callResult = new ApiCallResult();
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/testassignments/")
+ 				.append(orderId).toString();
+		List<OrderTestAssignment> testAssignments = Arrays.asList(restTemplate.getForObject(url, OrderTestAssignment[].class, new HashMap<String, Object>()));
+		List<OrderTestBean> orderTests = new ArrayList<OrderTestBean>(testAssignments.size());
+		for (OrderTestAssignment testAssign : testAssignments) {
+			OrderTestBean orderTest = new OrderTestBean();
+			orderTest.setId(testAssign.getId());
+			orderTest.setFailureStmt(testAssign.getFailureStatement());
+			orderTest.setName(testAssign.getTest().getName());
+			orderTest.setRating(null != testAssign.getTestAssignRating() ? testAssign.getTestAssignRating().getDescription() : null);
+			orderTest.setClientStatus(testAssign.getClientStatus());
+			if (null != testAssign.getTest()) {
+				TestMaster test = testAssign.getTest();
+				TestFilterDTO testDto = new TestFilterDTO();
+				testDto.setTestCode(test.getCode());
+				testDto.setVersion(test.getVersion());
+				testDto.setTestCategory(test.getTestCategory());
+				testDto.setTestId(test.getId());
+				testDto.setTestItem(test.getTestItem());
+				testDto.setTestName(test.getName());
+				testDto.setStandardName(test.getStandardName());
+				testDto.setStandardNo(test.getStandardNo());
+				TestPricingDetail priceDetails = null;
+				if (!CollectionUtils.isEmpty(test.getPricingDetails())) {
+					OrderMaster order = findOrder(orderId);
+					priceDetails = test.getPricingDetails().parallelStream().filter(
+							p -> p.getOffice().equals(order.getOffice())).findFirst().orElse(null);
+				}
+				orderTest.setPrice(null != priceDetails && null != priceDetails.getPrice() ? priceDetails.getPrice() : 0);
+				orderTest.setTest(testDto);
+			}
+			if (null != testAssign.getLab()) {
+				LabMaster lab = testAssign.getLab();
+				LabFilterDTO labDto = new LabFilterDTO();
+				labDto.setId(lab.getId());
+				labDto.setCode(lab.getCode());
+				labDto.setName(lab.getName());
+				labDto.setZipCode(lab.getZipCode());
+				orderTest.setLab(labDto);
+			}
+			orderTests.add(orderTest);
+		}
+		callResult.setContent(orderTests);
+		return callResult;
+	}
+
+	@Override
+	public ApiCallResult addOrderTestAssignments(String userId, String orderId, String testIds) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		if (!StringUtils.stripToEmpty(testIds).isEmpty()) {
+			Map<String, String> vars = new HashMap<String, String>();
+			vars.put("userId", userId);
+			String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/")
+					.append(userId).toString();
+			OrderMaster order = findOrder(orderId);
+			Set<OrderTestAssignment> testAssignments = null != order.getTestAssignments() ? 
+					order.getTestAssignments() : new HashSet<OrderTestAssignment>();
+			for (String testId : testIds.split(Consts.COMMA)) {
+				OrderTestAssignment testAssign = new OrderTestAssignment();
+				testAssign.setTest(new TestMaster(testId.trim()));
+				testAssignments.add(testAssign);
+			}
+			order.setTestAssignments(testAssignments);
+			restTemplate.put(url, order, vars);
+		}
+		ApiCallResult result = new ApiCallResult();
+		result.setMessage("Test Assignments added successfully");
+		return result;
+	}
+	
+	@Override
+	public ApiCallResult deleteOrderTestAssignment(String userId, String testId) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/testassign/")
+				.append(testId).append("/")
+				.append(userId).toString();
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+		restTemplate.delete(builder.build().toUri());
+		ApiCallResult result = new ApiCallResult();
+		result.setMessage("Test Assignment deleted successfully");
+		return result;
 	}
 }
