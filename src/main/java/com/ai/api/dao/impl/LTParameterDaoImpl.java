@@ -22,13 +22,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.ai.aims.constants.Status;
 import com.ai.aims.services.model.OfficeMaster;
 import com.ai.aims.services.model.ProductCategory;
+import com.ai.aims.services.model.Region;
 import com.ai.aims.services.model.Tag;
 import com.ai.aims.services.model.TagTestMap;
 import com.ai.aims.services.model.TestMaster;
 import com.ai.aims.services.model.search.SearchTagCriteria;
 import com.ai.aims.services.model.search.SearchTagResponse;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
+import com.ai.api.bean.OfficeSearchBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
+import com.ai.api.bean.RegionSearchBean;
 import com.ai.api.bean.TagSearchBean;
 import com.ai.api.bean.TestSearchBean;
 import com.ai.api.config.ServiceConfig;
@@ -73,8 +76,24 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		ApiCallResult callResult = new ApiCallResult();
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/office/search/all").toString();
-		List<OfficeMaster> offices = Arrays.asList(restTemplate.getForObject(url, OfficeMaster[].class));	
-		callResult.setContent(offices);
+		List<OfficeMaster> offices = Arrays.asList(restTemplate.getForObject(url, OfficeMaster[].class));
+		List<OfficeSearchBean> officeResult = new ArrayList<OfficeSearchBean>(offices.size());
+		for (OfficeMaster office : offices) {
+			OfficeSearchBean officeBean = new OfficeSearchBean();
+			officeBean.setId(office.getId());
+			officeBean.setName(office.getName());
+			officeBean.setAddress(office.getAddress());
+			officeBean.setCode(office.getCode());
+			officeBean.setTimeZone(office.getTimezone());
+			officeBean.setZipCode(office.getZipCode());
+			officeBean.setStatus(office.getStatus());
+			officeBean.setRemarks(office.getRemarks());
+			officeBean.setInvoiceRemarks(office.getInvoiceRemarks());
+			officeBean.setQuotationRemarks(office.getQuotationRemarks());
+			officeBean.setBankName(office.getBankName());
+			officeResult.add(officeBean);
+		}
+		callResult.setContent(officeResult);
 		return callResult;
 	}
 
@@ -181,6 +200,28 @@ public class LTParameterDaoImpl implements LTParameterDao {
 			tagData.add(tagObj);
 		}
 		callResult.setContent(tagData);
+		return callResult;
+	}
+	
+	@Override
+	public ApiCallResult searchRegions() throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		ApiCallResult callResult = new ApiCallResult();
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/region/search").toString();
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+		        .queryParam("page", 0)
+		        .queryParam("size", 1000000);
+		List<Region> regions = Arrays.asList(restTemplate.getForObject(builder.build().toUri(), Region[].class));
+		List<RegionSearchBean> regionResult = new ArrayList<RegionSearchBean>(regions.size());
+		for (Region region : regions) {
+			RegionSearchBean regionBean = new RegionSearchBean();
+			regionBean.setId(region.getId());
+			regionBean.setName(region.getName());
+			regionBean.setStatus(region.getStatus());
+			regionResult.add(regionBean);
+		}
+		callResult.setContent(regionResult);
 		return callResult;
 	}
 

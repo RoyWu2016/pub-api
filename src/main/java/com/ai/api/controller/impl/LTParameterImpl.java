@@ -35,9 +35,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ai.aims.services.model.OfficeMaster;
 import com.ai.aims.services.model.TestMaster;
+import com.ai.api.bean.OfficeSearchBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
+import com.ai.api.bean.RegionSearchBean;
 import com.ai.api.bean.TagSearchBean;
 import com.ai.api.bean.TestSearchBean;
 import com.ai.api.config.ServiceConfig;
@@ -62,7 +63,7 @@ public class LTParameterImpl implements LTParameter {
 	private LTParameterService ltparameterService;
 	
 	@Override
-	@ApiOperation(value = "Search Office API", produces = "application/json", response = OfficeMaster.class, httpMethod = "GET")
+	@ApiOperation(value = "Search Office API", produces = "application/json", response = OfficeSearchBean.class, httpMethod = "GET")
 	@TokenSecured
 	@RequestMapping(value = "/parameter/lt/offices", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchOffice(
@@ -249,6 +250,22 @@ public class LTParameterImpl implements LTParameter {
 		} catch (Exception e) {
 			logger.error("get tags search error: " + ExceptionUtils.getFullStackTrace(e));
 			callResult.setMessage("can't get LT tags");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "Search LT Regions API", produces = "application/json", response = RegionSearchBean.class, httpMethod = "GET")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/lt/regions", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchRegions() {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltparameterService.searchRegions();
+		} catch (Exception e) {
+			logger.error("get regions search error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't get LT regions");
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
