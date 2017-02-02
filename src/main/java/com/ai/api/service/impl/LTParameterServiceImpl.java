@@ -133,4 +133,9 @@ public class LTParameterServiceImpl implements LTParameterService {
 		criteria.setCategoryId(categoryId);
 		return ltparameterDao.searchTags(criteria);
 	}
+	
+	@Override
+	public ApiCallResult searchRegions() throws IOException {
+		return ltparameterDao.searchRegions();
+	}
 }

@@ -50,4 +50,6 @@ public interface LTParameterService {
 	public ApiCallResult searchCategories() throws IOException;
 
 	public ApiCallResult searchTags(String categoryId) throws IOException;
+
+	public ApiCallResult searchRegions() throws IOException;
 }
