@@ -207,21 +207,21 @@ public class LTOrderImpl implements LTOrder {
 		}
 	}
 
-	@ApiOperation(value = "Add Order Test Assignments API", produces = "application/json", httpMethod = "POST")
+	@ApiOperation(value = "Update Order Test Assignments API", produces = "application/json", httpMethod = "PUT")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}/tests", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> addOrderTestAssignments (
+	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}/tests", method = RequestMethod.PUT)
+	public ResponseEntity<ApiCallResult> updateOrderTestAssignments (
 			@ApiParam(value="User ID") @PathVariable("userId") String userId,
 			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
 			@ApiParam(value="Test IDs") @RequestParam(value = "testIds", required = true, defaultValue = "") String testIds) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-			callResult = ltOrderService.addOrderTestAssignments(userId, orderId, testIds);
+			callResult = ltOrderService.updateOrderTestAssignments(userId, orderId, testIds);
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 		} catch (Exception e) {
-			logger.error("add order test assignments error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("can't add order test assignments");
+			logger.error("update order test assignments error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't update order test assignments");
 			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

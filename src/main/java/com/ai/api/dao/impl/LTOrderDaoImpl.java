@@ -277,7 +277,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 	}
 
 	@Override
-	public ApiCallResult addOrderTestAssignments(String userId, String orderId, String testIds) throws IOException {
+	public ApiCallResult updateOrderTestAssignments(String userId, String orderId, String testIds) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		if (!StringUtils.stripToEmpty(testIds).isEmpty()) {
@@ -286,8 +286,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 			String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/")
 					.append(userId).toString();
 			OrderMaster order = findOrder(orderId);
-			Set<OrderTestAssignment> testAssignments = null != order.getTestAssignments() ? 
-					order.getTestAssignments() : new HashSet<OrderTestAssignment>();
+			Set<OrderTestAssignment> testAssignments = new HashSet<OrderTestAssignment>();
 			for (String testId : testIds.split(Consts.COMMA)) {
 				OrderTestAssignment testAssign = new OrderTestAssignment();
 				testAssign.setTest(new TestMaster(testId.trim()));
@@ -297,7 +296,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 			restTemplate.put(url, order, vars);
 		}
 		ApiCallResult result = new ApiCallResult();
-		result.setMessage("Test Assignments added successfully");
+		result.setMessage("Test Assignments updated successfully");
 		return result;
 	}
 	

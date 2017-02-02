@@ -118,8 +118,8 @@ public class LTOrderServiceImpl implements LTOrderService {
 	}
 	
 	@Override
-	public ApiCallResult addOrderTestAssignments(String userId, String orderId, String testIds) throws IOException {
-		return ltorderDao.addOrderTestAssignments(userId, orderId, testIds);
+	public ApiCallResult updateOrderTestAssignments(String userId, String orderId, String testIds) throws IOException {
+		return ltorderDao.updateOrderTestAssignments(userId, orderId, testIds);
 	}
 	
 	@Override
