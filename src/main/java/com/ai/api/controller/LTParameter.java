@@ -38,4 +38,6 @@ public interface LTParameter {
 	public ResponseEntity<ApiCallResult> searchTest(boolean refresh, String testId);
 	
 	public ResponseEntity<ApiCallResult> searchTestsByName(boolean refresh, String testName);
+
+	public ResponseEntity<ApiCallResult> searchRegions();
 }

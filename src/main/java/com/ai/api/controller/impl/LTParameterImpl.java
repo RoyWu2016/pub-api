@@ -1,30 +1,5 @@
 package com.ai.api.controller.impl;
 
-import java.util.List;
-
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.ai.aims.services.model.OfficeMaster;
-import com.ai.aims.services.model.TagTestMap;
-import com.ai.aims.services.model.TestMaster;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.controller.LTParameter;
-import com.ai.api.service.LTParameterService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.program.model.Program;
-
 /***************************************************************************
  * <PRE>
  *  Project Name    : api
@@ -44,9 +19,34 @@ import com.ai.program.model.Program;
  *
  * </PRE>
  ***************************************************************************/
-
-
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ai.aims.services.model.TestMaster;
+import com.ai.api.bean.OfficeSearchBean;
+import com.ai.api.bean.ProductCategoryDtoBean;
+import com.ai.api.bean.RegionSearchBean;
+import com.ai.api.bean.TagSearchBean;
+import com.ai.api.bean.TestSearchBean;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.controller.LTParameter;
+import com.ai.api.service.LTParameterService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.program.model.Program;
 
 @SuppressWarnings({"rawtypes"})
 @RestController
@@ -63,9 +63,9 @@ public class LTParameterImpl implements LTParameter {
 	private LTParameterService ltparameterService;
 	
 	@Override
-	@ApiOperation(value = "Search Office API", produces = "application/json", response = OfficeMaster.class, httpMethod = "GET")
+	@ApiOperation(value = "Search Office API", produces = "application/json", response = OfficeSearchBean.class, httpMethod = "GET")
 	@TokenSecured
-	@RequestMapping(value = "/parameter/lt-offices", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/lt/offices", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchOffice(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		ApiCallResult callResult = new ApiCallResult();
@@ -96,7 +96,7 @@ public class LTParameterImpl implements LTParameter {
 	@Override
 	@ApiOperation(value = "Search LT Program API", produces = "application/json", response = Program.class, httpMethod = "GET")
 	@TokenSecured
-	@RequestMapping(value = "/parameter/lt-programs/{programId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/lt/programs/{programId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchProgram(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh,
 			@PathVariable String programId) {
@@ -125,16 +125,16 @@ public class LTParameterImpl implements LTParameter {
 	}	
 	
 	@Override
-	@ApiOperation(value = "Search LT Tests By tag Name API", produces = "application/json", response = TagTestMap.class, httpMethod = "GET", responseContainer = "List")
+	@ApiOperation(value = "Search LT Tests with filters API", produces = "application/json", response = TestSearchBean.class, httpMethod = "GET", responseContainer = "List")
 	@TokenSecured
-	@RequestMapping(value = "/parameter/lt-tests-by-tag", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> searchTestsByTag(			
-			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh,
-			@RequestParam(value = "countries", required = false) List<String> countries, 
-			@RequestParam(value = "testNames", required = false) List<String> testNames,
-			@RequestParam(value = "regions", required = false) List<String> regions, 
-			@RequestParam(value = "tagLevel", required = false) String tagLevel,
-			@RequestParam(value = "productCategory", required = false) String productCategory) {
+	@RequestMapping(value = "/parameter/lt/tests", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchTestsWithFilters(			
+			@ApiParam(value="Countries") @RequestParam(value = "countries", required = false, defaultValue = "") String countries, 
+			@ApiParam(value="Regions") @RequestParam(value = "regions", required = false, defaultValue = "") String regions, 
+			@ApiParam(value="Test Names") @RequestParam(value = "testNames", required = false, defaultValue = "") String testNames,
+			@ApiParam(value="Tag IDs") @RequestParam(value = "tags", required = false, defaultValue = "") String tags,
+			@ApiParam(value="Product Category ID") @RequestParam(value = "productCategory", required = false, defaultValue = "") String productCategory,
+			@ApiParam(value="Office ID") @RequestParam(value = "office", required = false, defaultValue = "") String office) {
 		ApiCallResult callResult = new ApiCallResult();
 		/*if (!refresh) {
 			logger.info("try to searchTests from redis ...");
@@ -143,7 +143,8 @@ public class LTParameterImpl implements LTParameter {
 		}
 		if (null == tests) {*/
 			try {
-				callResult = ltparameterService.searchTestsByTag(countries, testNames, regions, tagLevel, productCategory);
+				callResult = ltparameterService.searchTestWithFilters(
+						countries, regions, testNames, tags, productCategory, office);
 				logger.info("saving searchTests");
 				//RedisUtil.set("ltTestsCache", JSON.toJSONString(tests), RedisUtil.HOUR * 24);
 
@@ -162,7 +163,7 @@ public class LTParameterImpl implements LTParameter {
 	@Override
 	@ApiOperation(value = "Search LT Test By Test Id API", produces = "application/json", response = TestMaster.class, httpMethod = "GET")
 	@TokenSecured
-	@RequestMapping(value = "/parameter/lt-tests/{testId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/parameter/lt/test/{testId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchTest(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh,
 			@PathVariable String testId) {
@@ -219,5 +220,54 @@ public class LTParameterImpl implements LTParameter {
 			logger.info("get lt test from redis successfully");
 			return new ResponseEntity<TestMaster>(test, HttpStatus.OK);
 		}*/		
+	}
+
+	@ApiOperation(value = "Order Product Categories Get API", produces = "application/json", response = ProductCategoryDtoBean.class, httpMethod = "GET")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/lt/categories", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchCategories() {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltparameterService.searchCategories();
+		} catch (Exception e) {
+			logger.error("get product categories search error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't get LT product categories");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Order Tags Get API", produces = "application/json", response = TagSearchBean.class, httpMethod = "GET")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/lt/category/{categoryId}/tags", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchTagsByCategory(
+			@ApiParam(value="Product Category ID") @PathVariable String categoryId) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltparameterService.searchTags(categoryId);
+		} catch (Exception e) {
+			logger.error("get tags search error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't get LT tags");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "Search LT Regions API", produces = "application/json", response = RegionSearchBean.class, httpMethod = "GET")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/parameter/lt/regions", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchRegions() {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltparameterService.searchRegions();
+		} catch (Exception e) {
+			logger.error("get regions search error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't get LT regions");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 	}
 }
