@@ -1,20 +1,12 @@
 package com.ai.api.controller.impl;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ai.aims.services.model.OrderMaster;
-import com.ai.api.bean.OrderSearchBean;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.controller.LTOrder;
-import com.ai.api.service.LTOrderService;
-import com.ai.api.service.LTParameterService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.program.model.Program;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +20,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
+import com.ai.api.bean.OrderTestBean;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.controller.LTOrder;
+import com.ai.api.service.LTOrderService;
+import com.ai.api.service.LTParameterService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.program.model.Program;
 
 @SuppressWarnings({"rawtypes"})
 @RestController
@@ -136,6 +139,24 @@ public class LTOrderImpl implements LTOrder {
 		}
 		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 	}
+	
+	@ApiOperation(value = "Order Delete API", produces = "application/json", httpMethod = "DELETE")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/lt/orders", method = RequestMethod.DELETE)
+	public ResponseEntity<ApiCallResult> deleteOrders(HttpServletRequest request,
+			@ApiParam(value="User ID") @PathVariable String userId,
+			@ApiParam(value="Order IDs") @RequestParam String orderIds) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltOrderService.deleteOrders(userId, orderIds);
+		} catch (Exception e) {
+			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't edit LT order");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+	}
 
 	@Override
 	@ApiOperation(value = "Search User's LT Program API", produces = "application/json", response = Program.class, httpMethod = "GET", responseContainer = "List")
@@ -168,5 +189,60 @@ public class LTOrderImpl implements LTOrder {
 		}*/
 	}
 
+	@ApiOperation(value = "Get Order Test Assignments API", produces = "application/json", response = OrderTestBean.class, httpMethod = "GET")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}/tests", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> findOrderTestAssignments (
+			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltOrderService.findOrderTestAssignments(orderId);
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("get order test assignments error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't get order test assignments");
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@ApiOperation(value = "Add Order Test Assignments API", produces = "application/json", httpMethod = "POST")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}/tests", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> addOrderTestAssignments (
+			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
+			@ApiParam(value="Test IDs") @RequestParam(value = "testIds", required = true, defaultValue = "") String testIds) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltOrderService.addOrderTestAssignments(userId, orderId, testIds);
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("add order test assignments error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't add order test assignments");
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@ApiOperation(value = "Delete Order Test Assignment API", produces = "application/json", httpMethod = "DELETE")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}/test/{testId}", method = RequestMethod.DELETE)
+	public ResponseEntity<ApiCallResult> deleteOrderTestAssignment (
+			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
+			@ApiParam(value="Test Assignment ID") @PathVariable("testId") String testId) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltOrderService.deleteOrderTestAssignment(userId, testId);
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("delete order test assignment error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't delete order test assignment");
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 }

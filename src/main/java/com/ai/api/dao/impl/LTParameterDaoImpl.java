@@ -104,7 +104,6 @@ public class LTParameterDaoImpl implements LTParameterDao {
 				TestSearchBean testBean = new TestSearchBean();
 				testBean.setTestId(test.getId());
 				testBean.setTestName(test.getName());
-				testBean.setCategory(tagTest.getProductCategory());
 				testBean.setCountry(tagTest.getCountry());
 				testBean.setPrice(null != test.getPricingDetails() && null != criteria.getOffice() ? test.getPricingDetails().parallelStream().filter(
 						p -> criteria.getOffice().equals(p.getOffice().getId())).findFirst().get().getPrice() : 0);
@@ -112,7 +111,12 @@ public class LTParameterDaoImpl implements LTParameterDao {
 				tagTests.parallelStream().filter(t -> (test.getId().equals(t.getTestId()) 
 						&& null != t.getTagName())).forEach(t -> tags.add(t.getTagName()));
 				testBean.setTags(tags);
-				tests.add(testBean);
+				List<String> categories = new ArrayList<String>(0);
+				tagTests.parallelStream().filter(t -> (test.getId().equals(t.getTestId()) &&
+						null != t.getProductCategory())).forEach(t -> categories.add(t.getProductCategory()));
+				testBean.setCategories(categories);
+				if (!tests.contains(testBean))
+					tests.add(testBean);
 			}
 		}			
 		callResult.setContent(tests);
