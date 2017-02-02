@@ -49,4 +49,12 @@ public interface LTOrderDao {
 	public ApiCallResult editOrderTestAssignmentStatus(String orderId, String testAssignmentId, String userId, String status) throws IOException;
 
 	public OrderAttachment getOrderAttachment(String attachmentId) throws IOException;
+
+	public ApiCallResult deleteOrders(String userId, String orderIds) throws IOException;
+
+	public ApiCallResult findOrderTestAssignments(String orderId) throws IOException;
+
+	public ApiCallResult updateOrderTestAssignments(String userId, String orderId, String testIds) throws IOException;
+
+	public ApiCallResult deleteOrderTestAssignment(String userId, String testId) throws IOException;
 }

@@ -9,8 +9,6 @@ package com.ai.api.service.impl;
 import java.io.IOException;
 import java.util.List;
 
-import com.ai.api.bean.OrderSearchBean;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.ai.aims.services.model.CrmCompany;
 import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.LTOrderDao;
@@ -106,5 +105,25 @@ public class LTOrderServiceImpl implements LTOrderService {
 	@Override
 	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException {
 		return ltorderDao.editOrder(userId, order);
+	}
+	
+	@Override
+	public ApiCallResult deleteOrders(String userId, String orderIds) throws IOException {
+		return ltorderDao.deleteOrders(userId, orderIds);
+	}
+	
+	@Override
+	public ApiCallResult findOrderTestAssignments(String orderId) throws IOException {
+		return ltorderDao.findOrderTestAssignments(orderId);
+	}
+	
+	@Override
+	public ApiCallResult updateOrderTestAssignments(String userId, String orderId, String testIds) throws IOException {
+		return ltorderDao.updateOrderTestAssignments(userId, orderId, testIds);
+	}
+	
+	@Override
+	public ApiCallResult deleteOrderTestAssignment(String userId, String testId) throws IOException {
+		return ltorderDao.deleteOrderTestAssignment(userId, testId);
 	}
 }
