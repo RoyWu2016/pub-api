@@ -24,7 +24,7 @@ public interface LTOrder {
 
 	public ResponseEntity<ApiCallResult> findOrderTestAssignments(String orderId, String userId);
 
-	public ResponseEntity<ApiCallResult> addOrderTestAssignments(String userId, String orderId, String testIds);
+	public ResponseEntity<ApiCallResult> updateOrderTestAssignments(String userId, String orderId, String testIds);
 
 	public ResponseEntity<ApiCallResult> deleteOrderTestAssignment(String userId, String orderId, String testId);
 }
