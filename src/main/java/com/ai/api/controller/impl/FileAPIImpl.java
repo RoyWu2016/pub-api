@@ -158,7 +158,11 @@ public class FileAPIImpl implements FileAPI {
 					String filePath = com.ai.commons.FileUtils.copyFileToDirectory(mpf, tempDir);
 					File fileUploded = new File(tempDir + System.getProperty("file.separator") + filePath);
 
-					bean = myFileService.getFileService().upload(sourceId, docType, bucket, username, fileUploded);
+					if (docType.equalsIgnoreCase("LT_BOOKING")){
+						bean = myFileService.getFileService().upload(sourceId, request.getContentType(), serviceConfig.getAimsBucket(), userId, fileUploded);
+					}else {
+						bean = myFileService.getFileService().upload(sourceId, docType, bucket, username, fileUploded);
+					}
 					if (fileUploded.exists()) {
 						fileUploded.delete();
 					}
