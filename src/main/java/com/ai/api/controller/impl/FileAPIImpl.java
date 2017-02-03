@@ -159,7 +159,7 @@ public class FileAPIImpl implements FileAPI {
 					File fileUploded = new File(tempDir + System.getProperty("file.separator") + filePath);
 
 					if (docType.equalsIgnoreCase("LT_BOOKING")){
-						bean = myFileService.getFileService().upload(sourceId, request.getContentType(), bucket, userId, fileUploded);
+						bean = myFileService.getFileService().upload(sourceId, request.getContentType(), serviceConfig.getAimsBucket(), userId, fileUploded);
 					}else {
 						bean = myFileService.getFileService().upload(sourceId, docType, bucket, username, fileUploded);
 					}
