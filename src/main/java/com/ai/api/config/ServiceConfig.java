@@ -69,6 +69,8 @@ public class ServiceConfig {
     
     private String lotusApiUrl;
 
+	private String aimsBucket;
+
     //    public String getBaseURL() {
 //        return baseURL;
 //    }
@@ -262,6 +264,14 @@ public class ServiceConfig {
 		this.ipServiceBaseUrl = ipServiceBaseUrl;
 	}
 
+	public String getAimsBucket() {
+		return aimsBucket;
+	}
+
+	public void setAimsBucket(String aimsBucket) {
+		this.aimsBucket = aimsBucket;
+	}
+
 	@Override
 	public String toString() {
 		return "ServiceConfig{" +
@@ -285,6 +295,7 @@ public class ServiceConfig {
 				", ipServiceBaseUrl='" + ipServiceBaseUrl + '\'' +
 				", excleLoggoCommonSource='" + excleLoggoCommonSource + '\'' +
 				", lotusApiUrl='" + lotusApiUrl + '\'' +
+				", aimsBucket='" + aimsBucket + '\'' +
 				'}';
 	}
 }

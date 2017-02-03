@@ -69,14 +69,11 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 	<bean name="/applicationSwaggerConfig" class="com.ai.api.config.ApplicationSwaggerConfig" />
 
 	<!-- bean that will enable json to be returned -->
-	<bean
-		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
 		<property name="contentNegotiationManager">
 			<bean class="org.springframework.web.accept.ContentNegotiationManager">
 				<constructor-arg>
-					<bean
-						class="org.springframework.web.accept.PathExtensionContentNegotiationStrategy">
+					<bean class="org.springframework.web.accept.PathExtensionContentNegotiationStrategy">
 						<constructor-arg>
 							<map>
 								<entry key="json" value="application/json" />
@@ -91,8 +88,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		<property name="viewResolvers">
 			<list>
 				<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-					<property name="viewClass"
-						value="org.springframework.web.servlet.view.JstlView" />
+					<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 					<property name="prefix" value="/WEB-INF/jsp/" />
 					<property name="suffix" value=".jsp" />
 				</bean>
@@ -100,8 +96,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		</property>
 		<property name="defaultViews">
 			<list>
-				<bean
-					class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+				<bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
 					<property name="prefixJson" value="true" />
 				</bean>
 			</list>
