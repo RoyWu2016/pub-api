@@ -8,6 +8,7 @@ package com.ai.api.dao;
 
 import java.io.IOException;
 
+import com.ai.aims.services.model.search.SearchTagCriteria;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.program.search.criteria.SearchProgramCriteria;
@@ -43,6 +44,7 @@ public interface LTParameterDao {
 	public ApiCallResult searchTestsByName(String testName) throws IOException;
 	
 	public ApiCallResult searchTest(String testId) throws IOException;
+	
 	public ApiCallResult searchCategories() throws IOException;
 	
 	public ApiCallResult searchTags(SearchTagCriteria criteria) throws IOException;

@@ -42,9 +42,5 @@ public interface LTParameter {
 	
 	public ResponseEntity<ApiCallResult> searchTestsByName(boolean refresh, String testName);
 
-	public ResponseEntity<ApiCallResult> searchTagsByCategory(String categoryId);
-	
-	public ResponseEntity<ApiCallResult> searchTestsByName(boolean refresh, String testName);
-
 	public ResponseEntity<ApiCallResult> searchRegions();
 }
