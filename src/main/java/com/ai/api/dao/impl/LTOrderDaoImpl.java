@@ -25,16 +25,16 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ai.aims.services.dto.LabFilterDTO;
-import com.ai.aims.services.dto.TestFilterDTO;
+import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.LabMaster;
 import com.ai.aims.services.model.OrderAttachment;
 import com.ai.aims.services.model.OrderMaster;
-import com.ai.aims.services.model.OrderStyleInfo;
 import com.ai.aims.services.model.OrderTestAssignment;
 import com.ai.aims.services.model.TestMaster;
 import com.ai.aims.services.model.TestPricingDetail;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.OrderTestBean;
+import com.ai.api.bean.TestSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.LTOrderDao;
 import com.ai.api.util.AIUtil;
@@ -76,42 +76,38 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		
-//		ApiCallResult callResult = new ApiCallResult();
 		List<OrderSearchBean> orderSearchList = new ArrayList<OrderSearchBean>();
 		
-		List<OrderMaster> orders = Arrays.asList(restTemplate.getForObject(buildOrderSearchCriteria(compId, orderStatus, pageSize,
+		List<OrderDTO> orders = Arrays.asList(restTemplate.getForObject(buildOrderSearchCriteria(compId, orderStatus, pageSize,
 				pageNumber, direction, config.getAimsServiceBaseUrl() + "/api/ordermanagement/search").build()
 						.encode().toUri(),
-				OrderMaster[].class));
+				OrderDTO[].class));
 
-		for (OrderMaster order : orders) {
+		for (OrderDTO order : orders) {
 			OrderSearchBean orderSearch = new OrderSearchBean();
 			orderSearch.setOrderId(order.getId());
-			orderSearch.setSupplierName(null != order.getSupplier() ? StringUtils.stripToEmpty(order.getSupplier().getCompanyName()) : null );
+			orderSearch.setSupplierName(null != order.getSupplier() ? StringUtils.stripToEmpty(order.getSupplier().getName()) : null );
 			orderSearch.setServiceType("LT");
 			orderSearch.setServiceTypeText("LT");
 			orderSearch.setPoNumbers(order.getClientPONo());
 			orderSearch.setStatus(order.getStatusCode());
 			orderSearch.setBookingStatus(order.getBookingStatusCode());
-			orderSearch.setBookingDate("Pending".equalsIgnoreCase(order.getOrderStatus())
-					? DateUtils.formatDate(order.getUpdateTime(), "dd-MMM-yyyy") : null);
+			orderSearch.setBookingDate(null != order.getBookingDate() ? 
+					DateUtils.formatDate(order.getBookingDate(), "dd-MMM-yyyy") : null);
 			orderSearch.setReportDueDate(null != order.getReportDueDate() ? 
 					DateUtils.formatDate(order.getReportDueDate(), "dd-MMM-yyyy") : null);
 			orderSearch.setOffice(null != order.getOffice() ? order.getOffice().getName() : null);
 			orderSearch.setProductNames(StringUtils.stripToEmpty(order.getDescription()));
 			orderSearch.setLabOrderNo(order.getLabOrderno());
-			Set<OrderStyleInfo> styleInfo = order.getStyleInfo();
-			if (null != styleInfo && !styleInfo.isEmpty()) {
-				orderSearch.setManufacturerStyleNo(styleInfo.iterator().next().getManufacturerStyleNo());
-			}
-			orderSearch.setProgram(null != order.getProgram() ? order.getProgram().getProgramName() : null);
+			orderSearch.setManufacturerStyleNo(!CollectionUtils.isEmpty(order.getStyleInfo()) ? 
+					order.getStyleInfo().get(0).getManufacturerStyleNo() : null);
+			orderSearch.setProgram(null != order.getProgram() ? order.getProgram() : null);
 			orderSearch.setTestStartDate(null != order.getTestStartDate() ? 
 					DateUtils.formatDate(order.getTestStartDate(), "dd-MMM-yyyy") : null);
 			orderSearch.setOverallRating(order.getOverallRating());
 			orderSearch.setClientStatus(order.getClientStatus());
 			orderSearchList.add(orderSearch);
 		}
-//		callResult.setContent(orderSearchList);
 		return orderSearchList;
 	}
 
@@ -125,7 +121,8 @@ public class LTOrderDaoImpl implements LTOrderDao {
 
 		if (!StringUtils.stripToEmpty(compId).trim().isEmpty())
 			builder.queryParam("clientId", compId.trim());
-
+		
+		builder.queryParam("requestor", "external");
 		return builder;
 	}
 
@@ -243,7 +240,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 			orderTest.setClientStatus(testAssign.getClientStatus());
 			if (null != testAssign.getTest()) {
 				TestMaster test = testAssign.getTest();
-				TestFilterDTO testDto = new TestFilterDTO();
+				TestSearchBean testDto = new TestSearchBean();
 				testDto.setTestCode(test.getCode());
 				testDto.setVersion(test.getVersion());
 				testDto.setTestCategory(test.getTestCategory());
@@ -258,7 +255,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 					priceDetails = test.getPricingDetails().parallelStream().filter(
 							p -> p.getOffice().equals(order.getOffice())).findFirst().orElse(null);
 				}
-				orderTest.setPrice(null != priceDetails && null != priceDetails.getPrice() ? priceDetails.getPrice() : 0);
+				testDto.setPrice(null != priceDetails && null != priceDetails.getPrice() ? priceDetails.getPrice() : 0);
 				orderTest.setTest(testDto);
 			}
 			if (null != testAssign.getLab()) {
