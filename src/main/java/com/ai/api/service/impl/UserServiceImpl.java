@@ -23,6 +23,7 @@ import com.ai.api.bean.BillingBean;
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
+import com.ai.api.bean.CompanyRelationshipBean;
 import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.bean.CustomAQLBean;
 import com.ai.api.bean.CustomizedProductType;
@@ -60,6 +61,7 @@ import com.ai.commons.beans.customer.ApproverBean;
 import com.ai.commons.beans.customer.CompanyEntireBean;
 import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.CrmCompanyBean;
+import com.ai.commons.beans.customer.CrmCompanyRelationshipBean;
 import com.ai.commons.beans.customer.CrmSaleInChargeBean;
 import com.ai.commons.beans.customer.CustomerFeatureBean;
 import com.ai.commons.beans.customer.DashboardBean;
@@ -215,25 +217,25 @@ public class UserServiceImpl implements UserService {
 		comp.setLogo(companyEntireBean.getCompanyProfile().getLogoPath());
 		comp.setMainEmail(companyEntireBean.getContact().getMainEmail());
 		
-//		List<CompanyRelationshipBean> parentList = new ArrayList();
-//		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectParents()) {
-//			CompanyRelationshipBean bean = new CompanyRelationshipBean();
-//			bean.setCompanyId(each.getCompanyId());
-//			bean.setCompanyName(each.getCompanyName());
-//			
-//			parentList.add(bean);
-//		}
-//		comp.setParents(parentList);
-//		
-//		List<CompanyRelationshipBean> subordinatesList = new ArrayList();
-//		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectSubordinates()) {
-//			CompanyRelationshipBean bean = new CompanyRelationshipBean();
-//			bean.setCompanyId(each.getCompanyId());
-//			bean.setCompanyName(each.getCompanyName());
-//			
-//			subordinatesList.add(bean);
-//		}
-//		comp.setSubordinates(subordinatesList);
+		List<CompanyRelationshipBean> parentList = new ArrayList();
+		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectParents()) {
+			CompanyRelationshipBean bean = new CompanyRelationshipBean();
+			bean.setCompanyId(each.getCompanyId());
+			bean.setCompanyName(each.getCompanyName());
+
+			parentList.add(bean);
+		}
+		comp.setParents(parentList);
+
+		List<CompanyRelationshipBean> subordinatesList = new ArrayList();
+		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectSubordinates()) {
+			CompanyRelationshipBean bean = new CompanyRelationshipBean();
+			bean.setCompanyId(each.getSubordinateId());
+			bean.setCompanyName(each.getCompanyName());
+
+			subordinatesList.add(bean);
+		}
+		comp.setSubordinates(subordinatesList);
 		
 		MasterBean masterBean = companyEntireBean.getMaster();
 		ApiMasterBean finalBeam = new ApiMasterBean();
