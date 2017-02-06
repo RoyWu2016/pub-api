@@ -25,7 +25,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ai.aims.services.dto.LabFilterDTO;
-import com.ai.aims.services.dto.TestFilterDTO;
 import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.LabMaster;
 import com.ai.aims.services.model.OrderAttachment;
@@ -35,6 +34,7 @@ import com.ai.aims.services.model.TestMaster;
 import com.ai.aims.services.model.TestPricingDetail;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.OrderTestBean;
+import com.ai.api.bean.TestSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.LTOrderDao;
 import com.ai.api.util.AIUtil;
@@ -99,7 +99,8 @@ public class LTOrderDaoImpl implements LTOrderDao {
 			orderSearch.setOffice(null != order.getOffice() ? order.getOffice().getName() : null);
 			orderSearch.setProductNames(StringUtils.stripToEmpty(order.getDescription()));
 			orderSearch.setLabOrderNo(order.getLabOrderno());
-			orderSearch.setManufacturerStyleNo(order.getManufacturerStyleNo());
+			orderSearch.setManufacturerStyleNo(!CollectionUtils.isEmpty(order.getStyleInfo()) ? 
+					order.getStyleInfo().get(0).getManufacturerStyleNo() : null);
 			orderSearch.setProgram(null != order.getProgram() ? order.getProgram() : null);
 			orderSearch.setTestStartDate(null != order.getTestStartDate() ? 
 					DateUtils.formatDate(order.getTestStartDate(), "dd-MMM-yyyy") : null);
@@ -239,7 +240,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 			orderTest.setClientStatus(testAssign.getClientStatus());
 			if (null != testAssign.getTest()) {
 				TestMaster test = testAssign.getTest();
-				TestFilterDTO testDto = new TestFilterDTO();
+				TestSearchBean testDto = new TestSearchBean();
 				testDto.setTestCode(test.getCode());
 				testDto.setVersion(test.getVersion());
 				testDto.setTestCategory(test.getTestCategory());
@@ -254,7 +255,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 					priceDetails = test.getPricingDetails().parallelStream().filter(
 							p -> p.getOffice().equals(order.getOffice())).findFirst().orElse(null);
 				}
-				orderTest.setPrice(null != priceDetails && null != priceDetails.getPrice() ? priceDetails.getPrice() : 0);
+				testDto.setPrice(null != priceDetails && null != priceDetails.getPrice() ? priceDetails.getPrice() : 0);
 				orderTest.setTest(testDto);
 			}
 			if (null != testAssign.getLab()) {
