@@ -195,7 +195,7 @@ public class SupplierImpl implements Supplier {
 					try {
 						UserBean u = userService.getCustById(orderBean.getOrder().getOrderGeneralInfo().getUserId());
 						object.put("userCompanyName", u.getCompany().getName());
-
+						object.put("allowPostponementBySuppliers",u.getPreferences().getBooking().isAllowPostponementBySuppliers());
 						object.put("ChinaDatetime", parameterService.getChinaTime().getDatetime());
 						object.put("productCategoryList", parameterService.getProductCategoryList(false));
 						object.put("productFamilyList", parameterService.getProductFamilyList(false));
