@@ -9,6 +9,7 @@ package com.ai.api.service;
 import java.io.IOException;
 import java.util.List;
 
+import com.ai.aims.services.model.Order;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.exception.AIException;
@@ -39,7 +40,7 @@ public interface LTOrderService {
 
 	public List<OrderSearchBean> searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException;
 	
-	public OrderMaster findOrder(String orderId) throws IOException;
+	public Order findOrder(String orderId) throws IOException;
 	
 	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException, AIException;
 	
