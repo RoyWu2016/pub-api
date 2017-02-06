@@ -12,6 +12,14 @@ public class TestSearchBean implements Serializable {
 
 	private String testId;
 	private String testName;
+	private String testCode;
+	private String standardNo;
+	private String standardName;
+	private String testItem;
+	private Double version;
+	private String testCategory;
+	private String labCode;
+	private String packageName;
 	private List<String> categories;
 	private String country;
 	private List<String> tags;
@@ -41,40 +49,115 @@ public class TestSearchBean implements Serializable {
 			return false;
 		return true;
 	}
-	
+
 	public String getTestId() {
 		return testId;
 	}
+
 	public void setTestId(String testId) {
 		this.testId = testId;
 	}
+
 	public String getTestName() {
 		return testName;
 	}
+
 	public void setTestName(String testName) {
 		this.testName = testName;
 	}
+
+	public String getTestCode() {
+		return testCode;
+	}
+
+	public void setTestCode(String testCode) {
+		this.testCode = testCode;
+	}
+
+	public String getStandardNo() {
+		return standardNo;
+	}
+
+	public void setStandardNo(String standardNo) {
+		this.standardNo = standardNo;
+	}
+
+	public String getStandardName() {
+		return standardName;
+	}
+
+	public void setStandardName(String standardName) {
+		this.standardName = standardName;
+	}
+
+	public String getTestItem() {
+		return testItem;
+	}
+
+	public void setTestItem(String testItem) {
+		this.testItem = testItem;
+	}
+
+	public Double getVersion() {
+		return version;
+	}
+
+	public void setVersion(Double version) {
+		this.version = version;
+	}
+
+	public String getTestCategory() {
+		return testCategory;
+	}
+
+	public void setTestCategory(String testCategory) {
+		this.testCategory = testCategory;
+	}
+
+	public String getLabCode() {
+		return labCode;
+	}
+
+	public void setLabCode(String labCode) {
+		this.labCode = labCode;
+	}
+
+	public String getPackageName() {
+		return packageName;
+	}
+
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
+	}
+
 	public List<String> getCategories() {
 		return categories;
 	}
+
 	public void setCategories(List<String> categories) {
 		this.categories = categories;
 	}
+
 	public String getCountry() {
 		return country;
 	}
+
 	public void setCountry(String country) {
 		this.country = country;
 	}
+
 	public List<String> getTags() {
 		return tags;
 	}
+
 	public void setTags(List<String> tags) {
 		this.tags = tags;
 	}
+
 	public Double getPrice() {
 		return price;
 	}
+
 	public void setPrice(Double price) {
 		this.price = price;
 	}
