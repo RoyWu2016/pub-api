@@ -1,5 +1,6 @@
 package com.ai.api.controller;
 
+import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
 import org.springframework.http.ResponseEntity;
 
 import com.ai.commons.beans.ApiCallResult;
@@ -32,6 +33,8 @@ public interface Inspection {
 			final String serviceType);
 
 	ResponseEntity<ApiCallResult> getDraft(final String userId, final String draftId);
+
+	ResponseEntity<ApiCallResult> saveDraft(String userId,String draftId,ApiInspectionBookingBean draft);
 
 	ResponseEntity<ApiCallResult> createOrderByDraft(String userId, String draftId);
 
