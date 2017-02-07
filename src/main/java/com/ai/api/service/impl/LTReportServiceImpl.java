@@ -6,7 +6,6 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ai.aims.constants.OrderStatus;
+import com.ai.aims.services.dto.order.AttachmentDTO;
+import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.OrderAttachment;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
@@ -69,12 +70,12 @@ public class LTReportServiceImpl implements LTReportService {
 	}
 
 	@Override
-	public OrderMaster findReport(String reportId) throws IOException {
-		OrderMaster order = ltOrderDao.findOrder(reportId);
+	public OrderDTO findReport(String reportId) throws IOException {
+		OrderDTO order = ltOrderDao.findOrder(reportId);
 		if (null != order.getAttachments()) {
 			// SET REPORT ATTACHMENTS
-			Set<OrderAttachment> attachments = order.getAttachments();
-			OrderAttachment attachment = attachments.parallelStream()
+			List<AttachmentDTO> attachments = order.getAttachments();
+			AttachmentDTO attachment = attachments.parallelStream()
 					.filter(a -> "Client report".equalsIgnoreCase(a.getLabel())).findFirst().get();
 			attachments.clear();
 			attachments.add(attachment);

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ai.aims.services.model.Order;
+import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.OrderTestBean;
@@ -51,7 +51,7 @@ public class LTOrderImpl implements LTOrder {
 	@Qualifier("ltparameterService")
 	private LTParameterService ltparameterService;
 
-	@ApiOperation(value = "Order Add API", produces = "application/json", response = OrderMaster.class, httpMethod = "POST")
+	@ApiOperation(value = "Order Add API", produces = "application/json", response = OrderDTO.class, httpMethod = "POST")
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/order", method = RequestMethod.POST)
@@ -97,7 +97,7 @@ public class LTOrderImpl implements LTOrder {
 	}
 
 	@SuppressWarnings("unchecked")
-	@ApiOperation(value = "Get Order API", produces = "application/json", response = OrderMaster.class, httpMethod = "GET")
+	@ApiOperation(value = "Get Order API", produces = "application/json", response = OrderDTO.class, httpMethod = "GET")
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.GET)
@@ -106,7 +106,7 @@ public class LTOrderImpl implements LTOrder {
 			@PathVariable String userId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-            Order order = ltOrderService.findOrder(orderId);
+            OrderDTO order = ltOrderService.findOrder(orderId);
             if (null!=order) {
                 callResult.setContent(order);
                 return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
@@ -121,7 +121,7 @@ public class LTOrderImpl implements LTOrder {
 		}
 	}
 
-	@ApiOperation(value = "Order Edit API", produces = "application/json", response = OrderMaster.class, httpMethod = "PUT")
+	@ApiOperation(value = "Order Edit API", produces = "application/json", response = OrderDTO.class, httpMethod = "PUT")
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.PUT)

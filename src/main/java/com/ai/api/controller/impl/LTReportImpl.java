@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiParam;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,9 +24,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ai.aims.services.model.OrderMaster;
-import com.ai.aims.services.model.OrderStyleInfo;
-import com.ai.aims.services.model.OrderTestAssignment;
+import com.ai.aims.services.dto.order.OrderDTO;
+import com.ai.aims.services.dto.order.StyleInfoDTO;
+import com.ai.aims.services.dto.order.TestAssignmentDTO;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.OrderTestBean;
 import com.ai.api.controller.LTReport;
@@ -82,7 +81,7 @@ public class LTReportImpl implements LTReport {
 		ApiCallResult result = new ApiCallResult();
 		HttpStatus status = HttpStatus.OK;
 		try {
-			OrderMaster report = ltReportService.findReport(reportId);
+			OrderDTO report = ltReportService.findReport(reportId);
 			if (null != report) {
 				result.setContent(wrapReportObj(report));
 			} else {
@@ -158,23 +157,23 @@ public class LTReportImpl implements LTReport {
 		return new ResponseEntity<ApiCallResult>(result, respStatus);
 	}
 	
-	private OrderSearchBean wrapReportObj(OrderMaster order) {
+	private OrderSearchBean wrapReportObj(OrderDTO order) {
 		OrderSearchBean orderSearch = new OrderSearchBean();
 		orderSearch.setOrderId(order.getId());
-		orderSearch.setSupplierName(null != order.getSupplier() ? StringUtils.stripToEmpty(order.getSupplier().getCompanyName()) : null );
+		orderSearch.setSupplierName(null != order.getSupplier() ? StringUtils.stripToEmpty(order.getSupplier().getName()) : null );
 		orderSearch.setServiceType("LT");
 		orderSearch.setServiceTypeText("LT");
 		orderSearch.setPoNumbers(order.getClientPONo());
 		orderSearch.setStatus(order.getStatusCode());
 		orderSearch.setBookingStatus(order.getBookingStatusCode());
 		orderSearch.setBookingDate("Pending".equalsIgnoreCase(order.getOrderStatus())
-				? DateUtils.formatDate(order.getUpdateTime(), "dd-MMM-yyyy") : null);
+				? DateUtils.formatDate(order.getBookingDate(), "dd-MMM-yyyy") : null);
 		orderSearch.setReportDueDate(null != order.getReportDueDate() ? 
 				DateUtils.formatDate(order.getReportDueDate(), "dd-MMM-yyyy") : null);
 		orderSearch.setOffice(null != order.getOffice() ? order.getOffice().getName() : null);
 		orderSearch.setProductNames(StringUtils.stripToEmpty(order.getDescription()));
 		orderSearch.setLabOrderNo(order.getLabOrderno());
-		Set<OrderStyleInfo> styleInfo = order.getStyleInfo();
+		List<StyleInfoDTO> styleInfo = order.getStyleInfo();
 		if (null != styleInfo && !styleInfo.isEmpty()) {
 			orderSearch.setManufacturerStyleNo(styleInfo.iterator().next().getManufacturerStyleNo());
 		}
@@ -188,7 +187,7 @@ public class LTReportImpl implements LTReport {
 		}
 		if (null != order.getTestAssignments()) {
 			List<OrderTestBean> orderTests = new ArrayList<OrderTestBean>();
-			for (OrderTestAssignment testAssign : order.getTestAssignments()) {
+			for (TestAssignmentDTO testAssign : order.getTestAssignments()) {
 				OrderTestBean orderTest = new OrderTestBean();
 				orderTest.setId(testAssign.getId());
 				orderTest.setFailureStmt(testAssign.getFailureStatement());
