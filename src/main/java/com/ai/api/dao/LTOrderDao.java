@@ -9,6 +9,7 @@ package com.ai.api.dao;
 import java.io.IOException;
 import java.util.List;
 
+import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.OrderAttachment;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
@@ -38,7 +39,7 @@ public interface LTOrderDao {
 	
 	public List<OrderSearchBean> searchLTOrders(String compId, String orderStatus, Integer pageNumber, Integer pageSize, String direction) throws IOException;
 	
-	public OrderMaster findOrder(String orderId) throws IOException;
+	public OrderDTO findOrder(String orderId) throws IOException;
 
 	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException;
 	
