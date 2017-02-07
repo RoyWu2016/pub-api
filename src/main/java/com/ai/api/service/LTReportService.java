@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.exception.AIException;
@@ -41,7 +42,7 @@ public interface LTReportService {
 
 	public List<OrderSearchBean> findReports(String userId, Integer pageNumber, Integer pageSize) throws IOException, AIException;
 	
-	public OrderMaster findReport(String reportId) throws IOException;
+	public OrderDTO findReport(String reportId) throws IOException;
 
 	public ApiCallResult editReportStatus(String userId, String orderId, String status) throws IOException;
 

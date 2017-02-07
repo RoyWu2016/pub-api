@@ -10,10 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.utils.DateUtils;
@@ -26,6 +24,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ai.aims.services.dto.LabFilterDTO;
 import com.ai.aims.services.dto.order.OrderDTO;
+import com.ai.aims.services.dto.order.TestAssignmentDTO;
+import com.ai.aims.services.dto.test.TestDTO;
 import com.ai.aims.services.model.LabMaster;
 import com.ai.aims.services.model.OrderAttachment;
 import com.ai.aims.services.model.OrderMaster;
@@ -101,7 +101,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 			orderSearch.setLabOrderNo(order.getLabOrderno());
 			orderSearch.setManufacturerStyleNo(!CollectionUtils.isEmpty(order.getStyleInfo()) ? 
 					order.getStyleInfo().get(0).getManufacturerStyleNo() : null);
-			orderSearch.setProgram(null != order.getProgram() ? order.getProgram() : null);
+			orderSearch.setProgram(null != order.getProgram() ? order.getProgram().getProgramName() : null);
 			orderSearch.setTestStartDate(null != order.getTestStartDate() ? 
 					DateUtils.formatDate(order.getTestStartDate(), "dd-MMM-yyyy") : null);
 			orderSearch.setOverallRating(order.getOverallRating());
@@ -127,13 +127,11 @@ public class LTOrderDaoImpl implements LTOrderDao {
 	}
 
 	@Override
-	public OrderMaster findOrder(String orderId) throws IOException {
+	public OrderDTO findOrder(String orderId) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		
-//		ApiCallResult callResult = new ApiCallResult();
-		OrderMaster order = restTemplate.getForObject(config.getAimsServiceBaseUrl() + "/api/ordermanagement/search/" + orderId, OrderMaster.class);
-//		callResult.setContent(order);
+		OrderDTO order = restTemplate.getForObject(config.getAimsServiceBaseUrl() + "/api/ordermanagement/search/" + orderId, OrderDTO.class);
 		return order;
 	}
 
@@ -148,8 +146,8 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		
 		Map<String, String> vars = new HashMap<String, String>();
 		vars.put("userId", userId);		
-		order = restTemplate.postForObject(url, order, OrderMaster.class, vars);
-		callResult.setContent(order);					
+		OrderDTO orderDTO = restTemplate.postForObject(url, order, OrderDTO.class, vars);
+		callResult.setContent(orderDTO);					
 		return callResult;
 	}
 
@@ -164,8 +162,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/")
  				.append(userId).toString();
 		restTemplate.put(url, order, vars);
-		order = findOrder(order.getId());
-		callResult.setContent(order);
+		callResult.setContent(findOrder(order.getId()));
 		return callResult;
 	}
 	
@@ -251,7 +248,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 				testDto.setStandardNo(test.getStandardNo());
 				TestPricingDetail priceDetails = null;
 				if (!CollectionUtils.isEmpty(test.getPricingDetails())) {
-					OrderMaster order = findOrder(orderId);
+					OrderDTO order = findOrder(orderId);
 					priceDetails = test.getPricingDetails().parallelStream().filter(
 							p -> p.getOffice().getId().equals(order.getTestingLocation().getId())).findFirst().orElse(null);
 				}
@@ -282,11 +279,13 @@ public class LTOrderDaoImpl implements LTOrderDao {
 			vars.put("userId", userId);
 			String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/")
 					.append(userId).toString();
-			OrderMaster order = findOrder(orderId);
-			Set<OrderTestAssignment> testAssignments = new HashSet<OrderTestAssignment>();
+			OrderDTO order = findOrder(orderId);
+			List<TestAssignmentDTO> testAssignments = new ArrayList<TestAssignmentDTO>();
 			for (String testId : testIds.split(Consts.COMMA)) {
-				OrderTestAssignment testAssign = new OrderTestAssignment();
-				testAssign.setTest(new TestMaster(testId.trim()));
+				TestAssignmentDTO testAssign = new TestAssignmentDTO();
+				TestDTO testDTO = new TestDTO();
+				testDTO.setId(testId.trim());
+				testAssign.setTest(testDTO);
 				testAssignments.add(testAssign);
 			}
 			order.setTestAssignments(testAssignments);

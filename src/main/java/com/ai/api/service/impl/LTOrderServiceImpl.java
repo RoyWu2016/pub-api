@@ -11,14 +11,13 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.CrmCompany;
-import com.ai.aims.services.model.Order;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.UserBean;
@@ -87,11 +86,8 @@ public class LTOrderServiceImpl implements LTOrderService {
 	}
 	
 	@Override
-	public Order findOrder(String orderId) throws IOException {
-		OrderMaster order = ltorderDao.findOrder(orderId);
-		Order orderObj = new Order();
-		BeanUtils.copyProperties(order, orderObj);
-		return orderObj;
+	public OrderDTO findOrder(String orderId) throws IOException {
+		return ltorderDao.findOrder(orderId);
 	}
 
 	@Override
