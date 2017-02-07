@@ -1,5 +1,6 @@
 package com.ai.api.service.impl;
 
+import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,21 @@ public class InspectionServiceImpl implements InspectionService {
 			companyId = user.getCompany().getId();
 		}
 		ApiCallResult result = inspectionDao.createDraft(userId, serviceType, companyId, parentId);
+		return result;
+	}
+
+	@Override
+	public ApiCallResult saveDraft(String userId, ApiInspectionBookingBean draft) {
+		String companyId = "";
+		String parentId = "";
+		UserBean user = this.getUserBeanByUserId(userId);
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		ApiCallResult result = inspectionDao.saveDraft(userId,companyId, parentId,draft);
 		return result;
 	}
 
