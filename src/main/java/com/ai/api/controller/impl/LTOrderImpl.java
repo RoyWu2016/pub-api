@@ -1,12 +1,21 @@
 package com.ai.api.controller.impl;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
+import com.ai.api.bean.OrderTestBean;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.controller.LTOrder;
+import com.ai.api.service.LTOrderService;
+import com.ai.api.service.LTParameterService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.program.model.Program;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,17 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.ai.aims.services.model.OrderMaster;
-import com.ai.api.bean.OrderSearchBean;
-import com.ai.api.bean.OrderTestBean;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.controller.LTOrder;
-import com.ai.api.service.LTOrderService;
-import com.ai.api.service.LTParameterService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.program.model.Program;
 
 @SuppressWarnings({"rawtypes"})
 @RestController
@@ -61,7 +59,7 @@ public class LTOrderImpl implements LTOrder {
 			callResult = ltOrderService.saveOrder(userId, new OrderMaster());
 		} catch (Exception e) {
 			logger.error("create order error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("can't save LT order");
+			callResult.setMessage("Error in creating LT order in back end service.");
 			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
@@ -85,12 +83,12 @@ public class LTOrderImpl implements LTOrder {
 				return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 			}else {
 				callResult.setContent(list);
-                callResult.setMessage("get empty LT orders list.");
+                callResult.setMessage("Got empty LT orders list.");
                 return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.NO_CONTENT);
             }
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
-            callResult.setMessage("can't get LT orders.error occurred!");
+            callResult.setMessage("Error in searching LT orders.");
             return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -114,7 +112,7 @@ public class LTOrderImpl implements LTOrder {
                 return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.NOT_FOUND);
             }
 		} catch (Exception e) {
-			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			logger.error("Error in getting order: " + ExceptionUtils.getFullStackTrace(e));
 			callResult.setMessage("can't get LT order by orderId:" + orderId+". error occurred!");
             return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -134,7 +132,7 @@ public class LTOrderImpl implements LTOrder {
 			callResult = ltOrderService.editOrder(userId, order);
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("can't edit LT order");
+			callResult.setMessage("Error in saving updates to LT order.");
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
@@ -152,7 +150,7 @@ public class LTOrderImpl implements LTOrder {
 			callResult = ltOrderService.deleteOrders(userId, orderIds);
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("can't edit LT order");
+			callResult.setMessage("Error in deleting LT order.");
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
@@ -180,7 +178,7 @@ public class LTOrderImpl implements LTOrder {
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("search Programs error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("can't get LT programs:");
+			callResult.setMessage("Error in getting LT programs:");
 			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		/*} else {
@@ -202,7 +200,7 @@ public class LTOrderImpl implements LTOrder {
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("get order test assignments error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("can't get order test assignments");
+			callResult.setMessage("Error in getting order test assignments");
 			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -221,7 +219,7 @@ public class LTOrderImpl implements LTOrder {
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("update order test assignments error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("can't update order test assignments");
+			callResult.setMessage("Error in updating order test assignments");
 			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -240,7 +238,7 @@ public class LTOrderImpl implements LTOrder {
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("delete order test assignment error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("can't delete order test assignment");
+			callResult.setMessage("Error in deleting order test assignment");
 			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
