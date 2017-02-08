@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.OrderTestBean;
@@ -49,7 +48,7 @@ public class LTOrderImpl implements LTOrder {
 	@Qualifier("ltparameterService")
 	private LTParameterService ltparameterService;
 
-	@ApiOperation(value = "Order Add API", produces = "application/json", response = OrderDTO.class, httpMethod = "POST")
+	@ApiOperation(value = "Order Add API", produces = "application/json", response = OrderMaster.class, httpMethod = "POST")
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/order", method = RequestMethod.POST)
@@ -95,7 +94,7 @@ public class LTOrderImpl implements LTOrder {
 	}
 
 	@SuppressWarnings("unchecked")
-	@ApiOperation(value = "Get Order API", produces = "application/json", response = OrderDTO.class, httpMethod = "GET")
+	@ApiOperation(value = "Get Order API", produces = "application/json", response = OrderMaster.class, httpMethod = "GET")
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.GET)
@@ -104,7 +103,7 @@ public class LTOrderImpl implements LTOrder {
 			@PathVariable String userId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-            OrderDTO order = ltOrderService.findOrder(orderId);
+            OrderMaster order = ltOrderService.findOrder(orderId);
             if (null!=order) {
                 callResult.setContent(order);
                 return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
@@ -119,7 +118,7 @@ public class LTOrderImpl implements LTOrder {
 		}
 	}
 
-	@ApiOperation(value = "Order Edit API", produces = "application/json", response = OrderDTO.class, httpMethod = "PUT")
+	@ApiOperation(value = "Order Edit API", produces = "application/json", response = OrderMaster.class, httpMethod = "PUT")
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.PUT)
