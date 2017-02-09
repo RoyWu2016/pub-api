@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.commons.util.JsonUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -157,6 +158,7 @@ public class FactoryDaoImpl implements FactoryDao {
 
 		try {
 			ClientFactoryBean clientFactoryBean = convertToClientFactoryBean(supplierDetailBean);
+			LOGGER.info("to save supplier: " + JsonUtils.toJson(clientFactoryBean));
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, clientFactoryBean);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 
