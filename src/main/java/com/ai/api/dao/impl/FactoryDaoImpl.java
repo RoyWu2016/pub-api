@@ -158,7 +158,7 @@ public class FactoryDaoImpl implements FactoryDao {
 
 		try {
 			ClientFactoryBean clientFactoryBean = convertToClientFactoryBean(supplierDetailBean);
-			LOGGER.info("to save supplier: " + JsonUtils.toJson(clientFactoryBean));
+			LOGGER.info("to update supplier: " + JsonUtils.toJson(clientFactoryBean));
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, clientFactoryBean);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 
@@ -302,6 +302,7 @@ public class FactoryDaoImpl implements FactoryDao {
 		LOGGER.info("createSupplier url: " + url);
 		try {
 			ClientFactoryBean clientFactoryBean = convertToClientFactoryBean(supplierDetailBean);
+			LOGGER.info("to create supplier: " + JsonUtils.toJson(clientFactoryBean));
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, clientFactoryBean);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return JsonUtil.mapToObject(result.getResponseString(), String.class);
