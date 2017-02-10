@@ -34,7 +34,7 @@ public class SurveyControllerImpl implements SurveyController {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = " /user/{userId}/seen-nps-survey-in-last-7-days", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{userId}/seen-nps-survey-in-last-7-days", method = RequestMethod.GET)
     public ResponseEntity<ApiCallResult> hasSeenRecently(@PathVariable("userId") String userId) {
         ApiCallResult<Boolean> result = surveyService.hasSeenRecently(userId);
         if (null == result.getMessage()) {
