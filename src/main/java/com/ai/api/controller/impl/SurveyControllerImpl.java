@@ -9,12 +9,10 @@ import com.ai.commons.beans.NetPromoterScoreResponseBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Project Name    : Public-API
@@ -46,8 +44,8 @@ public class SurveyControllerImpl implements SurveyController {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/inspection-draft", method = RequestMethod.PUT)
-    public ResponseEntity<ApiCallResult> updateSurveyDate(@PathVariable("userId") String userId, NetPromoterScoreClientInfoBean scoreInfo) {
+    @RequestMapping(value = "/user/{userId}/seen-nps-survey-in-last-7-days", method = RequestMethod.PUT)
+    public ResponseEntity<ApiCallResult> updateSurveyDate(@PathVariable("userId") String userId, @RequestBody NetPromoterScoreClientInfoBean scoreInfo) {
         ApiCallResult<Boolean> result = surveyService.updateSurveyDate(userId,scoreInfo);
         if (null == result.getMessage()) {
             return new ResponseEntity<>(result, HttpStatus.OK);
@@ -59,7 +57,7 @@ public class SurveyControllerImpl implements SurveyController {
     @Override
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/nps-survey", method = RequestMethod.POST)
-    public ResponseEntity<ApiCallResult> saveSurvey(@PathVariable("userId") String userId, NetPromoterScoreResponseBean score) {
+    public ResponseEntity<ApiCallResult> saveSurvey(@PathVariable("userId") String userId, @RequestBody NetPromoterScoreResponseBean score) {
         ApiCallResult<Boolean> result = surveyService.saveSurvey(userId,score);
         if (null == result.getMessage()) {
             return new ResponseEntity<>(result, HttpStatus.OK);
