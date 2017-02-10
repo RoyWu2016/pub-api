@@ -54,7 +54,8 @@ public class SurveyServiceImpl implements SurveyService{
             ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
             logger.info(result.getReasonPhase()+"||"+result.getResponseString());
             if(result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                JSONObject object = (JSONObject) JSON.parse(result.getResponseString());
+                JSONObject object = JSON.parseObject(result.getResponseString());
+//                JSONObject object = (JSONObject) JSON.parse(result.getResponseString());
                 Date lastShow = object.getDate("lastShow");
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(new Date());
