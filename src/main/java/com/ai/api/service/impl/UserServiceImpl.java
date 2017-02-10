@@ -589,6 +589,8 @@ public class UserServiceImpl implements UserService {
 
 		ReportPreferenceBean reportPreferenceBean = new ReportPreferenceBean();
 		if (reportCertificateBean != null) {
+			reportPreferenceBean.setShowICField(reportCertificateBean.getDisIcFields().equalsIgnoreCase("Yes")?true:false);
+			reportPreferenceBean.setAutoSendIC(reportCertificateBean.getAutoSendIc().equalsIgnoreCase("Yes")?true:false);
 			reportPreferenceBean.setAttType(reportCertificateBean.getAttType());
 			reportPreferenceBean.setAllowReportApprover(
 					reportCertificateBean.getAllowReportApprover().equalsIgnoreCase("Yes") ? true : false);

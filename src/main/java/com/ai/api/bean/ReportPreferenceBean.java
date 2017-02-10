@@ -23,6 +23,8 @@ public class ReportPreferenceBean implements Serializable {
     private String rejectReasonSortBy;
     private String rejectReasonOther;
     private String certificateType;
+    private boolean showICField;
+    private boolean autoSendIC;
 
     public ReportPreferenceBean(){}
 
@@ -138,7 +140,23 @@ public class ReportPreferenceBean implements Serializable {
 		this.certificateType = certificateType;
 	}
 
-	@Override
+    public boolean isShowICField() {
+        return showICField;
+    }
+
+    public void setShowICField(boolean showICField) {
+        this.showICField = showICField;
+    }
+
+    public boolean isAutoSendIC() {
+        return autoSendIC;
+    }
+
+    public void setAutoSendIC(boolean autoSendIC) {
+        this.autoSendIC = autoSendIC;
+    }
+
+    @Override
     public String toString() {
         return "ReportPreferenceBean{" +
                 "withAttachment=" + withAttachment +
@@ -154,6 +172,9 @@ public class ReportPreferenceBean implements Serializable {
                 ", rejectCategories=" + rejectCategories +
                 ", rejectReasonSortBy='" + rejectReasonSortBy + '\'' +
                 ", rejectReasonOther='" + rejectReasonOther + '\'' +
+                ", certificateType='" + certificateType + '\'' +
+                ", showICField=" + showICField +
+                ", autoSendIC=" + autoSendIC +
                 '}';
     }
 }
