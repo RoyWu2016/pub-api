@@ -26,8 +26,8 @@ public class ApiMasterBean implements Serializable {
 	private boolean sendReportMailsToSub;
 	private String reportMailsToSubCcBcc;
 	private String disClientName;
-	private boolean hideApproveButton;
-	private boolean hideCcFields;
+	private boolean subCompanySeeReportActionButtons;
+	private boolean subCompanySeeCcOptionInBookingForm;
 	private String whoPayOrder;
 	private String whoPayReorder;
 	private String whoPayLt;
@@ -36,7 +36,8 @@ public class ApiMasterBean implements Serializable {
 	private String consolidatedInvoice;
 	private String suspendOrdersBy;
 	private boolean isReadMasterChecklist;
-	
+	private boolean subCompanySeeReportsPage;
+
 	public boolean isCanCreateOrder() {
 		return canCreateOrder;
 	}
@@ -106,18 +107,31 @@ public class ApiMasterBean implements Serializable {
 	public void setDisClientName(String disClientName) {
 		this.disClientName = disClientName;
 	}
-	public boolean isHideApproveButton() {
-		return hideApproveButton;
+
+	public boolean isSubCompanySeeReportActionButtons() {
+		return subCompanySeeReportActionButtons;
 	}
-	public void setHideApproveButton(boolean hideApproveButton) {
-		this.hideApproveButton = hideApproveButton;
+
+	public void setSubCompanySeeReportActionButtons(boolean subCompanySeeReportActionButtons) {
+		this.subCompanySeeReportActionButtons = subCompanySeeReportActionButtons;
 	}
-	public boolean isHideCcFields() {
-		return hideCcFields;
+
+	public boolean isSubCompanySeeCcOptionInBookingForm() {
+		return subCompanySeeCcOptionInBookingForm;
 	}
-	public void setHideCcFields(boolean hideCcFields) {
-		this.hideCcFields = hideCcFields;
+
+	public void setSubCompanySeeCcOptionInBookingForm(boolean subCompanySeeCcOptionInBookingForm) {
+		this.subCompanySeeCcOptionInBookingForm = subCompanySeeCcOptionInBookingForm;
 	}
+
+	public boolean isSubCompanySeeReportsPage() {
+		return subCompanySeeReportsPage;
+	}
+
+	public void setSubCompanySeeReportsPage(boolean subCompanySeeReportsPage) {
+		this.subCompanySeeReportsPage = subCompanySeeReportsPage;
+	}
+
 	public String getWhoPayOrder() {
 		return whoPayOrder;
 	}
