@@ -6,18 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.ai.api.bean.UserBean;
-import com.ai.api.dao.AuditorDao;
-import com.ai.api.service.AuditorService;
+import com.ai.api.dao.AuditDao;
+import com.ai.api.service.AuditService;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 
-public class AuditorServiceImpl implements AuditorService {
+public class AuditServiceImpl implements AuditService {
 	
-	protected Logger logger = LoggerFactory.getLogger(AuditorServiceImpl.class);
+	protected Logger logger = LoggerFactory.getLogger(AuditServiceImpl.class);
 
 	@Autowired
-	private AuditorDao auditorDao;
+	private AuditDao auditorDao;
 	
 	@Autowired
 	@Qualifier("userService")

@@ -3,7 +3,7 @@ package com.ai.api.dao;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 
-public interface AuditorDao {
+public interface AuditDao {
 	
 	ApiCallResult getDraft(String userId, String draftId);
 
