@@ -25,7 +25,7 @@ import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
  * </PRE>
  ***************************************************************************/
 
-public interface Auditor {
+public interface Audit {
 
 	ResponseEntity<ApiCallResult> createDraft(final String userId, final String serviceType);
 
