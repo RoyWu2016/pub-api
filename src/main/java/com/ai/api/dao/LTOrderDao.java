@@ -4,23 +4,23 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.lab.service;
+package com.ai.api.dao;
 
 import java.io.IOException;
 import java.util.List;
 
+import com.ai.aims.services.model.OrderAttachment;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
-import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
 
 /***************************************************************************
  * <PRE>
  *  Project Name    : api
  *
- *  Package Name    : com.ai.api.lab.service
+ *  Package Name    : com.ai.api.lab.dao
  *
- *  File Name       : LTOrderService.java
+ *  File Name       : LTOrderDao.java
  *
  *  Creation Date   : Dec 6, 2016
  *
@@ -33,15 +33,28 @@ import com.ai.commons.beans.ApiCallResult;
  *
  * </PRE>
  ***************************************************************************/
-
 @SuppressWarnings("rawtypes")
-public interface LTOrderService {
-
-	public List<OrderSearchBean> searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException;
+public interface LTOrderDao {
+	
+	public List<OrderSearchBean> searchLTOrders(String compId, String orderStatus, Integer pageNumber, Integer pageSize, String direction) throws IOException;
 	
 	public OrderMaster findOrder(String orderId) throws IOException;
-	
+
 	public ApiCallResult saveOrder(String userId, OrderMaster order) throws IOException;
 	
 	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException;
+
+	public ApiCallResult editOrderStatus(String userId, OrderMaster order) throws IOException;
+
+	public ApiCallResult editOrderTestAssignmentStatus(String orderId, String testAssignmentId, String userId, String status) throws IOException;
+
+	public OrderAttachment getOrderAttachment(String attachmentId) throws IOException;
+
+	public ApiCallResult deleteOrders(String userId, String orderIds) throws IOException;
+
+	public ApiCallResult findOrderTestAssignments(String orderId) throws IOException;
+
+	public ApiCallResult updateOrderTestAssignments(String userId, String orderId, String testIds) throws IOException;
+
+	public ApiCallResult deleteOrderTestAssignment(String userId, String testId) throws IOException;
 }

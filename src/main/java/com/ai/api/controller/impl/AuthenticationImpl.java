@@ -100,7 +100,7 @@ public class AuthenticationImpl implements Authentication {
 			result.setReasonPhase("AI API call token not present or invalid for login.");
 			return mapper.writeValueAsString(result);
 		}
-        logger.info("start to get user from DB --> verify pw --> generate tokenSession");
+        logger.info("start to get user from user-service --> verify pw --> generate tokenSession");
         result = authenticationService.userLogin(account,password,userType,request);
 		logger.info("user login result: "+result.getResponseString());
 		return mapper.writeValueAsString(result);

@@ -23,6 +23,7 @@ import org.jose4j.jwt.JwtClaims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /***************************************************************************
  *<PRE>
@@ -43,7 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  *</PRE>
  ***************************************************************************/
-
+@Component
 public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SSOUserServiceDaoImpl.class);

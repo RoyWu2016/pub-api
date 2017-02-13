@@ -20,8 +20,6 @@ package com.ai.api.controller;
  * </PRE>
  ***************************************************************************/
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 
 import com.ai.commons.beans.ApiCallResult;
@@ -30,14 +28,19 @@ import com.ai.commons.beans.ApiCallResult;
 public interface LTParameter {
 	
 	public ResponseEntity<ApiCallResult> searchOffice(boolean refresh);
-	
-	public ResponseEntity<ApiCallResult> searchPrograms(boolean refresh, String userId);
-	
+
 	public ResponseEntity<ApiCallResult> searchProgram(boolean refresh, String programId);
 	
-	public ResponseEntity<ApiCallResult> searchTestsByTag(boolean refresh, List<String> countries, List<String> testNames, List<String> regions, String tagLevel, String productCategory);
+	public ResponseEntity<ApiCallResult> searchTestsWithFilters(String countries, String regions, String testNames, 
+			String tags, String productCategory, String office);
 	
 	public ResponseEntity<ApiCallResult> searchTest(boolean refresh, String testId);
+
+	public ResponseEntity<ApiCallResult> searchCategories();
+
+	public ResponseEntity<ApiCallResult> searchTagsByCategory(String categoryId);
 	
 	public ResponseEntity<ApiCallResult> searchTestsByName(boolean refresh, String testName);
+
+	public ResponseEntity<ApiCallResult> searchRegions();
 }

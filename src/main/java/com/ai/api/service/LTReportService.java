@@ -4,11 +4,15 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.lab.service;
+package com.ai.api.service;
 
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
 
@@ -18,7 +22,7 @@ import com.ai.commons.beans.ApiCallResult;
  *
  *  Package Name    : com.ai.api.lab.service
  *
- *  File Name       : LTParameterService.java
+ *  File Name       : LTOrderService.java
  *
  *  Creation Date   : Dec 6, 2016
  *
@@ -33,17 +37,15 @@ import com.ai.commons.beans.ApiCallResult;
  ***************************************************************************/
 
 @SuppressWarnings("rawtypes")
-public interface LTParameterService {
+public interface LTReportService {
 
-	public ApiCallResult searchOffice() throws IOException;
+	public List<OrderSearchBean> findReports(String userId, Integer pageNumber, Integer pageSize) throws IOException, AIException;
 	
-	public ApiCallResult searchPrograms(String userId) throws IOException, AIException;
-	
-	public ApiCallResult searchProgram(String programId) throws IOException;
-	
-	public ApiCallResult searchTestsByTag(List<String> countries, List<String> testNames, List<String> regions, String tagLevel, String productCategory) throws IOException;
-	
-	public ApiCallResult searchTest(String testId) throws IOException;
-	
-	public ApiCallResult searchTestsByName(String testName) throws IOException;
+	public OrderMaster findReport(String reportId) throws IOException;
+
+	public ApiCallResult editReportStatus(String userId, String orderId, String status) throws IOException;
+
+	public ApiCallResult editReportTestStatus(String userId, String reportId, String testId, String status) throws IOException;
+
+	public void downloadReportAttachment(String attachmentId, HttpServletResponse response) throws IOException;
 }

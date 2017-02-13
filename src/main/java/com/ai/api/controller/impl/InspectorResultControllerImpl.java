@@ -337,14 +337,14 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                         logger.info(_mpf.getName()+" || "+tempDir.getAbsolutePath());
                         String filePath = com.ai.commons.FileUtils.copyFileToDirectory(_mpf, tempDir);
                         File uploadedFile=new File(tempDir + System.getProperty("file.separator") + filePath);
-                        logger.info("uploaded to API temp ["+uploadedFile.getAbsolutePath()+"]");
+                        logger.info("uploaded to API temp! ["+uploadedFile.getAbsolutePath()+"]");
 //                        SimpleFileObject fileUploadedObject = new SimpleFileObject(uploadedFile);
                         FileMetaBean ftb = myFileService.getFileService().upload(sourceId, fileType, "insp-result-file", username, caption, uploadedFile);
                         toBeDeleted.add(uploadedFile);
                         beanList.add(ftb);
                     }
                 }
-                logger.info("all files uploaded to FILE_SERVICE !");
+                logger.info("file uploaded to FILE_SERVICE !");
                 logger.info("tobeDeleted size :"+toBeDeleted.size());
                 fileMetaList.put(map.getKey(), beanList);
                 toBeDeleted.stream().filter(File::exists).forEach(File::delete);
@@ -366,7 +366,10 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             InputStream is = myFileService.getFileService().getFile(fileIds);
             FileMetaBean fileDetails = myFileService.getFileService().getFileInfoById(fileIds);
             String fileName = fileDetails.getFileName();
-            response.setHeader("Content-Type", "image/jpeg; filename=\"" + fileName );
+            response.setHeader("Content-Type", "image/jpeg");
+            response.setHeader("X-File-Name",fileName);
+            response.setHeader("X-File-Caption",fileDetails.getComments()+" ");
+            response.setHeader("Access-Control-Expose-Headers","X-File-Name, X-File-Caption");
             FileCopyUtils.copy(is, response.getOutputStream());
             response.flushBuffer();
         } catch (Exception e) {

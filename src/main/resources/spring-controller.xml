@@ -2,9 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
-http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
 
 	<mvc:annotation-driven />
 	<!--<mvc:annotation-driven enable-matrix-variables="true"
@@ -18,7 +20,26 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		<property name="ignoreAcceptHeader" value="false" />
 		<property name="useJaf" value="false" />
 	</bean> -->
-	<context:component-scan base-package="com.ai.api, version" />
+	<context:component-scan base-package="com.ai.api, version" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
+        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+
+	<!-- Enable AspectJ style of Spring AOP -->
+	<aop:aspectj-autoproxy proxy-target-class="true"/>
+	<!--<aop:aspectj-autoproxy expose-proxy="true"></aop:aspectj-autoproxy>-->
+	<!-- AOP configuration -->
+	<aop:config>
+		<!-- Pointcuts -->
+		<aop:pointcut id="controllerPointcut" expression="execution(public * com.ai.api.controller.*.*(..) )"/>
+		<!-- Aspects -->
+		<aop:aspect id="controllerAspect1" ref="controllerAspect">
+			<!--&lt;!&ndash;<aop:before method="log" pointcut="execution(* *.*.*.*.*.*.getUserProfile(..))" />&ndash;&gt;-->
+			<!--&lt;!&ndash; <aop:after method="logAfter" pointcut-ref="controllerLogPointcut" /> &ndash;&gt;-->
+			<aop:around method="aroundInController" pointcut-ref="controllerPointcut"/>
+		</aop:aspect>
+	</aop:config>
 
 	<!--, com.ai.commons.services.TokenJWTService -->
 	<!--com.ai.api, -->
@@ -48,14 +69,11 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 	<bean name="/applicationSwaggerConfig" class="com.ai.api.config.ApplicationSwaggerConfig" />
 
 	<!-- bean that will enable json to be returned -->
-	<bean
-		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
 		<property name="contentNegotiationManager">
 			<bean class="org.springframework.web.accept.ContentNegotiationManager">
 				<constructor-arg>
-					<bean
-						class="org.springframework.web.accept.PathExtensionContentNegotiationStrategy">
+					<bean class="org.springframework.web.accept.PathExtensionContentNegotiationStrategy">
 						<constructor-arg>
 							<map>
 								<entry key="json" value="application/json" />
@@ -70,8 +88,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		<property name="viewResolvers">
 			<list>
 				<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-					<property name="viewClass"
-						value="org.springframework.web.servlet.view.JstlView" />
+					<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 					<property name="prefix" value="/WEB-INF/jsp/" />
 					<property name="suffix" value=".jsp" />
 				</bean>
@@ -79,8 +96,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		</property>
 		<property name="defaultViews">
 			<list>
-				<bean
-					class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+				<bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
 					<property name="prefixJson" value="true" />
 				</bean>
 			</list>

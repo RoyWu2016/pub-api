@@ -1,15 +1,13 @@
 package com.ai.api.controller.impl;
 
+import com.ai.commons.beans.psi.InspectionBookingBean;
+import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ai.api.controller.Inspection;
 import com.ai.api.service.InspectionService;
@@ -83,6 +81,22 @@ public class InspectionImpl implements Inspection {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/inspection-draft/" + draftId);
 		ApiCallResult result = inspectionService.getDraft(userId, draftId);
+		if (null == result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/inspection-draft/{draftId}", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> saveDraft(@PathVariable("userId") String userId,
+												   @PathVariable("draftId") String draftId,
+												   @RequestBody ApiInspectionBookingBean draft) {
+		logger.info("invoke: " + "/user/" + userId + "/inspection-draft/" + draftId);
+        draft.getDraft().setDraftId(draftId);
+		ApiCallResult result = inspectionService.saveDraft(userId, draft);
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {

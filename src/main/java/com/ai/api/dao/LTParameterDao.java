@@ -4,10 +4,11 @@
  * information shall not be distributed or copied without written
  * permission from the AsiaInspection.
  ***************************************************************************/
-package com.ai.api.lab.dao;
+package com.ai.api.dao;
 
 import java.io.IOException;
 
+import com.ai.aims.services.model.search.SearchTagCriteria;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.program.search.criteria.SearchProgramCriteria;
@@ -38,9 +39,15 @@ public interface LTParameterDao {
 	
 	public ApiCallResult searchPrograms(SearchProgramCriteria criteria) throws IOException;
 	
-	public ApiCallResult searchTestsByTag(SearchTagTestCriteria criteria) throws IOException;
+	public ApiCallResult searchTests(SearchTagTestCriteria criteria) throws IOException;
 	
 	public ApiCallResult searchTestsByName(String testName) throws IOException;
 	
 	public ApiCallResult searchTest(String testId) throws IOException;
+	
+	public ApiCallResult searchCategories() throws IOException;
+	
+	public ApiCallResult searchTags(SearchTagCriteria criteria) throws IOException;
+
+	public ApiCallResult searchRegions() throws IOException;
 }

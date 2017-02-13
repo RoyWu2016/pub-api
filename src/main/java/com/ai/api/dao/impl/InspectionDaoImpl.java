@@ -2,6 +2,7 @@ package com.ai.api.dao.impl;
 
 import java.io.IOException;
 
+import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,24 @@ public class InspectionDaoImpl implements InspectionDao {
 		url.append("&parentId=" + parentId);
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, userId);
+			fianlRe = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+			fianlRe.setMessage("Exception: " + e.toString());
+		}
+		return fianlRe;
+	}
+
+	@Override
+	public ApiCallResult saveDraft(String userId,String companyId, String parentId, ApiInspectionBookingBean draft) {
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+		ApiCallResult fianlRe = new ApiCallResult();
+		url.append("/inspection-draft/api/saveDraft");
+		url.append("?userId=" + userId);
+		url.append("&companyId=" + companyId);
+		url.append("&parentId=" + parentId);
+		try {
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, draft);
 			fianlRe = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
 			logger.error(ExceptionUtils.getStackTrace(e));

@@ -11,6 +11,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,6 +50,7 @@ public class SupplierImpl implements Supplier {
 	private static final Logger logger = LoggerFactory.getLogger(SupplierImpl.class);
 
 	@Autowired
+	@Qualifier("apiFactoryService")
 	FactoryService factoryService;
 
 	@Autowired
@@ -193,7 +195,7 @@ public class SupplierImpl implements Supplier {
 					try {
 						UserBean u = userService.getCustById(orderBean.getOrder().getOrderGeneralInfo().getUserId());
 						object.put("userCompanyName", u.getCompany().getName());
-
+						object.put("allowPostponementBySuppliers",u.getPreferences().getBooking().isAllowPostponementBySuppliers());
 						object.put("ChinaDatetime", parameterService.getChinaTime().getDatetime());
 						object.put("productCategoryList", parameterService.getProductCategoryList(false));
 						object.put("productFamilyList", parameterService.getProductFamilyList(false));

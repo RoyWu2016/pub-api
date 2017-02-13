@@ -268,11 +268,11 @@ public class OrderImpl implements Order {
 	public ResponseEntity<List<SimpleOrderSearchBean>> getReInspectionList(@PathVariable("userId") String userId,
 			@RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
 			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
-			@RequestParam(value = "status", required = false, defaultValue = "") String orderStatus,
 			@RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
 			@RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
 
 		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
+		String orderStatus = "60";
 		try {
 			ordersList = orderService.searchOrders(userId, serviceType, "", "", keyword, orderStatus, pageSize,
 					pageNumber);

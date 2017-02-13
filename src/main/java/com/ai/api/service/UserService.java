@@ -84,4 +84,5 @@ public interface UserService {
 
 	ServiceCallResult resetPassword(String login);
 
+	boolean isMasterOfSuperMaster(String superUserId, String masterUserId) throws IOException;
 }

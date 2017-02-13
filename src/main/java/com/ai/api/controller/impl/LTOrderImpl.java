@@ -1,8 +1,21 @@
 package com.ai.api.controller.impl;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
+import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
+import com.ai.api.bean.OrderTestBean;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.controller.LTOrder;
+import com.ai.api.service.LTOrderService;
+import com.ai.api.service.LTParameterService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.program.model.Program;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,17 +30,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ai.aims.services.model.OrderMaster;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.controller.LTOrder;
-import com.ai.api.lab.service.LTOrderService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-
-import io.swagger.annotations.ApiOperation;
-
-import java.util.List;
-
 @SuppressWarnings({"rawtypes"})
 @RestController
 public class LTOrderImpl implements LTOrder {
@@ -41,32 +43,38 @@ public class LTOrderImpl implements LTOrder {
 	@Autowired
 	@Qualifier("ltorderService")
 	private LTOrderService ltOrderService;
-	
+
+	@Autowired
+	@Qualifier("ltparameterService")
+	private LTParameterService ltparameterService;
+
 	@ApiOperation(value = "Order Add API", produces = "application/json", response = OrderMaster.class, httpMethod = "POST")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/lt-orders", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> addOrder(HttpServletRequest request, @PathVariable String userId, @RequestBody OrderMaster order) {
+	@RequestMapping(value = "/user/{userId}/lt/order", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> addOrder(HttpServletRequest request, 
+			@ApiParam(value="User ID") @PathVariable String userId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-			callResult = ltOrderService.saveOrder(userId, order);
+			callResult = ltOrderService.saveOrder(userId, new OrderMaster());
 		} catch (Exception e) {
 			logger.error("create order error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("can't save LT order");
+			callResult.setMessage("Error in creating LT order in back end service.");
 			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 	}
 
-	@ApiOperation(value = "Get Orders API", produces = "application/json", response = OrderMaster.class, httpMethod = "GET", responseContainer = "List")
+	@SuppressWarnings("unchecked")
+	@ApiOperation(value = "Get Orders API", produces = "application/json", response = OrderSearchBean.class, httpMethod = "GET", responseContainer = "List")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/lt-orders/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/lt/orders", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchLTOrders(
-			@PathVariable("userId") String userId,
-			@RequestParam(value = "orderStatus", required = false, defaultValue = "") String orderStatus,
-			@RequestParam(value = "pageNo", required = false, defaultValue = "1") Integer pageNumber,
-			@RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
+			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="Order Status") @RequestParam(value = "orderStatus", required = false, defaultValue = "") String orderStatus,
+			@ApiParam(value="Page Number") @RequestParam(value = "pageNo", required = false, defaultValue = "1") Integer pageNumber,
+			@ApiParam(value="Page Size") @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			List<OrderSearchBean> list = ltOrderService.searchLTOrders(userId, orderStatus, pageSize, pageNumber);
@@ -75,21 +83,24 @@ public class LTOrderImpl implements LTOrder {
 				return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 			}else {
 				callResult.setContent(list);
-                callResult.setMessage("get empty LT orders list.");
+                callResult.setMessage("Got empty LT orders list.");
                 return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.NO_CONTENT);
             }
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
-            callResult.setMessage("can't get LT orders.error occurred!");
+            callResult.setMessage("Error in searching LT orders.");
             return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@ApiOperation(value = "Get Order API", produces = "application/json", response = OrderMaster.class, httpMethod = "GET")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/lt-orders/list/{orderId}", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> findOrder(@PathVariable("orderId") String orderId) {
+	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> findOrder(
+			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
+			@PathVariable String userId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
             OrderMaster order = ltOrderService.findOrder(orderId);
@@ -101,7 +112,7 @@ public class LTOrderImpl implements LTOrder {
                 return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.NOT_FOUND);
             }
 		} catch (Exception e) {
-			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			logger.error("Error in getting order: " + ExceptionUtils.getFullStackTrace(e));
 			callResult.setMessage("can't get LT order by orderId:" + orderId+". error occurred!");
             return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -110,16 +121,126 @@ public class LTOrderImpl implements LTOrder {
 	@ApiOperation(value = "Order Edit API", produces = "application/json", response = OrderMaster.class, httpMethod = "PUT")
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/lt-orders", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> editOrder(HttpServletRequest request, @PathVariable String userId, @RequestBody OrderMaster order) {
+	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.PUT)
+	public ResponseEntity<ApiCallResult> editOrder(HttpServletRequest request, 
+			@ApiParam(value="User ID") @PathVariable String userId, 
+			@ApiParam(value="Order ID") @PathVariable String orderId, 
+			@RequestBody OrderMaster order) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
+			order.setId(orderId);
 			callResult = ltOrderService.editOrder(userId, order);
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("can't edit LT order");
+			callResult.setMessage("Error in saving updates to LT order.");
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 	}
+	
+	@ApiOperation(value = "Order Delete API", produces = "application/json", httpMethod = "DELETE")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/lt/orders", method = RequestMethod.DELETE)
+	public ResponseEntity<ApiCallResult> deleteOrders(HttpServletRequest request,
+			@ApiParam(value="User ID") @PathVariable String userId,
+			@ApiParam(value="Order IDs") @RequestParam String orderIds) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltOrderService.deleteOrders(userId, orderIds);
+		} catch (Exception e) {
+			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("Error in deleting LT order.");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+	}
+
+	@Override
+	@ApiOperation(value = "Search User's LT Program API", produces = "application/json", response = Program.class, httpMethod = "GET", responseContainer = "List")
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/lt/programs", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchPrograms(
+//			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh,
+			@PathVariable String userId) {
+		ApiCallResult callResult = new ApiCallResult();
+		/*if (!refresh) {
+			logger.info("try to searchPrograms from redis ...");
+			String jsonStringTextileProductCategory = RedisUtil.get("ltProgramsCache");
+			programs = JSON.parseArray(jsonStringTextileProductCategory, Program.class);
+		}
+		if (null == programs) {*/
+		try {
+			callResult = ltparameterService.searchPrograms(userId);
+			logger.info("saving searchPrograms");
+			//RedisUtil.set("ltProgramsCache", JSON.toJSONString(programs), RedisUtil.HOUR * 24);
+
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("search Programs error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("Error in getting LT programs:");
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		/*} else {
+			logger.info("get lt programs from redis successfully");
+			return new ResponseEntity<List<Program>>(programs, HttpStatus.OK);
+		}*/
+	}
+
+	@ApiOperation(value = "Get Order Test Assignments API", produces = "application/json", response = OrderTestBean.class, httpMethod = "GET")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}/tests", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> findOrderTestAssignments (
+			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltOrderService.findOrderTestAssignments(orderId);
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("get order test assignments error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("Error in getting order test assignments");
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@ApiOperation(value = "Update Order Test Assignments API", produces = "application/json", httpMethod = "PUT")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}/tests", method = RequestMethod.PUT)
+	public ResponseEntity<ApiCallResult> updateOrderTestAssignments (
+			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
+			@ApiParam(value="Test IDs") @RequestParam(value = "testIds", required = true, defaultValue = "") String testIds) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltOrderService.updateOrderTestAssignments(userId, orderId, testIds);
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("update order test assignments error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("Error in updating order test assignments");
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@ApiOperation(value = "Delete Order Test Assignment API", produces = "application/json", httpMethod = "DELETE")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}/test/{testId}", method = RequestMethod.DELETE)
+	public ResponseEntity<ApiCallResult> deleteOrderTestAssignment (
+			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
+			@ApiParam(value="Test Assignment ID") @PathVariable("testId") String testId) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltOrderService.deleteOrderTestAssignment(userId, testId);
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("delete order test assignment error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("Error in deleting order test assignment");
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 }
