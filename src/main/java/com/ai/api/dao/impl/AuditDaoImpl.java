@@ -9,16 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.ai.api.config.ServiceConfig;
-import com.ai.api.dao.AuditorDao;
+import com.ai.api.dao.AuditDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 
-public class AuditorDaoImpl implements AuditorDao {
+public class AuditDaoImpl implements AuditDao {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AuditorDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(AuditDaoImpl.class);
 
 	@Autowired
 	@Qualifier("serviceConfig")

@@ -3,7 +3,7 @@ package com.ai.api.service;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 
-public interface AuditorService {
+public interface AuditService {
 	
 	ApiCallResult getDraft(String userId, String draftId);
 

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ai.api.controller.Auditor;
-import com.ai.api.service.AuditorService;
+import com.ai.api.controller.Audit;
+import com.ai.api.service.AuditService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
@@ -36,12 +36,12 @@ import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
  ***************************************************************************/
 @RestController
 @SuppressWarnings("rawtypes")
-public class AuditorImpl implements Auditor {
+public class AuditImpl implements Audit {
 	
-	protected Logger logger = LoggerFactory.getLogger(AuditorImpl.class);
+	protected Logger logger = LoggerFactory.getLogger(AuditImpl.class);
 
 	@Autowired
-	private AuditorService auditorService;
+	private AuditService auditorService;
 
 	@Override
 	@TokenSecured
