@@ -45,7 +45,7 @@ public class AuditorImpl implements Auditor {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/auditor-draft", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/audit-draft", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createDraft(String userId, String serviceType) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/auditor-draft?serviceType=" + serviceType);
@@ -59,7 +59,7 @@ public class AuditorImpl implements Auditor {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/auditor-draft/previous-psi-order/{orderId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/audit-draft/previous-psi-order/{orderId}", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createDraftFromPreviousOrder(String userId, String orderId,
 			String serviceType) {
 		// TODO Auto-generated method stub
@@ -75,7 +75,7 @@ public class AuditorImpl implements Auditor {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/auditor-draft/{draftId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/audit-draft/{draftId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getDraft(String userId, String draftId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/auditor-draft/" + draftId);
@@ -89,7 +89,7 @@ public class AuditorImpl implements Auditor {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/auditor-draft/{draftId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/audit-draft/{draftId}", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> saveDraft(String userId, String draftId, ApiAuditBookingBean draft) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/auditor-draft/" + draftId);
@@ -104,7 +104,7 @@ public class AuditorImpl implements Auditor {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/auditor-order", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/audit-order", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createOrderByDraft(String userId, String draftId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/auditor-order?draftId=" + draftId);
@@ -118,7 +118,7 @@ public class AuditorImpl implements Auditor {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/auditor-order/{orderId}/editing", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}/editing", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> editOrder(String userId, String orderId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/auditor-order/" + orderId + "/editing");
@@ -132,7 +132,7 @@ public class AuditorImpl implements Auditor {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/auditor-order/{orderId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getOrderDetail(String userId, String orderId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/auditor-order/" + orderId);
@@ -146,7 +146,7 @@ public class AuditorImpl implements Auditor {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/auditor-order/{orderId}/auditor-draft/{draftId}/saved", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}/auditor-draft/{draftId}/saved", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> saveOrderByDraft(String userId, String draftId, String orderId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/auditor-order/" + orderId + "/auditor-draft/" + draftId
