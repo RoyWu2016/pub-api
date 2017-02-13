@@ -273,8 +273,8 @@ public class UserServiceImpl implements UserService {
 		finalBeam.setSendReportMailsToSub(StringUtils.isTrue(masterBean.getSendReportMailsToSub()));//		private String sendReportMailsToSub;
 		finalBeam.setReportMailsToSubCcBcc(masterBean.getReportMailsToSubCcBcc());//		private String reportMailsToSubCcBcc;
 		finalBeam.setDisClientName(masterBean.getDisClientName());//		private String disClientName;
-		finalBeam.setHideApproveButton(StringUtils.isTrue(masterBean.getHideApproveButton()));//		private String hideApproveButton;
-		finalBeam.setHideCcFields(StringUtils.isTrue(masterBean.getHideCcFields()));//		private String hideCcFields;
+		finalBeam.setSubCompanySeeReportActionButtons("yes".equalsIgnoreCase(masterBean.getHideApproveButton())?false:true);//		private String hideApproveButton;
+		finalBeam.setSubCompanySeeCcOptionInBookingForm("yes".equalsIgnoreCase(masterBean.getHideCcFields())?false:true);//		private String hideCcFields;
 		finalBeam.setWhoPayOrder(masterBean.getWhoPayOrder());//		private String whoPayOrder;
 		finalBeam.setWhoPayReorder(masterBean.getWhoPayReorder());//		private String whoPayReorder;
 		finalBeam.setWhoPayLt(masterBean.getWhoPayLt());//		private String whoPayLt;
@@ -283,6 +283,7 @@ public class UserServiceImpl implements UserService {
 		finalBeam.setConsolidatedInvoice(masterBean.getConsolidatedInvoice());//		private String consolidatedInvoice;
 		finalBeam.setSuspendOrdersBy(masterBean.getSuspendOrdersBy());//		private String suspendOrdersBy;
 		finalBeam.setReadMasterChecklist(StringUtils.isTrue(masterBean.getIsReadMasterChecklist()));//		private String isReadMasterChecklist;
+		finalBeam.setSubCompanySeeReportsPage("yes".equalsIgnoreCase(reportCertificateBean.getSubReportAccess())?false:true);
 		
 		comp.setMaster(finalBeam);
 		

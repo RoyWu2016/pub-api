@@ -63,9 +63,9 @@ public class SurveyServiceImpl implements SurveyService{
                 cal.setTime(new Date());
                 cal.add(Calendar.DATE, -7);
                 if (lastShow.before(cal.getTime())) {
-                    apiCallResult.setContent(true);
-                } else {
                     apiCallResult.setContent(false);
+                } else {
+                    apiCallResult.setContent(true);
                 }
             }else {
                 apiCallResult.setMessage("error from customerService!"+result.getResponseString());
