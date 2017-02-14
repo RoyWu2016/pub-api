@@ -50,6 +50,11 @@ public class ConstMap {
 	    serviceTypeMap.put("dupro", "3");
 	    serviceTypeMap.put("clc", "4");
 	    serviceTypeMap.put("pm", "6");
+        serviceTypeMap.put("fa", "5");
+        serviceTypeMap.put("lt", "11");
+        serviceTypeMap.put("sa", "9");
+        serviceTypeMap.put("ctpat", "5,51");
+        serviceTypeMap.put("stra", "9,91");
     }
 }
 
