@@ -136,10 +136,11 @@ public class LTParameterDaoImpl implements LTParameterDao {
 				tagTests.parallelStream().filter(t -> (test.getId().equals(t.getTestId()) &&
 						null != t.getProductCategory())).forEach(t -> categories.add(t.getProductCategory()));
 				testBean.setCategories(categories);
+				testBean.setMandatory(!"Y".equalsIgnoreCase(tagTest.getOptional()));
 				if (!tests.contains(testBean))
 					tests.add(testBean);
 			}
-		}			
+		}
 		callResult.setContent(tests);
 		return callResult;
 	}
