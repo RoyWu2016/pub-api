@@ -24,6 +24,7 @@ public class TestSearchBean implements Serializable {
 	private String country;
 	private List<String> tags;
     private Double price;
+    private Boolean mandatory;
     
 	@Override
 	public int hashCode() {
@@ -160,5 +161,13 @@ public class TestSearchBean implements Serializable {
 
 	public void setPrice(Double price) {
 		this.price = price;
+	}
+
+	public Boolean getMandatory() {
+		return mandatory;
+	}
+
+	public void setMandatory(Boolean mandatory) {
+		this.mandatory = mandatory;
 	}
 }
