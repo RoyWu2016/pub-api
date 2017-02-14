@@ -2,6 +2,7 @@ package com.ai.api.dao.impl;
 
 import java.io.IOException;
 
+import com.ai.api.bean.consts.ConstMap;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,13 +42,20 @@ public class AuditDaoImpl implements AuditDao {
 
 	@Override
 	public ApiCallResult createDraft(String userId, String serviceType, String companyId, String parentId) {
+		String subServiceType = null;
+        String type = ConstMap.serviceTypeMap.get(serviceType.toLowerCase());
+        serviceType = type;
+        if (type.indexOf(",")!=-1){
+            serviceType = type.split(",")[0];
+            subServiceType = type.split(",")[1];
+        }
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
 		url.append("/api/audit/createDraft");
 		url.append("?userId=" + userId);
 		url.append("&serviceType=" + serviceType);
 		url.append("&companyId=" + companyId);
-		url.append("&parentId=" + parentId);
+		url.append("&parentId=" + parentId).append("&subServiceType="+subServiceType);
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, userId);
 			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
@@ -79,6 +87,11 @@ public class AuditDaoImpl implements AuditDao {
 	@Override
 	public ApiCallResult createDraftFromPreviousOrder(String userId, String orderId, String serviceType,
 			String companyId, String parentId) {
+        String type = ConstMap.serviceTypeMap.get(serviceType.toLowerCase());
+        serviceType = type;
+        if (type.indexOf(",")!=-1){
+            serviceType = type.split(",")[0];
+        }
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
 		url.append("/api/audit/createDraftFromPreviousOrder");
