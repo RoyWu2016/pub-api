@@ -2,6 +2,7 @@ package com.ai.api.dao.impl;
 
 import java.io.IOException;
 
+import com.ai.api.bean.consts.ConstMap;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,66 +27,74 @@ public class AuditDaoImpl implements AuditDao {
 
 	@Override
 	public ApiCallResult getDraft(String userId, String draftId) {
-		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		ApiCallResult fianlRe = new ApiCallResult();
-		url.append("/inspection-draft/api/getDraft/").append(userId).append("/").append(draftId);
+		ApiCallResult finalResult = new ApiCallResult();
+		url.append("/api/audit/getDraft/").append(userId).append("/").append(draftId);
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
-			fianlRe = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-			fianlRe.setMessage("Exception: " + e.toString());
+			logger.error("Error getDraft!"+ExceptionUtils.getStackTrace(e));
+			finalResult.setMessage("Exception: " + e.toString());
 		}
-		return fianlRe;
+		return finalResult;
 	}
 
 	@Override
 	public ApiCallResult createDraft(String userId, String serviceType, String companyId, String parentId) {
-		// TODO Auto-generated method stub
+		String subServiceType = null;
+        String type = ConstMap.serviceTypeMap.get(serviceType.toLowerCase());
+        serviceType = type;
+        if (type.indexOf(",")!=-1){
+            serviceType = type.split(",")[0];
+            subServiceType = type.split(",")[1];
+        }
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		ApiCallResult fianlRe = new ApiCallResult();
-		url.append("/inspection-draft/api/createDraft");
+		ApiCallResult finalResult = new ApiCallResult();
+		url.append("/api/audit/createDraft");
 		url.append("?userId=" + userId);
 		url.append("&serviceType=" + serviceType);
 		url.append("&companyId=" + companyId);
-		url.append("&parentId=" + parentId);
+		url.append("&parentId=" + parentId).append("&subServiceType="+subServiceType);
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, userId);
-			fianlRe = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-			fianlRe.setMessage("Exception: " + e.toString());
+			logger.error("Error createDraft!"+ExceptionUtils.getStackTrace(e));
+			finalResult.setMessage("Exception: " + e.toString());
 		}
-		return fianlRe;
+		return finalResult;
 	}
 
 	@Override
 	public ApiCallResult saveDraft(String userId, String companyId, String parentId, ApiAuditBookingBean draft) {
-		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		ApiCallResult fianlRe = new ApiCallResult();
-		url.append("/inspection-draft/api/saveDraft");
+		ApiCallResult finalResult = new ApiCallResult();
+		url.append("/api/audit/updateDraft");
 		url.append("?userId=" + userId);
 		url.append("&companyId=" + companyId);
 		url.append("&parentId=" + parentId);
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, draft);
-			fianlRe = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-			fianlRe.setMessage("Exception: " + e.toString());
+			logger.error("Error saveDraft!"+ExceptionUtils.getStackTrace(e));
+			finalResult.setMessage("Exception: " + e.toString());
 		}
-		return fianlRe;
+		return finalResult;
 	}
 
 	@Override
 	public ApiCallResult createDraftFromPreviousOrder(String userId, String orderId, String serviceType,
 			String companyId, String parentId) {
-		// TODO Auto-generated method stub
+        String type = ConstMap.serviceTypeMap.get(serviceType.toLowerCase());
+        serviceType = type;
+        if (type.indexOf(",")!=-1){
+            serviceType = type.split(",")[0];
+        }
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		ApiCallResult fianlRe = new ApiCallResult();
-		url.append("/inspection-draft/api/createDraftFromPreviousOrder");
+		ApiCallResult finalResult = new ApiCallResult();
+		url.append("/api/audit/createDraftFromPreviousOrder");
 		url.append("?userId=" + userId);
 		url.append("&serviceType=" + serviceType);
 		url.append("&orderId=" + orderId);
@@ -93,88 +102,84 @@ public class AuditDaoImpl implements AuditDao {
 		url.append("&parentId=" + parentId);
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, userId);
-			fianlRe = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-			fianlRe.setMessage("Exception: " + e.toString());
+			logger.error("Error createDraftFromPreviousOrder!"+ExceptionUtils.getStackTrace(e));
+			finalResult.setMessage("Exception: " + e.toString());
 		}
-		return fianlRe;
+		return finalResult;
 	}
 
 	@Override
 	public ApiCallResult createOrderByDraft(String userId, String draftId, String companyId, String parentId) {
-		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		ApiCallResult fianlRe = new ApiCallResult();
-		url.append("/inspection-draft/api/createOrderByDraft");
+		ApiCallResult finalResult = new ApiCallResult();
+		url.append("/api/audit/createOrder");
 		url.append("?userId=" + userId);
 		url.append("&draftId=" + draftId);
 		url.append("&companyId=" + companyId);
 		url.append("&parentId=" + parentId);
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, draftId);
-			fianlRe = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-			fianlRe.setMessage("Exception: " + e.toString());
+			logger.error("Error createOrderByDraft!"+ExceptionUtils.getStackTrace(e));
+			finalResult.setMessage("Exception: " + e.toString());
 		}
-		return fianlRe;
+		return finalResult;
 	}
 
 	@Override
 	public ApiCallResult editOrder(String userId, String orderId, String companyId, String parentId) {
-		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		ApiCallResult fianlRe = new ApiCallResult();
-		url.append("/inspection-draft/api/editOrder");
+		ApiCallResult finalResult = new ApiCallResult();
+		url.append("/api/audit/editOrder");
 		url.append("?userId=" + userId);
 		url.append("&orderId=" + orderId);
 		url.append("&companyId=" + companyId);
 		url.append("&parentId=" + parentId);
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
-			fianlRe = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-			fianlRe.setMessage("Exception: " + e.toString());
+			logger.error("Error editOrder!"+ExceptionUtils.getStackTrace(e));
+			finalResult.setMessage("Exception: " + e.toString());
 		}
-		return fianlRe;
+		return finalResult;
 	}
 
 	@Override
 	public ApiCallResult getOrderDetail(String userId, String orderId) {
-		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		ApiCallResult fianlRe = new ApiCallResult();
-		url.append("/inspection-draft/api/getOrder/").append(userId).append("/").append(orderId);
+		ApiCallResult finalResult = new ApiCallResult();
+		url.append("/api/audit/getOrder/").append(userId).append("/").append(orderId);
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
-			fianlRe = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-			fianlRe.setMessage("Exception: " + e.toString());
+			logger.error("Error getOrderDetail!"+ExceptionUtils.getStackTrace(e));
+			finalResult.setMessage("Exception: " + e.toString());
 		}
-		return fianlRe;
+		return finalResult;
 	}
 
 	@Override
 	public ApiCallResult saveOrderByDraft(String userId, String draftId, String companyId, String parentId) {
-		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		ApiCallResult fianlRe = new ApiCallResult();
-		url.append("/inspection-draft/api/saveOrderByDraft");
+		ApiCallResult finalResult = new ApiCallResult();
+		url.append("/api/audit/reAudit");
 		url.append("?userId=" + userId);
 		url.append("&draftId=" + draftId);
 		url.append("&companyId=" + companyId);
 		url.append("&parentId=" + parentId);
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
-			fianlRe = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
-			fianlRe.setMessage("Exception: " + e.toString());
+			logger.error("Error saveOrderByDraft!"+ExceptionUtils.getStackTrace(e));
+			finalResult.setMessage("Exception: " + e.toString());
 		}
-		return fianlRe;
+		return finalResult;
 	}
 
 }
