@@ -366,7 +366,20 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             InputStream is = myFileService.getFileService().getFile(fileIds);
             FileMetaBean fileDetails = myFileService.getFileService().getFileInfoById(fileIds);
             String fileName = fileDetails.getFileName();
-            response.setHeader("Content-Type", "image/jpeg");
+            String fileType = fileName.substring(fileName.lastIndexOf(".")+1,fileName.length());
+            if(fileType.equalsIgnoreCase("jfif")||fileType.equalsIgnoreCase("jpe")||fileType.equalsIgnoreCase("jpg")||fileType.equalsIgnoreCase("jpeg")){
+                response.setHeader("Content-Type", "image/jpeg");
+            }else if(fileType.equalsIgnoreCase("gif")){
+                response.setHeader("Content-Type", "image/gif");
+            }else if(fileType.equalsIgnoreCase("png")){
+                response.setHeader("Content-Type", "image/png");
+            }else if(fileType.equalsIgnoreCase("xls")){
+                response.setHeader("Content-Type", "application/vnd.ms-excel");
+            }else if(fileType.equalsIgnoreCase("xlsx")){
+                response.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            }else {
+                response.setHeader("Content-Type", "text/plain");
+            }
             response.setHeader("X-File-Name",fileName);
             response.setHeader("X-File-Caption",fileDetails.getComments()+" ");
             response.setHeader("Access-Control-Expose-Headers","X-File-Name, X-File-Caption");
