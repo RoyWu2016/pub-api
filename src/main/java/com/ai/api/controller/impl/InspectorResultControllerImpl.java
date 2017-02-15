@@ -367,9 +367,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             FileMetaBean fileDetails = myFileService.getFileService().getFileInfoById(fileIds);
             String fileName = fileDetails.getFileName();
             String fileType = fileName.substring(fileName.lastIndexOf(".")+1,fileName.length());
-            if(fileType.equalsIgnoreCase("jfif")||fileType.equalsIgnoreCase("jpe")||fileType.equalsIgnoreCase("jpg")||fileType.equalsIgnoreCase("jpeg")){
-                response.setHeader("Content-Type", "image/jpeg");
-            }else if(fileType.equalsIgnoreCase("gif")){
+            if(fileType.equalsIgnoreCase("gif")){
                 response.setHeader("Content-Type", "image/gif");
             }else if(fileType.equalsIgnoreCase("png")){
                 response.setHeader("Content-Type", "image/png");
@@ -378,7 +376,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             }else if(fileType.equalsIgnoreCase("xlsx")){
                 response.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             }else {
-                response.setHeader("Content-Type", "text/plain");
+                response.setHeader("Content-Type", "image/jpeg");
             }
             response.setHeader("X-File-Name",fileName);
             response.setHeader("X-File-Caption",fileDetails.getComments()+" ");
