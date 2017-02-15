@@ -35,34 +35,36 @@ public class CompanyBean implements Serializable {
 
     private String mainEmail;
     
-	private List<CompanyRelationshipBean> Parents;
+//	private List<CompanyRelationshipBean> Parents;
 	
-	private List<CompanyRelationshipBean> Subordinates;
+	private List<CompanyRelationshipBean> subordinates;
 	
-	private ApiMasterBean master;
+	private SubordinateSettingsBean extraAccess;
 
-	public ApiMasterBean getMaster() {
-		return master;
+	private SuperMasterBean superMaster;
+
+	public SubordinateSettingsBean getExtraAccess() {
+		return extraAccess;
 	}
 
-	public void setMaster(ApiMasterBean master) {
-		this.master = master;
+	public void setExtraAccess(SubordinateSettingsBean extraAccess) {
+		this.extraAccess = extraAccess;
 	}
 
-	public List<CompanyRelationshipBean> getParents() {
-		return Parents;
-	}
-
-	public void setParents(List<CompanyRelationshipBean> parents) {
-		Parents = parents;
-	}
+//	public List<CompanyRelationshipBean> getParents() {
+//		return Parents;
+//	}
+//
+//	public void setParents(List<CompanyRelationshipBean> parents) {
+//		Parents = parents;
+//	}
 
 	public List<CompanyRelationshipBean> getSubordinates() {
-		return Subordinates;
+		return subordinates;
 	}
 
 	public void setSubordinates(List<CompanyRelationshipBean> subordinates) {
-		Subordinates = subordinates;
+		this.subordinates = subordinates;
 	}
 
 	public String getName() {
@@ -177,7 +179,15 @@ public class CompanyBean implements Serializable {
         this.mainEmail = mainEmail;
     }
 
-    @Override
+	public SuperMasterBean getSuperMaster() {
+		return superMaster;
+	}
+
+	public void setSuperMaster(SuperMasterBean superMaster) {
+		this.superMaster = superMaster;
+	}
+
+	@Override
     public String toString() {
         return "CompanyBean{" +
                 "id='" + id + '\'' +

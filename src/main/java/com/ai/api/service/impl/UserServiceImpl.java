@@ -17,7 +17,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ai.api.bean.ApiMasterBean;
 import com.ai.api.bean.AqlAndSamplingSizeBean;
 import com.ai.api.bean.BillingBean;
 import com.ai.api.bean.BookingPreferenceBean;
@@ -43,6 +42,7 @@ import com.ai.api.bean.ReportApproverBean;
 import com.ai.api.bean.ReportPreferenceBean;
 import com.ai.api.bean.ReportRejectCategoryBean;
 import com.ai.api.bean.ReportRejectCategoryReasonBean;
+import com.ai.api.bean.SubordinateSettingsBean;
 import com.ai.api.bean.SuperMasterBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
@@ -197,50 +197,10 @@ public class UserServiceImpl implements UserService {
 
 		// ------------Set CompanyBean Properties ----------------
 		CompanyBean comp = new CompanyBean();
-		comp.setId(companyEntireBean.getCompanyId());
-
-		comp.setType(companyEntireBean.getCompanyProfile().getCompanyTypeKey());
-		if (companyEntireBean.getDirectParents() != null && companyEntireBean.getDirectParents().size() > 0) {
-			comp.setParentCompanyId(companyEntireBean.getDirectParents().get(0).getCompanyId());
-			comp.setParentCompanyName(companyEntireBean.getDirectParents().get(0).getCompanyName());
-		}
-
-		comp.setName(companyEntireBean.getCompanyProfile().getCompanyName());
-		comp.setNameCN(companyEntireBean.getCompanyProfile().getCompanyNameCN());
-		comp.setIndustry(companyEntireBean.getCompanyProfile().getIndustry());
-		comp.setCountry(companyEntireBean.getCompanyProfile().getCountryRegion());
-		comp.setAddress(companyEntireBean.getCompanyProfile().getAddress1());
-		comp.setCity(companyEntireBean.getCompanyProfile().getCity());
-		comp.setPostcode(companyEntireBean.getCompanyProfile().getPostCode());
-
-		comp.setWebsite(companyEntireBean.getCompanyProfile().getWebsite());
-		comp.setLogo(companyEntireBean.getCompanyProfile().getLogoPath());
-		comp.setMainEmail(companyEntireBean.getContact().getMainEmail());
-		
-		List<CompanyRelationshipBean> parentList = new ArrayList();
-		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectParents()) {
-			CompanyRelationshipBean bean = new CompanyRelationshipBean();
-			bean.setCompanyId(each.getCompanyId());
-			bean.setCompanyName(each.getCompanyName());
-
-			parentList.add(bean);
-		}
-		comp.setParents(parentList);
-
-		List<CompanyRelationshipBean> subordinatesList = new ArrayList();
-		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectSubordinates()) {
-			CompanyRelationshipBean bean = new CompanyRelationshipBean();
-			bean.setCompanyId(each.getSubordinateId());
-			bean.setCompanyName(each.getCompanyName());
-
-			subordinatesList.add(bean);
-		}
-		comp.setSubordinates(subordinatesList);
-		
+		//super master part
 		MasterBean masterBean = companyEntireBean.getMaster();
-		ApiMasterBean finalBeam = new ApiMasterBean();
 		SuperMasterBean superMaster = new SuperMasterBean();
-		List<MasterCompanyBean> masterCompanies = new ArrayList<MasterCompanyBean>();
+		List<MasterCompanyBean> masterCompanies = new ArrayList<>();
 		if (StringUtils.isTrue(masterBean.getIsSuperMaster())) {
 			superMaster.setSuperMaster(true);
 			List<ClientInfoWithTokenBean> beans = companyDao.getMasterAccountTokens(companyEntireBean.getCompanyId(),
@@ -259,34 +219,82 @@ public class UserServiceImpl implements UserService {
 			superMaster.setSuperMaster(false);
 		}
 		superMaster.setMasterCompanies(masterCompanies);
-		finalBeam.setSuperMaster(superMaster);
+		comp.setSuperMaster(superMaster);
+
+		//set company type, master/subordinate/standard
+		if (companyEntireBean.getDirectSubordinates() != null && companyEntireBean.getDirectSubordinates().size() > 0 ) {
+			comp.setType("master");
+			//only master account has subordinates
+			List<CompanyRelationshipBean> subordinatesList = new ArrayList();
+			for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectSubordinates()) {
+				CompanyRelationshipBean bean = new CompanyRelationshipBean();
+				bean.setCompanyId(each.getSubordinateId());
+				bean.setCompanyName(each.getCompanyName());
+				subordinatesList.add(bean);
+			}
+			comp.setSubordinates(subordinatesList);
+		} else if (companyEntireBean.getDirectParents() != null && companyEntireBean.getDirectParents().size() > 0) {
+			comp.setType("subordinate");
+			comp.setParentCompanyId(companyEntireBean.getDirectParents().get(0).getCompanyId());
+			comp.setParentCompanyName(companyEntireBean.getDirectParents().get(0).getCompanyName());
+
+			SubordinateSettingsBean finalBeam = new SubordinateSettingsBean();
+			finalBeam.setCanSeeReportActionButtons("yes".equalsIgnoreCase(masterBean.getHideApproveButton()) ? false : true);//		private String hideApproveButton;
+			finalBeam.setCanSeeCcOptionInBookingForm("yes".equalsIgnoreCase(masterBean.getHideCcFields()) ? false : true);//		private String hideCcFields;
+			finalBeam.setCanSeeReportsPage("yes".equalsIgnoreCase(reportCertificateBean.getSubReportAccess()) ? false : true);
+			comp.setExtraAccess(finalBeam);
+		} else {
+			comp.setType("standard");
+		}
+		comp.setId(companyEntireBean.getCompanyId());
+		comp.setName(companyEntireBean.getCompanyProfile().getCompanyName());
+		comp.setNameCN(companyEntireBean.getCompanyProfile().getCompanyNameCN());
+		comp.setIndustry(companyEntireBean.getCompanyProfile().getIndustry());
+		comp.setCountry(companyEntireBean.getCompanyProfile().getCountryRegion());
+		comp.setAddress(companyEntireBean.getCompanyProfile().getAddress1());
+		comp.setCity(companyEntireBean.getCompanyProfile().getCity());
+		comp.setPostcode(companyEntireBean.getCompanyProfile().getPostCode());
+
+		comp.setWebsite(companyEntireBean.getCompanyProfile().getWebsite());
+		comp.setLogo(companyEntireBean.getCompanyProfile().getLogoPath());
+		comp.setMainEmail(companyEntireBean.getContact().getMainEmail());
+
+
+//		List<CompanyRelationshipBean> parentList = new ArrayList();
+//		for(CrmCompanyRelationshipBean each:companyEntireBean.getDirectParents()) {
+//			CompanyRelationshipBean bean = new CompanyRelationshipBean();
+//			bean.setCompanyId(each.getCompanyId());
+//			bean.setCompanyName(each.getCompanyName());
+//
+//			parentList.add(bean);
+//		}
+//		comp.setParents(parentList);
+
+
+//		finalBeam.setSuperMaster(superMaster);
 //		finalBeam.setMasterList(masterBean.getMasterList());
-		finalBeam.setCanCreateOrder(StringUtils.isTrue(masterBean.getCanCreateOrder()));//		private String canCreateOrder;
-		finalBeam.setShareFactoryLib(StringUtils.isTrue(masterBean.getShareFactoryLib()));//		private String shareFactoryLib;
-		finalBeam.setSeePendingOrders(StringUtils.isTrue(masterBean.getSeePendingOrders()));//		private String seePendingOrders;
-		finalBeam.setSeeOnlineReports(StringUtils.isTrue(masterBean.getCanCreateOrder()));//		private String seeOnlineReports;
-		finalBeam.setSeeAllFactories(StringUtils.isTrue(masterBean.getSeeOnlineReports()));//		private String seeAllFactories;
-		finalBeam.setReceiveAllMails(StringUtils.isTrue(masterBean.getReceiveAllMails()));//		private String receiveAllMails;
-		finalBeam.setSendAllMailsToSub(StringUtils.isTrue(masterBean.getCanCreateOrder()));//		private String sendAllMailsToSub;
-		finalBeam.setAllMailsToSubCcBcc(StringUtils.isTrue(masterBean.getAllMailsToSubCcBcc()));//		private String allMailsToSubCcBcc;
-		finalBeam.setSendReportMailsToMaster(StringUtils.isTrue(masterBean.getSendReportMailsToMaster()));//		private String sendReportMailsToMaster;
-		finalBeam.setSendReportMailsToSub(StringUtils.isTrue(masterBean.getSendReportMailsToSub()));//		private String sendReportMailsToSub;
-		finalBeam.setReportMailsToSubCcBcc(masterBean.getReportMailsToSubCcBcc());//		private String reportMailsToSubCcBcc;
-		finalBeam.setDisClientName(masterBean.getDisClientName());//		private String disClientName;
-		finalBeam.setSubCompanySeeReportActionButtons("yes".equalsIgnoreCase(masterBean.getHideApproveButton())?false:true);//		private String hideApproveButton;
-		finalBeam.setSubCompanySeeCcOptionInBookingForm("yes".equalsIgnoreCase(masterBean.getHideCcFields())?false:true);//		private String hideCcFields;
-		finalBeam.setWhoPayOrder(masterBean.getWhoPayOrder());//		private String whoPayOrder;
-		finalBeam.setWhoPayReorder(masterBean.getWhoPayReorder());//		private String whoPayReorder;
-		finalBeam.setWhoPayLt(masterBean.getWhoPayLt());//		private String whoPayLt;
-		finalBeam.setWhoPayAudit(masterBean.getWhoPayAudit());//		private String whoPayAudit;
-		finalBeam.setWhoPayReAudit(masterBean.getWhoPayReAudit());//		private String whoPayReAudit;
-		finalBeam.setConsolidatedInvoice(masterBean.getConsolidatedInvoice());//		private String consolidatedInvoice;
-		finalBeam.setSuspendOrdersBy(masterBean.getSuspendOrdersBy());//		private String suspendOrdersBy;
-		finalBeam.setReadMasterChecklist(StringUtils.isTrue(masterBean.getIsReadMasterChecklist()));//		private String isReadMasterChecklist;
-		finalBeam.setSubCompanySeeReportsPage("yes".equalsIgnoreCase(reportCertificateBean.getSubReportAccess())?false:true);
-		
-		comp.setMaster(finalBeam);
-		
+//		finalBeam.setCanCreateOrder(StringUtils.isTrue(masterBean.getCanCreateOrder()));//		private String canCreateOrder;
+//		finalBeam.setShareFactoryLib(StringUtils.isTrue(masterBean.getShareFactoryLib()));//		private String shareFactoryLib;
+//		finalBeam.setSeePendingOrders(StringUtils.isTrue(masterBean.getSeePendingOrders()));//		private String seePendingOrders;
+//		finalBeam.setSeeOnlineReports(StringUtils.isTrue(masterBean.getCanCreateOrder()));//		private String seeOnlineReports;
+//		finalBeam.setSeeAllFactories(StringUtils.isTrue(masterBean.getSeeOnlineReports()));//		private String seeAllFactories;
+//		finalBeam.setReceiveAllMails(StringUtils.isTrue(masterBean.getReceiveAllMails()));//		private String receiveAllMails;
+//		finalBeam.setSendAllMailsToSub(StringUtils.isTrue(masterBean.getCanCreateOrder()));//		private String sendAllMailsToSub;
+//		finalBeam.setAllMailsToSubCcBcc(StringUtils.isTrue(masterBean.getAllMailsToSubCcBcc()));//		private String allMailsToSubCcBcc;
+//		finalBeam.setSendReportMailsToMaster(StringUtils.isTrue(masterBean.getSendReportMailsToMaster()));//		private String sendReportMailsToMaster;
+//		finalBeam.setSendReportMailsToSub(StringUtils.isTrue(masterBean.getSendReportMailsToSub()));//		private String sendReportMailsToSub;
+//		finalBeam.setReportMailsToSubCcBcc(masterBean.getReportMailsToSubCcBcc());//		private String reportMailsToSubCcBcc;
+//		finalBeam.setDisClientName(masterBean.getDisClientName());//		private String disClientName;
+//		finalBeam.setWhoPayOrder(masterBean.getWhoPayOrder());//		private String whoPayOrder;
+//		finalBeam.setWhoPayReorder(masterBean.getWhoPayReorder());//		private String whoPayReorder;
+//		finalBeam.setWhoPayLt(masterBean.getWhoPayLt());//		private String whoPayLt;
+//		finalBeam.setWhoPayAudit(masterBean.getWhoPayAudit());//		private String whoPayAudit;
+//		finalBeam.setWhoPayReAudit(masterBean.getWhoPayReAudit());//		private String whoPayReAudit;
+//		finalBeam.setConsolidatedInvoice(masterBean.getConsolidatedInvoice());//		private String consolidatedInvoice;
+//		finalBeam.setSuspendOrdersBy(masterBean.getSuspendOrdersBy());//		private String suspendOrdersBy;
+//		finalBeam.setReadMasterChecklist(StringUtils.isTrue(masterBean.getIsReadMasterChecklist()));//		private String isReadMasterChecklist;
+
+
 		user.setCompany(comp);
 
 		Payment payment = new Payment();
@@ -1016,8 +1024,8 @@ public class UserServiceImpl implements UserService {
 					RedisUtil.MINUTE * 30);
 			logger.info("saving success !!!");
 		}
-		if (user != null && user.getCompany().getMaster().getSuperMaster().isSuperMaster()) {
-			for (MasterCompanyBean master: user.getCompany().getMaster().getSuperMaster().getMasterCompanies()) {
+		if (user != null && user.getCompany().getSuperMaster().isSuperMaster()) {
+			for (MasterCompanyBean master: user.getCompany().getSuperMaster().getMasterCompanies()) {
 				if (master.getUserId().equalsIgnoreCase(masterUserId)) {
 					return true;
 				}
