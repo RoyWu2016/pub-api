@@ -65,7 +65,6 @@ public class InspectorResultControllerImpl implements InspectorResultController 
     @Autowired
     private ServiceConfig serviceConfig;
 
-
     @Override
     @RequestMapping(value = "/results/{orderId}/{reportType}", method = RequestMethod.GET)
     public ResponseEntity<ApiCallResult> searchByOrderId(@PathVariable("orderId") String orderId,@PathVariable("reportType") String reportType ) {
@@ -286,6 +285,16 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                                                     @RequestParam(value="username", required=false) String username,
                                                     MultipartHttpServletRequest request) {
         ApiCallResult callResult = new ApiCallResult();
+	    int reqSize = request.getContentLength();
+	    int allowedSize =  config.getMaxRequestSize();
+	    if (reqSize > allowedSize) {
+		    logger.error("111 Request size " + reqSize + "large than " + allowedSize);
+		    callResult.setMessage("uploading file size larger than " + allowedSize);
+		    return new ResponseEntity<>(callResult, HttpStatus.PAYLOAD_TOO_LARGE);
+	    } else {
+		    logger.error("111 Request size " + reqSize + " is ok: ");
+	    }
+
         try{
             logger.info("ready to uploadFile ...");
             Map<String,List<FileMetaBean>> fileMetaList = new HashMap<>();
