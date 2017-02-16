@@ -241,7 +241,7 @@ public class UserServiceImpl implements UserService {
 			SubordinateSettingsBean finalBeam = new SubordinateSettingsBean();
 
 			CompanyEntireBean subordinate = companyDao
-					.getCompanyEntireInfoByCompanyId(companyEntireBean.getCompanyId());
+					.getCompanyEntireInfoByCompanyId(companyEntireBean.getDirectParents().get(0).getCompanyId());
 			MasterBean subordinateMaster = subordinate.getMaster();
 			if (subordinateMaster != null) {
 				finalBeam.setCanSeeReportActionButtons(
