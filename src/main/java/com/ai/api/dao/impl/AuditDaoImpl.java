@@ -152,7 +152,7 @@ public class AuditDaoImpl implements AuditDao {
 	public ApiCallResult getOrderDetail(String userId, String orderId) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
-		url.append("/api/audit/getOrder/").append(userId).append("/").append(orderId);
+		url.append("/api/audit/getOrder?userId=").append(userId).append("&orderId=").append(orderId);
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
