@@ -64,7 +64,8 @@
           p:ipServiceBaseUrl="${ip.service.base.lb.url}"
           p:excleLoggoCommonSource="${resource.share.folder}"
           p:lotusApiUrl="${lotus.api.url}"
-          p:aimsBucket="${aims.bucket}"/>
+          p:aimsBucket="${aims.bucket}"
+          p:maxRequestSize="${max.multiplart.request.size}" />
 
     <bean id="redisUtil" class="com.ai.api.util.RedisUtil">
         <property name="serviceConfig" ref="serviceConfig"/>

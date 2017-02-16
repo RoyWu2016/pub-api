@@ -105,9 +105,9 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<!-- set the max upload size: 200MB -->
+		<!-- set the max upload size: 300MB -->
 		<property name="maxUploadSize">
-			<value>209715200</value>
+			<value>314572800</value>
 		</property>
 		<property name="maxInMemorySize">
 			<value>4096</value>

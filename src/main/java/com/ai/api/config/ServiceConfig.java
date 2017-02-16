@@ -71,6 +71,8 @@ public class ServiceConfig {
 
 	private String aimsBucket;
 
+	int maxRequestSize;
+
     //    public String getBaseURL() {
 //        return baseURL;
 //    }
@@ -270,6 +272,15 @@ public class ServiceConfig {
 
 	public void setAimsBucket(String aimsBucket) {
 		this.aimsBucket = aimsBucket;
+	}
+
+
+	public int getMaxRequestSize() {
+		return maxRequestSize;
+	}
+
+	public void setMaxRequestSize(int maxRequestSize) {
+		this.maxRequestSize = maxRequestSize;
 	}
 
 	@Override
