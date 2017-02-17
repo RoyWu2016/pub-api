@@ -65,8 +65,6 @@ public class InspectorResultControllerImpl implements InspectorResultController 
     @Autowired
     private ServiceConfig serviceConfig;
 
-	final int allowedSize =  config.getMaxRequestSize();
-	final int allowedSizeInMB =  allowedSize/1024/1024;
 
     @Override
     @RequestMapping(value = "/results/{orderId}/{reportType}", method = RequestMethod.GET)
@@ -287,6 +285,10 @@ public class InspectorResultControllerImpl implements InspectorResultController 
     public ResponseEntity<ApiCallResult> uploadFile(@PathVariable("sourceId") String sourceId,
                                                     @RequestParam(value="username", required=false) String username,
                                                     MultipartHttpServletRequest request) {
+
+	    final int allowedSize =  config.getMaxRequestSize();
+	    final int allowedSizeInMB =  allowedSize/1024/1024;
+
         ApiCallResult callResult = new ApiCallResult();
 	    int reqSize = request.getContentLength();
 	    if (reqSize > allowedSize) {
