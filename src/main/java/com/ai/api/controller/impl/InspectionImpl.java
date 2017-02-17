@@ -1,6 +1,11 @@
 package com.ai.api.controller.impl;
 
+import com.ai.api.service.DraftService;
+import com.ai.api.service.OrderService;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
+import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +17,9 @@ import com.ai.api.controller.Inspection;
 import com.ai.api.service.InspectionService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /***************************************************************************
  * <PRE>
@@ -40,6 +48,12 @@ public class InspectionImpl implements Inspection {
 
 	@Autowired
 	private InspectionService inspectionService;
+
+	@Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private DraftService draftService;
 
 	@Override
 	@TokenSecured
@@ -163,5 +177,73 @@ public class InspectionImpl implements Inspection {
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/inspection-orders", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchOrders(@PathVariable("userId") String userId,
+																	@RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
+																	@RequestParam(value = "start", required = false, defaultValue = "") String startDate,
+																	@RequestParam(value = "end", required = false, defaultValue = "") String endDate,
+																	@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+																	@RequestParam(value = "status", required = false, defaultValue = "") String orderStatus,
+																	@RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
+																	@RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
+
+		ApiCallResult result = new ApiCallResult();
+		try {
+			List<SimpleOrderSearchBean> ordersList = orderService.searchOrders(userId, serviceType, startDate, endDate, keyword, orderStatus,
+					pageSize, pageNumber);
+			// if not data found, just return 200 with empty list
+			result.setContent(ordersList);
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			result.setMessage("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/inspection-drafts", method = RequestMethod.GET)
+    public ResponseEntity<ApiCallResult> searchDraft(@PathVariable("userId") String userId,
+                                                        @RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
+                                                        @RequestParam(value = "start", required = false, defaultValue = "") String startDate,
+                                                        @RequestParam(value = "end", required = false, defaultValue = "") String endDate,
+                                                        @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+                                                        @RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber,
+                                                        @RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize) {
+
+        ApiCallResult result = new ApiCallResult();
+        try {
+            List<DraftOrder> draftList = draftService.searchDraft(userId, serviceType, startDate, endDate, keyword, pageNumber, pageSize);
+            //if not data found, just return 200 with empty list
+            result.setContent(draftList);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("get draft search error: " + ExceptionUtils.getFullStackTrace(e));
+            result.setMessage("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+    @Override
+    @TokenSecured
+    @RequestMapping(value = "/user/{userId}/inspection-drafts", method = RequestMethod.DELETE)
+    public ResponseEntity<ApiCallResult> deleteDrafts(@PathVariable("userId") String userId, @RequestParam("draftIds") String draftIds) {
+        ApiCallResult result = new ApiCallResult();
+        try {
+            logger.info("deleteDrafts. . .");
+            boolean b = draftService.deleteDraftFromPsi(userId, draftIds);
+            result.setContent(b);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("delete draft error: " + ExceptionUtils.getFullStackTrace(e));
+            result.setMessage("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

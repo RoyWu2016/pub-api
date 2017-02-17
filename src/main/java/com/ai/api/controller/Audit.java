@@ -36,6 +36,14 @@ public interface Audit {
 
 	ResponseEntity<ApiCallResult> saveDraft(String userId, String draftId, ApiAuditBookingBean draft);
 
+	ResponseEntity<ApiCallResult> deleteDrafts(String userId, String draftIds);
+
+    ResponseEntity<ApiCallResult> searchDrafts(String userId, String serviceType,String startDate,String endDate,
+							   String keyWord,int pageSize,int pageNo);
+
+    ResponseEntity<ApiCallResult> searchOrders(String userId, String serviceType,String startDate,String endDate,
+                                               String orderStatus,String keyWord,int pageSize,int pageNo);
+
 	ResponseEntity<ApiCallResult> createOrderByDraft(String userId, String draftId);
 
 	ResponseEntity<ApiCallResult> editOrder(String userId, String orderId);

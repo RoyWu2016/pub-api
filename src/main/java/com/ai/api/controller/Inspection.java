@@ -44,4 +44,12 @@ public interface Inspection {
 
 	ResponseEntity<ApiCallResult> saveOrderByDraft(String userId, String draftId, String orderId);
 
+	ResponseEntity<ApiCallResult> searchOrders(String userId,String serviceType,String startDate,
+											   String endDate,String keyword,String orderStatus,String pageSize,String pageNumber);
+
+    ResponseEntity<ApiCallResult> searchDraft(String userId,String serviceType,
+                                              String startDate,String endDate,String keyword,String pageNumber, String pageSize);
+
+    ResponseEntity<ApiCallResult> deleteDrafts(String userId,String draftIds);
+
 }
