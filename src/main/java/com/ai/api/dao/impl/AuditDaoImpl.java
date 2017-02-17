@@ -3,6 +3,8 @@ package com.ai.api.dao.impl;
 import java.io.IOException;
 
 import com.ai.api.bean.consts.ConstMap;
+import com.ai.commons.Consts;
+import com.ai.commons.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,10 +111,19 @@ public class AuditDaoImpl implements AuditDao {
     @Override
     public ApiCallResult searchDrafts(String userId, String companyId, String parentId, String serviceType,String startDate,String endDate,
                                       String keyWord,int pageSize,int pageNo) {
-        String type = ConstMap.serviceTypeMap.get(serviceType.toLowerCase());
-        serviceType = type;
-        if (type.indexOf(",")!=-1){
-            serviceType = type.split(",")[0];
+        if (StringUtils.isNotBlank(serviceType)) {
+            StringBuilder finalServiceType = new StringBuilder("");
+            String[] serviceTypeArr = serviceType.split(Consts.COMMA);
+            for (String s:serviceTypeArr){
+                String type = ConstMap.serviceTypeMap.get(s.toLowerCase());
+                String temp = type;
+                if (type.indexOf(",")!=-1){
+                    temp = type.split(",")[0];
+                }
+                finalServiceType.append(temp).append(Consts.COMMA);
+            }
+            finalServiceType.deleteCharAt(finalServiceType.length()-1);
+            serviceType = finalServiceType.toString();
         }
         StringBuilder url = new StringBuilder(auditBaseUrl);
         ApiCallResult finalResult = new ApiCallResult();
@@ -140,12 +151,26 @@ public class AuditDaoImpl implements AuditDao {
     public ApiCallResult searchOrders(String userId, String companyId, String parentId,
                                       String serviceType,String startDate,String endDate,
                                       String orderStatus,String keyWord,int pageSize,int pageNo) {
-        String type = ConstMap.serviceTypeMap.get(serviceType.toLowerCase());
         String subServiceType = null;
-        serviceType = type;
-        if (type.indexOf(",")!=-1){
-            serviceType = type.split(",")[0];
-            subServiceType = type.split(",")[1];
+        if (StringUtils.isNotBlank(serviceType)) {
+            StringBuilder finalServiceType = new StringBuilder("");
+            StringBuilder finalSubServiceType = new StringBuilder("");
+            String[] serviceTypeArr = serviceType.split(Consts.COMMA);
+            for (String s:serviceTypeArr){
+                String type = ConstMap.serviceTypeMap.get(s.toLowerCase());
+                String temp = type;
+                if (type.indexOf(",")!=-1){
+                    temp = type.split(",")[0];
+                    finalSubServiceType.append(type.split(",")[1]).append(Consts.COMMA);
+                }
+                finalServiceType.append(temp).append(Consts.COMMA);
+            }
+            finalServiceType.deleteCharAt(finalServiceType.length()-1);
+            if (finalSubServiceType.length()>1){
+                finalSubServiceType.deleteCharAt(finalServiceType.length()-1);
+            }
+            serviceType = finalServiceType.toString();
+            subServiceType = finalSubServiceType.toString();
         }
         StringBuilder url = new StringBuilder(auditBaseUrl);
         ApiCallResult finalResult = new ApiCallResult();
