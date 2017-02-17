@@ -1,6 +1,5 @@
 package com.ai.api.controller.impl;
 
-import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,11 +58,11 @@ public class InspectionImpl implements Inspection {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/inspection-draft/previous-psi-order/{orderId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/inspection-draft/previous-order/{orderId}", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createDraftFromPreviousOrder(@PathVariable("userId") String userId,
 			@PathVariable("orderId") String orderId, @RequestParam("serviceType") String serviceType) {
 		// TODO Auto-generated method stub
-		logger.info("invoke: " + "/user/" + userId + "/inspection-draft/previous-psi-order/" + orderId + "?serviceType="
+		logger.info("invoke: " + "/user/" + userId + "/inspection-draft/previous-order/" + orderId + "?serviceType="
 				+ serviceType);
 		ApiCallResult result = inspectionService.createDraftFromPreviousOrder(userId, orderId, serviceType);
 		if (null == result.getMessage()) {
