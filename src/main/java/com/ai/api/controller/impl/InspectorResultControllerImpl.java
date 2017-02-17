@@ -65,6 +65,9 @@ public class InspectorResultControllerImpl implements InspectorResultController 
     @Autowired
     private ServiceConfig serviceConfig;
 
+	final int allowedSize =  config.getMaxRequestSize();
+	final int allowedSizeInMB =  allowedSize/1024/1024;
+
     @Override
     @RequestMapping(value = "/results/{orderId}/{reportType}", method = RequestMethod.GET)
     public ResponseEntity<ApiCallResult> searchByOrderId(@PathVariable("orderId") String orderId,@PathVariable("reportType") String reportType ) {
@@ -286,13 +289,13 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                                                     MultipartHttpServletRequest request) {
         ApiCallResult callResult = new ApiCallResult();
 	    int reqSize = request.getContentLength();
-	    int allowedSize =  config.getMaxRequestSize();
 	    if (reqSize > allowedSize) {
-		    logger.error("111 Request size " + reqSize + "large than " + allowedSize);
-		    callResult.setMessage("uploading file size larger than " + allowedSize);
+		    logger.error("Request size " + reqSize + "large than "
+				    + allowedSize + ", " +allowedSizeInMB + " MB.");
+		    callResult.setMessage("Uploading report data are larger than " + allowedSizeInMB + " MB.");
 		    return new ResponseEntity<>(callResult, HttpStatus.PAYLOAD_TOO_LARGE);
 	    } else {
-		    logger.error("111 Request size " + reqSize + " is ok: ");
+		    logger.error("Request size " + reqSize + " is ok: ");
 	    }
 
         try{
