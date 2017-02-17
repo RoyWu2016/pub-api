@@ -25,8 +25,8 @@ public class AuditDaoImpl implements AuditDao {
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
 
-	private String auditBaseUrl = config.getPsiServiceUrl();
-//	private String auditBaseUrl = "http://202.66.128.138:8093/psi-service";
+//	private String auditBaseUrl = config.getPsiServiceUrl();
+	private String auditBaseUrl = "http://202.66.128.138:8093/psi-service";
 
 	@Override
 	public ApiCallResult getDraft(String userId, String draftId) {
