@@ -27,7 +27,7 @@ public interface AuditDao {
 
 	ApiCallResult editOrder(String userId, String orderId, String companyId, String parentId);
 
-	ApiCallResult getOrderDetail(String userId, String orderId);
+	ApiCallResult getOrderDetail(String userId, String orderId, String companyId, String parentId);
 
 	ApiCallResult saveOrderByDraft(String userId, String draftId, String companyId, String parentId);
 

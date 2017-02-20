@@ -161,7 +161,16 @@ public class AuditServiceImpl implements AuditService {
 	@Override
 	public ApiCallResult getOrderDetail(String userId, String orderId) {
 		// TODO Auto-generated method stub
-		ApiCallResult result = auditorDao.getOrderDetail(userId, orderId);
+		String companyId = "";
+		String parentId = "";
+		UserBean user = this.getUserBeanByUserId(userId);
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		ApiCallResult result = auditorDao.getOrderDetail(userId, orderId,companyId,parentId);
 		return result;
 	}
 
