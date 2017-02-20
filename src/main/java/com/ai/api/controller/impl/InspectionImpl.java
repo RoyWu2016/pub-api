@@ -180,6 +180,23 @@ public class InspectionImpl implements Inspection {
 
 	@Override
 	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/inspection-draft/{draftId}/sampling-level/{samplingLevel}/price",
+			method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> calculatePricing(
+			@PathVariable("userId") String userId,
+			@PathVariable("draftId") String draftId,
+			@PathVariable("samplingLevel") String samplingLevel,
+			@RequestParam(value = "measurementSamplingSize", required = false, defaultValue = "") String measurementSamplingSize) {
+		ApiCallResult result = inspectionService.calculatePricing(userId, draftId, samplingLevel, measurementSamplingSize);
+		if (null == result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/inspection-orders", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchOrders(@PathVariable("userId") String userId,
 																	@RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
