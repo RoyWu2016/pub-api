@@ -285,7 +285,21 @@ public class InspectorResultControllerImpl implements InspectorResultController 
     public ResponseEntity<ApiCallResult> uploadFile(@PathVariable("sourceId") String sourceId,
                                                     @RequestParam(value="username", required=false) String username,
                                                     MultipartHttpServletRequest request) {
+
+	    final int allowedSize =  config.getMaxRequestSize();
+	    final int allowedSizeInMB =  allowedSize/1024/1024;
+
         ApiCallResult callResult = new ApiCallResult();
+	    int reqSize = request.getContentLength();
+	    if (reqSize > allowedSize) {
+		    logger.error("Request size " + reqSize + "large than "
+				    + allowedSize + ", " +allowedSizeInMB + " MB.");
+		    callResult.setMessage("Uploading report data are larger than " + allowedSizeInMB + " MB.");
+		    return new ResponseEntity<>(callResult, HttpStatus.PAYLOAD_TOO_LARGE);
+	    } else {
+		    logger.error("Request size " + reqSize + " is ok: ");
+	    }
+
         try{
             logger.info("ready to uploadFile ...");
             Map<String,List<FileMetaBean>> fileMetaList = new HashMap<>();

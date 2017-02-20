@@ -63,6 +63,53 @@ public class AuditServiceImpl implements AuditService {
 	}
 
 	@Override
+	public ApiCallResult deleteDrafts(String userId, String draftIds) {
+		String companyId = "";
+		String parentId = "";
+		UserBean user = this.getUserBeanByUserId(userId);
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		ApiCallResult result = auditorDao.deleteDrafts(userId,companyId,parentId,draftIds);
+		return result;
+	}
+
+	@Override
+	public ApiCallResult searchDrafts(String userId, String serviceType,String startDate,String endDate,
+									  String keyWord,int pageSize,int pageNo) {
+		String companyId = "";
+		String parentId = "";
+		UserBean user = this.getUserBeanByUserId(userId);
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		ApiCallResult result = auditorDao.searchDrafts(userId,companyId,parentId,serviceType,startDate,endDate,keyWord,pageSize,pageNo);
+		return result;
+	}
+
+	@Override
+	public ApiCallResult searchOrders(String userId, String serviceType,String startDate,String endDate,String orderStatus,
+									  String keyWord,int pageSize,int pageNo) {
+		String companyId = "";
+		String parentId = "";
+		UserBean user = this.getUserBeanByUserId(userId);
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		ApiCallResult result = auditorDao.searchOrders(userId,companyId,parentId,serviceType,startDate,endDate,orderStatus,keyWord,pageSize,pageNo);
+		return result;
+	}
+
+	@Override
 	public ApiCallResult createDraftFromPreviousOrder(String userId, String orderId, String serviceType) {
 		// TODO Auto-generated method stub
 		String companyId = "";

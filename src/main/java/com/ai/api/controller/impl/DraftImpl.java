@@ -95,7 +95,7 @@ public class DraftImpl implements Draft {
 													    @PathVariable("orderId") String orderId,
 													    @RequestParam(value = "service-type", required = false) String serviceType ) {
 		try {
-			InspectionBookingBean newDraft = draftService.createDraftFromPreviousOrder(userId, orderId, serviceType);
+			InspectionBookingBean newDraft = draftService.createDraftFromPreviousOrder(userId, orderId, serviceType.toLowerCase());
 			if (null != newDraft) {
 				return new ResponseEntity<>(newDraft, HttpStatus.OK);
 			}

@@ -11,6 +11,15 @@ public interface AuditDao {
 
 	ApiCallResult saveDraft(String userId,String companyId, String parentId, ApiAuditBookingBean draft);
 
+	ApiCallResult deleteDrafts(String userId, String companyId, String parentId, String draftIds);
+
+    ApiCallResult searchDrafts(String userId, String companyId, String parentId, String serviceType,String startDate,String endDate,
+                               String keyWord,int pageSize,int pageNo);
+
+    ApiCallResult searchOrders(String userId, String companyId, String parentId,
+                               String serviceType,String startDate,String endDate,
+                               String orderStatus,String keyWord,int pageSize,int pageNo);
+
 	ApiCallResult createDraftFromPreviousOrder(String userId, String orderId, String serviceType, String companyId,
 			String parentId);
 
