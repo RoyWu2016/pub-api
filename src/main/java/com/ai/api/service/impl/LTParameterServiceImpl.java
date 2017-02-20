@@ -138,4 +138,9 @@ public class LTParameterServiceImpl implements LTParameterService {
 	public ApiCallResult searchRegions() throws IOException {
 		return ltparameterDao.searchRegions();
 	}
+	
+	@Override
+	public ApiCallResult searchTATs(String officeId) throws IOException {
+		return ltparameterDao.searchTATs(officeId);
+	}
 }

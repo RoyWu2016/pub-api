@@ -270,4 +270,20 @@ public class LTParameterImpl implements LTParameter {
 		}
 		return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 	}
+	
+	@Override
+	@ApiOperation(value = "Search Turnaround Time API", produces = "application/json", response = OfficeSearchBean.class, httpMethod = "GET")
+	@TokenSecured
+	@RequestMapping(value = "/parameter/lt/office/{officeId}/tats", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchTATs(
+			@ApiParam(value="Office ID") @PathVariable String officeId) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltparameterService.searchTATs(officeId);
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("search tat error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

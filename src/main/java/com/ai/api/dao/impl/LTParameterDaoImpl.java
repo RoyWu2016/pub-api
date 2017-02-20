@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,7 @@ import com.ai.aims.services.model.Tag;
 import com.ai.aims.services.model.TagTestMap;
 import com.ai.aims.services.model.TestMaster;
 import com.ai.aims.services.model.TestPricingDetail;
+import com.ai.aims.services.model.TurnAroundTime;
 import com.ai.aims.services.model.search.SearchTagCriteria;
 import com.ai.aims.services.model.search.SearchTagResponse;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
@@ -34,6 +36,7 @@ import com.ai.api.bean.OfficeSearchBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.RegionSearchBean;
 import com.ai.api.bean.TagSearchBean;
+import com.ai.api.bean.TatSearchBean;
 import com.ai.api.bean.TestSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.LTParameterDao;
@@ -226,6 +229,27 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		}
 		callResult.setContent(regionResult);
 		return callResult;
+	}
+
+	@Override
+	public ApiCallResult searchTATs(String officeId) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		ApiCallResult callResult = new ApiCallResult();
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/tats/office/").append(officeId).toString();
+		List<TurnAroundTime> tats = Arrays.asList(restTemplate.getForObject(url, TurnAroundTime[].class));
+		List<TatSearchBean> tatResult = new ArrayList<TatSearchBean>(tats.size());
+		tats.stream().forEach(t -> tatResult.add(getTatDetails(t)));
+		callResult.setContent(tatResult);
+		return callResult;
+	}
+	
+	private TatSearchBean getTatDetails(TurnAroundTime tat) {
+		TatSearchBean tatSearchBean = new TatSearchBean();
+		BeanUtils.copyProperties(tat, tatSearchBean, "office", "isExpService");
+		tatSearchBean.setOffice(null != tat.getOffice() ? tat.getOffice().getName() : null);
+		tatSearchBean.setIsExpService("1".equals(tat.getIsExpService()) ? true : false);
+		return tatSearchBean;
 	}
 
 	private UriComponentsBuilder buildTagSearchCriteria(SearchTagCriteria criteria, String url) {

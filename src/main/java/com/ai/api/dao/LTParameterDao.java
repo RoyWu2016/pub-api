@@ -50,4 +50,6 @@ public interface LTParameterDao {
 	public ApiCallResult searchTags(SearchTagCriteria criteria) throws IOException;
 
 	public ApiCallResult searchRegions() throws IOException;
+	
+	public ApiCallResult searchTATs(String officeId) throws IOException;
 }

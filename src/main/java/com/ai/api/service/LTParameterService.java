@@ -52,4 +52,6 @@ public interface LTParameterService {
 	public ApiCallResult searchTags(String categoryId) throws IOException;
 
 	public ApiCallResult searchRegions() throws IOException;
+	
+	public ApiCallResult searchTATs(String officeId) throws IOException;
 }
