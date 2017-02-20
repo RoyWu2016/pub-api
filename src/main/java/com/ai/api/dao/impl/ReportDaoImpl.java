@@ -60,7 +60,6 @@ public class ReportDaoImpl implements ReportDao {
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				ApprovalCertificateBean bean = (ApprovalCertificateBean)JSON.parseObject(result.getResponseString(), ApprovalCertificateBean.class);
 				String name = bean.getApprover().trim();
-				logger.info("@@@@@@@@@@@@@@@@@@@@@@@@" + name);
 				bean.setApprover(name);
 				return bean;
 			} else {

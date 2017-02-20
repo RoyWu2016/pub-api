@@ -11,6 +11,14 @@ public interface AuditService {
 
 	ApiCallResult saveDraft(String userId, ApiAuditBookingBean draft);
 
+	ApiCallResult deleteDrafts(String userId, String draftIds);
+
+    ApiCallResult searchDrafts(String userId, String serviceType,String startDate,String endDate,
+                               String keyWord,int pageSize,int pageNo);
+
+    ApiCallResult searchOrders(String userId,String serviceType, String startDate,String endDate,
+                               String orderStatus,String keyWord,int pageSize,int pageNo);
+
 	ApiCallResult createDraftFromPreviousOrder(String userId, String orderId, String serviceType);
 
 	ApiCallResult createOrderByDraft(String userId, String draftId);

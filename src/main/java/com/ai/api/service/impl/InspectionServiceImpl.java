@@ -136,6 +136,23 @@ public class InspectionServiceImpl implements InspectionService {
 		return result;
 	}
 
+	@Override
+	public ApiCallResult calculatePricing(String userId, String draftId,
+													 String samplingLevel,String measurementSamplingSize) {
+
+		String companyId = "";
+		String parentId = "";
+		UserBean user = this.getUserBeanByUserId(userId);
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		return inspectionDao.calculatePricing(userId,companyId,parentId,
+				draftId,samplingLevel,measurementSamplingSize);
+	}
+
 	private UserBean getUserBeanByUserId(String userId) {
 		UserBean user = null;
 		try {
