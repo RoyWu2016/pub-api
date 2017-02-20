@@ -66,4 +66,6 @@ public interface CompanyDao {
 	CompanyEntireBean getCompanyEntireInfoByCompanyId(String companyId);
 
 	List<ClientInfoWithTokenBean> getMasterAccountTokens(String companyId, boolean isMobile, boolean isClientFactory);
+
+	MasterBean getMasterBeanByCompanyId(String companyId);
 }
