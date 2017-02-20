@@ -1,6 +1,7 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 
 import com.ai.api.bean.consts.ConstMap;
 import com.ai.commons.Consts;
@@ -151,42 +152,43 @@ public class AuditDaoImpl implements AuditDao {
     public ApiCallResult searchOrders(String userId, String companyId, String parentId,
                                       String serviceType,String startDate,String endDate,
                                       String orderStatus,String keyWord,int pageSize,int pageNo) {
-        String subServiceType = null;
-        if (StringUtils.isNotBlank(serviceType)) {
-            StringBuilder finalServiceType = new StringBuilder("");
-            StringBuilder finalSubServiceType = new StringBuilder("");
-            String[] serviceTypeArr = serviceType.split(Consts.COMMA);
-            for (String s:serviceTypeArr){
-                String type = ConstMap.serviceTypeMap.get(s.toLowerCase());
-                String temp = type;
-                if (type.indexOf(",")!=-1){
-                    temp = type.split(",")[0];
-                    finalSubServiceType.append(type.split(",")[1]).append(Consts.COMMA);
-                }
-                finalServiceType.append(temp).append(Consts.COMMA);
-            }
-            finalServiceType.deleteCharAt(finalServiceType.length()-1);
-            if (finalSubServiceType.length()>1){
-                finalSubServiceType.deleteCharAt(finalServiceType.length()-1);
-            }
-            serviceType = finalServiceType.toString();
-            subServiceType = finalSubServiceType.toString();
-        }
-        StringBuilder url = new StringBuilder(auditBaseUrl);
-        ApiCallResult finalResult = new ApiCallResult();
-        url.append("/api/audit/search-orders");
-        url.append("?userId=" + userId);
-        url.append("&companyId=" + companyId);
-        url.append("&parentId=" + parentId);
-        url.append("&serviceType=" + serviceType);
-        url.append("&subServiceType=" + subServiceType);
-        url.append("&startDate=" + startDate);
-        url.append("&endDate=" + endDate);
-        url.append("&keyWord=" + keyWord);
-        url.append("&orderStatus=" + orderStatus);
-        url.append("&pageSize=" + pageSize);
-        url.append("&pageNo=" + pageNo);
+    	ApiCallResult finalResult = new ApiCallResult();
         try {
+        	String subServiceType = null;
+        	serviceType = URLDecoder.decode(serviceType,"utf-8");
+        	if (StringUtils.isNotBlank(serviceType)) {
+        		StringBuilder finalServiceType = new StringBuilder("");
+        		StringBuilder finalSubServiceType = new StringBuilder("");
+        		String[] serviceTypeArr = serviceType.split(Consts.COMMA);
+        		for (String s:serviceTypeArr){
+        			String type = ConstMap.serviceTypeMap.get(s.toLowerCase());
+        			String temp = type;
+        			if (type.indexOf(",")!=-1){
+        				temp = type.split(",")[0];
+        				finalSubServiceType.append(type.split(",")[1]).append(Consts.COMMA);
+        			}
+        			finalServiceType.append(temp).append(Consts.COMMA);
+        		}
+        		finalServiceType.deleteCharAt(finalServiceType.length()-1);
+        		if (finalSubServiceType.length()>1){
+        			finalSubServiceType.deleteCharAt(finalSubServiceType.length()-1);
+        		}
+        		serviceType = finalServiceType.toString();
+        		subServiceType = finalSubServiceType.toString();
+        	}
+        	StringBuilder url = new StringBuilder(auditBaseUrl);
+        	url.append("/api/audit/search-orders");
+        	url.append("?userId=" + userId);
+        	url.append("&companyId=" + companyId);
+        	url.append("&parentId=" + parentId);
+        	url.append("&serviceType=" + serviceType);
+        	url.append("&subServiceType=" + subServiceType);
+        	url.append("&startDate=" + startDate);
+        	url.append("&endDate=" + endDate);
+        	url.append("&keyWord=" + keyWord);
+        	url.append("&orderStatus=" + orderStatus);
+        	url.append("&pageSize=" + pageSize);
+        	url.append("&pageNo=" + pageNo);
             ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(),null);
             finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
         } catch (IOException e) {
