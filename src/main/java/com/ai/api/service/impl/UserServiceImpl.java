@@ -238,24 +238,25 @@ public class UserServiceImpl implements UserService {
 			comp.setParentCompanyId(companyEntireBean.getDirectParents().get(0).getCompanyId());
 			comp.setParentCompanyName(companyEntireBean.getDirectParents().get(0).getCompanyName());
 
-			SubordinateSettingsBean finalBeam = new SubordinateSettingsBean();
+			SubordinateSettingsBean extraAccess = new SubordinateSettingsBean();
 
-			CompanyEntireBean subordinate = companyDao
-					.getCompanyEntireInfoByCompanyId(companyEntireBean.getDirectParents().get(0).getCompanyId());
-			MasterBean subordinateMaster = subordinate.getMaster();
+			//read parent company's setting and set extra access
+			MasterBean subordinateMaster = companyDao.getMasterBeanByCompanyId(companyEntireBean.getDirectParents().get(0).getCompanyId());
 			if (subordinateMaster != null) {
-				finalBeam.setCanSeeReportActionButtons(
+				extraAccess.setCanSeeReportActionButtons(
 						"yes".equalsIgnoreCase(subordinateMaster.getHideApproveButton()) ? false : true);
-				finalBeam.setCanSeeCcOptionInBookingForm(
+				extraAccess.setCanSeeCcOptionInBookingForm(
 						"yes".equalsIgnoreCase(subordinateMaster.getHideCcFields()) ? false : true);
-				if (null != subordinate.getReportCertificate()) {
-					finalBeam.setCanSeeReportsPage(
-							"yes".equalsIgnoreCase(subordinate.getReportCertificate().getSubReportAccess()) ? false
+
+				ReportCertificateBean parentCertificate= companyDao.getCompanyReportCertificateInfo(companyEntireBean.getDirectParents().get(0).getCompanyId());
+				if (null != parentCertificate) {
+					extraAccess.setCanSeeReportsPage(
+							"yes".equalsIgnoreCase(parentCertificate.getSubReportAccess()) ? false
 									: true);
 				}
 			}
 
-			comp.setExtraAccess(finalBeam);
+			comp.setExtraAccess(extraAccess);
 		} else {
 			comp.setType("standard");
 		}

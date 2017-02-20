@@ -311,4 +311,16 @@ public class CompanyDaoImpl implements CompanyDao {
 		return null;
 	}
 
+	@Override
+	public MasterBean getMasterBeanByCompanyId(String companyId) {
+		try {
+			String url = config.getCustomerServiceUrl() + "/customer/" + companyId + "/master" ;
+			GetRequest request = GetRequest.newInstance().setUrl(url);
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			return JsonUtil.mapToObject(result.getResponseString(), MasterBean.class);
+		} catch (Exception e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
 }
