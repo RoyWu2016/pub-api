@@ -52,4 +52,6 @@ public interface Inspection {
 
     ResponseEntity<ApiCallResult> deleteDrafts(String userId,String draftIds);
 
+	ResponseEntity<ApiCallResult> calculatePricing(String userId,String draftId,String samplingLevel,String measurementSamplingSize);
+
 }

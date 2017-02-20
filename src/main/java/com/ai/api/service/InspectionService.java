@@ -21,4 +21,7 @@ public interface InspectionService {
 
 	ApiCallResult saveOrderByDraft(String userId, String draftId, String orderId);
 
+	ApiCallResult calculatePricing(String userId, String draftId,
+								   String samplingLevel,String measurementSamplingSize);
+
 }
