@@ -263,10 +263,13 @@ public class AuditDaoImpl implements AuditDao {
 	}
 
 	@Override
-	public ApiCallResult getOrderDetail(String userId, String orderId) {
+	public ApiCallResult getOrderDetail(String userId, String orderId, String companyId, String parentId) {
 		StringBuilder url = new StringBuilder(auditBaseUrl);
 		ApiCallResult finalResult = new ApiCallResult();
-		url.append("/api/audit/getOrder?userId=").append(userId).append("&orderId=").append(orderId);
+		url.append("/api/audit/getOrder?userId=").append(userId);
+		url.append("&orderId=").append(orderId);
+		url.append("&companyId=").append(companyId);
+		url.append("&parentId=").append(parentId);
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
