@@ -130,8 +130,8 @@ public class LTOrderDaoImpl implements LTOrderDao {
 	public OrderDTO findOrder(String orderId) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
-		
-		OrderDTO order = restTemplate.getForObject(config.getAimsServiceBaseUrl() + "/api/ordermanagement/search/" + orderId, OrderDTO.class);
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(config.getAimsServiceBaseUrl() + "/api/ordermanagement/search/" + orderId).queryParam("requestor", "external");
+		OrderDTO order = restTemplate.getForObject(builder.build().encode().toUri(), OrderDTO.class);
 		return order;
 	}
 
