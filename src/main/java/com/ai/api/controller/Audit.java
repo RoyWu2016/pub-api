@@ -52,4 +52,6 @@ public interface Audit {
 
 	ResponseEntity<ApiCallResult> saveOrderByDraft(String userId, String draftId, String orderId);
 
+	ResponseEntity<ApiCallResult> calculatePricing(String userId, String draftId, String employeeCount);
+
 }

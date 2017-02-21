@@ -31,4 +31,7 @@ public interface AuditDao {
 
 	ApiCallResult saveOrderByDraft(String userId, String draftId, String companyId, String parentId);
 
+	ApiCallResult calculatePricing(String userId, String companyId, String parentId, String draftId,
+			String employeeCount);
+
 }
