@@ -93,7 +93,7 @@ public class AuditImpl implements Audit {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/audit-draft/{draftId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/{userId}/audit-draft/{draftId}", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> saveDraft(@PathVariable("userId") String userId,
 			@PathVariable("draftId") String draftId, @RequestBody ApiAuditBookingBean draft) {
 		// TODO Auto-generated method stub
