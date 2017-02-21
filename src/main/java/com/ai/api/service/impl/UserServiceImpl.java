@@ -143,9 +143,10 @@ public class UserServiceImpl implements UserService {
 		UserBean user = new UserBean();
 		logger.info("...........start getting UserBean from user service...........");
 		CompanyEntireBean companyEntireBean = companyDao.getCompanyEntireInfo(userId);
-		if (companyEntireBean == null)
-			return null;
-
+		if (companyEntireBean == null) {
+		    logger.info("Can not get company by userId!");
+            return null;
+        }
 		GeneralUserBean userBean = null;
 		List<GeneralUserBean> generalUserBeenList = companyEntireBean.getUsers();
 		if (generalUserBeenList != null && generalUserBeenList.size() > 0) {
@@ -157,9 +158,10 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 
-		if (userBean == null)
+		if (userBean == null) {
+		    logger.info("Can not get user from companyEntireBean!");
 			return null;
-
+		}
 		String compId = companyEntireBean.getCompanyId();
 
 		ContactBean contactBean = companyEntireBean.getContact();
@@ -243,16 +245,13 @@ public class UserServiceImpl implements UserService {
 			//read parent company's setting and set extra access
 			MasterBean subordinateMaster = companyDao.getMasterBeanByCompanyId(companyEntireBean.getDirectParents().get(0).getCompanyId());
 			if (subordinateMaster != null) {
-				extraAccess.setCanSeeReportActionButtons(
-						"yes".equalsIgnoreCase(subordinateMaster.getHideApproveButton()) ? false : true);
-				extraAccess.setCanSeeCcOptionInBookingForm(
-						"yes".equalsIgnoreCase(subordinateMaster.getHideCcFields()) ? false : true);
+				extraAccess.setCanSeeReportActionButtons(!"yes".equalsIgnoreCase(subordinateMaster.getHideApproveButton()));
+				extraAccess.setCanSeeCcOptionInBookingForm(!"yes".equalsIgnoreCase(subordinateMaster.getHideCcFields()));
 
 				ReportCertificateBean parentCertificate= companyDao.getCompanyReportCertificateInfo(companyEntireBean.getDirectParents().get(0).getCompanyId());
 				if (null != parentCertificate) {
-					extraAccess.setCanSeeReportsPage(
-							"yes".equalsIgnoreCase(parentCertificate.getSubReportAccess()) ? false
-									: true);
+					extraAccess.setCanSeeReportsPage(!"yes".equalsIgnoreCase(parentCertificate.getSubReportAccess()));
+                    extraAccess.setFrozenIC("yes".equalsIgnoreCase(parentCertificate.getAutoSendIc()));
 				}
 			}
 

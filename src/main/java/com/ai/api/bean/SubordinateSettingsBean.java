@@ -27,6 +27,7 @@ public class SubordinateSettingsBean implements Serializable {
 	private boolean canSeeReportActionButtons;
 	private boolean canSeeCcOptionInBookingForm;
 	private boolean canSeeReportsPage;
+	private boolean frozenIC=false;
 //	private String whoPayOrder;
 //	private String whoPayReorder;
 //	private String whoPayLt;
@@ -59,5 +60,13 @@ public class SubordinateSettingsBean implements Serializable {
 
 	public void setCanSeeReportsPage(boolean canSeeReportsPage) {
 		this.canSeeReportsPage = canSeeReportsPage;
+	}
+
+	public boolean isFrozenIC() {
+		return frozenIC;
+	}
+
+	public void setFrozenIC(boolean frozenIC) {
+		this.frozenIC = frozenIC;
 	}
 }
