@@ -28,12 +28,9 @@ public class AuditDaoImpl implements AuditDao {
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
 
-	// private String auditBaseUrl = config.getPsiServiceUrl();
-	private String auditBaseUrl = "http://202.66.128.138:8093/psi-service";
-
 	@Override
 	public ApiCallResult getDraft(String userId, String draftId) {
-		StringBuilder url = new StringBuilder(auditBaseUrl);
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
 		url.append("/api/audit/getDraft/").append(userId).append("/").append(draftId);
 		try {
@@ -55,7 +52,7 @@ public class AuditDaoImpl implements AuditDao {
 			serviceType = type.split(",")[0];
 			subServiceType = type.split(",")[1];
 		}
-		StringBuilder url = new StringBuilder(auditBaseUrl);
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
 		url.append("/api/audit/createDraft");
 		url.append("?userId=" + userId);
@@ -74,7 +71,7 @@ public class AuditDaoImpl implements AuditDao {
 
 	@Override
 	public ApiCallResult saveDraft(String userId, String companyId, String parentId, ApiAuditBookingBean draft) {
-		StringBuilder url = new StringBuilder(auditBaseUrl);
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
 		url.append("/api/audit/updateDraft");
 		url.append("?userId=" + userId);
@@ -92,7 +89,7 @@ public class AuditDaoImpl implements AuditDao {
 
 	@Override
 	public ApiCallResult deleteDrafts(String userId, String companyId, String parentId, String draftIds) {
-		StringBuilder url = new StringBuilder(auditBaseUrl);
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
 		url.append("/api/audit/deleteDrafts");
 		url.append("?userId=" + userId);
@@ -126,7 +123,7 @@ public class AuditDaoImpl implements AuditDao {
 			finalServiceType.deleteCharAt(finalServiceType.length() - 1);
 			serviceType = finalServiceType.toString();
 		}
-		StringBuilder url = new StringBuilder(auditBaseUrl);
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
 		url.append("/api/audit/search-drafts");
 		url.append("?userId=" + userId);
@@ -175,7 +172,7 @@ public class AuditDaoImpl implements AuditDao {
 				serviceType = finalServiceType.toString();
 				subServiceType = finalSubServiceType.toString();
 			}
-			StringBuilder url = new StringBuilder(auditBaseUrl);
+			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 			url.append("/api/audit/search-orders");
 			url.append("?userId=" + userId);
 			url.append("&companyId=" + companyId);
@@ -205,7 +202,7 @@ public class AuditDaoImpl implements AuditDao {
 		if (type.indexOf(",") != -1) {
 			serviceType = type.split(",")[0];
 		}
-		StringBuilder url = new StringBuilder(auditBaseUrl);
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
 		url.append("/api/audit/createDraftFromPreviousOrder");
 		url.append("?userId=" + userId);
@@ -225,7 +222,7 @@ public class AuditDaoImpl implements AuditDao {
 
 	@Override
 	public ApiCallResult createOrderByDraft(String userId, String draftId, String companyId, String parentId) {
-		StringBuilder url = new StringBuilder(auditBaseUrl);
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
 		url.append("/api/audit/createOrder");
 		url.append("?userId=" + userId);
@@ -244,7 +241,7 @@ public class AuditDaoImpl implements AuditDao {
 
 	@Override
 	public ApiCallResult editOrder(String userId, String orderId, String companyId, String parentId) {
-		StringBuilder url = new StringBuilder(auditBaseUrl);
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
 		url.append("/api/audit/editOrder");
 		url.append("?userId=" + userId);
@@ -263,7 +260,7 @@ public class AuditDaoImpl implements AuditDao {
 
 	@Override
 	public ApiCallResult getOrderDetail(String userId, String orderId, String companyId, String parentId) {
-		StringBuilder url = new StringBuilder(auditBaseUrl);
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
 		url.append("/api/audit/getOrder?userId=").append(userId);
 		url.append("&orderId=").append(orderId);
@@ -281,7 +278,7 @@ public class AuditDaoImpl implements AuditDao {
 
 	@Override
 	public ApiCallResult saveOrderByDraft(String userId, String draftId, String companyId, String parentId) {
-		StringBuilder url = new StringBuilder(auditBaseUrl);
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
 		url.append("/api/audit/reAudit");
 		url.append("?userId=" + userId);
@@ -302,7 +299,7 @@ public class AuditDaoImpl implements AuditDao {
 	public ApiCallResult calculatePricing(String userId, String companyId, String parentId, String draftId,
 			String employeeCount) {
 		// TODO Auto-generated method stub
-		StringBuilder url = new StringBuilder(auditBaseUrl);
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
 		url.append("/api/audit/calculatePricing");
 		url.append("?userId=" + userId);
