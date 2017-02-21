@@ -228,19 +228,17 @@ public class InspectorControllerImpl implements InspectorController {
     @Override
     @RequestMapping(value = "/orders/inspection/{inspectorId}", method = RequestMethod.GET)
     public ResponseEntity<ApiCallResult> getAllReportsByInspectorId(@PathVariable("inspectorId") String inspectorId) {
-        StringBuilder url = new StringBuilder(config.getIpServiceBaseUrl())
-                .append("/report/reports-for-inspector/").append(inspectorId);
+        StringBuilder url = new StringBuilder(config.getPsiServiceUrl())
+                .append("/product/report/list-reports-for-inspector/").append(inspectorId);
         ApiCallResult callResult = new ApiCallResult();
         try {
             logger.info("getAllReportsByInspectorId requesting: " + url.toString());
             RestTemplate restTemplate = new RestTemplate();
-//            OrderReportList[] result = restTemplate.getForObject(url.toString(),OrderReportList[].class);
-//            if (null!=result && result.length>0) {
             JSONArray result = restTemplate.getForObject(url.toString(),JSONArray.class);
             if (null!=result) {
                 callResult.setContent(result);
             }else {
-                callResult.setMessage("get empty result from ip-service!");
+                callResult.setMessage("get empty result from psi-service!");
             }
             return new ResponseEntity<>(callResult, HttpStatus.OK);
         } catch (Exception e) {
