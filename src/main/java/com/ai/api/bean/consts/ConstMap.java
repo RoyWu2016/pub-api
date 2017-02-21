@@ -50,9 +50,9 @@ public class ConstMap {
 	    serviceTypeMap.put("dupro", "3");
 	    serviceTypeMap.put("clc", "4");
 	    serviceTypeMap.put("pm", "6");
-        serviceTypeMap.put("fa", "5");
+        serviceTypeMap.put("ma", "5");  //Manufacturing Audit, formerly factory audit
         serviceTypeMap.put("lt", "11");
-        serviceTypeMap.put("sa", "9");
+        serviceTypeMap.put("ea", "9");  //Ethical Audit, formerly social audit
         serviceTypeMap.put("ctpat", "5,51");
         serviceTypeMap.put("stra", "9,91");
     }
