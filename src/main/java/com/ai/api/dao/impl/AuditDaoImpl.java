@@ -150,7 +150,7 @@ public class AuditDaoImpl implements AuditDao {
 			String startDate, String endDate, String orderStatus, String keyWord, int pageSize, int pageNo) {
 		ApiCallResult finalResult = new ApiCallResult();
 		try {
-			String subServiceType = null;
+			String subServiceType = "";
 			serviceType = URLDecoder.decode(serviceType, "utf-8");
 			if (StringUtils.isNotBlank(serviceType)) {
 				StringBuilder finalServiceType = new StringBuilder("");
