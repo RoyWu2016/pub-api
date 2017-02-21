@@ -41,7 +41,7 @@ public interface LTParameterService {
 	public ApiCallResult searchProgram(String programId) throws IOException;
 	
 	public ApiCallResult searchTestWithFilters(String countries, String regions, String testNames, 
-			String tags, String productCategory, String office) throws IOException;
+			String tags, String productCategory, String office, String program) throws IOException;
 	
 	public ApiCallResult searchTest(String testId) throws IOException;
 	

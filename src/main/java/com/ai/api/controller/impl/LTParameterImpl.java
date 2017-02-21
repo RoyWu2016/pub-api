@@ -35,12 +35,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ai.aims.services.dto.TestFilterDTO;
 import com.ai.aims.services.model.TestMaster;
 import com.ai.api.bean.OfficeSearchBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.RegionSearchBean;
 import com.ai.api.bean.TagSearchBean;
-import com.ai.api.bean.TestSearchBean;
+import com.ai.api.bean.TatSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.LTParameter;
 import com.ai.api.service.LTParameterService;
@@ -125,7 +126,7 @@ public class LTParameterImpl implements LTParameter {
 	}	
 	
 	@Override
-	@ApiOperation(value = "Search LT Tests with filters API", produces = "application/json", response = TestSearchBean.class, httpMethod = "GET", responseContainer = "List")
+	@ApiOperation(value = "Search LT Tests with filters API", produces = "application/json", response = TestFilterDTO.class, httpMethod = "GET", responseContainer = "List")
 	@TokenSecured
 	@RequestMapping(value = "/parameter/lt/tests", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchTestsWithFilters(			
@@ -134,7 +135,8 @@ public class LTParameterImpl implements LTParameter {
 			@ApiParam(value="Test Names") @RequestParam(value = "testNames", required = false, defaultValue = "") String testNames,
 			@ApiParam(value="Tag IDs") @RequestParam(value = "tags", required = false, defaultValue = "") String tags,
 			@ApiParam(value="Product Category ID") @RequestParam(value = "productCategory", required = false, defaultValue = "") String productCategory,
-			@ApiParam(value="Office ID") @RequestParam(value = "office", required = false, defaultValue = "") String office) {
+			@ApiParam(value="Office ID") @RequestParam(value = "office", required = false, defaultValue = "") String office,
+			@ApiParam(value="Program ID") @RequestParam(value = "program", required = false, defaultValue = "") String program) {
 		ApiCallResult callResult = new ApiCallResult();
 		/*if (!refresh) {
 			logger.info("try to searchTests from redis ...");
@@ -144,7 +146,7 @@ public class LTParameterImpl implements LTParameter {
 		if (null == tests) {*/
 			try {
 				callResult = ltparameterService.searchTestWithFilters(
-						countries, regions, testNames, tags, productCategory, office);
+						countries, regions, testNames, tags, productCategory, office, program);
 				logger.info("saving searchTests");
 				//RedisUtil.set("ltTestsCache", JSON.toJSONString(tests), RedisUtil.HOUR * 24);
 
@@ -272,7 +274,7 @@ public class LTParameterImpl implements LTParameter {
 	}
 	
 	@Override
-	@ApiOperation(value = "Search Turnaround Time API", produces = "application/json", response = OfficeSearchBean.class, httpMethod = "GET")
+	@ApiOperation(value = "Search Turnaround Time API", produces = "application/json", response = TatSearchBean.class, httpMethod = "GET")
 	@TokenSecured
 	@RequestMapping(value = "/parameter/lt/office/{officeId}/tats", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchTATs(

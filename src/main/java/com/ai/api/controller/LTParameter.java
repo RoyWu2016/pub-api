@@ -32,7 +32,7 @@ public interface LTParameter {
 	public ResponseEntity<ApiCallResult> searchProgram(boolean refresh, String programId);
 	
 	public ResponseEntity<ApiCallResult> searchTestsWithFilters(String countries, String regions, String testNames, 
-			String tags, String productCategory, String office);
+			String tags, String productCategory, String office, String program);
 	
 	public ResponseEntity<ApiCallResult> searchTest(boolean refresh, String testId);
 

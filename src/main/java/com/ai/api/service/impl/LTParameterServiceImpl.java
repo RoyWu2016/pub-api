@@ -88,7 +88,7 @@ public class LTParameterServiceImpl implements LTParameterService {
 
 	@Override
 	public ApiCallResult searchTestWithFilters(String countries, String regions, String testNames, 
-			String tags, String productCategory, String office) throws IOException {
+			String tags, String productCategory, String office, String program) throws IOException {
 		SearchTagTestCriteria criteria = new SearchTagTestCriteria();
 		if(!StringUtils.stripToEmpty(countries).isEmpty())
 			criteria.setCountries(countries);
@@ -102,6 +102,8 @@ public class LTParameterServiceImpl implements LTParameterService {
 			criteria.setProductCategory(productCategory);
 		if(!StringUtils.stripToEmpty(office).isEmpty())
 			criteria.setOffice(office);
+		if(!StringUtils.stripToEmpty(program).isEmpty())
+			criteria.setProgram(program);
 		return ltparameterDao.searchTests(criteria);
 	}
 

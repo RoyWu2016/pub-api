@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class TatSearchBean implements Serializable {
 
 	private static final long serialVersionUID = 5999550073031242124L;
+	
+	private String id;
 
 	private String name;
 	
@@ -22,6 +24,14 @@ public class TatSearchBean implements Serializable {
 	private String office;
 	
 	private Double surcharge;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
