@@ -251,7 +251,7 @@ public class UserServiceImpl implements UserService {
 				ReportCertificateBean parentCertificate= companyDao.getCompanyReportCertificateInfo(companyEntireBean.getDirectParents().get(0).getCompanyId());
 				if (null != parentCertificate) {
 					extraAccess.setCanSeeReportsPage(!"yes".equalsIgnoreCase(parentCertificate.getSubReportAccess()));
-                    extraAccess.setFrozenIC("yes".equalsIgnoreCase(parentCertificate.getAutoSendIc()));
+                    extraAccess.setFrozenIC("yes".equalsIgnoreCase(parentCertificate.getFrozenIc()));
 				}
 			}
 
