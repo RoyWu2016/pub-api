@@ -45,7 +45,7 @@ public class AuditDaoImpl implements AuditDao {
 
 	@Override
 	public ApiCallResult createDraft(String userId, String serviceType, String companyId, String parentId) {
-		String subServiceType = null;
+		String subServiceType = "";
 		String type = ConstMap.serviceTypeMap.get(serviceType.toLowerCase());
 		serviceType = type;
 		if (type.indexOf(",") != -1) {
