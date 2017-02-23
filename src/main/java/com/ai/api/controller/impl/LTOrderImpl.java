@@ -127,7 +127,7 @@ public class LTOrderImpl implements LTOrder {
 	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> editOrder(HttpServletRequest request, 
 			@ApiParam(value="User ID") @PathVariable String userId, 
-			@ApiParam(value="Order ID") @PathVariable String orderId,
+			@ApiParam(value="Order ID") @PathVariable String orderId, 
 			@RequestBody OrderMaster order,
 			@ApiParam(value="Send Mail") @RequestParam(value = "sendMail", required = true, defaultValue = "false") Boolean sendMail) {
 		ApiCallResult callResult = new ApiCallResult();
@@ -247,4 +247,22 @@ public class LTOrderImpl implements LTOrder {
 		}
 	}
 
+	@ApiOperation(value = "Clone Order API", produces = "application/json", httpMethod = "POST")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}/clone/{cloneType}", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> cloneOrder (
+			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
+			@ApiParam(value="Clone Type", allowableValues="reorder,retest,copy") @PathVariable("cloneType") String cloneType) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltOrderService.cloneOrder(userId, orderId, cloneType);
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("clone order error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("Error in cloning order");
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }
