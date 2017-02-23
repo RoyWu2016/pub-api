@@ -287,9 +287,10 @@ public class UserImpl implements User {
 				object.remove("groups");
 				JSONArray roles = object.getJSONArray("roles");
 				Map<String,List<String>> result = new HashMap<String,List<String>>();
+				List<String> list = new ArrayList<String>();
 				for (int i = 0; i < roles.size(); i++) {
 					JSONObject role = roles.getJSONObject(i);
-					result.put(role.getString("moduleName"), new ArrayList<String>());
+					result.put(role.getString("moduleName"), list);
 					result.get(role.getString("moduleName")).add(role.getString("displayName"));
 				}
 				object.put("roles",result);
