@@ -13,12 +13,12 @@ import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 
 public class AuditServiceImpl implements AuditService {
-	
+
 	protected Logger logger = LoggerFactory.getLogger(AuditServiceImpl.class);
 
 	@Autowired
 	private AuditDao auditorDao;
-	
+
 	@Autowired
 	@Qualifier("userService")
 	private UserService userService;
@@ -58,7 +58,7 @@ public class AuditServiceImpl implements AuditService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		ApiCallResult result = auditorDao.saveDraft(userId,companyId, parentId,draft);
+		ApiCallResult result = auditorDao.saveDraft(userId, companyId, parentId, draft);
 		return result;
 	}
 
@@ -73,13 +73,13 @@ public class AuditServiceImpl implements AuditService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		ApiCallResult result = auditorDao.deleteDrafts(userId,companyId,parentId,draftIds);
+		ApiCallResult result = auditorDao.deleteDrafts(userId, companyId, parentId, draftIds);
 		return result;
 	}
 
 	@Override
-	public ApiCallResult searchDrafts(String userId, String serviceType,String startDate,String endDate,
-									  String keyWord,int pageSize,int pageNo) {
+	public ApiCallResult searchDrafts(String userId, String serviceType, String startDate, String endDate,
+			String keyWord, int pageSize, int pageNo) {
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -89,13 +89,14 @@ public class AuditServiceImpl implements AuditService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		ApiCallResult result = auditorDao.searchDrafts(userId,companyId,parentId,serviceType,startDate,endDate,keyWord,pageSize,pageNo);
+		ApiCallResult result = auditorDao.searchDrafts(userId, companyId, parentId, serviceType, startDate, endDate,
+				keyWord, pageSize, pageNo);
 		return result;
 	}
 
 	@Override
-	public ApiCallResult searchOrders(String userId, String serviceType,String startDate,String endDate,String orderStatus,
-									  String keyWord,int pageSize,int pageNo) {
+	public ApiCallResult searchOrders(String userId, String serviceType, String startDate, String endDate,
+			String orderStatus, String keyWord, int pageSize, int pageNo) {
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -105,7 +106,8 @@ public class AuditServiceImpl implements AuditService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		ApiCallResult result = auditorDao.searchOrders(userId,companyId,parentId,serviceType,startDate,endDate,orderStatus,keyWord,pageSize,pageNo);
+		ApiCallResult result = auditorDao.searchOrders(userId, companyId, parentId, serviceType, startDate, endDate,
+				orderStatus, keyWord, pageSize, pageNo);
 		return result;
 	}
 
@@ -170,7 +172,7 @@ public class AuditServiceImpl implements AuditService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		ApiCallResult result = auditorDao.getOrderDetail(userId, orderId,companyId,parentId);
+		ApiCallResult result = auditorDao.getOrderDetail(userId, orderId, companyId, parentId);
 		return result;
 	}
 
@@ -190,7 +192,7 @@ public class AuditServiceImpl implements AuditService {
 
 		return result;
 	}
-	
+
 	private UserBean getUserBeanByUserId(String userId) {
 		UserBean user = null;
 		try {
@@ -213,7 +215,24 @@ public class AuditServiceImpl implements AuditService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		ApiCallResult result = auditorDao.calculatePricing(userId,companyId,parentId, draftId, employeeCount);
+		ApiCallResult result = auditorDao.calculatePricing(userId, companyId, parentId, draftId, employeeCount);
+
+		return result;
+	}
+
+	@Override
+	public ApiCallResult reAudit(String userId, String draftId, String orderId) {
+		// TODO Auto-generated method stub
+		String companyId = "";
+		String parentId = "";
+		UserBean user = this.getUserBeanByUserId(userId);
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		ApiCallResult result = auditorDao.reAudit(userId, companyId, parentId, draftId, orderId);
 
 		return result;
 	}
