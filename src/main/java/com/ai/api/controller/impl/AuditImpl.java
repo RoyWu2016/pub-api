@@ -230,7 +230,8 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-draft/{draftId}/price", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> calculatePricing(@PathVariable("userId") String userId,
-			@PathVariable("draftId") String draftId, @RequestParam("employeeCount") String employeeCount) {
+		@PathVariable("draftId") String draftId,
+		@RequestParam(value = "employeeCount", required = false) String employeeCount) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-draft/" + draftId +  "/price?employee-count=" + employeeCount);
 		ApiCallResult result = auditorService.calculatePricing(userId, draftId,employeeCount);
