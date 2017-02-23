@@ -1,22 +1,12 @@
 package com.ai.api.controller.impl;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ai.aims.services.dto.order.OrderDTO;
-import com.ai.aims.services.model.OrderMaster;
-import com.ai.api.bean.OrderSearchBean;
-import com.ai.api.bean.OrderTestBean;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.controller.LTOrder;
-import com.ai.api.service.LTOrderService;
-import com.ai.api.service.LTParameterService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.program.model.Program;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +20,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ai.aims.services.dto.order.OrderDTO;
+import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
+import com.ai.api.bean.OrderTestBean;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.controller.LTOrder;
+import com.ai.api.service.LTOrderService;
+import com.ai.api.service.LTParameterService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.program.model.Program;
 
 @SuppressWarnings({"rawtypes"})
 @RestController
@@ -244,4 +246,22 @@ public class LTOrderImpl implements LTOrder {
 		}
 	}
 
+	@ApiOperation(value = "Clone Order API", produces = "application/json", httpMethod = "POST")
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}/clone/{cloneType}", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> cloneOrder (
+			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
+			@ApiParam(value="Clone Type", allowableValues="reorder,retest,copy") @PathVariable("cloneType") String cloneType) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltOrderService.cloneOrder(userId, orderId, cloneType);
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("clone order error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("Error in cloning order");
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

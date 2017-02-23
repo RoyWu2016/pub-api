@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.List;
 
 import com.ai.aims.services.dto.order.OrderDTO;
-import com.ai.aims.services.model.Order;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.exception.AIException;
@@ -54,4 +53,6 @@ public interface LTOrderService {
 	public ApiCallResult updateOrderTestAssignments(String userId, String orderId, String testIds) throws IOException;
 
 	public ApiCallResult deleteOrderTestAssignment(String userId, String testId) throws IOException;
+
+	public ApiCallResult cloneOrder(String userId, String orderId, String cloneType) throws IOException;
 }
