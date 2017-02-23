@@ -1,26 +1,24 @@
 package com.ai.api.service.impl;
 
-import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 
 import com.ai.api.bean.UserBean;
-import com.ai.api.dao.InspectionDao;
-import com.ai.api.service.InspectionService;
+import com.ai.api.dao.AuditDao;
+import com.ai.api.service.AuditService;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 
-@Service
-public class InspectionServiceImpl implements InspectionService {
-
-	protected Logger logger = LoggerFactory.getLogger(InspectionServiceImpl.class);
+public class AuditServiceImpl implements AuditService {
+	
+	protected Logger logger = LoggerFactory.getLogger(AuditServiceImpl.class);
 
 	@Autowired
-	private InspectionDao inspectionDao;
-
+	private AuditDao auditorDao;
+	
 	@Autowired
 	@Qualifier("userService")
 	private UserService userService;
@@ -28,7 +26,7 @@ public class InspectionServiceImpl implements InspectionService {
 	@Override
 	public ApiCallResult getDraft(String userId, String draftId) {
 		// TODO Auto-generated method stub
-		ApiCallResult result = inspectionDao.getDraft(userId, draftId);
+		ApiCallResult result = auditorDao.getDraft(userId, draftId);
 		return result;
 	}
 
@@ -44,12 +42,13 @@ public class InspectionServiceImpl implements InspectionService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		ApiCallResult result = inspectionDao.createDraft(userId, serviceType, companyId, parentId);
+		ApiCallResult result = auditorDao.createDraft(userId, serviceType, companyId, parentId);
 		return result;
 	}
 
 	@Override
-	public ApiCallResult saveDraft(String userId, ApiInspectionBookingBean draft) {
+	public ApiCallResult saveDraft(String userId, ApiAuditBookingBean draft) {
+		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -59,7 +58,54 @@ public class InspectionServiceImpl implements InspectionService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		ApiCallResult result = inspectionDao.saveDraft(userId,companyId, parentId,draft);
+		ApiCallResult result = auditorDao.saveDraft(userId,companyId, parentId,draft);
+		return result;
+	}
+
+	@Override
+	public ApiCallResult deleteDrafts(String userId, String draftIds) {
+		String companyId = "";
+		String parentId = "";
+		UserBean user = this.getUserBeanByUserId(userId);
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		ApiCallResult result = auditorDao.deleteDrafts(userId,companyId,parentId,draftIds);
+		return result;
+	}
+
+	@Override
+	public ApiCallResult searchDrafts(String userId, String serviceType,String startDate,String endDate,
+									  String keyWord,int pageSize,int pageNo) {
+		String companyId = "";
+		String parentId = "";
+		UserBean user = this.getUserBeanByUserId(userId);
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		ApiCallResult result = auditorDao.searchDrafts(userId,companyId,parentId,serviceType,startDate,endDate,keyWord,pageSize,pageNo);
+		return result;
+	}
+
+	@Override
+	public ApiCallResult searchOrders(String userId, String serviceType,String startDate,String endDate,String orderStatus,
+									  String keyWord,int pageSize,int pageNo) {
+		String companyId = "";
+		String parentId = "";
+		UserBean user = this.getUserBeanByUserId(userId);
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		ApiCallResult result = auditorDao.searchOrders(userId,companyId,parentId,serviceType,startDate,endDate,orderStatus,keyWord,pageSize,pageNo);
 		return result;
 	}
 
@@ -75,7 +121,7 @@ public class InspectionServiceImpl implements InspectionService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		ApiCallResult result = inspectionDao.createDraftFromPreviousOrder(userId, orderId, serviceType, companyId,
+		ApiCallResult result = auditorDao.createDraftFromPreviousOrder(userId, orderId, serviceType, companyId,
 				parentId);
 		return result;
 	}
@@ -92,7 +138,7 @@ public class InspectionServiceImpl implements InspectionService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		ApiCallResult result = inspectionDao.createOrderByDraft(userId, draftId, companyId, parentId);
+		ApiCallResult result = auditorDao.createOrderByDraft(userId, draftId, companyId, parentId);
 		return result;
 	}
 
@@ -108,14 +154,23 @@ public class InspectionServiceImpl implements InspectionService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		ApiCallResult result = inspectionDao.editOrder(userId, orderId, companyId, parentId);
+		ApiCallResult result = auditorDao.editOrder(userId, orderId, companyId, parentId);
 		return result;
 	}
 
 	@Override
 	public ApiCallResult getOrderDetail(String userId, String orderId) {
 		// TODO Auto-generated method stub
-		ApiCallResult result = inspectionDao.getOrderDetail(userId, orderId);
+		String companyId = "";
+		String parentId = "";
+		UserBean user = this.getUserBeanByUserId(userId);
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		ApiCallResult result = auditorDao.getOrderDetail(userId, orderId,companyId,parentId);
 		return result;
 	}
 
@@ -131,15 +186,24 @@ public class InspectionServiceImpl implements InspectionService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		ApiCallResult result = inspectionDao.saveOrderByDraft(userId, draftId, companyId, parentId);
+		ApiCallResult result = auditorDao.saveOrderByDraft(userId, draftId, companyId, parentId);
 
 		return result;
 	}
+	
+	private UserBean getUserBeanByUserId(String userId) {
+		UserBean user = null;
+		try {
+			user = userService.getCustById(userId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return user;
+	}
 
 	@Override
-	public ApiCallResult calculatePricing(String userId, String draftId,
-													 String samplingLevel,String measurementSamplingSize) {
-
+	public ApiCallResult calculatePricing(String userId, String draftId, String employeeCount) {
+		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -149,18 +213,9 @@ public class InspectionServiceImpl implements InspectionService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		return inspectionDao.calculatePricing(userId,companyId,parentId,
-				draftId,samplingLevel,measurementSamplingSize);
-	}
+		ApiCallResult result = auditorDao.calculatePricing(userId,companyId,parentId, draftId, employeeCount);
 
-	private UserBean getUserBeanByUserId(String userId) {
-		UserBean user = null;
-		try {
-			user = userService.getCustById(userId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return user;
+		return result;
 	}
 
 }

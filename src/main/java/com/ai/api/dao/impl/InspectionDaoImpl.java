@@ -1,6 +1,7 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.ai.api.config.ServiceConfig;
@@ -176,6 +178,34 @@ public class InspectionDaoImpl implements InspectionDao {
 			fianlRe.setMessage("Exception: " + e.toString());
 		}
 		return fianlRe;
+	}
+
+	@Override
+	public ApiCallResult calculatePricing(String userId, String companyId,String parentId,
+													 String draftId,String samplingLevel,String measurementSamplingSize) {
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+		ApiCallResult finalResult = new ApiCallResult();
+		url.append("/inspection-draft/api/calculatePricing")
+				.append("?userId=").append(userId)
+				.append("&companyId=").append(companyId)
+				.append("&parentId=").append(parentId)
+				.append("&draftId=").append(draftId)
+				.append("&samplingLevel=").append(samplingLevel)
+				.append("&measurementSamplingLevel=").append(measurementSamplingSize);
+		try {
+			logger.info("Invoking: " + url.toString());
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,new HashMap<>());
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			} else {
+				logger.error("calculate Pricing error from psi service : " + result.getStatusCode() + ", "+ result.getResponseString());
+				finalResult.setMessage("calculate Pricing error from psi service : " + result.getStatusCode() + ", "+ result.getResponseString());
+			}
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+			finalResult.setMessage("Exception: " + e.toString());
+		}
+		return finalResult;
 	}
 
 }

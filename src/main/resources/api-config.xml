@@ -64,7 +64,8 @@
           p:ipServiceBaseUrl="${ip.service.base.lb.url}"
           p:excleLoggoCommonSource="${resource.share.folder}"
           p:lotusApiUrl="${lotus.api.url}"
-          p:aimsBucket="${aims.bucket}"/>
+          p:aimsBucket="${aims.bucket}"
+          p:maxRequestSize="${max.multiplart.request.size}" />
 
     <bean id="redisUtil" class="com.ai.api.util.RedisUtil">
         <property name="serviceConfig" ref="serviceConfig"/>
@@ -72,6 +73,7 @@
 
     <bean id="app" class="com.ai.api.App"/>
     <bean id="draftService" class="com.ai.api.service.impl.DraftServiceImpl"/>
+    <bean id="auditService" class="com.ai.api.service.impl.AuditServiceImpl"/>
     <bean id="userService" class="com.ai.api.service.impl.UserServiceImpl"/>
     <bean id="parameterService" class="com.ai.api.service.impl.ParameterServiceImpl"/>
     <bean id="orderService" class="com.ai.api.service.impl.OrderServiceImpl"/>
@@ -94,6 +96,7 @@
     <bean id="ssoUserServiceDao" class="com.ai.api.dao.impl.SSOUserServiceDaoImpl"/>
     <bean id="factoryDao" class="com.ai.api.dao.impl.FactoryDaoImpl"/>
     <bean id="orderDao" class="com.ai.api.dao.impl.OrderDaoImpl"/>
+    <bean id="auditDao" class="com.ai.api.dao.impl.AuditDaoImpl"/>
     <bean id="featureDao" class="com.ai.api.dao.impl.FeatureDaoImpl"/>
     <bean id="reportDao" class="com.ai.api.dao.impl.ReportDaoImpl"/>
     <bean id="callResult" class="com.ai.commons.beans.ApiCallResult"/>

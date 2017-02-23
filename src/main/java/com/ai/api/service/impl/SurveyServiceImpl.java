@@ -4,8 +4,10 @@ import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.service.SurveyService;
 import com.ai.api.service.UserService;
+import com.ai.commons.DateUtils;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
+import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.NetPromoterScoreClientInfoBean;
 import com.ai.commons.beans.NetPromoterScoreResponseBean;
@@ -55,15 +57,15 @@ public class SurveyServiceImpl implements SurveyService{
             logger.info(result.getReasonPhase()+"||"+result.getResponseString());
             if(result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 JSONObject object = JSON.parseObject(result.getResponseString());
-//                JSONObject object = (JSONObject) JSON.parse(result.getResponseString());
-                Date lastShow = object.getDate("lastShow");
+                String dateStr = StringUtils.isNotBlank(object.getString("lastShow"))?object.getString("lastShow"):"1997-Dec-10";
+                Date lastShow = DateUtils.toDateWithAI(dateStr);
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(new Date());
                 cal.add(Calendar.DATE, -7);
                 if (lastShow.before(cal.getTime())) {
-                    apiCallResult.setContent(true);
-                } else {
                     apiCallResult.setContent(false);
+                } else {
+                    apiCallResult.setContent(true);
                 }
             }else {
                 apiCallResult.setMessage("error from customerService!"+result.getResponseString());

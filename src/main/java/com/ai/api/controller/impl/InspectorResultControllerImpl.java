@@ -285,7 +285,21 @@ public class InspectorResultControllerImpl implements InspectorResultController 
     public ResponseEntity<ApiCallResult> uploadFile(@PathVariable("sourceId") String sourceId,
                                                     @RequestParam(value="username", required=false) String username,
                                                     MultipartHttpServletRequest request) {
+
+	    final int allowedSize =  config.getMaxRequestSize();
+	    final int allowedSizeInMB =  allowedSize/1024/1024;
+
         ApiCallResult callResult = new ApiCallResult();
+	    int reqSize = request.getContentLength();
+	    if (reqSize > allowedSize) {
+		    logger.error("Request size " + reqSize + "large than "
+				    + allowedSize + ", " +allowedSizeInMB + " MB.");
+		    callResult.setMessage("Uploading report data are larger than " + allowedSizeInMB + " MB.");
+		    return new ResponseEntity<>(callResult, HttpStatus.PAYLOAD_TOO_LARGE);
+	    } else {
+		    logger.error("Request size " + reqSize + " is ok: ");
+	    }
+
         try{
             logger.info("ready to uploadFile ...");
             Map<String,List<FileMetaBean>> fileMetaList = new HashMap<>();
@@ -366,7 +380,18 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             InputStream is = myFileService.getFileService().getFile(fileIds);
             FileMetaBean fileDetails = myFileService.getFileService().getFileInfoById(fileIds);
             String fileName = fileDetails.getFileName();
-            response.setHeader("Content-Type", "image/jpeg");
+            String fileType = fileName.substring(fileName.lastIndexOf(".")+1,fileName.length());
+            if(fileType.equalsIgnoreCase("gif")){
+                response.setHeader("Content-Type", "image/gif");
+            }else if(fileType.equalsIgnoreCase("png")){
+                response.setHeader("Content-Type", "image/png");
+            }else if(fileType.equalsIgnoreCase("xls")){
+                response.setHeader("Content-Type", "application/vnd.ms-excel");
+            }else if(fileType.equalsIgnoreCase("xlsx")){
+                response.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            }else {
+                response.setHeader("Content-Type", "image/jpeg");
+            }
             response.setHeader("X-File-Name",fileName);
             response.setHeader("X-File-Caption",fileDetails.getComments()+" ");
             response.setHeader("Access-Control-Expose-Headers","X-File-Name, X-File-Caption");

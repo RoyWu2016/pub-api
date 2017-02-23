@@ -1,9 +1,9 @@
 package com.ai.api.controller;
 
-import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
 import org.springframework.http.ResponseEntity;
 
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 
 /***************************************************************************
  * <PRE>
@@ -11,9 +11,9 @@ import com.ai.commons.beans.ApiCallResult;
  *
  *  Package Name    : com.ai.api.controller
  *
- *  File Name       : Inspection.java
+ *  File Name       : Auditor.java
  *
- *  Creation Date   : Jan 11, 2017
+ *  Creation Date   : Feb 10, 2017
  *
  *  Author          : Roy Wu
  *
@@ -25,7 +25,7 @@ import com.ai.commons.beans.ApiCallResult;
  * </PRE>
  ***************************************************************************/
 
-public interface Inspection {
+public interface Audit {
 
 	ResponseEntity<ApiCallResult> createDraft(final String userId, final String serviceType);
 
@@ -34,7 +34,15 @@ public interface Inspection {
 
 	ResponseEntity<ApiCallResult> getDraft(final String userId, final String draftId);
 
-	ResponseEntity<ApiCallResult> saveDraft(String userId,String draftId,ApiInspectionBookingBean draft);
+	ResponseEntity<ApiCallResult> saveDraft(String userId, String draftId, ApiAuditBookingBean draft);
+
+	ResponseEntity<ApiCallResult> deleteDrafts(String userId, String draftIds);
+
+    ResponseEntity<ApiCallResult> searchDrafts(String userId, String serviceType,String startDate,String endDate,
+							   String keyWord,int pageSize,int pageNo);
+
+    ResponseEntity<ApiCallResult> searchOrders(String userId, String serviceType,String startDate,String endDate,
+                                               String orderStatus,String keyWord,int pageSize,int pageNo);
 
 	ResponseEntity<ApiCallResult> createOrderByDraft(String userId, String draftId);
 
@@ -44,14 +52,6 @@ public interface Inspection {
 
 	ResponseEntity<ApiCallResult> saveOrderByDraft(String userId, String draftId, String orderId);
 
-	ResponseEntity<ApiCallResult> searchOrders(String userId,String serviceType,String startDate,
-											   String endDate,String keyword,String orderStatus,String pageSize,String pageNumber);
-
-    ResponseEntity<ApiCallResult> searchDraft(String userId,String serviceType,
-                                              String startDate,String endDate,String keyword,String pageNumber, String pageSize);
-
-    ResponseEntity<ApiCallResult> deleteDrafts(String userId,String draftIds);
-
-	ResponseEntity<ApiCallResult> calculatePricing(String userId,String draftId,String samplingLevel,String measurementSamplingSize);
+	ResponseEntity<ApiCallResult> calculatePricing(String userId, String draftId, String employeeCount);
 
 }

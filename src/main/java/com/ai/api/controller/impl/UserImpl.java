@@ -285,16 +285,14 @@ public class UserImpl implements User {
 			try {
 				object.remove("groups");
 				JSONArray roles = object.getJSONArray("roles");
+				JSONArray roleArray = new JSONArray();
 				for (int i = 0; i < roles.size(); i++) {
 					JSONObject role = roles.getJSONObject(i);
-					role.remove("createTime");
-					role.remove("updateTime");
-					role.remove("roleId");
-					role.remove("moduleId");
-					role.remove("moduleName");
+					roleArray.add(i,new StringBuilder(role.getString("moduleName")).append(" : ").append(role.getString("displayName")).toString());
 				}
+				object.put("roles",roleArray);
 			} catch (Exception e) {
-
+                logger.error("error!! set roles value",e);
 			}
 			return new ResponseEntity<>(object, HttpStatus.OK);
 		} else {
