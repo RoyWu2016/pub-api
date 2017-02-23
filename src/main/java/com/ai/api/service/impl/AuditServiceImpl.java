@@ -235,4 +235,21 @@ public class AuditServiceImpl implements AuditService {
 		return result;
 	}
 
+	@Override
+	public ApiCallResult cancelOrder(String userId, String orderId, String reason, String reasonOption) {
+		// TODO Auto-generated method stub
+		String companyId = "";
+		String parentId = "";
+		UserBean user = this.getUserBeanByUserId(userId);
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		ApiCallResult result = auditorDao.cancelOrder(userId,companyId,parentId, orderId,reason,reasonOption);
+
+		return result;
+	}
+
 }

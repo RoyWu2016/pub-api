@@ -33,4 +33,6 @@ public interface AuditService {
 
 	ApiCallResult reAudit(String userId, String draftId, String orderId);
 
+	ApiCallResult cancelOrder(String userId, String orderId, String reason, String reasonOption);
+
 }

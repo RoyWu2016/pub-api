@@ -245,12 +245,29 @@ public class AuditImpl implements Audit {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}/draft/{draftId}/re-audit", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}/draft/{draftId}/re-audit", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> reAudit(@PathVariable("userId") String userId,
-			@PathVariable("draftId") String draftId, @RequestParam("orderId") String orderId) {
+			@PathVariable("orderId") String orderId, @PathVariable("draftId") String draftId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId + "/draftId/" + draftId + "/re-audit");
 		ApiCallResult result = auditorService.reAudit(userId, draftId, orderId);
+		if (null == result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}", method = RequestMethod.DELETE)
+	public ResponseEntity<ApiCallResult> cancelOrder(@PathVariable("userId") String userId,
+			@PathVariable("orderId") String orderId,
+			@RequestParam(value = "reason", required = false, defaultValue = "") String reason,
+			@RequestParam(value = "reasonOption", required = false, defaultValue = "") String reasonOption) {
+		// TODO Auto-generated method stub
+		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId);
+		ApiCallResult result = auditorService.cancelOrder(userId, orderId,reason,reasonOption);
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {

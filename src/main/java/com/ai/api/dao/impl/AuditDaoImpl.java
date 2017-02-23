@@ -340,4 +340,27 @@ public class AuditDaoImpl implements AuditDao {
 		return finalResult;
 	}
 
+	@Override
+	public ApiCallResult cancelOrder(String userId, String companyId, String parentId, String orderId, String reason,
+			String reasonOption) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+		ApiCallResult finalResult = new ApiCallResult();
+		url.append("/api/audit/cancelOrder");
+		url.append("?userId=" + userId);
+		url.append("&reason=" + reason);
+		url.append("&companyId=" + companyId);
+		url.append("&parentId=" + parentId);
+		url.append("&orderId=" + orderId);
+		url.append("&reasonOption=" + reasonOption);
+		try {
+			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+		} catch (IOException e) {
+			logger.error("Error cancelOrder!" + ExceptionUtils.getStackTrace(e));
+			finalResult.setMessage("Exception: " + e.toString());
+		}
+		return finalResult;
+	}
+
 }
