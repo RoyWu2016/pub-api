@@ -54,4 +54,6 @@ public interface Audit {
 
 	ResponseEntity<ApiCallResult> calculatePricing(String userId, String draftId, String employeeCount);
 
+	ResponseEntity<ApiCallResult> reAudit(String userId, String draftId, String orderId);
+
 }

@@ -230,11 +230,27 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-draft/{draftId}/price", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> calculatePricing(@PathVariable("userId") String userId,
-		@PathVariable("draftId") String draftId,
-		@RequestParam(value = "employeeCount", required = false) String employeeCount) {
+			@PathVariable("draftId") String draftId,
+			@RequestParam(value = "employeeCount", required = false) String employeeCount) {
 		// TODO Auto-generated method stub
-		logger.info("invoke: " + "/user/" + userId + "/audit-draft/" + draftId +  "/price?employee-count=" + employeeCount);
-		ApiCallResult result = auditorService.calculatePricing(userId, draftId,employeeCount);
+		logger.info(
+				"invoke: " + "/user/" + userId + "/audit-draft/" + draftId + "/price?employee-count=" + employeeCount);
+		ApiCallResult result = auditorService.calculatePricing(userId, draftId, employeeCount);
+		if (null == result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}/draft/{draftId}/re-audit", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> reAudit(@PathVariable("userId") String userId,
+			@PathVariable("draftId") String draftId, @RequestParam("orderId") String orderId) {
+		// TODO Auto-generated method stub
+		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId + "/draftId/" + draftId + "/re-audit");
+		ApiCallResult result = auditorService.reAudit(userId, draftId, orderId);
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
