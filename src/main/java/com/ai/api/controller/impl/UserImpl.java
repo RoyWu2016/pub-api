@@ -8,6 +8,7 @@ package com.ai.api.controller.impl;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -285,12 +286,13 @@ public class UserImpl implements User {
 			try {
 				object.remove("groups");
 				JSONArray roles = object.getJSONArray("roles");
-				JSONArray roleArray = new JSONArray();
+				Map<String,List<String>> result = new HashMap<String,List<String>>();
 				for (int i = 0; i < roles.size(); i++) {
 					JSONObject role = roles.getJSONObject(i);
-					roleArray.add(i,new StringBuilder(role.getString("moduleName")).append(" : ").append(role.getString("displayName")).toString());
+					result.put(role.getString("moduleName"), new ArrayList<String>());
+					result.get(role.getString("moduleName")).add(role.getString("displayName"));
 				}
-				object.put("roles",roleArray);
+				object.put("roles",result);
 			} catch (Exception e) {
                 logger.error("error!! set roles value",e);
 			}
