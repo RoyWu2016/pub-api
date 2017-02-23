@@ -171,6 +171,8 @@ public class AuditDaoImpl implements AuditDao {
 				}
 				serviceType = finalServiceType.toString();
 				subServiceType = finalSubServiceType.toString();
+			} else {
+				serviceType = "5,51,9,91";
 			}
 			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 			url.append("/api/audit/search-orders");
