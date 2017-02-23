@@ -34,4 +34,6 @@ public interface AuditDao {
 	ApiCallResult calculatePricing(String userId, String companyId, String parentId, String draftId,
 			String employeeCount);
 
+	ApiCallResult reAudit(String userId, String companyId, String parentId, String draftId, String orderId);
+
 }

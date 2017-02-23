@@ -313,7 +313,28 @@ public class AuditDaoImpl implements AuditDao {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
-			logger.error("Error saveOrderByDraft!" + ExceptionUtils.getStackTrace(e));
+			logger.error("Error calculatePricing!" + ExceptionUtils.getStackTrace(e));
+			finalResult.setMessage("Exception: " + e.toString());
+		}
+		return finalResult;
+	}
+
+	@Override
+	public ApiCallResult reAudit(String userId, String companyId, String parentId, String draftId, String orderId) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+		ApiCallResult finalResult = new ApiCallResult();
+		url.append("/api/audit/calculatePricing");
+		url.append("?userId=" + userId);
+		url.append("&draftId=" + draftId);
+		url.append("&companyId=" + companyId);
+		url.append("&parentId=" + parentId);
+		url.append("&orderId=" + orderId);
+		try {
+			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+		} catch (IOException e) {
+			logger.error("Error reAudit!" + ExceptionUtils.getStackTrace(e));
 			finalResult.setMessage("Exception: " + e.toString());
 		}
 		return finalResult;
