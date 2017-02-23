@@ -160,11 +160,10 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		
 		ApiCallResult callResult = new ApiCallResult();
-		Map<String, String> vars = new HashMap<String, String>();
-		vars.put("userId", userId);
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/")
  				.append(userId).toString();
-		restTemplate.put(url, order, vars);
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url.toString()).queryParam("requestor", "external");
+		restTemplate.put(builder.build().encode().toUri(), order);
 		callResult.setContent(findOrder(order.getId()));
 		return callResult;
 	}
@@ -313,6 +312,21 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		restTemplate.delete(builder.build().toUri());
 		ApiCallResult result = new ApiCallResult();
 		result.setMessage("Test Assignment deleted successfully");
+		return result;
+	}
+	
+	@Override
+	public ApiCallResult cloneOrder(String userId, String orderId, String cloneType) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/")
+				.append(orderId).append("/user/").append(userId)
+				.append("/clone/").append(cloneType).toString();
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+		OrderDTO clonedOrder = restTemplate.postForObject(builder.build().encode().toUri(), null, OrderDTO.class);
+		OrderDTO order = findOrder(clonedOrder.getId());
+		ApiCallResult result = new ApiCallResult();
+		result.setContent(order);
 		return result;
 	}
 }

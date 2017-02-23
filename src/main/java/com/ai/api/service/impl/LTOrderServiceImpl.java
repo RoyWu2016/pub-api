@@ -68,7 +68,7 @@ public class LTOrderServiceImpl implements LTOrderService {
 	@Autowired
 	@Qualifier("userService")
 	private UserService userService;
-	
+
 	@Autowired
 	@Qualifier("ltEmailService")
 	private LTEmailService ltEmailService;
@@ -149,5 +149,10 @@ public class LTOrderServiceImpl implements LTOrderService {
 	@Override
 	public ApiCallResult deleteOrderTestAssignment(String userId, String testId) throws IOException {
 		return ltorderDao.deleteOrderTestAssignment(userId, testId);
+	}
+	
+	@Override
+	public ApiCallResult cloneOrder(String userId, String orderId, String cloneType) throws IOException {
+		return ltorderDao.cloneOrder(userId, orderId, cloneType);
 	}
 }
