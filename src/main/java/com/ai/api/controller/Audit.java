@@ -56,4 +56,6 @@ public interface Audit {
 
 	ResponseEntity<ApiCallResult> reAudit(String userId, String draftId, String orderId);
 
+	ResponseEntity<ApiCallResult> cancelOrder(String userId, String reason, String orderId, String reasonOption);
+
 }
