@@ -121,7 +121,7 @@ public class LTOrderServiceImpl implements LTOrderService {
 				if(!sendEmailAddOrder) {
 					logger.error(ExceptionUtils.getFullStackTrace(new AIException("Error during send mail after saving order")));
 					apiCallResult.setMessage("Error during send mail after saving order");
-				}
+	}
 			}
 			return apiCallResult;
 		} catch (Exception e) {
