@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -286,21 +287,111 @@ public class UserImpl implements User {
 			try {
 				object.remove("groups");
 				JSONArray roles = object.getJSONArray("roles");
-				Map<String,List<String>> result = new HashMap<String,List<String>>();
-				List<String> list = new ArrayList<String>();
+				
+				Map<String, HashSet<String>> result = new HashMap<String, HashSet<String>>();
+				
+				HashSet<String> AIMS = new HashSet<String>();
+				HashSet<String> Audit = new HashSet<String>();
+				HashSet<String> Checklist = new HashSet<String>();
+				HashSet<String> CloudReport = new HashSet<String>();
+				HashSet<String> Customer = new HashSet<String>();
+				HashSet<String> Factory_Portal = new HashSet<String>();
+				HashSet<String> GI = new HashSet<String>();
+				HashSet<String> IP_Generation = new HashSet<String>();
+				HashSet<String> IRP = new HashSet<String>();
+				HashSet<String> Inspection = new HashSet<String>();
+				HashSet<String> InspectorApp = new HashSet<String>();
+				HashSet<String> Mail_Console = new HashSet<String>();
+				HashSet<String> PROG = new HashSet<String>();
+				HashSet<String> Program = new HashSet<String>();
+				HashSet<String> Report_Portal_Inspector = new HashSet<String>();
+				HashSet<String> Report_Portal_Supervisor = new HashSet<String>();
+				HashSet<String> SSO_Management = new HashSet<String>();
+				HashSet<String> Sales_Management = new HashSet<String>();
+				HashSet<String> Sample = new HashSet<String>();
 				for (int i = 0; i < roles.size(); i++) {
+					
 					JSONObject role = roles.getJSONObject(i);
-					result.put(role.getString("moduleName"), list);
-					result.get(role.getString("moduleName")).add(role.getString("displayName"));
+					
+					if ("AIMS".equalsIgnoreCase(role.getString("moduleName"))) {
+						AIMS.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), AIMS);
+					} else if ("Audit".equalsIgnoreCase(role.getString("moduleName"))) {
+						Audit.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), Audit);
+					} else if ("Checklist".equalsIgnoreCase(role.getString("moduleName"))) {
+						Checklist.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), Checklist);
+					} else if ("CloudReport".equalsIgnoreCase(role.getString("moduleName"))) {
+						CloudReport.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), CloudReport);
+					} else if ("Customer".equalsIgnoreCase(role.getString("moduleName"))) {
+						Customer.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), Customer);
+					} else if ("Factory-Portal".equalsIgnoreCase(role.getString("moduleName"))) {
+						Factory_Portal.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), Factory_Portal);
+					} else if ("GI".equalsIgnoreCase(role.getString("moduleName"))) {
+						GI.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), GI);
+					} else if ("IP Generation".equalsIgnoreCase(role.getString("moduleName"))) {
+						IP_Generation.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), IP_Generation);
+					} else if ("IRP".equalsIgnoreCase(role.getString("moduleName"))) {
+						IRP.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), IRP);
+					} else if ("Inspection".equalsIgnoreCase(role.getString("moduleName"))) {
+						Inspection.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), Inspection);
+					} else if ("InspectorApp".equalsIgnoreCase(role.getString("moduleName"))) {
+						InspectorApp.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), InspectorApp);
+					} else if ("Mail Console".equalsIgnoreCase(role.getString("moduleName"))) {
+						Mail_Console.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), Mail_Console);
+					} else if ("PROG".equalsIgnoreCase(role.getString("moduleName"))) {
+						PROG.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), PROG);
+					} else if ("Program".equalsIgnoreCase(role.getString("moduleName"))) {
+						Program.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), Program);
+					} else if ("Report Portal-Inspector".equalsIgnoreCase(role.getString("moduleName"))) {
+						Report_Portal_Inspector.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), Report_Portal_Inspector);
+					} else if ("Report Portal-Supervisor".equalsIgnoreCase(role.getString("moduleName"))) {
+						Report_Portal_Supervisor.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), Report_Portal_Supervisor);
+					} else if ("SSO Management".equalsIgnoreCase(role.getString("moduleName"))) {
+						SSO_Management.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), SSO_Management);
+					} else if ("Sales Management".equalsIgnoreCase(role.getString("moduleName"))) {
+						Sales_Management.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), Sales_Management);
+					} else if ("Sample".equalsIgnoreCase(role.getString("moduleName"))) {
+						Sample.add(role.getString("displayName"));
+						result.put(role.getString("moduleName"), Sample);
+					}
+
+					// result =
+					// createModule(result,role.getString("moduleName"),role.getString("displayName"));
+
 				}
-				object.put("roles",result);
+				object.put("roles", result);
 			} catch (Exception e) {
-                logger.error("error!! set roles value",e);
+				logger.error("error!! set roles value", e);
 			}
 			return new ResponseEntity<>(object, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	private Map<String, List<String>> createModule(Map<String, List<String>> result, String moduleName,
+			String displayName) {
+		// TODO Auto-generated method stub
+		// List<String> list = new ArrayList<String>();
+
+		return result;
 	}
 
 	@Override
