@@ -58,4 +58,6 @@ public interface LTOrderDao {
 	public ApiCallResult updateOrderTestAssignments(String userId, String orderId, String testIds) throws IOException;
 
 	public ApiCallResult deleteOrderTestAssignment(String userId, String testId) throws IOException;
+
+	public ApiCallResult cloneOrder(String userId, String orderId, String cloneType) throws IOException;
 }

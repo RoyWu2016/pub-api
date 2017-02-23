@@ -314,4 +314,19 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		result.setMessage("Test Assignment deleted successfully");
 		return result;
 	}
+	
+	@Override
+	public ApiCallResult cloneOrder(String userId, String orderId, String cloneType) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/")
+				.append(orderId).append("/user/").append(userId)
+				.append("/clone/").append(cloneType).toString();
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+		OrderDTO clonedOrder = restTemplate.postForObject(builder.build().encode().toUri(), null, OrderDTO.class);
+		OrderDTO order = findOrder(clonedOrder.getId());
+		ApiCallResult result = new ApiCallResult();
+		result.setContent(order);
+		return result;
+	}
 }
