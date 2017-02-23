@@ -150,4 +150,9 @@ public class LTOrderServiceImpl implements LTOrderService {
 	public ApiCallResult deleteOrderTestAssignment(String userId, String testId) throws IOException {
 		return ltorderDao.deleteOrderTestAssignment(userId, testId);
 	}
+	
+	@Override
+	public ApiCallResult cloneOrder(String userId, String orderId, String cloneType) throws IOException {
+		return ltorderDao.cloneOrder(userId, orderId, cloneType);
+}
 }
