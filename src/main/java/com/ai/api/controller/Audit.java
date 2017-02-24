@@ -1,9 +1,11 @@
 package com.ai.api.controller;
 
-import org.springframework.http.ResponseEntity;
+import java.util.List;
 
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
+import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
  * <PRE>
@@ -58,4 +60,9 @@ public interface Audit {
 
 	ResponseEntity<ApiCallResult> cancelOrder(String userId, String reason, String orderId, String reasonOption);
 
+	ResponseEntity<ApiCallResult<List<SimpleOrderSearchBean>>> getReInspectionList( String userId,
+	                                                                                String serviceType,
+	                                                                                String keyword,
+	                                                                                String pageSize,
+	                                                                                String pageNumber);
 }

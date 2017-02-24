@@ -1,10 +1,16 @@
 package com.ai.api.controller.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ai.api.controller.Audit;
 import com.ai.api.service.AuditService;
+import com.ai.api.service.OrderService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +50,9 @@ public class AuditImpl implements Audit {
 
 	@Autowired
 	private AuditService auditorService;
+
+	@Autowired
+	private OrderService orderService;
 
 	@Override
 	@TokenSecured
@@ -267,6 +276,32 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/re-audit-list", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult<List<SimpleOrderSearchBean>>> getReInspectionList(@PathVariable("userId") String userId,
+										   @RequestParam(value = "service-type", required = false) String serviceType,
+										   @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+										   @RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
+										   @RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
+
+		ApiCallResult result = new ApiCallResult();
+		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
+		serviceType = "ma,ea,stra,ctpat";
+		String orderStatus = "60";
+		try {
+			ordersList = orderService.searchOrders(userId, serviceType, "", "", keyword, orderStatus, pageSize,
+					pageNumber);
+			result.setContent(ordersList);
+			// if not data found, just return 200 with empty list
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			result.setMessage("Error in getting re-audit order list.");
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
