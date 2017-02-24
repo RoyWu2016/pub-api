@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 
+import com.ai.commons.beans.*;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -23,10 +24,6 @@ import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.ReportDao;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
-import com.ai.commons.beans.GetRequest;
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.PageParamBean;
-import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
@@ -125,6 +122,34 @@ public class ReportDaoImpl implements ReportDao {
 			logger.error("ERROR!!! downloadPDF", e);
 		}
 		return inputStream;
+
+	}
+
+	@Override
+	public ApiCallResult getAuditReports(String userId, String companyId, String parentId,PageParamBean criteria) {
+        ApiCallResult finalResult = new ApiCallResult();
+		try {
+			logger.info("getAuditReports json before encoding: " + JsonUtil.mapToJson(criteria));
+			String param = URLEncoder.encode(JsonUtil.mapToJson(criteria), "utf-8");
+			logger.info("getAuditReports json after encoding: " + param);
+			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+			url.append("/report/api/report-list");
+			url.append("?userId=" + userId);
+			url.append("&companyId=" + companyId);
+			url.append("&parentId=" + parentId);
+			url.append("&param=" + param);
+			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+                finalResult.setContent(JSON.parseObject(result.getResponseString(), PageBean.class));
+			} else {
+				logger.error("getAuditReports from psi-service error: " + result.getStatusCode() + " || "+ result.getResponseString());
+                finalResult.setMessage("getAuditReports from psi-service error: " + result.getStatusCode() + " || "+ result.getResponseString());
+			}
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+            finalResult.setMessage("Exception: " + e.toString());
+		}
+		return finalResult;
 
 	}
 

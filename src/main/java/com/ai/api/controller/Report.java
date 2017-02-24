@@ -17,6 +17,9 @@ import com.ai.commons.beans.report.ReportsForwardingBean;
  * Created by Henry Yue on 2016/7/25.
  */
 public interface Report {
+	ResponseEntity<ApiCallResult> getAuditReports(String userId, String startDate, String endDate,
+																   String keywords, Integer pageNumber, Integer pageSize);
+
 	ResponseEntity<PageBean<ClientReportSearchBean>> getPSIReports(String userId, String startDate, String endDate,
 			String keywords, Integer pageNumber, Integer pageSize);
 
