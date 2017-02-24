@@ -1,13 +1,14 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
-import java.net.URLDecoder;
+
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
 
 import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.config.ServiceConfig;
@@ -109,20 +110,6 @@ public class AuditDaoImpl implements AuditDao {
 	@Override
 	public ApiCallResult searchDrafts(String userId, String companyId, String parentId, String serviceType,
 			String startDate, String endDate, String keyWord, int pageSize, int pageNo) {
-		if (StringUtils.isNotBlank(serviceType)) {
-			StringBuilder finalServiceType = new StringBuilder("");
-			String[] serviceTypeArr = serviceType.split(Consts.COMMA);
-			for (String s : serviceTypeArr) {
-				String type = ConstMap.serviceTypeMap.get(s.toLowerCase());
-				String temp = type;
-				if (type.indexOf(",") != -1) {
-					temp = type.split(",")[0];
-				}
-				finalServiceType.append(temp).append(Consts.COMMA);
-			}
-			finalServiceType.deleteCharAt(finalServiceType.length() - 1);
-			serviceType = finalServiceType.toString();
-		}
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
 		url.append("/api/audit/search-drafts");
@@ -150,37 +137,12 @@ public class AuditDaoImpl implements AuditDao {
 			String startDate, String endDate, String orderStatus, String keyWord, int pageSize, int pageNo) {
 		ApiCallResult finalResult = new ApiCallResult();
 		try {
-			String subServiceType = "";
-			serviceType = URLDecoder.decode(serviceType, "utf-8");
-			if (StringUtils.isNotBlank(serviceType)) {
-				StringBuilder finalServiceType = new StringBuilder("");
-				StringBuilder finalSubServiceType = new StringBuilder("");
-				String[] serviceTypeArr = serviceType.split(Consts.COMMA);
-				for (String s : serviceTypeArr) {
-					String type = ConstMap.serviceTypeMap.get(s.toLowerCase());
-					String temp = type;
-					if (type.indexOf(",") != -1) {
-						temp = type.split(",")[0];
-						finalSubServiceType.append(type.split(",")[1]).append(Consts.COMMA);
-					}
-					finalServiceType.append(temp).append(Consts.COMMA);
-				}
-				finalServiceType.deleteCharAt(finalServiceType.length() - 1);
-				if (finalSubServiceType.length() > 1) {
-					finalSubServiceType.deleteCharAt(finalSubServiceType.length() - 1);
-				}
-				serviceType = finalServiceType.toString();
-				subServiceType = finalSubServiceType.toString();
-			} else {
-				serviceType = "5,51,9,91";
-			}
 			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 			url.append("/api/audit/search-orders");
 			url.append("?userId=" + userId);
 			url.append("&companyId=" + companyId);
 			url.append("&parentId=" + parentId);
 			url.append("&serviceType=" + serviceType);
-			url.append("&subServiceType=" + subServiceType);
 			url.append("&startDate=" + startDate);
 			url.append("&endDate=" + endDate);
 			url.append("&keyWord=" + keyWord);
@@ -313,7 +275,51 @@ public class AuditDaoImpl implements AuditDao {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
-			logger.error("Error saveOrderByDraft!" + ExceptionUtils.getStackTrace(e));
+			logger.error("Error calculatePricing!" + ExceptionUtils.getStackTrace(e));
+			finalResult.setMessage("Exception: " + e.toString());
+		}
+		return finalResult;
+	}
+
+	@Override
+	public ApiCallResult reAudit(String userId, String companyId, String parentId, String draftId, String orderId) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+		ApiCallResult finalResult = new ApiCallResult();
+		url.append("/api/audit/calculatePricing");
+		url.append("?userId=" + userId);
+		url.append("&draftId=" + draftId);
+		url.append("&companyId=" + companyId);
+		url.append("&parentId=" + parentId);
+		url.append("&orderId=" + orderId);
+		try {
+			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+		} catch (IOException e) {
+			logger.error("Error reAudit!" + ExceptionUtils.getStackTrace(e));
+			finalResult.setMessage("Exception: " + e.toString());
+		}
+		return finalResult;
+	}
+
+	@Override
+	public ApiCallResult cancelOrder(String userId, String companyId, String parentId, String orderId, String reason,
+			String reasonOption) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+		ApiCallResult finalResult = new ApiCallResult();
+		url.append("/api/audit/cancelOrder");
+		url.append("?userId=" + userId);
+		url.append("&reason=" + reason);
+		url.append("&companyId=" + companyId);
+		url.append("&parentId=" + parentId);
+		url.append("&orderId=" + orderId);
+		url.append("&reasonOption=" + reasonOption);
+		try {
+			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+		} catch (IOException e) {
+			logger.error("Error cancelOrder!" + ExceptionUtils.getStackTrace(e));
 			finalResult.setMessage("Exception: " + e.toString());
 		}
 		return finalResult;

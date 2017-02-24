@@ -7,6 +7,7 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,9 +15,11 @@ import java.util.List;
 
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
+import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.OrderDao;
 import com.ai.api.util.AIUtil;
+import com.ai.commons.Consts;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.ApiCallResult;
@@ -201,7 +204,6 @@ public class OrderDaoImpl implements OrderDao {
 	public List<SimpleOrderSearchBean> searchOrders(String userId, String compId, String parentId, String serviceType,
 			String startDate, String endDate, String keyWord, String orderStatus, String pageSize, String pageNumber) {
 		try {
-
 			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 			url.append("/order/api/search?userId=").append(userId).append("&companyId=").append(compId)
 					.append("&parentId=").append(parentId).append("&serviceType=").append(serviceType)
@@ -213,8 +215,7 @@ public class OrderDaoImpl implements OrderDao {
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				@SuppressWarnings("unchecked")
-				PageBean<SimpleOrderSearchBean> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),
-						PageBean.class);
+				PageBean<SimpleOrderSearchBean> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
 				// JSONObject object =
 				// JSONObject.parseObject(result.getResponseString());
 				// Object arrayStr = object.get("content");

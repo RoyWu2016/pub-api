@@ -31,4 +31,8 @@ public interface AuditService {
 
 	ApiCallResult calculatePricing(String userId, String draftId, String employeeCount);
 
+	ApiCallResult reAudit(String userId, String draftId, String orderId);
+
+	ApiCallResult cancelOrder(String userId, String orderId, String reason, String reasonOption);
+
 }
