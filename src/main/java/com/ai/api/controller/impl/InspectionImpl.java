@@ -5,6 +5,8 @@ import com.ai.api.service.OrderService;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
+import com.ai.consts.ConstMap;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +17,12 @@ import org.springframework.web.bind.annotation.*;
 
 import com.ai.api.controller.Inspection;
 import com.ai.api.service.InspectionService;
+import com.ai.commons.Consts;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -199,7 +204,7 @@ public class InspectionImpl implements Inspection {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/inspection-orders", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchOrders(@PathVariable("userId") String userId,
-																	@RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
+																	@RequestParam(value = "service-type",defaultValue = "psi,ipc,dupro,clc,pm") String serviceType,
 																	@RequestParam(value = "start", required = false, defaultValue = "") String startDate,
 																	@RequestParam(value = "end", required = false, defaultValue = "") String endDate,
 																	@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
@@ -209,6 +214,14 @@ public class InspectionImpl implements Inspection {
 
 		ApiCallResult result = new ApiCallResult();
 		try {
+			try {
+				if (!serviceType.isEmpty()) {
+					serviceType = URLDecoder.decode(serviceType, "utf-8");
+					serviceType = ConstMap.convertServiceType(serviceType, Consts.COMMA);
+				}
+			} catch (UnsupportedEncodingException e) {
+				logger.error("decoding service type: " + serviceType + "got error!");
+			}
 			List<SimpleOrderSearchBean> ordersList = orderService.searchOrders(userId, serviceType, startDate, endDate, keyword, orderStatus,
 					pageSize, pageNumber);
 			// if not data found, just return 200 with empty list
@@ -226,7 +239,7 @@ public class InspectionImpl implements Inspection {
     @TokenSecured
     @RequestMapping(value = "/user/{userId}/inspection-drafts", method = RequestMethod.GET)
     public ResponseEntity<ApiCallResult> searchDraft(@PathVariable("userId") String userId,
-                                                        @RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
+                                                        @RequestParam(value = "service-type", defaultValue = "psi,ipc,dupro,clc,pm") String serviceType,
                                                         @RequestParam(value = "start", required = false, defaultValue = "") String startDate,
                                                         @RequestParam(value = "end", required = false, defaultValue = "") String endDate,
                                                         @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
@@ -235,6 +248,14 @@ public class InspectionImpl implements Inspection {
 
         ApiCallResult result = new ApiCallResult();
         try {
+			try {
+				if (!serviceType.isEmpty()) {
+					serviceType = URLDecoder.decode(serviceType, "utf-8");
+					serviceType = ConstMap.convertServiceType(serviceType, Consts.COMMA);
+				}
+			} catch (UnsupportedEncodingException e) {
+				logger.error("decoding service type: " + serviceType + "got error!");
+			}
             List<DraftOrder> draftList = draftService.searchDraft(userId, serviceType, startDate, endDate, keyword, pageNumber, pageSize);
             //if not data found, just return 200 with empty list
             result.setContent(draftList);
