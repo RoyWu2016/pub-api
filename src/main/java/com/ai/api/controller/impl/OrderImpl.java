@@ -242,7 +242,7 @@ public class OrderImpl implements Order {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-orders", method = RequestMethod.GET)
 	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(@PathVariable("userId") String userId,
-			@RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
+			@RequestParam(value = "service-type",defaultValue = "1,2,3,4,6") String serviceType,
 			@RequestParam(value = "start", required = false, defaultValue = "") String startDate,
 			@RequestParam(value = "end", required = false, defaultValue = "") String endDate,
 			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
