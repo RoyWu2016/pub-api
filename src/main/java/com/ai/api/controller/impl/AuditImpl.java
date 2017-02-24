@@ -131,9 +131,7 @@ public class AuditImpl implements Audit {
 			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
 			@RequestParam(value = "page-size", required = false, defaultValue = "20") int pageSize,
 			@RequestParam(value = "page", required = false, defaultValue = "1") int pageNumber) {
-		logger.info("invoke: " + "/user/" + userId + "/audit-drafts?serviceType=" + serviceType + "&startDate="
-				+ startDate + "&endDate=" + endDate + "&keyword=" + keyword + "&pageSize=" + pageSize + "&pageNumber="
-				+ pageNumber);
+
 		ApiCallResult result = auditorService.searchDrafts(userId, serviceType, startDate, endDate, keyword, pageSize,
 				pageNumber);
 		if (null == result.getMessage()) {
@@ -154,9 +152,7 @@ public class AuditImpl implements Audit {
 			@RequestParam(value = "status", required = false, defaultValue = "") String orderStatus,
 			@RequestParam(value = "page-size", required = false, defaultValue = "20") int pageSize,
 			@RequestParam(value = "page", required = false, defaultValue = "1") int pageNumber) {
-		logger.info("invoke: " + "/user/" + userId + "/audit-orders?serviceType=" + serviceType + "&startDate="
-				+ startDate + "&endDate=" + endDate + "&keyword=" + keyword + "&pageSize=" + pageSize + "&pageNumber="
-				+ pageNumber);
+
 		ApiCallResult result = auditorService.searchOrders(userId, serviceType, startDate, endDate, orderStatus,
 				keyword, pageSize, pageNumber);
 		if (null == result.getMessage()) {

@@ -1,16 +1,20 @@
 package com.ai.api.service.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import com.ai.api.bean.UserBean;
 import com.ai.api.dao.AuditDao;
 import com.ai.api.service.AuditService;
 import com.ai.api.service.UserService;
+import com.ai.commons.Consts;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
+import com.ai.consts.ConstMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class AuditServiceImpl implements AuditService {
 	
@@ -89,6 +93,14 @@ public class AuditServiceImpl implements AuditService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
+		try {
+			if (!serviceType.isEmpty()) {
+				serviceType = URLDecoder.decode(serviceType, "utf-8");
+				serviceType = ConstMap.convertServiceType(serviceType, Consts.COMMA);
+			}
+		} catch (UnsupportedEncodingException e) {
+			logger.error("decoding service type: " + serviceType + "got error!");
+		}
 		ApiCallResult result = auditorDao.searchDrafts(userId,companyId,parentId,serviceType,startDate,endDate,keyWord,pageSize,pageNo);
 		return result;
 	}
@@ -104,6 +116,14 @@ public class AuditServiceImpl implements AuditService {
 			if (parentId == null)
 				parentId = "";
 			companyId = user.getCompany().getId();
+		}
+		try {
+			if (!serviceType.isEmpty()) {
+				serviceType = URLDecoder.decode(serviceType, "utf-8");
+				serviceType = ConstMap.convertServiceType(serviceType, Consts.COMMA);
+			}
+		} catch (UnsupportedEncodingException e) {
+			logger.error("decoding service type: " + serviceType + "got error!");
 		}
 		ApiCallResult result = auditorDao.searchOrders(userId,companyId,parentId,serviceType,startDate,endDate,orderStatus,keyWord,pageSize,pageNo);
 		return result;
@@ -251,5 +271,6 @@ public class AuditServiceImpl implements AuditService {
 
 		return result;
 	}
+
 
 }
