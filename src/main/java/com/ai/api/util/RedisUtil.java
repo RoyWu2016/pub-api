@@ -2,6 +2,7 @@ package com.ai.api.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.ai.api.config.ServiceConfig;
@@ -265,6 +266,26 @@ public class RedisUtil {
             returnResource(jedis);
         }
     }
+
+	/**
+	 * Return all the fields in a hash.
+	 * <p>
+	 * <b>Time complexity:</b> O(N), where N is the total number of entries
+	 * @param key
+	 * @return All the fields names contained into a hash.
+	 */
+	public synchronized static Set<String> hkeys(String key){
+		Jedis jedis = getJedis();
+		try {
+			if (!exists(key.trim())) return null;
+			return jedis.hkeys(key.trim());
+		} catch (Exception e) {
+			logger.error("key hkeys error : "+e);
+			return null;
+		} finally {
+			returnResource(jedis);
+		}
+	}
 
 	/**
 	 * If key holds a hash, retrieve the value associated to the specified field.

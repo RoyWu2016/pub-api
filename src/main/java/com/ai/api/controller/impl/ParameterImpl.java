@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ai.commons.services.FileService;
+import com.alibaba.fastjson.JSONArray;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +67,12 @@ public class ParameterImpl implements Parameter {
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
 
-	@Autowired
+    @Autowired
+    @Qualifier("fileService")
+    private FileService fileService;
+
+
+    @Autowired
 	com.ai.commons.services.ParameterService commonParamService;
 
 	// @Autowired
@@ -582,5 +589,28 @@ public class ParameterImpl implements Parameter {
 		}
 		return new ResponseEntity<>(fileStr, HttpStatus.OK);
 	}
+
+//	@Override
+//	@RequestMapping(value = "/parameter/audit-preview/{fieldId}/base64", method = RequestMethod.GET)
+//	public ResponseEntity<ApiCallResult> getAuditPreviewImagesBase64(@PathVariable("fieldId") String fieldId) {
+//		logger.info("invoke: " + "/parameter/audit-preview/" + fieldId + "/base64");
+//		ApiCallResult result = new ApiCallResult();
+//        try {
+//
+//            String value = RedisUtil.hget("auditPreviewImages", fieldId);
+//            List<String> ids = JSON.parseArray(value, String.class);
+//            if (ids.size() > 0) {
+////                for (String id : ids) {
+////                    fileService.getFile(id);
+////                }
+//                result.setContent(ids);
+//            } else {
+//                result.setMessage("null result!!!!!!");
+//            }
+//        }catch (Exception e){
+//
+//        }
+//		return new ResponseEntity<>(result, HttpStatus.OK);
+//	}
 
 }
