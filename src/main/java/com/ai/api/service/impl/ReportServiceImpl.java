@@ -14,6 +14,7 @@ import java.util.Locale;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.commons.beans.ApiCallResult;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -69,6 +70,25 @@ public class ReportServiceImpl implements ReportService {
 	@Autowired
 	@Qualifier("userService")
 	private UserService userService;
+
+	@Override
+	public ApiCallResult getAuditReports(String useId, PageParamBean paramBean) {
+		String companyId = "";
+		String parentId = "";
+		UserBean user = null;
+		try {
+			user = userService.getCustById(useId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		return reportDao.getAuditReports(useId,companyId,parentId, paramBean);
+	}
 
 	@Override
 	public PageBean<ClientReportSearchBean> getPSIReports(String useId, PageParamBean paramBean) {
