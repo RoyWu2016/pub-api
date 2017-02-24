@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.commons.constants.AuditConstants;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,44 @@ public class ReportImpl implements Report {
 
 	@Autowired
 	ReportService reportService;
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/audit-reports", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> getAuditReports(@PathVariable("userId") String userId,
+															  @RequestParam(value = "start", required = false) String startDate,
+															  @RequestParam(value = "end", required = false) String endDate,
+															  @RequestParam(value = "keyword", required = false) String keywords,
+															  @RequestParam(value = "page", required = false) Integer pageNumber,
+															  @RequestParam(value = "page-size", required = false) Integer pageSize) {
+		PageParamBean paramBean = new PageParamBean();
+		if (null != pageNumber && pageNumber > 0)
+			paramBean.setPageNo(pageNumber);
+		if (null != pageSize && pageSize > 0)
+			paramBean.setPageSize(pageSize);
+		Map<String, String[]> criterias = new HashMap<String, String[]>();
+		if (null != startDate && null != endDate) {
+			String[] inspectionDate = new String[] { startDate + " - " + endDate };
+			criterias.put(AuditConstants.AUDIT_DATE, inspectionDate);
+		}
+		if (StringUtils.isNotBlank(keywords)) {
+			String[] orderOrPo = new String[] { keywords };
+			criterias.put(AuditConstants.ORDER_NUMBER, orderOrPo);
+		}
+		if (criterias.size() > 0) {
+			paramBean.setCriterias(criterias);
+		}
+//		List<String> item = new ArrayList<String>();
+//		item.add("inspectionDate");
+//		paramBean.setOrderItems(item);
+
+		ApiCallResult result = reportService.getAuditReports(userId, paramBean);
+		if (null == result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@Override
 	@TokenSecured

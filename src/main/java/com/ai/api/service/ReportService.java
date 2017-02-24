@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
@@ -16,6 +17,8 @@ import com.ai.commons.beans.sync.LotusSyncBean;
  * Created by yan on 2016/7/25.
  */
 public interface ReportService {
+	ApiCallResult getAuditReports(String useId, PageParamBean paramBean);
+
 	PageBean<ClientReportSearchBean> getPSIReports(String useId, PageParamBean paramBean);
 
 	ApprovalCertificateBean getApprovalCertificate(String userId, String productId, String certType);
