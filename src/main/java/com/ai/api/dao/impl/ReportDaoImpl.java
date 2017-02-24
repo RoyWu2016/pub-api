@@ -133,7 +133,7 @@ public class ReportDaoImpl implements ReportDao {
 			String param = URLEncoder.encode(JsonUtil.mapToJson(criteria), "utf-8");
 			logger.info("getAuditReports json after encoding: " + param);
 			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-			url.append("/report/api/report-list");
+			url.append("/audit/report/api/report-list");
 			url.append("?userId=" + userId);
 			url.append("&companyId=" + companyId);
 			url.append("&parentId=" + parentId);
