@@ -44,6 +44,7 @@ public class ConstMap {
         bucketMap.put("ORDER_ATT","order-attachments");
         bucketMap.put("CHECKLIST_TEST","checklist-attachements");
         bucketMap.put("CHECKLIST_EXPECTED_DEFECT","checklist-attachements");
+        bucketMap.put("AUDIT_PREVIEW_DOC","audit-docs");
 
 	    serviceTypeMap.put("psi", "1");
 	    serviceTypeMap.put("ipc", "2");

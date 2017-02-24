@@ -1,20 +1,12 @@
 package com.ai.api.job;
 
-import com.ai.api.dao.impl.TokenJWTDaoImpl;
-import com.ai.api.service.AuthenticationService;
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.StringUtils;
 import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
