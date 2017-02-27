@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 public interface Supplier {
 	ResponseEntity<List<SupplierSearchResultBean>> getUserSupplierById(String userId) throws IOException, AIException;
 
-	ResponseEntity<SupplierDetailBean> getUserSupplierDetailInfoById(String userId, String supplierId)
+	ResponseEntity<ApiCallResult> getUserSupplierDetailInfoById(String userId, String supplierId)
 			throws IOException, AIException;
 
 	ResponseEntity<ApiCallResult> updateUserSupplierDetailInfo(String userId, String supplierId,
@@ -24,7 +24,7 @@ public interface Supplier {
 
 	ResponseEntity<ApiCallResult> deleteSuppliers(String userId, String supplierIds) throws IOException, AIException;
 
-	ResponseEntity<SupplierDetailBean> createSupplier(String userId, SupplierDetailBean supplierDetailBean)
+	ResponseEntity<ApiCallResult> createSupplier(String userId, SupplierDetailBean supplierDetailBean)
 			throws IOException, AIException;
 
 	ResponseEntity<ApiCallResult> updateFactoryConfirm(String orderId, String password, String inspectionDateString,
