@@ -182,10 +182,10 @@ public class LTReportImpl implements LTReport {
 				DateUtils.formatDate(order.getTestStartDate(), "dd-MMM-yyyy") : null);
 		orderSearch.setOverallRating(order.getOverallRating());
 		orderSearch.setClientStatus(order.getClientStatus());
-		if (null != order.getAttachments()) {
+		if (null != order.getAttachments() && !order.getAttachments().isEmpty()) {
 			orderSearch.setAttachmentId(order.getAttachments().stream().findFirst().get().getId());
 		}
-		if (null != order.getTestAssignments()) {
+		if (null != order.getTestAssignments() && !order.getTestAssignments().isEmpty()) {
 			List<OrderTestBean> orderTests = new ArrayList<OrderTestBean>();
 			for (TestAssignmentDTO testAssign : order.getTestAssignments()) {
 				OrderTestBean orderTest = new OrderTestBean();
