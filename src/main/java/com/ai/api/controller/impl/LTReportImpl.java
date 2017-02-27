@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiParam;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,9 +24,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ai.aims.services.model.OrderMaster;
-import com.ai.aims.services.model.OrderStyleInfo;
-import com.ai.aims.services.model.OrderTestAssignment;
+import com.ai.aims.services.dto.order.OrderDTO;
+import com.ai.aims.services.dto.order.StyleInfoDTO;
+import com.ai.aims.services.dto.order.TestAssignmentDTO;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.OrderTestBean;
 import com.ai.api.controller.LTReport;
@@ -82,7 +81,7 @@ public class LTReportImpl implements LTReport {
 		ApiCallResult result = new ApiCallResult();
 		HttpStatus status = HttpStatus.OK;
 		try {
-			OrderMaster report = ltReportService.findReport(reportId);
+			OrderDTO report = ltReportService.findReport(reportId);
 			if (null != report) {
 				result.setContent(wrapReportObj(report));
 			} else {
@@ -148,38 +147,42 @@ public class LTReportImpl implements LTReport {
 			@ApiParam(value="Report Attachment ID") @PathVariable("attachmentId") String attachmentId,
 			HttpServletResponse response) {
 		HttpStatus respStatus = HttpStatus.OK;
+		ApiCallResult result = new ApiCallResult();
 		try {
-			ltReportService.downloadReportAttachment(attachmentId, response);
+			result = ltReportService.downloadReportAttachment(attachmentId, response);
 		} catch (Exception e) {
 			logger.error("Report update error: " + ExceptionUtils.getFullStackTrace(e));
             respStatus =  HttpStatus.INTERNAL_SERVER_ERROR;
 		}
-		return new ResponseEntity(respStatus);
+		return new ResponseEntity<ApiCallResult>(result, respStatus);
 	}
 	
-	private OrderSearchBean wrapReportObj(OrderMaster order) {
+	private OrderSearchBean wrapReportObj(OrderDTO order) {
+		String dateFormat = "dd-MMM-yyyy";
 		OrderSearchBean orderSearch = new OrderSearchBean();
 		orderSearch.setOrderId(order.getId());
-		orderSearch.setSupplierName(null != order.getSupplier() ? StringUtils.stripToEmpty(order.getSupplier().getCompanyName()) : null );
+		orderSearch.setSupplierName(null != order.getSupplier() ? StringUtils.stripToEmpty(order.getSupplier().getName()) : null );
 		orderSearch.setServiceType("LT");
 		orderSearch.setServiceTypeText("LT");
 		orderSearch.setPoNumbers(order.getClientPONo());
 		orderSearch.setStatus(order.getStatusCode());
 		orderSearch.setBookingStatus(order.getBookingStatusCode());
 		orderSearch.setBookingDate("Pending".equalsIgnoreCase(order.getOrderStatus())
-				? DateUtils.formatDate(order.getUpdateTime(), "dd-MMM-yyyy") : null);
+				? DateUtils.formatDate(order.getBookingDate(), dateFormat) : null);
 		orderSearch.setReportDueDate(null != order.getReportDueDate() ? 
-				DateUtils.formatDate(order.getReportDueDate(), "dd-MMM-yyyy") : null);
+				DateUtils.formatDate(order.getReportDueDate(), dateFormat) : null);
+		orderSearch.setReportIssuedDate(null != order.getReportIssuedDate() ?
+				DateUtils.formatDate(order.getReportIssuedDate(), dateFormat) : null);
+		orderSearch.setTestStartDate(null != order.getTestStartDate() ? 
+				DateUtils.formatDate(order.getTestStartDate(), dateFormat) : null);
 		orderSearch.setOffice(null != order.getOffice() ? order.getOffice().getName() : null);
 		orderSearch.setProductNames(StringUtils.stripToEmpty(order.getDescription()));
 		orderSearch.setLabOrderNo(order.getLabOrderno());
-		Set<OrderStyleInfo> styleInfo = order.getStyleInfo();
+		List<StyleInfoDTO> styleInfo = order.getStyleInfo();
 		if (null != styleInfo && !styleInfo.isEmpty()) {
 			orderSearch.setManufacturerStyleNo(styleInfo.iterator().next().getManufacturerStyleNo());
 		}
 		orderSearch.setProgram(null != order.getProgram() ? order.getProgram().getProgramName() : null);
-		orderSearch.setTestStartDate(null != order.getTestStartDate() ? 
-				DateUtils.formatDate(order.getTestStartDate(), "dd-MMM-yyyy") : null);
 		orderSearch.setOverallRating(order.getOverallRating());
 		orderSearch.setClientStatus(order.getClientStatus());
 		if (null != order.getAttachments() && !order.getAttachments().isEmpty()) {
@@ -187,7 +190,7 @@ public class LTReportImpl implements LTReport {
 		}
 		if (null != order.getTestAssignments() && !order.getTestAssignments().isEmpty()) {
 			List<OrderTestBean> orderTests = new ArrayList<OrderTestBean>();
-			for (OrderTestAssignment testAssign : order.getTestAssignments()) {
+			for (TestAssignmentDTO testAssign : order.getTestAssignments()) {
 				OrderTestBean orderTest = new OrderTestBean();
 				orderTest.setId(testAssign.getId());
 				orderTest.setFailureStmt(testAssign.getFailureStatement());
