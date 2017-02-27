@@ -110,16 +110,16 @@ public class SupplierImpl implements Supplier {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/supplier/{supplierId}", method = RequestMethod.GET)
-	public ResponseEntity<SupplierDetailBean> getUserSupplierDetailInfoById(@PathVariable("userId") String userId,
+	public ResponseEntity<ApiCallResult> getUserSupplierDetailInfoById(@PathVariable("userId") String userId,
 			@PathVariable("supplierId") String supplierId) throws IOException, AIException {
 		System.out.println("get user's supplier detail by supplierId: " + supplierId);
 
-		SupplierDetailBean result = factoryService.getUserSupplierDetailInfoById(userId, supplierId);
+        ApiCallResult result = factoryService.getUserSupplierDetailInfoById(userId, supplierId);
 
-		if (result != null) {
+		if (null==result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(result,HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -155,16 +155,16 @@ public class SupplierImpl implements Supplier {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/supplier", method = RequestMethod.POST)
-	public ResponseEntity<SupplierDetailBean> createSupplier(@PathVariable("userId") String userId,
+	public ResponseEntity<ApiCallResult> createSupplier(@PathVariable("userId") String userId,
 			@RequestBody SupplierDetailBean supplierDetailBean) throws IOException, AIException {
 		if (null != supplierDetailBean && ("").equals(supplierDetailBean.getUserId())) {
 			supplierDetailBean.setUserId(userId);
 		}
 		String supplierId = factoryService.createSupplier(supplierDetailBean);
 		if (null != supplierId) {
-			SupplierDetailBean result = factoryService.getUserSupplierDetailInfoById(userId, supplierId);
-			if (null == result) {
-				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            ApiCallResult result = factoryService.getUserSupplierDetailInfoById(userId, supplierId);
+			if (null != result.getMessage()) {
+				return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
 			} else {
 				return new ResponseEntity<>(result, HttpStatus.OK);
 			}
@@ -205,11 +205,11 @@ public class SupplierImpl implements Supplier {
 								e);
 					}
 					try {
-						SupplierDetailBean result = factoryService.getUserSupplierDetailInfoById("nullUserId",
+                        ApiCallResult result = factoryService.getUserSupplierDetailInfoById("nullUserId",
 								orderBean.getOrder().getOrderSupplier().getSupplierId());
 						String userId = orderBean.getOrder().getOrderGeneralInfo().getUserId();
 						UserBean userBean = userService.getCustById(userId);
-						object.getJSONObject("order").put("orderSupplier", result);
+						object.getJSONObject("order").put("orderSupplier", result.getContent());
 						object.getJSONObject("order").put("rates", userBean.getRate());
 					} catch (Exception e) {
 						logger.error("change SupplierProductLines from String to Array failed! ", e);

@@ -76,16 +76,15 @@ public class FactoryDaoImpl implements FactoryDao {
 	}
 
 	@Override
-	public SupplierDetailBean getUserSupplierDetailInfoById(String userId, String supplierId) {
+	public ApiCallResult getUserSupplierDetailInfoById(String userId, String supplierId) {
 		String url = config.getFactoryServiceUrl() + "/getSupplierBySupplierId/" + supplierId;
 		GetRequest request = GetRequest.newInstance().setUrl(url);
-		ServiceCallResult result = new ServiceCallResult();
+		ApiCallResult finalResult = new ApiCallResult();
 		SupplierDetailBean supplierDetailBean = new SupplierDetailBean();
 
 		try {
-			result = HttpUtil.issueGetRequest(request);
-			ClientFactoryBean clientFactoryBean = JsonUtil.mapToObject(result.getResponseString(),
-					ClientFactoryBean.class);
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			ClientFactoryBean clientFactoryBean = JsonUtil.mapToObject(result.getResponseString(),ClientFactoryBean.class);
 
 			supplierDetailBean.setId(clientFactoryBean.getSupplierId());
 			supplierDetailBean.setEntityName(clientFactoryBean.getSupplierNameEn());
@@ -139,16 +138,19 @@ public class FactoryDaoImpl implements FactoryDao {
 			addQualityDocList(userId, clientFactoryBean.getOtherDocBean(), qualityDocList);
 
 			supplierDetailBean.setQualityDocs(qualityDocList);
+			finalResult.setContent(supplierDetailBean);
 
 		} catch (IOException e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
-			result.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			result.setReasonPhase("error when getting supplier detail info.");
-			result.setResponseString("error when getting supplier detail info.");
+//			result.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+//			result.setReasonPhase("error when getting supplier detail info.");
+//			result.setResponseString("error when getting supplier detail info.");
+            finalResult.setMessage("Error Exception!"+e);
 		} catch (Exception e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
+			finalResult.setMessage("Error Exception!"+e);
 		}
-		return supplierDetailBean;
+		return finalResult;
 	}
 
 	@Override

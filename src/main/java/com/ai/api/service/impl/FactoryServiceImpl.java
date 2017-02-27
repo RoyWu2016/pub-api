@@ -36,7 +36,7 @@ public class FactoryServiceImpl implements FactoryService {
 	}
 
 	@Override
-	public SupplierDetailBean getUserSupplierDetailInfoById(String userId, String supplierId)
+	public ApiCallResult getUserSupplierDetailInfoById(String userId, String supplierId)
 			throws IOException, AIException {
 		return factoryDao.getUserSupplierDetailInfoById(userId, supplierId);
 	}
