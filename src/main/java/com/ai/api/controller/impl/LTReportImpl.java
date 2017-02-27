@@ -158,6 +158,7 @@ public class LTReportImpl implements LTReport {
 	}
 	
 	private OrderSearchBean wrapReportObj(OrderDTO order) {
+		String dateFormat = "dd-MMM-yyyy";
 		OrderSearchBean orderSearch = new OrderSearchBean();
 		orderSearch.setOrderId(order.getId());
 		orderSearch.setSupplierName(null != order.getSupplier() ? StringUtils.stripToEmpty(order.getSupplier().getName()) : null );
@@ -167,9 +168,13 @@ public class LTReportImpl implements LTReport {
 		orderSearch.setStatus(order.getStatusCode());
 		orderSearch.setBookingStatus(order.getBookingStatusCode());
 		orderSearch.setBookingDate("Pending".equalsIgnoreCase(order.getOrderStatus())
-				? DateUtils.formatDate(order.getBookingDate(), "dd-MMM-yyyy") : null);
+				? DateUtils.formatDate(order.getBookingDate(), dateFormat) : null);
 		orderSearch.setReportDueDate(null != order.getReportDueDate() ? 
-				DateUtils.formatDate(order.getReportDueDate(), "dd-MMM-yyyy") : null);
+				DateUtils.formatDate(order.getReportDueDate(), dateFormat) : null);
+		orderSearch.setReportIssuedDate(null != order.getReportIssuedDate() ?
+				DateUtils.formatDate(order.getReportIssuedDate(), dateFormat) : null);
+		orderSearch.setTestStartDate(null != order.getTestStartDate() ? 
+				DateUtils.formatDate(order.getTestStartDate(), dateFormat) : null);
 		orderSearch.setOffice(null != order.getOffice() ? order.getOffice().getName() : null);
 		orderSearch.setProductNames(StringUtils.stripToEmpty(order.getDescription()));
 		orderSearch.setLabOrderNo(order.getLabOrderno());
@@ -178,8 +183,6 @@ public class LTReportImpl implements LTReport {
 			orderSearch.setManufacturerStyleNo(styleInfo.iterator().next().getManufacturerStyleNo());
 		}
 		orderSearch.setProgram(null != order.getProgram() ? order.getProgram().getProgramName() : null);
-		orderSearch.setTestStartDate(null != order.getTestStartDate() ? 
-				DateUtils.formatDate(order.getTestStartDate(), "dd-MMM-yyyy") : null);
 		orderSearch.setOverallRating(order.getOverallRating());
 		orderSearch.setClientStatus(order.getClientStatus());
 		if (null != order.getAttachments() && !order.getAttachments().isEmpty()) {
