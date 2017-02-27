@@ -83,6 +83,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 						.encode().toUri(),
 				OrderDTO[].class));
 
+		String dateFormat = "dd-MMM-yyyy";
 		for (OrderDTO order : orders) {
 			OrderSearchBean orderSearch = new OrderSearchBean();
 			orderSearch.setOrderId(order.getId());
@@ -93,17 +94,19 @@ public class LTOrderDaoImpl implements LTOrderDao {
 			orderSearch.setStatus(order.getStatusCode());
 			orderSearch.setBookingStatus(order.getBookingStatusCode());
 			orderSearch.setBookingDate(null != order.getBookingDate() ? 
-					DateUtils.formatDate(order.getBookingDate(), "dd-MMM-yyyy") : null);
+					DateUtils.formatDate(order.getBookingDate(), dateFormat) : null);
 			orderSearch.setReportDueDate(null != order.getReportDueDate() ? 
-					DateUtils.formatDate(order.getReportDueDate(), "dd-MMM-yyyy") : null);
+					DateUtils.formatDate(order.getReportDueDate(), dateFormat) : null);
+			orderSearch.setReportIssuedDate(null != order.getReportIssuedDate() ?
+					DateUtils.formatDate(order.getReportIssuedDate(), dateFormat) : null);
+			orderSearch.setTestStartDate(null != order.getTestStartDate() ? 
+					DateUtils.formatDate(order.getTestStartDate(), dateFormat) : null);
 			orderSearch.setOffice(null != order.getOffice() ? order.getOffice().getName() : null);
 			orderSearch.setProductNames(StringUtils.stripToEmpty(order.getDescription()));
 			orderSearch.setLabOrderNo(order.getLabOrderno());
 			orderSearch.setManufacturerStyleNo(!CollectionUtils.isEmpty(order.getStyleInfo()) ? 
 					order.getStyleInfo().get(0).getManufacturerStyleNo() : null);
 			orderSearch.setProgram(null != order.getProgram() ? order.getProgram().getProgramName() : null);
-			orderSearch.setTestStartDate(null != order.getTestStartDate() ? 
-					DateUtils.formatDate(order.getTestStartDate(), "dd-MMM-yyyy") : null);
 			orderSearch.setOverallRating(order.getOverallRating());
 			orderSearch.setClientStatus(order.getClientStatus());
 			orderSearchList.add(orderSearch);

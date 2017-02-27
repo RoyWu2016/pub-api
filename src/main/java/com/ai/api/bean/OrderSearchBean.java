@@ -16,6 +16,7 @@ public class OrderSearchBean extends SimpleOrderSearchBean implements Serializab
     private String office;
     private String program;
     private String reportDueDate;
+    private String reportIssuedDate;
     private String decision;
     private String labOrderNo;
     private Integer bookingStatus;
@@ -59,6 +60,14 @@ public class OrderSearchBean extends SimpleOrderSearchBean implements Serializab
 
 	public void setReportDueDate(String reportDueDate) {
 		this.reportDueDate = reportDueDate;
+	}
+
+	public String getReportIssuedDate() {
+		return reportIssuedDate;
+	}
+
+	public void setReportIssuedDate(String reportIssuedDate) {
+		this.reportIssuedDate = reportIssuedDate;
 	}
 
 	public String getDecision() {
