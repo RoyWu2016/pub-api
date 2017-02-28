@@ -68,7 +68,7 @@ public class SupplierImpl implements Supplier {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/suppliers", method = RequestMethod.GET)
-	public ResponseEntity<List<SupplierSearchResultBean>> getUserSupplierById(@PathVariable("userId") String userId)
+	public ResponseEntity<List<SupplierSearchResultBean>> getSuppliersByUserId(@PathVariable("userId") String userId)
 			throws IOException, AIException {
 		System.out.println("get user's suppliers by userId: " + userId);
 
@@ -110,7 +110,7 @@ public class SupplierImpl implements Supplier {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/supplier/{supplierId}", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getUserSupplierDetailInfoById(@PathVariable("userId") String userId,
+	public ResponseEntity<ApiCallResult> getSupplierDetailInfoById(@PathVariable("userId") String userId,
 			@PathVariable("supplierId") String supplierId) throws IOException, AIException {
 		System.out.println("get user's supplier detail by supplierId: " + supplierId);
 
