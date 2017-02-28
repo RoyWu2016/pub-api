@@ -8,6 +8,7 @@
     <context:annotation-config/>
     <context:spring-configured/>
     <!--<bean id="contextApplicationContextProvider" class="com.ai.commons.spring.ApplicationContextProvider"/>-->
+    <!-- <context:component-scan base-package="com.ai.commons.service, com.ai.api, com.ai.commons.services"> -->
     <context:component-scan base-package="com.ai.commons.service, com.ai.api">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
         <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController" />
@@ -104,8 +105,7 @@
     <bean id="cacheManager" class="com.ai.commons.cache.CacheManager"/>
     <bean id="commonParamService" class="com.ai.commons.services.ParameterService"
           p:PARAMETER_SERVICE_URL="${parameter.service.lb.url}"/>
-
-
+          
     <bean id="fileService" class="com.ai.commons.services.FileService" p:fileServiceUrl="${file.service.lb.url}"
           p:localTempDir="${local.temp.folder}"/>
 
@@ -116,7 +116,10 @@
 
     <!-- Version bean for application information -->
     <!--<bean id="versionBean" class="version.Version"/>-->
-
+	
+	<!-- Configuring the email Service -->
+    <bean id="emailService" class="com.ai.commons.services.EmailService" />
+    <bean id="ltEmailService" class="com.ai.api.service.impl.LTEmailServiceImpl" />      
 
     <!-- Scheduler configuration -->
     <import resource="spring-scheduler.xml"/>
