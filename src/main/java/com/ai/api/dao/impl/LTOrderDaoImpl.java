@@ -258,6 +258,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 							.findFirst().orElse(null);
 				}
 				testDto.setPrice(null != priceDetails && null != priceDetails.getPrice() ? priceDetails.getPrice() : 0);
+				testDto.setMandatory(testAssign.getMandatory());
 				orderTest.setTest(testDto);
 			}
 			if (null != testAssign.getLab()) {
