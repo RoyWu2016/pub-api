@@ -9,6 +9,7 @@ package com.ai.api.service.impl;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.ai.aims.constants.OrderStatus;
 import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.CrmCompany;
 import com.ai.aims.services.model.OrderMaster;
@@ -24,6 +26,7 @@ import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.LTOrderDao;
 import com.ai.api.exception.AIException;
+import com.ai.api.service.LTEmailService;
 import com.ai.api.service.LTOrderService;
 import com.ai.api.service.UserService;
 import com.ai.commons.beans.ApiCallResult;
@@ -66,6 +69,10 @@ public class LTOrderServiceImpl implements LTOrderService {
 	@Autowired
 	@Qualifier("userService")
 	private UserService userService;
+	
+	@Autowired
+	@Qualifier("ltEmailService")
+	private LTEmailService ltEmailService;
 
 	@Override
 	public List<OrderSearchBean> searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException {
@@ -104,8 +111,23 @@ public class LTOrderServiceImpl implements LTOrderService {
 	}
 
 	@Override
-	public ApiCallResult editOrder(String userId, OrderMaster order) throws IOException {
-		return ltorderDao.editOrder(userId, order);
+	public ApiCallResult editOrder(String userId, OrderMaster order) {
+		try{
+			ApiCallResult apiCallResult = ltorderDao.editOrder(userId, order);
+			OrderDTO orderDTO = (OrderDTO)apiCallResult.getContent();
+			if(OrderStatus.PENDING.equalsIgnoreCase(orderDTO.getOrderStatus())){
+				UserBean user = userService.getCustById(userId);
+				String companyId = user.getCompany().getId();
+				boolean sendEmailAddOrder = ltEmailService.sendEmailAddOrder(orderDTO, companyId);
+				if(!sendEmailAddOrder)
+					throw new AIException("Error during send mail after saving order");	
+			}
+			return apiCallResult;
+		} catch (Exception e) {
+			logger.error("Exception in edit Order :: ");
+			logger.error(ExceptionUtils.getStackTrace(e));
+			return new ApiCallResult<>();
+		}
 	}
 	
 	@Override
