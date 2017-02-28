@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.http.client.utils.DateUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ai.aims.constants.CommonConstants;
 import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.api.dao.CustomerDao;
 import com.ai.api.service.APIEmailService;
@@ -35,7 +37,7 @@ public class LTEmailServiceImpl extends APIEmailService implements LTEmailServic
 			String name = new StringBuilder(customerContact.getMainGender()).append(" ")
 					.append(customerContact.getMainGivenName()).toString();
 			params.put("userFirstName", name);
-			params.put("bookingDate", order.getBookingDate());
+			params.put("bookingDate", DateUtils.formatDate(order.getBookingDate(), CommonConstants.DATE_DD_MM_YYYY));
 			params.put("mainDescription",order.getDescription());
 			params.put("testLocation",order.getOffice().getName());
 			params.put("supplierName",order.getClient().getName());
