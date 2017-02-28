@@ -309,7 +309,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                 MultipartFile mpf = request.getFile(itr.next());
                 Map map = new HashMap<>();
                 String keyName = mpf.getName();
-                logger.info("keyName:"+keyName);
+//                logger.info("keyName:"+keyName);
                 String caption = request.getParameter(keyName);
                 String[] key = keyName.split(":");
                 List list2 = new ArrayList<>();
@@ -322,18 +322,18 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                     mapFileList.get(key[0]).add(map);
                 }
             }
-            logger.info("mapFileList size :"+mapFileList.size());
+//            logger.info("mapFileList size :"+mapFileList.size());
 
             for (Map.Entry<String, List> map : mapFileList.entrySet())
             {
-                logger.info("get each mapFile " + map.getKey()+" -- "+map.getValue());
+//                logger.info("get each mapFile " + map.getKey()+" -- "+map.getValue());
                 List<FileMetaBean> beanList = new ArrayList<>();
                 List<File>  toBeDeleted = new ArrayList<>();
                 for(Object mpf : map.getValue()){
                     MultipartFile _mpf = ((CommonsMultipartFile)((Map)mpf).get("multipartFile"));
                     String caption = ((Map)mpf).get("caption").toString();
                     String[] keys = _mpf.getName().split(":")[0].split("@");
-                    logger.info("get MultipartFile "+_mpf.getName()+" || caption:"+caption+" || keys:"+keys);
+//                    logger.info("get MultipartFile "+_mpf.getName()+" || caption:"+caption+" || keys:"+keys);
                     String fileType = FileType.INSP_RESULT_FILE.getType();
                     if(keys[1].equals("Upload_Product_Image")){
                         fileType = FileType.PROD_REPORT_PICTURE.getType();
@@ -347,7 +347,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                         if (!tempDir.exists()) {
                             tempDir.mkdir();
                         }
-                        logger.info("ready to copy file to api temp ...");
+//                        logger.info("ready to copy file to api temp ...");
                         logger.info(_mpf.getName()+" || "+tempDir.getAbsolutePath());
                         String filePath = com.ai.commons.FileUtils.copyFileToDirectory(_mpf, tempDir);
                         File uploadedFile=new File(tempDir + System.getProperty("file.separator") + filePath);
@@ -358,8 +358,8 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                         beanList.add(ftb);
                     }
                 }
-                logger.info("file uploaded to FILE_SERVICE !");
-                logger.info("tobeDeleted size :"+toBeDeleted.size());
+//                logger.info("file uploaded to FILE_SERVICE !");
+//                logger.info("tobeDeleted size :"+toBeDeleted.size());
                 fileMetaList.put(map.getKey(), beanList);
                 toBeDeleted.stream().filter(File::exists).forEach(File::delete);
                 logger.info("delete done!");
