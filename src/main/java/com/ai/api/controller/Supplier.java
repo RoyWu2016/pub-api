@@ -14,9 +14,9 @@ import org.springframework.http.ResponseEntity;
  * Created by Administrator on 2016/6/29 0029.
  */
 public interface Supplier {
-	ResponseEntity<List<SupplierSearchResultBean>> getUserSupplierById(String userId) throws IOException, AIException;
+	ResponseEntity<List<SupplierSearchResultBean>> getSuppliersByUserId(String userId) throws IOException, AIException;
 
-	ResponseEntity<ApiCallResult> getUserSupplierDetailInfoById(String userId, String supplierId)
+	ResponseEntity<ApiCallResult> getSupplierDetailInfoById(String userId, String supplierId)
 			throws IOException, AIException;
 
 	ResponseEntity<ApiCallResult> updateUserSupplierDetailInfo(String userId, String supplierId,
