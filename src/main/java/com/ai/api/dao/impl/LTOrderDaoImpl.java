@@ -253,7 +253,9 @@ public class LTOrderDaoImpl implements LTOrderDao {
 				if (!CollectionUtils.isEmpty(test.getPricingDetails())) {
 					OrderDTO order = findOrder(orderId);
 					priceDetails = test.getPricingDetails().parallelStream().filter(
-							p -> p.getOffice().getId().equals(order.getTestingLocation().getId())).findFirst().orElse(null);
+							p -> (null != p.getOffice() && null != order.getTestingLocation() &&
+								p.getOffice().getId().equals(order.getTestingLocation().getId())))
+							.findFirst().orElse(null);
 				}
 				testDto.setPrice(null != priceDetails && null != priceDetails.getPrice() ? priceDetails.getPrice() : 0);
 				orderTest.setTest(testDto);
