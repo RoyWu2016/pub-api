@@ -125,12 +125,13 @@ public class LTOrderImpl implements LTOrder {
 	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> editOrder(HttpServletRequest request, 
 			@ApiParam(value="User ID") @PathVariable String userId, 
-			@ApiParam(value="Order ID") @PathVariable String orderId, 
-			@RequestBody OrderMaster order) {
+			@ApiParam(value="Order ID") @PathVariable String orderId,
+			@RequestBody OrderMaster order,
+			@ApiParam(value="Send Mail") @RequestParam(value = "sendMail", required = true, defaultValue = "false") Boolean sendMail) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			order.setId(orderId);
-			callResult = ltOrderService.editOrder(userId, order);
+			callResult = ltOrderService.editOrder(userId, order, sendMail);
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
 			callResult.setMessage("Error in saving updates to LT order.");
