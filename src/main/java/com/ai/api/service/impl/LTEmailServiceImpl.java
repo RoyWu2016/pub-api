@@ -36,6 +36,7 @@ public class LTEmailServiceImpl extends APIEmailService implements LTEmailServic
 			Map<String, Object> params = new HashMap<String, Object>();
 			String name = new StringBuilder(customerContact.getMainGender()).append(" ")
 					.append(customerContact.getMainGivenName()).toString();
+			params.put("orderId", order.getId());
 			params.put("userFirstName", name);
 			params.put("bookingDate", DateUtils.formatDate(order.getBookingDate(), CommonConstants.DATE_DD_MM_YYYY));
 			params.put("mainDescription",order.getDescription());
