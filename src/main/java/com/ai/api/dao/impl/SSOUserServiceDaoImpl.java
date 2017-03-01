@@ -184,7 +184,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 			result.setStatusCode(HttpServletResponse.SC_FORBIDDEN);
 			result.setResponseString("");
 			result.setReasonPhase("AI API call token not present.");
-		} else if (!Consts.Http.PUBLIC_API_ACCESS_TOKENS.contains(headerValue)) {
+		} else if (!Consts.Http.PUBLIC_API_ACCESS_TOKENS.containsKey(headerValue)) {
 			result.setStatusCode(HttpServletResponse.SC_FORBIDDEN);
 			result.setResponseString("");
 			result.setReasonPhase("AI public api access token found but not correct.");
