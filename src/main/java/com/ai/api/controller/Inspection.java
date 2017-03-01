@@ -54,4 +54,6 @@ public interface Inspection {
 
 	ResponseEntity<ApiCallResult> calculatePricing(String userId,String draftId,String samplingLevel,String measurementSamplingSize);
 
+	ResponseEntity<ApiCallResult> reInspection(String userId, String orderId, String draftId);
+
 }

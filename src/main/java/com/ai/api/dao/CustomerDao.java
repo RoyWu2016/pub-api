@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ai.api.bean.EmployeeBean;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
@@ -39,5 +40,7 @@ public interface CustomerDao {
 	ServiceCallResult resetPassword(String login);
 
 	boolean checkIfUserNameExist(String userName);
+	
+	ContactBean getCustomerContact(String customerId);
 
 }
