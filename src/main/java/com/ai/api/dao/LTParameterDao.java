@@ -44,10 +44,12 @@ public interface LTParameterDao {
 	public ApiCallResult searchTestsByName(String testName) throws IOException;
 	
 	public ApiCallResult searchTest(String testId) throws IOException;
-	
+
 	public ApiCallResult searchCategories() throws IOException;
 	
 	public ApiCallResult searchTags(SearchTagCriteria criteria) throws IOException;
 
 	public ApiCallResult searchRegions() throws IOException;
+	
+	public ApiCallResult searchTATs(String officeId) throws IOException;
 }

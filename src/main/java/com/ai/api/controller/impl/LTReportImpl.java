@@ -1,14 +1,23 @@
 package com.ai.api.controller.impl;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.aims.services.dto.order.OrderDTO;
+import com.ai.aims.services.dto.order.StyleInfoDTO;
+import com.ai.aims.services.dto.order.TestAssignmentDTO;
+import com.ai.api.bean.OrderSearchBean;
+import com.ai.api.bean.OrderTestBean;
+import com.ai.api.controller.LTReport;
+import com.ai.api.service.LTReportService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.client.utils.DateUtils;
@@ -24,18 +33,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ai.aims.services.dto.order.OrderDTO;
-import com.ai.aims.services.dto.order.StyleInfoDTO;
-import com.ai.aims.services.dto.order.TestAssignmentDTO;
-import com.ai.api.bean.OrderSearchBean;
-import com.ai.api.bean.OrderTestBean;
-import com.ai.api.controller.LTReport;
-import com.ai.api.service.LTReportService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-
 @SuppressWarnings({ "rawtypes", "unchecked" })
 @RestController
+@Api(tags = {"Lab Test Report"}, description = "Lab Test report APIs")
 public class LTReportImpl implements LTReport {
 	
 	protected Logger logger = LoggerFactory.getLogger(LTOrderImpl.class);

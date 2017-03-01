@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -20,13 +21,13 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ai.aims.constants.Status;
+import com.ai.aims.services.dto.TestFilterDTO;
 import com.ai.aims.services.model.OfficeMaster;
 import com.ai.aims.services.model.ProductCategory;
 import com.ai.aims.services.model.Region;
 import com.ai.aims.services.model.Tag;
-import com.ai.aims.services.model.TagTestMap;
 import com.ai.aims.services.model.TestMaster;
-import com.ai.aims.services.model.TestPricingDetail;
+import com.ai.aims.services.model.TurnAroundTime;
 import com.ai.aims.services.model.search.SearchTagCriteria;
 import com.ai.aims.services.model.search.SearchTagResponse;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
@@ -34,7 +35,7 @@ import com.ai.api.bean.OfficeSearchBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.RegionSearchBean;
 import com.ai.api.bean.TagSearchBean;
-import com.ai.api.bean.TestSearchBean;
+import com.ai.api.bean.TatSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.LTParameterDao;
 import com.ai.api.util.AIUtil;
@@ -116,31 +117,7 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		ApiCallResult callResult = new ApiCallResult();
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/tag/search/tests").toString();		
-		List<TagTestMap> tagTests = Arrays.asList(restTemplate.getForObject(buildTagTestSearchCriteria(criteria, url).build().encode().toUri(), TagTestMap[].class));
-		List<TestSearchBean> tests = new ArrayList<TestSearchBean>(0);
-		for (TagTestMap tagTest : tagTests) {
-			TestMaster test = tagTest.getTest();
-			if (null != test) {
-				TestSearchBean testBean = new TestSearchBean();
-				testBean.setTestId(test.getId());
-				testBean.setTestName(test.getName());
-				testBean.setCountry(tagTest.getCountry());
-				TestPricingDetail priceDetail = null != test.getPricingDetails() && null != criteria.getOffice() ? test.getPricingDetails().parallelStream().filter(
-						p -> criteria.getOffice().equals(p.getOffice().getId())).findFirst().orElse(null) : null;
-				testBean.setPrice(null != priceDetail ? priceDetail.getPrice() : 0);
-				List<String> tags = new ArrayList<String>(0);
-				tagTests.parallelStream().filter(t -> (test.getId().equals(t.getTestId()) 
-						&& null != t.getTagName())).forEach(t -> tags.add(t.getTagName()));
-				testBean.setTags(tags);
-				List<String> categories = new ArrayList<String>(0);
-				tagTests.parallelStream().filter(t -> (test.getId().equals(t.getTestId()) &&
-						null != t.getProductCategory())).forEach(t -> categories.add(t.getProductCategory()));
-				testBean.setCategories(categories);
-				testBean.setMandatory(!"Y".equalsIgnoreCase(tagTest.getOptional()));
-				if (!tests.contains(testBean))
-					tests.add(testBean);
-			}
-		}
+		List<TestFilterDTO> tests = Arrays.asList(restTemplate.getForObject(buildTagTestSearchCriteria(criteria, url).build().encode().toUri(), TestFilterDTO[].class));
 		callResult.setContent(tests);
 		return callResult;
 	}
@@ -228,6 +205,27 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		return callResult;
 	}
 
+	@Override
+	public ApiCallResult searchTATs(String officeId) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		ApiCallResult callResult = new ApiCallResult();
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/tats/office/").append(officeId).toString();
+		List<TurnAroundTime> tats = Arrays.asList(restTemplate.getForObject(url, TurnAroundTime[].class));
+		List<TatSearchBean> tatResult = new ArrayList<TatSearchBean>(tats.size());
+		tats.stream().forEach(t -> tatResult.add(getTatDetails(t)));
+		callResult.setContent(tatResult);
+		return callResult;
+	}
+	
+	private TatSearchBean getTatDetails(TurnAroundTime tat) {
+		TatSearchBean tatSearchBean = new TatSearchBean();
+		BeanUtils.copyProperties(tat, tatSearchBean, "office", "isExpService");
+		tatSearchBean.setOffice(null != tat.getOffice() ? tat.getOffice().getName() : null);
+		tatSearchBean.setIsExpService("1".equals(tat.getIsExpService()) ? true : false);
+		return tatSearchBean;
+	}
+
 	private UriComponentsBuilder buildTagSearchCriteria(SearchTagCriteria criteria, String url) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
 		        .queryParam("page", criteria.getPage() != 0 ? criteria.getPage() - 1 : 0)
@@ -269,6 +267,12 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		
 		if(null != criteria.getProductCategory() && !criteria.getProductCategory().isEmpty())
 			builder.queryParam("productCategory", criteria.getProductCategory());
+		
+		if(null != criteria.getOffice() && !criteria.getOffice().isEmpty())
+			builder.queryParam("office", criteria.getOffice());
+		
+		if(null != criteria.getProgram() && !criteria.getProgram().isEmpty())
+			builder.queryParam("program", criteria.getProgram());
 		
 		if(null != criteria.getTestnames())
 			builder.queryParam("testnames", String.join(",", criteria.getTestnames()));
