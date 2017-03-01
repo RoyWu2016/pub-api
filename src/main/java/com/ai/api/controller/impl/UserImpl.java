@@ -8,25 +8,11 @@ package com.ai.api.controller.impl;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import com.alibaba.fastjson.JSONArray;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
@@ -43,7 +29,20 @@ import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /***************************************************************************
  * <PRE>
@@ -66,6 +65,7 @@ import com.alibaba.fastjson.JSONObject;
  ***************************************************************************/
 
 @RestController
+@Api(tags = {"User Profile"}, description = "User profile APIs")
 public class UserImpl implements User {
 	private static final Logger logger = LoggerFactory.getLogger(UserImpl.class);
 

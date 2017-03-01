@@ -10,6 +10,7 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
  ***************************************************************************/
 @RestController
 @SuppressWarnings("rawtypes")
+@Api(tags = {"Audit"}, description = "Audit booking APIs")
 public class AuditImpl implements Audit {
 
 	protected Logger logger = LoggerFactory.getLogger(AuditImpl.class);

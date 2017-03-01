@@ -6,6 +6,7 @@ import com.ai.commons.HttpUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.helpers.http.beans.ServiceResponse;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
  * History         : TODO
  */
 @RestController
+@Api(tags = {"Finance"}, description = "Finance APIs")
 public class FinanceImpl implements Finance {
 
     private static Logger logger = LoggerFactory.getLogger(FinanceImpl.class);

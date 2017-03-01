@@ -26,6 +26,7 @@ import com.ai.commons.constants.AuditConstants;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.io.IOUtils;
@@ -46,6 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @SuppressWarnings({ "rawtypes", "unchecked", "restriction" })
 @RestController
+@Api(tags = {"Report"}, description = "Report APIs")
 public class ReportImpl implements Report {
 	protected Logger logger = LoggerFactory.getLogger(ReportImpl.class);
 
