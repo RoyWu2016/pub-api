@@ -48,5 +48,5 @@ public interface LTReportService {
 
 	public ApiCallResult editReportTestStatus(String userId, String reportId, String testId, String status) throws IOException;
 
-	public void downloadReportAttachment(String attachmentId, HttpServletResponse response) throws IOException;
+	public ApiCallResult downloadReportAttachment(String attachmentId, HttpServletResponse response) throws IOException;
 }

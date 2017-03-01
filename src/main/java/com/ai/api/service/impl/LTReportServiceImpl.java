@@ -2,7 +2,10 @@ package com.ai.api.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import com.ai.aims.constants.OrderStatus;
@@ -30,7 +32,7 @@ import com.ai.api.service.UserService;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes", "unchecked"})
 @Service
 @Qualifier("ltreportservice")
 public class LTReportServiceImpl implements LTReportService {
@@ -77,7 +79,7 @@ public class LTReportServiceImpl implements LTReportService {
 					.filter(a -> "Client report".equalsIgnoreCase(a.getLabel())).findFirst().orElse(null);
 			attachments.clear();
 			if (null != attachment) {
-			attachments.add(attachment);
+				attachments.add(attachment);
 			}
 			order.setAttachments(attachments);
 		}
@@ -97,15 +99,19 @@ public class LTReportServiceImpl implements LTReportService {
 	}
 	
 	@Override
-	public void downloadReportAttachment(String attachmentId, HttpServletResponse response) throws IOException {
+	public ApiCallResult downloadReportAttachment(String attachmentId, HttpServletResponse response) throws IOException {
 		OrderAttachment attachment = ltOrderDao.getOrderAttachment(attachmentId);
+		ApiCallResult result = new ApiCallResult();
 		if (null != attachment) {
 			FileMetaBean fileInfo = apiFileService.getFileService().getFileInfoById(attachment.getFileHashcode());
 			InputStream inputStream = apiFileService.getFileService().getFile(attachment.getFileHashcode());
-			IOUtils.copy(inputStream, response.getOutputStream());
-			response.addHeader(HttpHeaders.CONTENT_TYPE, fileInfo.getFileType());
-			response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ fileInfo.getFileName() + "\"");
-			response.addHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(fileInfo.getFileSize()));
+			final byte[] bytes64bytes = Base64.getEncoder().encode(IOUtils.toByteArray(inputStream));
+			final String fileContent = new String(bytes64bytes);
+			Map<String, Object> content = new HashMap<String, Object>();
+			content.put("base64", fileContent);
+			content.put("name", fileInfo.getFileName());
+			result.setContent(content);
 		}
+		return result;
 	}
 }
