@@ -118,9 +118,10 @@ public class LTOrderServiceImpl implements LTOrderService {
 				UserBean user = userService.getCustById(userId);
 				String companyId = user.getCompany().getId();
 				boolean sendEmailAddOrder = ltEmailService.sendEmailAddOrder(orderDTO, companyId);
-				if(!sendEmailAddOrder)
+				if(!sendEmailAddOrder) {
 					logger.error(ExceptionUtils.getFullStackTrace(new AIException("Error during send mail after saving order")));
 					apiCallResult.setMessage("Error during send mail after saving order");
+				}
 			}
 			return apiCallResult;
 		} catch (Exception e) {
