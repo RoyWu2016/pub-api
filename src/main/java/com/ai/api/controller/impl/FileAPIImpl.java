@@ -150,7 +150,7 @@ public class FileAPIImpl implements FileAPI {
 				if (sizeM > serviceConfig.getFileMaximumSize()) {
 					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 				} else {
-					File tempDir = new File(myFileService.getFileService().getLocalTempDir() + sourceId);
+					File tempDir = new File(myFileService.getFileService().getLocalTempDir() + File.separator + sourceId);
 
 					if (!tempDir.exists()) {
 						tempDir.mkdir();
