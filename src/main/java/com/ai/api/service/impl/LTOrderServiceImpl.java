@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.ai.aims.constants.OrderStatus;
 import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.CrmCompany;
 import com.ai.aims.services.model.OrderMaster;
@@ -111,16 +110,17 @@ public class LTOrderServiceImpl implements LTOrderService {
 	}
 
 	@Override
-	public ApiCallResult editOrder(String userId, OrderMaster order) {
+	public ApiCallResult editOrder(String userId, OrderMaster order, boolean sendEmail) {
 		try{
 			ApiCallResult apiCallResult = ltorderDao.editOrder(userId, order);
 			OrderDTO orderDTO = (OrderDTO)apiCallResult.getContent();
-			if(OrderStatus.PENDING.equalsIgnoreCase(orderDTO.getOrderStatus())){
+			if(sendEmail){
 				UserBean user = userService.getCustById(userId);
 				String companyId = user.getCompany().getId();
 				boolean sendEmailAddOrder = ltEmailService.sendEmailAddOrder(orderDTO, companyId);
 				if(!sendEmailAddOrder)
-					throw new AIException("Error during send mail after saving order");	
+					logger.error(ExceptionUtils.getFullStackTrace(new AIException("Error during send mail after saving order")));
+					apiCallResult.setMessage("Error during send mail after saving order");
 			}
 			return apiCallResult;
 		} catch (Exception e) {

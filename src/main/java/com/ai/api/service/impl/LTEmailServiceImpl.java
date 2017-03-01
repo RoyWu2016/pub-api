@@ -39,7 +39,7 @@ public class LTEmailServiceImpl extends APIEmailService implements LTEmailServic
 			params.put("userFirstName", name);
 			params.put("bookingDate", DateUtils.formatDate(order.getBookingDate(), CommonConstants.DATE_DD_MM_YYYY));
 			params.put("mainDescription",order.getDescription());
-			params.put("testLocation",order.getOffice().getName());
+			params.put("testLocation",order.getTestingLocation().getName());
 			params.put("supplierName",order.getClient().getName());
 			params.put("programName",order.getProgram().getProgramName());
 			params.put("labOrderno",order.getLabOrderno());
