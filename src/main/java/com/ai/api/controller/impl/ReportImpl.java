@@ -11,7 +11,23 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.api.controller.Report;
+import com.ai.api.service.ReportService;
+import com.ai.commons.StringUtils;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
+import com.ai.commons.beans.psi.report.ClientReportSearchBean;
+import com.ai.commons.beans.report.ReportsForwardingBean;
+import com.ai.commons.beans.sync.LotusSyncBean;
 import com.ai.commons.constants.AuditConstants;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,21 +40,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.ai.api.controller.Report;
-import com.ai.api.service.ReportService;
-import com.ai.commons.StringUtils;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.PageParamBean;
-import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
-import com.ai.commons.beans.psi.report.ClientReportSearchBean;
-import com.ai.commons.beans.report.ReportsForwardingBean;
-import com.ai.commons.beans.sync.LotusSyncBean;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 /**
  * Created by yan on 2016/7/25.
@@ -218,10 +219,15 @@ public class ReportImpl implements Report {
 
 	@Override
 	@TokenSecured
+	@ApiOperation(value = "Export Inspection Report As Excle API", response = InputStream.class)
 	@RequestMapping(value = "/user/{userId}/export-reports", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, String>> exportReports(@PathVariable("userId") String userId,
-			@RequestParam(value = "start", required = false, defaultValue = "") String start,
-			@RequestParam(value = "end", required = false, defaultValue = "") String end,
+	public ResponseEntity<Map<String, String>> exportReports(
+			@ApiParam(required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false)
+			@RequestParam(value = "inspection start date", required = false, defaultValue = "") String start,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false)
+			@RequestParam(value = "inspection end date", required = false, defaultValue = "") String end,
 			HttpServletResponse httpResponse) {
 		logger.info("export reports ... ");
 		logger.info("userId : " + userId);
@@ -313,9 +319,13 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/reports/{reportIds}/forwarded", method = RequestMethod.POST)
-	public ResponseEntity<String> forwardReports(@PathVariable("userId") String userId,
-			@PathVariable("reportIds") String reportIds, @RequestBody ReportsForwardingBean reportsForwardingBean) {
-		// TODO Auto-generated method stub
+	public ResponseEntity<String> forwardReports(
+			@ApiParam(required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(allowableValues = "comma delimited report ids", required = true)
+			@PathVariable("reportIds") String reportIds,
+			@ApiParam(required = true)
+			@RequestBody ReportsForwardingBean reportsForwardingBean) {
 		reportIds = reportIds.replace(",", ";");
 		if (StringUtils.isBlank(reportsForwardingBean.getTo())) {
 			return new ResponseEntity<>("the field 'to' can not be null!", HttpStatus.BAD_REQUEST);
