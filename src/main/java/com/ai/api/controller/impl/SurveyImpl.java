@@ -1,6 +1,6 @@
 package com.ai.api.controller.impl;
 
-import com.ai.api.controller.SurveyController;
+import com.ai.api.controller.Survey;
 import com.ai.api.service.SurveyService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
-public class SurveyControllerImpl implements SurveyController {
+public class SurveyImpl implements Survey {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired

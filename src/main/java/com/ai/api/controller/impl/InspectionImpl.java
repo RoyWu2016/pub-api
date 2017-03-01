@@ -1,11 +1,8 @@
 package com.ai.api.controller.impl;
 
-import com.ai.api.service.DraftService;
-import com.ai.api.service.OrderService;
-import com.ai.commons.beans.order.SimpleOrderSearchBean;
-import com.ai.commons.beans.order.draft.DraftOrder;
-import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
-import com.ai.consts.ConstMap;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -13,18 +10,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.api.controller.Inspection;
+import com.ai.api.service.DraftService;
 import com.ai.api.service.InspectionService;
+import com.ai.api.service.OrderService;
 import com.ai.commons.Consts;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.List;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
+import com.ai.commons.beans.order.draft.DraftOrder;
+import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
+import com.ai.consts.ConstMap;
 
 /***************************************************************************
  * <PRE>
@@ -283,5 +286,19 @@ public class InspectionImpl implements Inspection {
             return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/order/{orderId}/inspection-draft/{draftId}/re-inspection", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> reInspection(@PathVariable("userId") String userId,
+			@PathVariable("orderId") String orderId, @PathVariable("draftId") String draftId) {
+		logger.info("invoke: " + "/user/" + userId + "/order/" + orderId + "/draft/" + draftId + "/re-inspection");
+		ApiCallResult result = orderService.reInspection(userId, orderId, draftId);
+		if (null == result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 }

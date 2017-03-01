@@ -22,6 +22,7 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.GetRequest;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.customer.GeneralUserViewBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
@@ -44,6 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /***************************************************************************
  * <PRE>
@@ -397,5 +399,21 @@ public class CustomerDaoImpl implements CustomerDao {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return false;
+	}
+
+	@Override
+	public ContactBean getCustomerContact(String customerId) {
+		String url = new StringBuilder(config.getCustomerServiceUrl()).append("/customer/{customerId}/contact").toString();
+		url = UriComponentsBuilder.fromUriString(url).buildAndExpand(customerId).toString();
+		GetRequest request = GetRequest.newInstance().setUrl(url);
+		try {
+			ServiceCallResult result = HttpUtil.issueGetRequest(request);
+			ContactBean contact = JsonUtil.mapToObject(result.getResponseString(), ContactBean.class);
+			return contact;
+		} catch (IOException e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+			return new ContactBean();
+		}
+		
 	}
 }

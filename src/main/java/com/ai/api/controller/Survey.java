@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
  * Purpose         : TODO
  * History         : TODO
  */
-public interface SurveyController {
+public interface Survey {
 
     ResponseEntity<ApiCallResult> hasSeenRecently(String userId);
 

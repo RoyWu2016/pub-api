@@ -3,6 +3,7 @@ package com.ai.api.dao;
 import java.io.InputStream;
 import java.util.List;
 
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
@@ -14,6 +15,9 @@ import com.ai.commons.beans.sync.LotusSyncBean;
  * Created by yan on 2016/7/25.
  */
 public interface ReportDao {
+    ApiCallResult getAuditReports(String userId, String companyId, String parentId,
+                                  PageParamBean paramBean);
+
 	PageBean<ClientReportSearchBean> getPSIReports(String userId, String companyId, String parentId,
 			PageParamBean paramBean);
 

@@ -73,9 +73,11 @@ public class LTReportServiceImpl implements LTReportService {
 			// SET REPORT ATTACHMENTS
 			Set<OrderAttachment> attachments = order.getAttachments();
 			OrderAttachment attachment = attachments.parallelStream()
-					.filter(a -> "Client report".equalsIgnoreCase(a.getLabel())).findFirst().get();
+					.filter(a -> "Client report".equalsIgnoreCase(a.getLabel())).findFirst().orElse(null);
 			attachments.clear();
+			if (null != attachment) {
 			attachments.add(attachment);
+			}
 			order.setAttachments(attachments);
 		}
 		return order;

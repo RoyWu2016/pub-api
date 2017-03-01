@@ -16,7 +16,7 @@ public interface FactoryService {
 
 	List<FactorySearchBean> getSuppliersByUserId(String userId) throws IOException, AIException;
 
-	SupplierDetailBean getUserSupplierDetailInfoById(String userId, String supplierId) throws IOException, AIException;
+	ApiCallResult getUserSupplierDetailInfoById(String userId, String supplierId) throws IOException, AIException;
 
 	boolean updateSupplierDetailInfo(SupplierDetailBean supplierDetailBean) throws IOException, AIException;
 

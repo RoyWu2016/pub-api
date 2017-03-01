@@ -286,7 +286,7 @@ public class AuditDaoImpl implements AuditDao {
 		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
-		url.append("/api/audit/calculatePricing");
+		url.append("/api/audit/reAudit");
 		url.append("?userId=" + userId);
 		url.append("&draftId=" + draftId);
 		url.append("&companyId=" + companyId);
