@@ -5,6 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ai.api.controller.Payment;
+import com.ai.api.service.PaymentService;
+import com.ai.api.service.UserService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.payment.PaymentPaidBean;
+import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.ai.api.controller.Payment;
-import com.ai.api.service.PaymentService;
-import com.ai.api.service.UserService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.PageParamBean;
-import com.ai.commons.beans.payment.PaymentPaidBean;
-import com.ai.commons.beans.payment.PaymentSearchResultBean;
-import com.ai.commons.beans.psi.OrderPayRecordBean;
 
 /***************************************************************************
  * <PRE>
@@ -47,6 +46,7 @@ import com.ai.commons.beans.psi.OrderPayRecordBean;
  ***************************************************************************/
 
 @RestController
+@Api(tags = {"Payment"}, description = "Payment APIs")
 public class PaymentImpl implements Payment {
 	private static final Logger logger = LoggerFactory.getLogger(PaymentImpl.class);
 

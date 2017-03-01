@@ -18,6 +18,7 @@ import com.ai.commons.beans.psi.api.ApiInspectionBookingBean;
 import com.ai.commons.beans.psi.api.ApiInspectionOrderBean;
 import com.ai.commons.beans.psi.api.ApiOrderPriceMandayViewBean;
 import com.ai.consts.ConstMap;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -53,6 +54,7 @@ import org.springframework.web.bind.annotation.RestController;
  * </PRE>
  ***************************************************************************/
 @RestController
+@Api(tags = {"Inspection"}, description = "Inspection booking APIs")
 @SuppressWarnings("rawtypes")
 public class InspectionImpl implements Inspection {
 

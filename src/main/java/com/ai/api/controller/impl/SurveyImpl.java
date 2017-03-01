@@ -6,13 +6,17 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.NetPromoterScoreClientInfoBean;
 import com.ai.commons.beans.NetPromoterScoreResponseBean;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Project Name    : Public-API
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
  * History         : TODO
  */
 
+@Api(tags = {"Survey"}, description = "Survey APIs")
 @RestController
 public class SurveyImpl implements Survey {
     protected Logger logger = LoggerFactory.getLogger(getClass());

@@ -15,6 +15,7 @@ import com.ai.api.service.LTParameterService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.program.model.Program;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SuppressWarnings({"rawtypes"})
 @RestController
+@Api(tags = {"Lab Test"}, description = "Lab Test booking APIs")
 public class LTOrderImpl implements LTOrder {
 	
 	protected Logger logger = LoggerFactory.getLogger(LTOrderImpl.class);

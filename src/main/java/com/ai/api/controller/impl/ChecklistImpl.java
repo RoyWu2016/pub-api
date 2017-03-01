@@ -5,6 +5,18 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+import com.ai.api.controller.Checklist;
+import com.ai.api.service.ChecklistService;
+import com.ai.commons.StringUtils;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
+import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
+import com.ai.commons.util.JsonUtils;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.ai.api.controller.Checklist;
-import com.ai.api.service.ChecklistService;
-import com.ai.commons.StringUtils;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
-import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
-import com.ai.commons.beans.checklist.vo.CKLDefectVO;
-import com.ai.commons.beans.checklist.vo.CKLTestVO;
-import com.ai.commons.util.JsonUtils;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
 /***************************************************************************
  * <PRE>
@@ -50,6 +48,7 @@ import com.alibaba.fastjson.JSONObject;
  ***************************************************************************/
 
 @RestController
+@Api(tags = {"Checklist"}, description = "Checklist APIs")
 public class ChecklistImpl implements Checklist {
 
 	protected Logger logger = LoggerFactory.getLogger(ChecklistImpl.class);
