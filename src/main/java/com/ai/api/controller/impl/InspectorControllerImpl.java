@@ -4,7 +4,6 @@ import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.InspectorController;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ApiCallResult;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -55,7 +54,7 @@ public class InspectorControllerImpl implements InspectorController {
             }
             return new ResponseEntity<>(callResult, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+	        logger.error(ExceptionUtils.getFullStackTrace(e));
             callResult.setMessage("Exception: " + e.toString());
             return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -78,7 +77,7 @@ public class InspectorControllerImpl implements InspectorController {
             }
             return new ResponseEntity<>(callResult, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+	        logger.error(ExceptionUtils.getFullStackTrace(e));
             callResult.setMessage("Exception: " + e.toString());
             return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -101,7 +100,7 @@ public class InspectorControllerImpl implements InspectorController {
             }
             return new ResponseEntity<>(callResult, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+	        logger.error(ExceptionUtils.getFullStackTrace(e));
             callResult.setMessage("Exception: " + e.toString());
             return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -127,7 +126,7 @@ public class InspectorControllerImpl implements InspectorController {
             }
             return new ResponseEntity<>(callResult, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+	        logger.error(ExceptionUtils.getFullStackTrace(e));
             callResult.setMessage("Exception: " + e.toString());
             return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -150,7 +149,7 @@ public class InspectorControllerImpl implements InspectorController {
             }
             return new ResponseEntity<>(callResult, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+	        logger.error(ExceptionUtils.getFullStackTrace(e));
             callResult.setMessage("Exception: " + e.toString());
             return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -173,7 +172,7 @@ public class InspectorControllerImpl implements InspectorController {
             }
             return new ResponseEntity<>(callResult, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+	        logger.error(ExceptionUtils.getFullStackTrace(e));
             callResult.setMessage("Exception: " + e.toString());
             return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -196,7 +195,7 @@ public class InspectorControllerImpl implements InspectorController {
             }
             return new ResponseEntity<>(callResult, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+	        logger.error(ExceptionUtils.getFullStackTrace(e));
             callResult.setMessage("Exception: " + e.toString());
             return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -219,7 +218,7 @@ public class InspectorControllerImpl implements InspectorController {
             }
             return new ResponseEntity<>(callResult, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+	        logger.error(ExceptionUtils.getFullStackTrace(e));
             callResult.setMessage("Exception: " + e.toString());
             return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -242,7 +241,7 @@ public class InspectorControllerImpl implements InspectorController {
             }
             return new ResponseEntity<>(callResult, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error(ExceptionUtils.getFullStackTrace(e));
             callResult.setMessage("Exception: " + e.toString());
             return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -266,7 +265,7 @@ public class InspectorControllerImpl implements InspectorController {
             }
             return new ResponseEntity<>(callResult, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
+            logger.error(ExceptionUtils.getFullStackTrace(e));
             callResult.setMessage("Exception: " + e.toString());
             return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
         }
