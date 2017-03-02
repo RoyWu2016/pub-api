@@ -298,47 +298,47 @@ public class SupplierImpl implements Supplier {
 					} catch (Exception e) {
 						logger.error("error occur while adding [userCompanyNameChinaDatetime productCategoryList productFamilyList] to result",e);
 					}
-					try {
-						ApiCallResult result = factoryService.getUserSupplierDetailInfoById("nullUserId",
-								auditBookingBean.getOrderSupplier().getSupplierId());
-						String userId = auditBookingBean.getOrderGeneralInfo().getUserId();
-						UserBean userBean = userService.getCustById(userId);
-						object.put("orderSupplier", result.getContent());
-						object.put("rates", userBean.getRate());
-					} catch (Exception e) {
-						logger.error("change SupplierProductLines from String to Array failed! ", e);
-					}
-					try {
-						OrderFactoryBean factory = auditBookingBean.getOrderFactory();
-						if (null == factory) {
-							factory = factoryService.getOrderFactory(auditBookingBean.getOrderSupplier().getSupplierId());
-							JSONObject objectFactory = (JSONObject) JSON.toJSON(factory);
-							String str = factory.getFactoryProductLines();
-							if (null != str) {
-								String[] strArray = str.split(";");
-								objectFactory.put("factoryProductLines",strArray);
-							}
-							object.put("orderFactory", objectFactory);
-						}else {
-							String str = factory.getFactoryProductLines();
-							if (null != str) {
-								String[] strArray = str.split(";");
-								object.getJSONObject("orderFactory").put("factoryProductLines",strArray);
-							}
-						}
-					} catch (Exception e) {
-						logger.error("change factoryProductLines from String to Array failed! ", e);
-					}
-					try {
-						callResult = orderService.getOrderActionEdit(orderId);
-						object.put("editable", callResult.getContent());
-						callResult = orderService.getOrderActionCancel(orderId);
-						object.put("cancelable", callResult.getContent());
-					} catch (Exception e) {
-						logger.error("error exception! getOrderAction failed", e);
-						object.put("editable", null);
-						object.put("cancelable", null);
-					}
+//					try {
+//						ApiCallResult result = factoryService.getUserSupplierDetailInfoById("nullUserId",
+//								auditBookingBean.getOrderSupplier().getSupplierId());
+//						String userId = auditBookingBean.getOrderGeneralInfo().getUserId();
+//						UserBean userBean = userService.getCustById(userId);
+//						object.put("orderSupplier", result.getContent());
+//						object.put("rates", userBean.getRate());
+//					} catch (Exception e) {
+//						logger.error("change SupplierProductLines from String to Array failed! ", e);
+//					}
+//					try {
+//						OrderFactoryBean factory = auditBookingBean.getOrderFactory();
+//						if (null == factory) {
+//							factory = factoryService.getOrderFactory(auditBookingBean.getOrderSupplier().getSupplierId());
+//							JSONObject objectFactory = (JSONObject) JSON.toJSON(factory);
+//							String str = factory.getFactoryProductLines();
+//							if (null != str) {
+//								String[] strArray = str.split(";");
+//								objectFactory.put("factoryProductLines",strArray);
+//							}
+//							object.put("orderFactory", objectFactory);
+//						}else {
+//							String str = factory.getFactoryProductLines();
+//							if (null != str) {
+//								String[] strArray = str.split(";");
+//								object.getJSONObject("orderFactory").put("factoryProductLines",strArray);
+//							}
+//						}
+//					} catch (Exception e) {
+//						logger.error("change factoryProductLines from String to Array failed! ", e);
+//					}
+//					try {
+//						callResult = orderService.getOrderActionEdit(orderId);
+//						object.put("editable", callResult.getContent());
+//						callResult = orderService.getOrderActionCancel(orderId);
+//						object.put("cancelable", callResult.getContent());
+//					} catch (Exception e) {
+//						logger.error("error exception! getOrderAction failed", e);
+//						object.put("editable", null);
+//						object.put("cancelable", null);
+//					}
 					callResult.setContent(object);
 					return new ResponseEntity<>(callResult, HttpStatus.OK);
 				}
