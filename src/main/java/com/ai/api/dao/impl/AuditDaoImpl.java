@@ -228,6 +228,10 @@ public class AuditDaoImpl implements AuditDao {
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			if(null==finalResult.getContent()){
+				finalResult.setMessage("null result from psi-service! code:["+
+						result.getStatusCode()+"] response:"+result.getResponseString());
+			}
 		} catch (IOException e) {
 			logger.error("Error getOrderDetail!" + ExceptionUtils.getStackTrace(e));
 			finalResult.setMessage("Exception: " + e.toString());

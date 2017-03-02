@@ -158,7 +158,7 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-orders", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchOrders(@PathVariable("userId") String userId,
-	                                                  @RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
+													  @RequestParam(value = "service-type", required = false, defaultValue = "ma,ea,ctpat,stra") String serviceType,
 	                                                  @RequestParam(value = "start", required = false, defaultValue = "") String startDate,
 	                                                  @RequestParam(value = "end", required = false, defaultValue = "") String endDate,
 	                                                  @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,

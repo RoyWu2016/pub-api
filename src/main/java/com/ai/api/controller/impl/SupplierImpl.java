@@ -12,14 +12,12 @@ import com.ai.api.bean.UserBean;
 import com.ai.api.bean.legacy.FactorySearchBean;
 import com.ai.api.controller.Supplier;
 import com.ai.api.exception.AIException;
-import com.ai.api.service.FactoryService;
-import com.ai.api.service.OrderService;
-import com.ai.api.service.ParameterService;
-import com.ai.api.service.UserService;
+import com.ai.api.service.*;
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.DateUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.audit.AuditBookingBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.OrderFactoryBean;
 import com.ai.commons.beans.supplier.SupplierSearchResultBean;
@@ -65,6 +63,9 @@ public class SupplierImpl implements Supplier {
 
 	@Autowired
 	ParameterService parameterService;
+
+	@Autowired
+	private AuditService auditorService;
 
 	@Override
 	@TokenSecured
@@ -249,6 +250,95 @@ public class SupplierImpl implements Supplier {
 						object.put("editable", null);
 						object.put("cancelable", null);
 					}
+					callResult.setContent(object);
+					return new ResponseEntity<>(callResult, HttpStatus.OK);
+				}
+				logger.info("incorrect pw !   [" + password + "] || should be :" + pw);
+				callResult.setMessage("Incorrect password!");
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
+			} else {
+				callResult.setMessage("Get order error!");
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} catch (Exception e) {
+			logger.error("error in getSupplierConfirm", e);
+			callResult.setMessage("Internal service error.");
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@Override
+	@RequestMapping(value = "/order/{orderId}/audit-factory", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> getAuditFactoryConfirm(@PathVariable("orderId") String orderId,
+														   @RequestParam("password") String password) {
+		logger.info("getAuditFactoryConfirm ...");
+		logger.info("orderId:" + orderId);
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = auditorService.getOrderDetail("nullUserId", orderId);
+			AuditBookingBean auditBookingBean = (AuditBookingBean)callResult.getContent();
+			if (null!=auditBookingBean && null!=auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode()) {
+				String validateCode = auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode();
+				String pw = MD5.toMD5(validateCode);
+
+				if (pw.equalsIgnoreCase(password)) {
+					JSONObject object = (JSONObject) JSON.toJSON(auditBookingBean);
+
+					String newPW = DigestUtils.shaHex(password);
+					object.put("updateConfirmSupplierPwd", newPW);
+
+					try {
+						UserBean u = userService.getCustById(auditBookingBean.getOrderGeneralInfo().getUserId());
+						object.put("userCompanyName", u.getCompany().getName());
+						object.put("allowPostponementBySuppliers",u.getPreferences().getBooking().isAllowPostponementBySuppliers());
+						object.put("ChinaDatetime", parameterService.getChinaTime().getDatetime());
+						object.put("productCategoryList", parameterService.getProductCategoryList(false));
+						object.put("productFamilyList", parameterService.getProductFamilyList(false));
+					} catch (Exception e) {
+						logger.error("error occur while adding [userCompanyNameChinaDatetime productCategoryList productFamilyList] to result",e);
+					}
+//					try {
+//						ApiCallResult result = factoryService.getUserSupplierDetailInfoById("nullUserId",
+//								auditBookingBean.getOrderSupplier().getSupplierId());
+//						String userId = auditBookingBean.getOrderGeneralInfo().getUserId();
+//						UserBean userBean = userService.getCustById(userId);
+//						object.put("orderSupplier", result.getContent());
+//						object.put("rates", userBean.getRate());
+//					} catch (Exception e) {
+//						logger.error("change SupplierProductLines from String to Array failed! ", e);
+//					}
+//					try {
+//						OrderFactoryBean factory = auditBookingBean.getOrderFactory();
+//						if (null == factory) {
+//							factory = factoryService.getOrderFactory(auditBookingBean.getOrderSupplier().getSupplierId());
+//							JSONObject objectFactory = (JSONObject) JSON.toJSON(factory);
+//							String str = factory.getFactoryProductLines();
+//							if (null != str) {
+//								String[] strArray = str.split(";");
+//								objectFactory.put("factoryProductLines",strArray);
+//							}
+//							object.put("orderFactory", objectFactory);
+//						}else {
+//							String str = factory.getFactoryProductLines();
+//							if (null != str) {
+//								String[] strArray = str.split(";");
+//								object.getJSONObject("orderFactory").put("factoryProductLines",strArray);
+//							}
+//						}
+//					} catch (Exception e) {
+//						logger.error("change factoryProductLines from String to Array failed! ", e);
+//					}
+//					try {
+//						callResult = orderService.getOrderActionEdit(orderId);
+//						object.put("editable", callResult.getContent());
+//						callResult = orderService.getOrderActionCancel(orderId);
+//						object.put("cancelable", callResult.getContent());
+//					} catch (Exception e) {
+//						logger.error("error exception! getOrderAction failed", e);
+//						object.put("editable", null);
+//						object.put("cancelable", null);
+//					}
 					callResult.setContent(object);
 					return new ResponseEntity<>(callResult, HttpStatus.OK);
 				}
