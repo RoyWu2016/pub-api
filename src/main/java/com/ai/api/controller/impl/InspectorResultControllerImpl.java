@@ -297,7 +297,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
 		    callResult.setMessage("Uploading report data are larger than " + allowedSizeInMB + " MB.");
 		    return new ResponseEntity<>(callResult, HttpStatus.PAYLOAD_TOO_LARGE);
 	    } else {
-		    logger.error("Request size " + reqSize + " is ok: ");
+		    logger.info("Request size " + reqSize + " is ok: ");
 	    }
 
         try{
@@ -348,12 +348,14 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                             tempDir.mkdir();
                         }
 //                        logger.info("ready to copy file to api temp ...");
-                        logger.info(_mpf.getName()+" || "+tempDir.getAbsolutePath());
-                        String filePath = com.ai.commons.FileUtils.copyFileToDirectory(_mpf, tempDir);
-                        File uploadedFile=new File(tempDir + System.getProperty("file.separator") + filePath);
-                        logger.info("uploaded to API temp! ["+uploadedFile.getAbsolutePath()+"]");
+//                        logger.info(_mpf.getName()+" || "+tempDir.getAbsolutePath());
+                        String fileName = com.ai.commons.FileUtils.copyFileToDirectory(_mpf, tempDir);
+	                    String fileFullPath = tempDir + System.getProperty("file.separator") + fileName;
+	                    logger.info("uploaded to API folder! ["+ fileFullPath +"]");
+                        File uploadedFile=new File(fileFullPath);
 //                        SimpleFileObject fileUploadedObject = new SimpleFileObject(uploadedFile);
                         FileMetaBean ftb = myFileService.getFileService().upload(sourceId, fileType, "insp-result-file", username, caption, uploadedFile);
+	                    logger.info("uploaded to File Service ! ["+ ftb.toString() +"]");
                         toBeDeleted.add(uploadedFile);
                         beanList.add(ftb);
                     }
