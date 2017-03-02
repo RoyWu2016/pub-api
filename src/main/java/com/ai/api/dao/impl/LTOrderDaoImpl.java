@@ -160,11 +160,10 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		
 		ApiCallResult callResult = new ApiCallResult();
-		Map<String, String> vars = new HashMap<String, String>();
-		vars.put("userId", userId);
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/")
  				.append(userId).toString();
-		restTemplate.put(url, order, vars);
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url.toString()).queryParam("requestor", "external");
+		restTemplate.put(builder.build().encode().toUri(), order);
 		callResult.setContent(findOrder(order.getId()));
 		return callResult;
 	}
