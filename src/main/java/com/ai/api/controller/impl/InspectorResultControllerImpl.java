@@ -343,7 +343,8 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                         callResult.setMessage("Max of file size is :"+serviceConfig.getFileMaximumSize()+"M");
                         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
                     }else {
-                        File tempDir = new File(myFileService.getFileService().getLocalTempDir() + File.separator + sourceId);
+//                        File tempDir = new File(myFileService.getFileService().getLocalTempDir() + File.separator + sourceId);
+	                    File tempDir = new File(myFileService.getFileService().getLocalTempDir() + sourceId);
                         if (!tempDir.exists()) {
                             tempDir.mkdir();
                         }
