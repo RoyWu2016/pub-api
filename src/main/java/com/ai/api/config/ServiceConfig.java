@@ -72,6 +72,16 @@ public class ServiceConfig {
 	private String aimsBucket;
 
 	int maxRequestSize;
+	
+	private String localAuditTempDir;
+
+	public String getLocalAuditTempDir() {
+		return localAuditTempDir;
+	}
+
+	public void setLocalAuditTempDir(String localAuditTempDir) {
+		this.localAuditTempDir = localAuditTempDir;
+	}
 
     //    public String getBaseURL() {
 //        return baseURL;
