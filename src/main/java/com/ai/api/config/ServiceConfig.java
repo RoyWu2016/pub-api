@@ -73,15 +73,7 @@ public class ServiceConfig {
 
 	int maxRequestSize;
 	
-	private String localAuditTempDir;
-
-	public String getLocalAuditTempDir() {
-		return localAuditTempDir;
-	}
-
-	public void setLocalAuditTempDir(String localAuditTempDir) {
-		this.localAuditTempDir = localAuditTempDir;
-	}
+	private String localIATempDir;
 
     //    public String getBaseURL() {
 //        return baseURL;
@@ -90,6 +82,14 @@ public class ServiceConfig {
 //    public void setBaseURL(String baseURL) {
 //        this.baseURL = baseURL;
 //    }
+
+	public String getLocalIATempDir() {
+		return localIATempDir;
+	}
+
+	public void setLocalIATempDir(String localIATempDir) {
+		this.localIATempDir = localIATempDir;
+	}
 
 	public String getLotusApiUrl() {
 		return lotusApiUrl;
