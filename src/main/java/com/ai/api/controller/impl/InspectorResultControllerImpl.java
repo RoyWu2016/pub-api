@@ -82,8 +82,8 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                 callResult.setMessage(result.getResponseString());
             }
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-            callResult.setMessage("Exception: " + e.toString());
+            logger.error(ExceptionUtils.getFullStackTrace(e));
+            callResult.setMessage("Exception: " + ExceptionUtils.getFullStackTrace(e));
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -104,7 +104,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             }
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
-            callResult.setMessage("Exception: " + e.toString());
+            callResult.setMessage("Exception: " + ExceptionUtils.getFullStackTrace(e));
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -171,8 +171,8 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                 callResult.setMessage(result.getResponseString());
             }
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-            callResult.setMessage("Exception: " + e.toString());
+            logger.error(ExceptionUtils.getFullStackTrace(e));
+            callResult.setMessage("Exception: " + ExceptionUtils.getFullStackTrace(e));
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -193,8 +193,8 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                 callResult.setMessage(result.getResponseString());
             }
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-            callResult.setMessage("Exception: " + e.toString());
+            logger.error(ExceptionUtils.getFullStackTrace(e));
+            callResult.setMessage("Exception: " + ExceptionUtils.getFullStackTrace(e));
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -220,8 +220,8 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                 callResult.setMessage(result.getResponseString());
             }
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-            callResult.setMessage("Exception: " + e.toString());
+            logger.error(ExceptionUtils.getFullStackTrace(e));
+            callResult.setMessage("Exception: " + ExceptionUtils.getFullStackTrace(e));
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -247,8 +247,8 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                 callResult.setMessage(result.getResponseString());
             }
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-            callResult.setMessage("Exception: " + e.toString());
+            logger.error("approveReport got error: ", ExceptionUtils.getFullStackTrace(e));
+            callResult.setMessage("Exception: " + ExceptionUtils.getFullStackTrace(e));
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -274,8 +274,8 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                 callResult.setMessage(result.getResponseString());
             }
         } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-            callResult.setMessage("Exception: " + e.toString());
+            logger.error("saveProtocolSupervisorData", ExceptionUtils.getFullStackTrace(e));
+            callResult.setMessage("Exception: " + ExceptionUtils.getFullStackTrace(e));
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -301,7 +301,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
 	    }
 
         try{
-            logger.info("ready to uploadFile ...");
+            logger.info("=====ready to upload reports=====");
             Map<String,List<FileMetaBean>> fileMetaList = new HashMap<>();
             Map<String, List> mapFileList = new HashMap<>();
             Iterator<String> itr = request.getFileNames();
@@ -368,10 +368,11 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                 logger.info("delete done!");
             }
             callResult.setContent(fileMetaList);
+	        logger.info("=====uploading reports done successfully =====");
             return new ResponseEntity<>(callResult,HttpStatus.OK);
         }catch(Exception e){
-            logger.error("Error Exception!",e);
-            callResult.setMessage("Error Exception! "+e);
+            logger.error("Error in uploading reports to file service!", ExceptionUtils.getFullStackTrace(e));
+            callResult.setMessage("Error in uploading reports! " + ExceptionUtils.getStackTrace(e));
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -401,8 +402,8 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             FileCopyUtils.copy(is, response.getOutputStream());
             response.flushBuffer();
         } catch (Exception e) {
-            logger.error("Failed to getFile. Error Exception! " ,e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,e.toString());
+            logger.error("Failed to getFile. Error Exception! " , ExceptionUtils.getFullStackTrace(e));
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ExceptionUtils.getFullStackTrace(e));
             throw new IOException(e);
         }
     }
@@ -419,8 +420,8 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             FileCopyUtils.copy(is, response.getOutputStream());
             response.flushBuffer();
         } catch (Exception e) {
-            logger.error("Failed to downloadFileV1. Error Exception! " ,e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,e.toString());
+            logger.error("Failed to download File. " , ExceptionUtils.getFullStackTrace(e));
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ExceptionUtils.getFullStackTrace(e));
             throw new IOException(e);
         }
     }
@@ -435,8 +436,8 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             callResult.setContent(b);
             return new ResponseEntity<>(callResult,HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Failed to deleteFile. Error Exception! " ,e);
-            callResult.setMessage("Failed to deleteFile. Error Exception! "+e.toString());
+            logger.error("Failed to deleteFile. Error Exception! " , ExceptionUtils.getFullStackTrace(e));
+            callResult.setMessage("Failed to deleteFile. Error Exception! "+ ExceptionUtils.getFullStackTrace(e));
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -452,8 +453,8 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             callResult.setContent(caption);
             return new ResponseEntity<>(callResult,HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Failed to getFileInfo. Error Exception! " ,e);
-            callResult.setMessage("Failed to getFileInfo. Error Exception! "+e.toString());
+            logger.error("Failed to getFileInfo. Error Exception! " , ExceptionUtils.getFullStackTrace(e));
+            callResult.setMessage("Failed to getFileInfo. Error Exception! "+ExceptionUtils.getFullStackTrace(e));
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -469,8 +470,8 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             callResult.setContent(caption);
             return new ResponseEntity<>(callResult,HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Failed to get FileName.Error Exception! " ,e);
-            callResult.setMessage("Failed to get FileName.Error Exception! "+e.toString());
+            logger.error("Failed to get FileName.Error Exception! " , ExceptionUtils.getFullStackTrace(e));
+            callResult.setMessage("Failed to get FileName.Error ! "+ExceptionUtils.getFullStackTrace(e));
         }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
