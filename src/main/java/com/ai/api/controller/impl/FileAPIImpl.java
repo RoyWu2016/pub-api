@@ -143,6 +143,7 @@ public class FileAPIImpl implements FileAPI {
 			MultipartFile mpf = null;
 
 			// Iterate through the uploaded files
+			File tempDir = null;
 			while (itr.hasNext()) {
 				mpf = request.getFile(itr.next());
 				double sizeM = mpf.getSize() / (1024 * 1000);
@@ -150,11 +151,12 @@ public class FileAPIImpl implements FileAPI {
 				if (sizeM > serviceConfig.getFileMaximumSize()) {
 					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 				} else {
-					File tempDir = new File(myFileService.getFileService().getLocalTempDir() + File.separator + sourceId);
+					tempDir = new File(myFileService.getFileService().getLocalTempDir() + File.separator + sourceId);
 
 					if (!tempDir.exists()) {
 						tempDir.mkdir();
 					}
+					
 					String filePath = com.ai.commons.FileUtils.copyFileToDirectory(mpf, tempDir);
 					File fileUploded = new File(tempDir + System.getProperty("file.separator") + filePath);
 
@@ -167,6 +169,9 @@ public class FileAPIImpl implements FileAPI {
 						fileUploded.delete();
 					}
 
+				}
+				if(null!= tempDir && tempDir.exists()) {
+					tempDir.delete();
 				}
 			}
 		} catch (Exception e) {

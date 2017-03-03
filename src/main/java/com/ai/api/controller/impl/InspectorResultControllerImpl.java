@@ -323,7 +323,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                 }
             }
 //            logger.info("mapFileList size :"+mapFileList.size());
-
+            File tempDir = null;
             for (Map.Entry<String, List> map : mapFileList.entrySet())
             {
 //                logger.info("get each mapFile " + map.getKey()+" -- "+map.getValue());
@@ -344,7 +344,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
                     }else {
 //                        File tempDir = new File(myFileService.getFileService().getLocalTempDir() + File.separator + sourceId);
-	                    File tempDir = new File(myFileService.getFileService().getLocalTempDir() + sourceId);
+	                    tempDir = new File(config.getLocalIATempDir()+ File.separator + sourceId);
                         if (!tempDir.exists()) {
                             tempDir.mkdir();
                         }
@@ -365,6 +365,9 @@ public class InspectorResultControllerImpl implements InspectorResultController 
 //                logger.info("tobeDeleted size :"+toBeDeleted.size());
                 fileMetaList.put(map.getKey(), beanList);
                 toBeDeleted.stream().filter(File::exists).forEach(File::delete);
+				if(null!= tempDir && tempDir.exists()) {
+					tempDir.delete();
+				}
                 logger.info("delete done!");
             }
             callResult.setContent(fileMetaList);

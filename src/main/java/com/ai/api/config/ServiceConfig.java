@@ -72,6 +72,8 @@ public class ServiceConfig {
 	private String aimsBucket;
 
 	int maxRequestSize;
+	
+	private String localIATempDir;
 
     //    public String getBaseURL() {
 //        return baseURL;
@@ -80,6 +82,14 @@ public class ServiceConfig {
 //    public void setBaseURL(String baseURL) {
 //        this.baseURL = baseURL;
 //    }
+
+	public String getLocalIATempDir() {
+		return localIATempDir;
+	}
+
+	public void setLocalIATempDir(String localIATempDir) {
+		this.localIATempDir = localIATempDir;
+	}
 
 	public String getLotusApiUrl() {
 		return lotusApiUrl;
