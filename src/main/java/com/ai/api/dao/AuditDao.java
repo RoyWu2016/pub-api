@@ -4,6 +4,7 @@ import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.audit.AuditReportsSearchBean;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
+import com.ai.commons.beans.psi.api.ApiOrderFactoryBean;
 
 public interface AuditDao {
 
@@ -41,5 +42,8 @@ public interface AuditDao {
 			String reasonOption);
 
 	PageBean<AuditReportsSearchBean> exportAuditReport(String userId, String companyId, String parentId);
+
+	ApiCallResult supplierConfirmOrder(String orderId, String auditDate, String containReadyTime,
+									   ApiOrderFactoryBean orderFactoryBean);
 
 }

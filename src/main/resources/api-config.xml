@@ -105,7 +105,7 @@
     <bean id="cacheManager" class="com.ai.commons.cache.CacheManager"/>
     <bean id="commonParamService" class="com.ai.commons.services.ParameterService"
           p:PARAMETER_SERVICE_URL="${parameter.service.lb.url}"/>
-          
+
     <bean id="fileService" class="com.ai.commons.services.FileService" p:fileServiceUrl="${file.service.lb.url}"
           p:localTempDir="${local.temp.folder}"/>
 
@@ -113,13 +113,15 @@
 
     <bean id="controllerAspect" class="com.ai.api.bean.aop.ControllerAspect"/>
 
+    <bean id="typeResolver" class="com.fasterxml.classmate.TypeResolver"/>
+
 
     <!-- Version bean for application information -->
     <!--<bean id="versionBean" class="version.Version"/>-->
-	
+
 	<!-- Configuring the email Service -->
     <bean id="emailService" class="com.ai.commons.services.EmailService" />
-    <bean id="ltEmailService" class="com.ai.api.service.impl.LTEmailServiceImpl" />      
+    <bean id="ltEmailService" class="com.ai.api.service.impl.LTEmailServiceImpl" />
 
     <!-- Scheduler configuration -->
     <import resource="spring-scheduler.xml"/>

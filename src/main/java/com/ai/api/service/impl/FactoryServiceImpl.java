@@ -53,20 +53,17 @@ public class FactoryServiceImpl implements FactoryService {
 
 	@Override
 	public String createSupplier(SupplierDetailBean supplierDetailBean) throws IOException, AIException {
-		// TODO Auto-generated method stub
 		return factoryDao.createSupplier(supplierDetailBean);
 	}
 
 	@Override
 	public ApiCallResult supplierConfirmOrder(String orderId, String inspectionDateString, String containReadyTime,
 			OrderFactoryBean orderFactoryBean) {
-		// TODO Auto-generated method stub
 		return factoryDao.supplierConfirmOrder(orderId,inspectionDateString,containReadyTime,orderFactoryBean);
 	}
 
 	@Override
 	public OrderFactoryBean getOrderFactory(String supplierId) {
-		// TODO Auto-generated method stub
 		return factoryDao.getOrderFactory(supplierId);
 	}
 
