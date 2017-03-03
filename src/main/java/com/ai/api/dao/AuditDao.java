@@ -1,6 +1,8 @@
 package com.ai.api.dao;
 
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.audit.AuditReportsSearchBean;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 
 public interface AuditDao {
@@ -37,5 +39,7 @@ public interface AuditDao {
 
 	ApiCallResult cancelOrder(String userId, String companyId, String parentId, String orderId, String reason,
 			String reasonOption);
+
+	PageBean<AuditReportsSearchBean> exportAuditReport(String userId, String companyId, String parentId);
 
 }
