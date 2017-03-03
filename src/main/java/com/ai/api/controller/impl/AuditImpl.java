@@ -61,7 +61,7 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-draft", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createDraft(@ApiParam(required = true) @PathVariable("userId") String userId,
-			@ApiParam(value = "must be one of sa, ea, stra, ctpat", required = true) @RequestParam(value = "serviceType") String serviceType) {
+			@ApiParam(value = "must be one of ma, ea, stra, ctpat", required = true) @RequestParam(value = "serviceType") String serviceType) {
 		logger.info("invoke: " + "/user/" + userId + "/audit-draft?serviceType=" + serviceType);
 		ApiCallResult result = auditorService.createDraft(userId, serviceType);
 		if (null == result.getMessage()) {
