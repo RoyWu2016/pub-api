@@ -14,11 +14,13 @@ import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.audit.AuditReportsSearchBean;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
+import com.ai.commons.beans.psi.api.ApiOrderFactoryBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 
 public class AuditDaoImpl implements AuditDao {
 
@@ -330,7 +332,6 @@ public class AuditDaoImpl implements AuditDao {
 
 	@Override
 	public PageBean<AuditReportsSearchBean> exportAuditReport(String userId, String companyId, String parentId) {
-		// TODO Auto-generated method stub
 		try {
 			PageParamBean parm = new PageParamBean();
 			parm.setIsShowAll(true);
@@ -347,6 +348,29 @@ public class AuditDaoImpl implements AuditDao {
 			logger.error("Error exportAuditReport!" + ExceptionUtils.getStackTrace(e));
 		}
 		return null;
+	}
+
+	@Override
+	public ApiCallResult supplierConfirmOrder(String orderId, String auditDate, String containReadyTime,
+											  ApiOrderFactoryBean orderFactoryBean) {
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/api/audit/supplierConfirmAudit")
+				.append("?orderId=" + orderId)
+				.append("&auditDate=" + auditDate)
+				.append("&containReadyTime=" + containReadyTime);
+		ApiCallResult finalResult = new ApiCallResult();
+		try {
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, orderFactoryBean);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			} else {
+				logger.info("supplierConfirmAuditOrder failed from psi-service!!!");
+				finalResult.setMessage("supplierConfirmAuditOrder failed from psi-service!!! code["+result.getStatusCode()+"] msg:"+result.getResponseString());
+			}
+		} catch (Exception e) {
+			logger.error("error Exception!",e);
+			finalResult.setMessage("error Exception!"+e);
+		}
+		return finalResult;
 	}
 
 }

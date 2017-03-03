@@ -2,6 +2,7 @@ package com.ai.api.service;
 
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
+import com.ai.commons.beans.psi.api.ApiOrderFactoryBean;
 
 public interface AuditService {
 	
@@ -36,5 +37,8 @@ public interface AuditService {
 	ApiCallResult cancelOrder(String userId, String orderId, String reason, String reasonOption);
 
 	ApiCallResult exportAuditReport(String userId);
+
+	ApiCallResult supplierConfirmOrder(String orderId, String auditDate, String containReadyTime,
+									   ApiOrderFactoryBean orderFactoryBean);
 
 }

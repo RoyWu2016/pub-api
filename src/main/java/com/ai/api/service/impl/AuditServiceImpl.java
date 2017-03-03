@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import com.ai.commons.beans.psi.api.ApiOrderFactoryBean;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -67,14 +68,12 @@ public class AuditServiceImpl implements AuditService {
 
 	@Override
 	public ApiCallResult getDraft(String userId, String draftId) {
-		// TODO Auto-generated method stub
 		ApiCallResult result = auditorDao.getDraft(userId, draftId);
 		return result;
 	}
 
 	@Override
 	public ApiCallResult createDraft(String userId, String serviceType) {
-		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -90,7 +89,6 @@ public class AuditServiceImpl implements AuditService {
 
 	@Override
 	public ApiCallResult saveDraft(String userId, ApiAuditBookingBean draft) {
-		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -171,7 +169,6 @@ public class AuditServiceImpl implements AuditService {
 
 	@Override
 	public ApiCallResult createDraftFromPreviousOrder(String userId, String orderId, String serviceType) {
-		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -188,7 +185,6 @@ public class AuditServiceImpl implements AuditService {
 
 	@Override
 	public ApiCallResult createOrderByDraft(String userId, String draftId) {
-		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -204,7 +200,6 @@ public class AuditServiceImpl implements AuditService {
 
 	@Override
 	public ApiCallResult editOrder(String userId, String orderId) {
-		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -220,7 +215,6 @@ public class AuditServiceImpl implements AuditService {
 
 	@Override
 	public ApiCallResult getOrderDetail(String userId, String orderId) {
-		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -236,7 +230,6 @@ public class AuditServiceImpl implements AuditService {
 
 	@Override
 	public ApiCallResult saveOrderByDraft(String userId, String draftId, String orderId) {
-		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -263,7 +256,6 @@ public class AuditServiceImpl implements AuditService {
 
 	@Override
 	public ApiCallResult calculatePricing(String userId, String draftId, String employeeCount) {
-		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -280,7 +272,6 @@ public class AuditServiceImpl implements AuditService {
 
 	@Override
 	public ApiCallResult reAudit(String userId, String draftId, String orderId) {
-		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -297,7 +288,6 @@ public class AuditServiceImpl implements AuditService {
 
 	@Override
 	public ApiCallResult cancelOrder(String userId, String orderId, String reason, String reasonOption) {
-		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -314,7 +304,6 @@ public class AuditServiceImpl implements AuditService {
 
 	@Override
 	public ApiCallResult exportAuditReport(String userId) {
-		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -349,6 +338,12 @@ public class AuditServiceImpl implements AuditService {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public ApiCallResult supplierConfirmOrder(String orderId, String auditDate, String containReadyTime,
+											  ApiOrderFactoryBean orderFactoryBean) {
+		return auditorDao.supplierConfirmOrder(orderId,auditDate,containReadyTime,orderFactoryBean);
 	}
 
 	private InputStream createExcleFile(XSSFWorkbook wb, List<AuditReportsSearchBean> list, String clientLogin)
