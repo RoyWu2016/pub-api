@@ -155,6 +155,7 @@ public class FileAPIImpl implements FileAPI {
 					if (!tempDir.exists()) {
 						tempDir.mkdir();
 					}
+					
 					String filePath = com.ai.commons.FileUtils.copyFileToDirectory(mpf, tempDir);
 					File fileUploded = new File(tempDir + System.getProperty("file.separator") + filePath);
 
@@ -166,6 +167,7 @@ public class FileAPIImpl implements FileAPI {
 					if (fileUploded.exists()) {
 						fileUploded.delete();
 					}
+					tempDir.delete();
 
 				}
 			}
