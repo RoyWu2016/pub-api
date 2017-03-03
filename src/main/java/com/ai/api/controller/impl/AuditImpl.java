@@ -309,5 +309,19 @@ public class AuditImpl implements Audit {
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/export-audit-reports", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> exportAuditReport(@PathVariable("userId") String userId) {
+		// TODO Auto-generated method stub
+		logger.info("invoke: " + "/user/" + userId + "/export-audit-reports");
+		ApiCallResult result = auditorService.exportAuditReport(userId);
+		if (null == result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 }
