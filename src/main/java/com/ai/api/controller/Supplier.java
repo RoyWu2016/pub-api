@@ -34,4 +34,6 @@ public interface Supplier {
 			SupplierDetailBean supplierDetailBean) throws IOException, AIException;
 
 	ResponseEntity<ApiCallResult> getFactoryConfirm(String orderId, String password);
+
+	ResponseEntity<ApiCallResult> getAuditFactoryConfirm(String orderId, String password);
 }
