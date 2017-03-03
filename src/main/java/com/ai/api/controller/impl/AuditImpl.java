@@ -10,6 +10,8 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,25 +27,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 /***************************************************************************
  * <PRE>
- *  Project Name    : api
- *
- *  Package Name    : com.ai.api.controller.impl
- *
- *  File Name       : AuditorImpl.java
- *
- *  Creation Date   : Feb 10, 2017
- *
- *  Author          : Roy Wu
- *
- *  Purpose         : TODO
- *
- *
- *  History         : TODO
- *
+ * Project Name    : api
+ * <p>
+ * Package Name    : com.ai.api.controller.impl
+ * <p>
+ * File Name       : AuditorImpl.java
+ * <p>
+ * Creation Date   : Feb 10, 2017
+ * <p>
+ * Author          : Roy Wu
+ * <p>
+ * Purpose         : TODO
+ * <p>
+ * <p>
+ * History         : TODO
+ * <p>
  * </PRE>
  ***************************************************************************/
 @RestController
 @SuppressWarnings("rawtypes")
+@Api(tags = { "Audit" }, description = "Audit booking APIs")
 public class AuditImpl implements Audit {
 
 	protected Logger logger = LoggerFactory.getLogger(AuditImpl.class);
@@ -57,9 +60,8 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-draft", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> createDraft(@PathVariable("userId") String userId,
-			@RequestParam(value = "serviceType", required = true) String serviceType) {
-		// TODO Auto-generated method stub
+	public ResponseEntity<ApiCallResult> createDraft(@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "must be one of sa, ea, stra, ctpat", required = true) @RequestParam(value = "serviceType") String serviceType) {
 		logger.info("invoke: " + "/user/" + userId + "/audit-draft?serviceType=" + serviceType);
 		ApiCallResult result = auditorService.createDraft(userId, serviceType);
 		if (null == result.getMessage()) {
@@ -74,7 +76,6 @@ public class AuditImpl implements Audit {
 	@RequestMapping(value = "/user/{userId}/audit-draft/previous-order/{orderId}", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createDraftFromPreviousOrder(@PathVariable("userId") String userId,
 			@PathVariable("orderId") String orderId, @RequestParam("serviceType") String serviceType) {
-		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-draft/previous-psi-order/" + orderId + "?serviceType="
 				+ serviceType);
 		ApiCallResult result = auditorService.createDraftFromPreviousOrder(userId, orderId, serviceType);
@@ -154,7 +155,7 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-orders", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchOrders(@PathVariable("userId") String userId,
-			@RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
+			@RequestParam(value = "service-type", required = false, defaultValue = "ma,ea,ctpat,stra") String serviceType,
 			@RequestParam(value = "start", required = false, defaultValue = "") String startDate,
 			@RequestParam(value = "end", required = false, defaultValue = "") String endDate,
 			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
@@ -272,7 +273,7 @@ public class AuditImpl implements Audit {
 			@RequestParam(value = "reasonOption", required = false, defaultValue = "") String reasonOption) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId);
-		ApiCallResult result = auditorService.cancelOrder(userId, orderId,reason,reasonOption);
+		ApiCallResult result = auditorService.cancelOrder(userId, orderId, reason, reasonOption);
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
@@ -283,11 +284,12 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/re-audit-list", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult<List<SimpleOrderSearchBean>>> getReInspectionList(@PathVariable("userId") String userId,
-										   @RequestParam(value = "service-type", required = false) String serviceType,
-										   @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
-										   @RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
-										   @RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
+	public ResponseEntity<ApiCallResult<List<SimpleOrderSearchBean>>> getReInspectionList(
+			@PathVariable("userId") String userId,
+			@RequestParam(value = "service-type", required = false) String serviceType,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
+			@RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
 
 		ApiCallResult result = new ApiCallResult();
 		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
@@ -302,6 +304,20 @@ public class AuditImpl implements Audit {
 		} catch (Exception e) {
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
 			result.setMessage("Error in getting re-audit order list.");
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/export-audit-reports", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> exportAuditReport(@PathVariable("userId") String userId) {
+		// TODO Auto-generated method stub
+		logger.info("invoke: " + "/user/" + userId + "/export-audit-reports");
+		ApiCallResult result = auditorService.exportAuditReport(userId);
+		if (null == result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

@@ -40,11 +40,11 @@ public interface Audit {
 
 	ResponseEntity<ApiCallResult> deleteDrafts(String userId, String draftIds);
 
-    ResponseEntity<ApiCallResult> searchDrafts(String userId, String serviceType,String startDate,String endDate,
-							   String keyWord,int pageSize,int pageNo);
+	ResponseEntity<ApiCallResult> searchDrafts(String userId, String serviceType, String startDate, String endDate,
+			String keyWord, int pageSize, int pageNo);
 
-    ResponseEntity<ApiCallResult> searchOrders(String userId, String serviceType,String startDate,String endDate,
-                                               String orderStatus,String keyWord,int pageSize,int pageNo);
+	ResponseEntity<ApiCallResult> searchOrders(String userId, String serviceType, String startDate, String endDate,
+			String orderStatus, String keyWord, int pageSize, int pageNo);
 
 	ResponseEntity<ApiCallResult> createOrderByDraft(String userId, String draftId);
 
@@ -60,9 +60,8 @@ public interface Audit {
 
 	ResponseEntity<ApiCallResult> cancelOrder(String userId, String reason, String orderId, String reasonOption);
 
-	ResponseEntity<ApiCallResult<List<SimpleOrderSearchBean>>> getReInspectionList( String userId,
-	                                                                                String serviceType,
-	                                                                                String keyword,
-	                                                                                String pageSize,
-	                                                                                String pageNumber);
+	ResponseEntity<ApiCallResult<List<SimpleOrderSearchBean>>> getReInspectionList(String userId, String serviceType,
+			String keyword, String pageSize, String pageNumber);
+
+	ResponseEntity<ApiCallResult> exportAuditReport(String userId);
 }

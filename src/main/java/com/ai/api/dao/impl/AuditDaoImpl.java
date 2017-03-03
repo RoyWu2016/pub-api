@@ -1,25 +1,24 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
-
+import com.ai.api.bean.consts.ConstMap;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.dao.AuditDao;
+import com.ai.commons.HttpUtil;
+import com.ai.commons.JsonUtil;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.audit.AuditReportsSearchBean;
+import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-
-import com.ai.api.bean.consts.ConstMap;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.dao.AuditDao;
-import com.ai.commons.Consts;
-import com.ai.commons.HttpUtil;
-import com.ai.commons.JsonUtil;
-import com.ai.commons.StringUtils;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 
 public class AuditDaoImpl implements AuditDao {
 
@@ -233,6 +232,10 @@ public class AuditDaoImpl implements AuditDao {
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			if (null == finalResult.getContent()) {
+				finalResult.setMessage("null result from psi-service! code:[" + result.getStatusCode() + "] response:"
+						+ result.getResponseString());
+			}
 		} catch (IOException e) {
 			logger.error("Error getOrderDetail!" + ExceptionUtils.getStackTrace(e));
 			finalResult.setMessage("Exception: " + e.toString());
@@ -323,6 +326,27 @@ public class AuditDaoImpl implements AuditDao {
 			finalResult.setMessage("Exception: " + e.toString());
 		}
 		return finalResult;
+	}
+
+	@Override
+	public PageBean<AuditReportsSearchBean> exportAuditReport(String userId, String companyId, String parentId) {
+		// TODO Auto-generated method stub
+		try {
+			PageParamBean parm = new PageParamBean();
+			parm.setIsShowAll(true);
+			String parmStr = URLEncoder.encode(JsonUtil.mapToJson(parm), "utf-8");
+			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+			url.append("/audit/report/api/report-list");
+			url.append("?userId=" + userId);
+			url.append("&companyId=" + companyId);
+			url.append("&parentId=" + parentId);
+			url.append("&param=" + parmStr);
+			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+			return JsonUtil.mapToObject(result.getResponseString(), PageBean.class);
+		} catch (IOException e) {
+			logger.error("Error exportAuditReport!" + ExceptionUtils.getStackTrace(e));
+		}
+		return null;
 	}
 
 }
