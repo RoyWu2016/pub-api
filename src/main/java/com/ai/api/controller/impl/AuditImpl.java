@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
  ***************************************************************************/
 @RestController
 @SuppressWarnings("rawtypes")
-@Api(tags = {"Audit"}, description = "Audit booking APIs")
+@Api(tags = { "Audit" }, description = "Audit booking APIs")
 public class AuditImpl implements Audit {
 
 	protected Logger logger = LoggerFactory.getLogger(AuditImpl.class);
@@ -60,11 +60,8 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-draft", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> createDraft(
-			@ApiParam(required = true)
-			@PathVariable("userId") String userId,
-			@ApiParam(value = "must be one of sa, ea, stra, ctpat", required = true)
-			@RequestParam(value = "serviceType") String serviceType) {
+	public ResponseEntity<ApiCallResult> createDraft(@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "must be one of ma, ea, stra, ctpat", required = true) @RequestParam(value = "serviceType") String serviceType) {
 		logger.info("invoke: " + "/user/" + userId + "/audit-draft?serviceType=" + serviceType);
 		ApiCallResult result = auditorService.createDraft(userId, serviceType);
 		if (null == result.getMessage()) {
@@ -78,7 +75,7 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-draft/previous-order/{orderId}", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createDraftFromPreviousOrder(@PathVariable("userId") String userId,
-	                                                                  @PathVariable("orderId") String orderId, @RequestParam("serviceType") String serviceType) {
+			@PathVariable("orderId") String orderId, @RequestParam("serviceType") String serviceType) {
 		logger.info("invoke: " + "/user/" + userId + "/audit-draft/previous-psi-order/" + orderId + "?serviceType="
 				+ serviceType);
 		ApiCallResult result = auditorService.createDraftFromPreviousOrder(userId, orderId, serviceType);
@@ -93,7 +90,7 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-draft/{draftId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getDraft(@PathVariable("userId") String userId,
-	                                              @PathVariable("draftId") String draftId) {
+			@PathVariable("draftId") String draftId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-draft/" + draftId);
 		ApiCallResult result = auditorService.getDraft(userId, draftId);
@@ -108,7 +105,7 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-draft/{draftId}", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> saveDraft(@PathVariable("userId") String userId,
-	                                               @PathVariable("draftId") String draftId, @RequestBody ApiAuditBookingBean draft) {
+			@PathVariable("draftId") String draftId, @RequestBody ApiAuditBookingBean draft) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-draft/" + draftId);
 		draft.getDraft().setDraftId(draftId);
@@ -124,7 +121,7 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-drafts", method = RequestMethod.DELETE)
 	public ResponseEntity<ApiCallResult> deleteDrafts(@PathVariable("userId") String userId,
-	                                                  @RequestParam("draftIds") String draftIds) {
+			@RequestParam("draftIds") String draftIds) {
 		logger.info("invoke: " + "/user/" + userId + "/audit-drafts?draftIds=" + draftIds);
 		ApiCallResult result = auditorService.deleteDrafts(userId, draftIds);
 		if (null == result.getMessage()) {
@@ -138,12 +135,12 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-drafts", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchDrafts(@PathVariable("userId") String userId,
-	                                                  @RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
-	                                                  @RequestParam(value = "start", required = false, defaultValue = "") String startDate,
-	                                                  @RequestParam(value = "end", required = false, defaultValue = "") String endDate,
-	                                                  @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
-	                                                  @RequestParam(value = "page-size", required = false, defaultValue = "20") int pageSize,
-	                                                  @RequestParam(value = "page", required = false, defaultValue = "1") int pageNumber) {
+			@RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
+			@RequestParam(value = "start", required = false, defaultValue = "") String startDate,
+			@RequestParam(value = "end", required = false, defaultValue = "") String endDate,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value = "page-size", required = false, defaultValue = "20") int pageSize,
+			@RequestParam(value = "page", required = false, defaultValue = "1") int pageNumber) {
 
 		ApiCallResult result = auditorService.searchDrafts(userId, serviceType, startDate, endDate, keyword, pageSize,
 				pageNumber);
@@ -158,13 +155,13 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-orders", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchOrders(@PathVariable("userId") String userId,
-	                                                  @RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
-	                                                  @RequestParam(value = "start", required = false, defaultValue = "") String startDate,
-	                                                  @RequestParam(value = "end", required = false, defaultValue = "") String endDate,
-	                                                  @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
-	                                                  @RequestParam(value = "status", required = false, defaultValue = "") String orderStatus,
-	                                                  @RequestParam(value = "page-size", required = false, defaultValue = "20") int pageSize,
-	                                                  @RequestParam(value = "page", required = false, defaultValue = "1") int pageNumber) {
+			@RequestParam(value = "service-type", required = false, defaultValue = "ma,ea,ctpat,stra") String serviceType,
+			@RequestParam(value = "start", required = false, defaultValue = "") String startDate,
+			@RequestParam(value = "end", required = false, defaultValue = "") String endDate,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value = "status", required = false, defaultValue = "") String orderStatus,
+			@RequestParam(value = "page-size", required = false, defaultValue = "20") int pageSize,
+			@RequestParam(value = "page", required = false, defaultValue = "1") int pageNumber) {
 
 		ApiCallResult result = auditorService.searchOrders(userId, serviceType, startDate, endDate, orderStatus,
 				keyword, pageSize, pageNumber);
@@ -179,7 +176,7 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-order", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> createOrderByDraft(@PathVariable("userId") String userId,
-	                                                        @RequestParam("draftId") String draftId) {
+			@RequestParam("draftId") String draftId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order?draftId=" + draftId);
 		ApiCallResult result = auditorService.createOrderByDraft(userId, draftId);
@@ -194,7 +191,7 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}/editing", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> editOrder(@PathVariable("userId") String userId,
-	                                               @PathVariable("orderId") String orderId) {
+			@PathVariable("orderId") String orderId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId + "/editing");
 		ApiCallResult result = auditorService.editOrder(userId, orderId);
@@ -209,7 +206,7 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getOrderDetail(@PathVariable("userId") String userId,
-	                                                    @PathVariable("orderId") String orderId) {
+			@PathVariable("orderId") String orderId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId);
 		ApiCallResult result = auditorService.getOrderDetail(userId, orderId);
@@ -224,7 +221,7 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}/audit-draft/{draftId}/saved", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> saveOrderByDraft(@PathVariable("userId") String userId,
-	                                                      @PathVariable("draftId") String draftId, @PathVariable("orderId") String orderId) {
+			@PathVariable("draftId") String draftId, @PathVariable("orderId") String orderId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId + "/audit-draft/" + draftId + "/saved");
 		ApiCallResult result = auditorService.saveOrderByDraft(userId, draftId, orderId);
@@ -239,8 +236,8 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-draft/{draftId}/price", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> calculatePricing(@PathVariable("userId") String userId,
-	                                                      @PathVariable("draftId") String draftId,
-	                                                      @RequestParam(value = "employeeCount", required = false) String employeeCount) {
+			@PathVariable("draftId") String draftId,
+			@RequestParam(value = "employeeCount", required = false) String employeeCount) {
 		// TODO Auto-generated method stub
 		logger.info(
 				"invoke: " + "/user/" + userId + "/audit-draft/" + draftId + "/price?employee-count=" + employeeCount);
@@ -256,7 +253,7 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}/draft/{draftId}/re-audit", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> reAudit(@PathVariable("userId") String userId,
-	                                             @PathVariable("orderId") String orderId, @PathVariable("draftId") String draftId) {
+			@PathVariable("orderId") String orderId, @PathVariable("draftId") String draftId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId + "/draftId/" + draftId + "/re-audit");
 		ApiCallResult result = auditorService.reAudit(userId, draftId, orderId);
@@ -271,9 +268,9 @@ public class AuditImpl implements Audit {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}", method = RequestMethod.DELETE)
 	public ResponseEntity<ApiCallResult> cancelOrder(@PathVariable("userId") String userId,
-	                                                 @PathVariable("orderId") String orderId,
-	                                                 @RequestParam(value = "reason", required = false, defaultValue = "") String reason,
-	                                                 @RequestParam(value = "reasonOption", required = false, defaultValue = "") String reasonOption) {
+			@PathVariable("orderId") String orderId,
+			@RequestParam(value = "reason", required = false, defaultValue = "") String reason,
+			@RequestParam(value = "reasonOption", required = false, defaultValue = "") String reasonOption) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId);
 		ApiCallResult result = auditorService.cancelOrder(userId, orderId, reason, reasonOption);
@@ -287,11 +284,12 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/re-audit-list", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult<List<SimpleOrderSearchBean>>> getReInspectionList(@PathVariable("userId") String userId,
-	                                                                                      @RequestParam(value = "service-type", required = false) String serviceType,
-	                                                                                      @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
-	                                                                                      @RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
-	                                                                                      @RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
+	public ResponseEntity<ApiCallResult<List<SimpleOrderSearchBean>>> getReInspectionList(
+			@PathVariable("userId") String userId,
+			@RequestParam(value = "service-type", required = false) String serviceType,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
+			@RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
 
 		ApiCallResult result = new ApiCallResult();
 		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
@@ -309,7 +307,7 @@ public class AuditImpl implements Audit {
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/export-audit-reports", method = RequestMethod.GET)

@@ -342,7 +342,7 @@ public class ReportImpl implements Report {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/report/{productId}/pdf-Certificate-base64", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{userId}/report/{productId}/pdf-certificate-base64", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> getPDFCertificate(@PathVariable("userId") String userId,
 			@PathVariable("productId") String productId, HttpServletResponse httpResponse) {
 		// TODO Auto-generated method stub
