@@ -323,12 +323,12 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                 }
             }
 //            logger.info("mapFileList size :"+mapFileList.size());
-
+            File tempDir = null;
             for (Map.Entry<String, List> map : mapFileList.entrySet())
             {
 //                logger.info("get each mapFile " + map.getKey()+" -- "+map.getValue());
                 List<FileMetaBean> beanList = new ArrayList<>();
-//                List<File>  toBeDeleted = new ArrayList<>();
+                List<File>  toBeDeleted = new ArrayList<>();
                 for(Object mpf : map.getValue()){
                     MultipartFile _mpf = ((CommonsMultipartFile)((Map)mpf).get("multipartFile"));
                     String caption = ((Map)mpf).get("caption").toString();
@@ -344,7 +344,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
                     }else {
 //                        File tempDir = new File(myFileService.getFileService().getLocalTempDir() + File.separator + sourceId);
-	                    File tempDir = new File(config.getLocalAuditTempDir()+ File.separator + sourceId);
+	                    tempDir = new File(config.getLocalIATempDir()+ File.separator + sourceId);
                         if (!tempDir.exists()) {
                             tempDir.mkdir();
                         }
@@ -357,18 +357,17 @@ public class InspectorResultControllerImpl implements InspectorResultController 
 //                        SimpleFileObject fileUploadedObject = new SimpleFileObject(uploadedFile);
                         FileMetaBean ftb = myFileService.getFileService().upload(sourceId, fileType, "insp-result-file", username, caption, uploadedFile);
 	                    logger.info("uploaded to File Service ! ["+ ftb.toString() +"]");
-//                        toBeDeleted.add(uploadedFile);
-						if (uploadedFile.exists()) {
-							uploadedFile.delete();
-						}
-						tempDir.delete();
+                        toBeDeleted.add(uploadedFile);
                         beanList.add(ftb);
                     }
                 }
 //                logger.info("file uploaded to FILE_SERVICE !");
 //                logger.info("tobeDeleted size :"+toBeDeleted.size());
                 fileMetaList.put(map.getKey(), beanList);
-//                toBeDeleted.stream().filter(File::exists).forEach(File::delete);
+                toBeDeleted.stream().filter(File::exists).forEach(File::delete);
+				if(null!= tempDir && tempDir.exists()) {
+					tempDir.delete();
+				}
                 logger.info("delete done!");
             }
             callResult.setContent(fileMetaList);
