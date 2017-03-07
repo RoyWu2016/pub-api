@@ -41,7 +41,4 @@ public interface AuditService {
 	ApiCallResult supplierConfirmOrder(String orderId, String auditDate, String containReadyTime,
 			ApiOrderFactoryBean orderFactoryBean);
 
-	ApiCallResult forwardedAuditReports(String userId, String reportIds, String to, String cc, String bcc,
-			String message);
-
 }

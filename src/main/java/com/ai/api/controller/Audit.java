@@ -64,7 +64,4 @@ public interface Audit {
 			String keyword, String pageSize, String pageNumber);
 
 	ResponseEntity<ApiCallResult> exportAuditReport(String userId);
-
-	ResponseEntity<ApiCallResult> forwardedAuditReports(String userId, String reportIds, String to, String cc,
-			String bcc, String message);
 }

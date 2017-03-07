@@ -324,23 +324,4 @@ public class AuditImpl implements Audit {
 		}
 	}
 
-	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/audit-reports/{reportIds}/forwarded", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> forwardedAuditReports(@PathVariable("userId") String userId,
-			@PathVariable("reportIds") String reportIds, @RequestParam(value = "to") String to,
-			@RequestParam(value = "cc", defaultValue = "") String cc,
-			@RequestParam(value = "bcc", defaultValue = "") String bcc,
-			@RequestParam(value = "message") String message) {
-		// TODO Auto-generated method stub
-		reportIds = reportIds.replace(",", ";");
-		logger.info("invoke: " + "/user/" + userId + "/audit-reports/" + reportIds + "forwarded");
-		ApiCallResult result = auditorService.forwardedAuditReports(userId, reportIds, to, cc, bcc, message);
-		if (null == result.getMessage()) {
-			return new ResponseEntity<>(result, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
 }

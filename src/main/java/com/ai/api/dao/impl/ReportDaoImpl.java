@@ -341,4 +341,34 @@ public class ReportDaoImpl implements ReportDao {
 		}
 		return null;
 	}
+
+	@Override
+	public boolean forwardedAuditReports(ReportsForwardingBean reportsForwardingBean, String companyId,
+			String parentId, String userId, String reportIds) {
+		// TODO Auto-generated method stub
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/audit/report/api/forward-reports");
+		try {
+			reportsForwardingBean.setMessage(URLEncoder.encode(reportsForwardingBean.getMessage().trim(), "UTF-8"));
+		} catch (Exception e) {
+			reportsForwardingBean.getMessage().trim().replace(" ", "%20");
+		}
+		url.append("?productIds=").append(reportIds).append("&to=").append(reportsForwardingBean.getTo()).append("&cc=")
+				.append(reportsForwardingBean.getCc()).append("&bcc=").append(reportsForwardingBean.getBcc())
+				.append("&message=").append(reportsForwardingBean.getMessage()).append("&userId=").append(userId)
+				.append("&companyId=").append(companyId).append("&parentId=").append(parentId);
+		try {
+			logger.info("requesting url: " + url.toString());
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, new HashMap<>());
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				return true;
+			} else {
+				logger.error("forward reports from psi-service error: " + result.getStatusCode() + ", "
+						+ result.getResponseString());
+				return false;
+			}
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+			return false;
+		}
+	}
 }
