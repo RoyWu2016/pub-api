@@ -47,7 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @SuppressWarnings({ "rawtypes", "unchecked", "restriction" })
 @RestController
-@Api(tags = {"Report"}, description = "Report APIs")
+@Api(tags = { "Report" }, description = "Report APIs")
 public class ReportImpl implements Report {
 	protected Logger logger = LoggerFactory.getLogger(ReportImpl.class);
 
@@ -57,12 +57,14 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-reports", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getAuditReports(@PathVariable("userId") String userId,
-															  @RequestParam(value = "start", required = false) String startDate,
-															  @RequestParam(value = "end", required = false) String endDate,
-															  @RequestParam(value = "keyword", required = false) String keywords,
-															  @RequestParam(value = "page", required = false) Integer pageNumber,
-															  @RequestParam(value = "page-size", required = false) Integer pageSize) {
+	@ApiOperation(value = "Get User's Audit Reports List", response = PageBean.class)
+	public ResponseEntity<ApiCallResult> getAuditReports(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "search period start date(format like 2016-12-01)", required = false) @RequestParam(value = "start", required = false) String startDate,
+			@ApiParam(value = "search period end date(format like 2016-12-01)", required = false) @RequestParam(value = "end", required = false) String endDate,
+			@ApiParam(value = "search keyword", required = false) @RequestParam(value = "keyword", required = false) String keywords,
+			@RequestParam(value = "page", required = false) Integer pageNumber,
+			@RequestParam(value = "page-size", required = false) Integer pageSize) {
 		PageParamBean paramBean = new PageParamBean();
 		if (null != pageNumber && pageNumber > 0)
 			paramBean.setPageNo(pageNumber);
@@ -80,9 +82,9 @@ public class ReportImpl implements Report {
 		if (criterias.size() > 0) {
 			paramBean.setCriterias(criterias);
 		}
-//		List<String> item = new ArrayList<String>();
-//		item.add("inspectionDate");
-//		paramBean.setOrderItems(item);
+		// List<String> item = new ArrayList<String>();
+		// item.add("inspectionDate");
+		// paramBean.setOrderItems(item);
 
 		ApiCallResult result = reportService.getAuditReports(userId, paramBean);
 		if (null == result.getMessage()) {
@@ -95,10 +97,12 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/reports", method = RequestMethod.GET)
-	public ResponseEntity<PageBean<ClientReportSearchBean>> getPSIReports(@PathVariable("userId") String userId,
-			@RequestParam(value = "start", required = false) String startDate,
-			@RequestParam(value = "end", required = false) String endDate,
-			@RequestParam(value = "keyword", required = false) String keywords,
+	@ApiOperation(value = "Get User's Reports List", response = PageBean.class)
+	public ResponseEntity<PageBean<ClientReportSearchBean>> getPSIReports(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "search period start date(format like 2016-12-01)", required = false) @RequestParam(value = "start", required = false) String startDate,
+			@ApiParam(value = "search period end date(format like 2016-12-01)", required = false) @RequestParam(value = "end", required = false) String endDate,
+			@ApiParam(value = "search keyword matches to Order number, or PO number or product id", required = false) @RequestParam(value = "keyword", required = false) String keywords,
 			@RequestParam(value = "page", required = false) Integer pageNumber,
 			@RequestParam(value = "page-size", required = false) Integer pageSize) {
 		PageParamBean paramBean = new PageParamBean();
@@ -133,8 +137,11 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/report/{productId}/certificate/{certType}", method = RequestMethod.GET)
-	public ResponseEntity<ApprovalCertificateBean> getApprovalCertificate(@PathVariable("userId") String userId,
-			@PathVariable("productId") String productId, @PathVariable("certType") String certType) {
+	@ApiOperation(value = "Get User's Report Certificate Info", response = ApprovalCertificateBean.class)
+	public ResponseEntity<ApprovalCertificateBean> getApprovalCertificate(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("productId") String productId,
+			@ApiParam(value = "can only be 'approve' or 'reject'", required = true) @PathVariable("certType") String certType) {
 		ApprovalCertificateBean approvalCertificateBean = reportService.getApprovalCertificate(userId, productId,
 				certType);
 		if (null != approvalCertificateBean) {
@@ -147,8 +154,10 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/report", method = RequestMethod.PUT)
-	public ResponseEntity<String> confirmApprovalCertificate(@PathVariable("userId") String userId,
-			@RequestBody ApprovalCertificateBean cert) {
+	@ApiOperation(value = "User Confirm Report Result", response = String.class)
+	public ResponseEntity<String> confirmApprovalCertificate(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @RequestBody ApprovalCertificateBean cert) {
 		logger.info("confirmApprovalCertificate ...");
 		logger.info(cert.toString());
 		boolean b = reportService.confirmApprovalCertificate(userId, cert);
@@ -162,8 +171,10 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/report/{productId}/pdf-info", method = RequestMethod.GET)
-	public ResponseEntity<List<String>> getUserReportPdfInfo(@PathVariable("userId") String userId,
-			@PathVariable("productId") String productId) {
+	@ApiOperation(value = "Get User's PDF Report Info", response = List.class)
+	public ResponseEntity<List<String>> getUserReportPdfInfo(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("productId") String productId) {
 
 		List<String> result = reportService.getUserReportPdfInfo(userId, productId);
 		if (result != null) {
@@ -176,9 +187,10 @@ public class ReportImpl implements Report {
 	@Override
 	// @TokenSecured
 	@RequestMapping(value = "/user/{userId}/report/{productId}/filename/{fileName}/pdf", method = RequestMethod.GET)
-	public ResponseEntity<String> downloadPDF(@PathVariable("userId") String userId,
-			@PathVariable("productId") String productId, @PathVariable("fileName") String fileName,
-			HttpServletResponse httpResponse) {
+	@ApiOperation(value = "Download User's PDF Report", response = String.class)
+	public ResponseEntity<String> downloadPDF(@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("productId") String productId,
+			@ApiParam(required = true) @PathVariable("fileName") String fileName, HttpServletResponse httpResponse) {
 		logger.info("downloadPDF ...");
 		logger.info("userId : " + userId);
 		logger.info("reportId : " + productId);
@@ -194,9 +206,11 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/report/{productId}/filename/{fileName}/pdf-base64", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> downloadPDFBase64(@PathVariable("userId") String userId,
-			@PathVariable("productId") String productId, @PathVariable("fileName") String fileName,
-			HttpServletResponse httpResponse) {
+	@ApiOperation(value = "Get User's PDF Report Base64 Code", response = String.class)
+	public ResponseEntity<ApiCallResult> downloadPDFBase64(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("productId") String productId,
+			@ApiParam(required = true) @PathVariable("fileName") String fileName, HttpServletResponse httpResponse) {
 		logger.info("invoke: " + "/user/" + userId + "/report/" + productId + "/filename/" + fileName + "/pdf-base64");
 		InputStream input = reportService.downloadPDFBase64(productId, fileName, httpResponse);
 		ApiCallResult result = new ApiCallResult();
@@ -224,12 +238,9 @@ public class ReportImpl implements Report {
 	@ApiOperation(value = "Export Inspection Report As Excle API", response = InputStream.class)
 	@RequestMapping(value = "/user/{userId}/export-reports", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, String>> exportReports(
-			@ApiParam(required = true)
-			@PathVariable("userId") String userId,
-			@ApiParam(value = "must be in format like 2016-12-01", required = false)
-			@RequestParam(value = "inspection start date", required = false, defaultValue = "") String start,
-			@ApiParam(value = "must be in format like 2016-12-01", required = false)
-			@RequestParam(value = "inspection end date", required = false, defaultValue = "") String end,
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "inspection start date", required = false, defaultValue = "") String start,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "inspection end date", required = false, defaultValue = "") String end,
 			HttpServletResponse httpResponse) {
 		logger.info("export reports ... ");
 		logger.info("userId : " + userId);
@@ -278,8 +289,11 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/report-reference/{referenceId}/certificate/{certType}", method = RequestMethod.GET)
-	public ResponseEntity<ApprovalCertificateBean> getReferenceApproveCertificate(@PathVariable("userId") String userId,
-			@PathVariable("referenceId") String referenceId, @PathVariable("certType") String certType) {
+	@ApiOperation(value = "Get User's Report Certificate Info By Reference", response = ApprovalCertificateBean.class)
+	public ResponseEntity<ApprovalCertificateBean> getReferenceApproveCertificate(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("referenceId") String referenceId,
+			@ApiParam(value = "can only be 'approve' or 'reject'", required = true) @PathVariable("certType") String certType) {
 		// TODO Auto-generated method stub
 		ApprovalCertificateBean approvalCertificateBean = reportService.getReferenceApproveCertificate(userId,
 				referenceId, certType);
@@ -293,8 +307,10 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/report/{productId}/undone", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> undoDecisionForReport(@PathVariable("userId") String userId,
-			@PathVariable("productId") String productId) {
+	@ApiOperation(value = "Undo Decesion in User's Report", response = Boolean.class)
+	public ResponseEntity<Boolean> undoDecisionForReport(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("productId") String productId) {
 		// TODO Auto-generated method stub
 		boolean result = reportService.undoDecisionForReport(userId, productId);
 		if (result) {
@@ -307,8 +323,10 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/report-reference/{referenceId}/undone", method = RequestMethod.PUT)
-	public ResponseEntity<Boolean> undoDecisionForReference(@PathVariable("userId") String userId,
-			@PathVariable("referenceId") String referenceId) {
+	@ApiOperation(value = "Undo Decesion in User's Report Reference", response = Boolean.class)
+	public ResponseEntity<Boolean> undoDecisionForReference(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("referenceId") String referenceId) {
 		// TODO Auto-generated method stub
 		boolean result = reportService.undoDecisionForReference(userId, referenceId);
 		if (result) {
@@ -321,13 +339,10 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/reports/{reportIds}/forwarded", method = RequestMethod.POST)
-	public ResponseEntity<String> forwardReports(
-			@ApiParam(required = true)
-			@PathVariable("userId") String userId,
-			@ApiParam(allowableValues = "comma delimited report ids", required = true)
-			@PathVariable("reportIds") String reportIds,
-			@ApiParam(required = true)
-			@RequestBody ReportsForwardingBean reportsForwardingBean) {
+	@ApiOperation(value = "Forward User's Reports By Email", response = String.class)
+	public ResponseEntity<String> forwardReports(@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(allowableValues = "comma delimited report ids", required = true) @PathVariable("reportIds") String reportIds,
+			@ApiParam(required = true) @RequestBody ReportsForwardingBean reportsForwardingBean) {
 		reportIds = reportIds.replace(",", ";");
 		if (StringUtils.isBlank(reportsForwardingBean.getTo())) {
 			return new ResponseEntity<>("the field 'to' can not be null!", HttpStatus.BAD_REQUEST);
@@ -343,8 +358,10 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/report/{productId}/pdf-certificate-base64", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getPDFCertificate(@PathVariable("userId") String userId,
-			@PathVariable("productId") String productId, HttpServletResponse httpResponse) {
+	@ApiOperation(value = "Get Certificated PDF Base64 Code", response = String.class)
+	public ResponseEntity<ApiCallResult> getPDFCertificate(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("productId") String productId, HttpServletResponse httpResponse) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/report/" + productId + "/pdf-Certificate");
 		List<LotusSyncBean> list = reportService.listAllSyncObjByOracleId(productId, "report_detail");
@@ -353,12 +370,12 @@ public class ReportImpl implements Report {
 		String result = reportService.getPDFCertificate(lotusId);
 		ApiCallResult finalResult = new ApiCallResult();
 		if (null != result) {
-//				byte[] data = IOUtils.toByteArray(result);
-//				String fileStr = Base64.encode(data);
-			if(result.contains("<!DOCTYPE HTML PUBLIC")) {
+			// byte[] data = IOUtils.toByteArray(result);
+			// String fileStr = Base64.encode(data);
+			if (result.contains("<!DOCTYPE HTML PUBLIC")) {
 				finalResult.setMessage("Inspection certificate is generating, please wait.");
 				return new ResponseEntity<>(finalResult, HttpStatus.OK);
-			}else {
+			} else {
 				finalResult.setContent(result);
 				return new ResponseEntity<>(finalResult, HttpStatus.OK);
 			}
@@ -366,13 +383,14 @@ public class ReportImpl implements Report {
 			finalResult.setMessage("Can not get Certificate from MW");
 			return new ResponseEntity<>(finalResult, HttpStatus.OK);
 		}
-//		try {
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			finalResult.setMessage("Exception: " + e.toString());
-//			return new ResponseEntity<>(finalResult, HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
+		// try {
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// finalResult.setMessage("Exception: " + e.toString());
+		// return new ResponseEntity<>(finalResult,
+		// HttpStatus.INTERNAL_SERVER_ERROR);
+		// }
 	}
 
 }
