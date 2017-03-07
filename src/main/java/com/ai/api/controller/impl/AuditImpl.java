@@ -3,15 +3,6 @@ package com.ai.api.controller.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ai.api.controller.Audit;
-import com.ai.api.service.AuditService;
-import com.ai.api.service.OrderService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
-import com.ai.commons.beans.order.SimpleOrderSearchBean;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +15,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ai.api.controller.Audit;
+import com.ai.api.service.AuditService;
+import com.ai.api.service.OrderService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 
 /***************************************************************************
  * <PRE>
@@ -315,6 +317,25 @@ public class AuditImpl implements Audit {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/export-audit-reports");
 		ApiCallResult result = auditorService.exportAuditReport(userId);
+		if (null == result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/audit-reports/{reportIds}/forwarded", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> forwardedAuditReports(@PathVariable("userId") String userId,
+			@PathVariable("reportIds") String reportIds, @RequestParam(value = "to") String to,
+			@RequestParam(value = "cc", defaultValue = "") String cc,
+			@RequestParam(value = "bcc", defaultValue = "") String bcc,
+			@RequestParam(value = "message") String message) {
+		// TODO Auto-generated method stub
+		reportIds = reportIds.replace(",", ";");
+		logger.info("invoke: " + "/user/" + userId + "/audit-reports/" + reportIds + "forwarded");
+		ApiCallResult result = auditorService.forwardedAuditReports(userId, reportIds, to, cc, bcc, message);
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {

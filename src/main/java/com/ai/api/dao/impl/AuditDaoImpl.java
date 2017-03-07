@@ -352,10 +352,9 @@ public class AuditDaoImpl implements AuditDao {
 
 	@Override
 	public ApiCallResult supplierConfirmOrder(String orderId, String auditDate, String containReadyTime,
-											  ApiOrderFactoryBean orderFactoryBean) {
+			ApiOrderFactoryBean orderFactoryBean) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/api/audit/supplierConfirmAudit")
-				.append("?orderId=" + orderId)
-				.append("&auditDate=" + auditDate)
+				.append("?orderId=" + orderId).append("&auditDate=" + auditDate)
 				.append("&containReadyTime=" + containReadyTime);
 		ApiCallResult finalResult = new ApiCallResult();
 		try {
@@ -364,11 +363,43 @@ public class AuditDaoImpl implements AuditDao {
 				finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 			} else {
 				logger.info("supplierConfirmAuditOrder failed from psi-service!!!");
-				finalResult.setMessage("supplierConfirmAuditOrder failed from psi-service!!! code["+result.getStatusCode()+"] msg:"+result.getResponseString());
+				finalResult.setMessage("supplierConfirmAuditOrder failed from psi-service!!! code["
+						+ result.getStatusCode() + "] msg:" + result.getResponseString());
 			}
 		} catch (Exception e) {
-			logger.error("error Exception!",e);
-			finalResult.setMessage("error Exception!"+e);
+			logger.error("error Exception!", e);
+			finalResult.setMessage("error Exception!" + e);
+		}
+		return finalResult;
+	}
+
+	@Override
+	public ApiCallResult forwardedAuditReports(String userId, String companyId, String parentId, String reportIds,
+			String to, String cc, String bcc, String message) {
+		// TODO Auto-generated method stub
+		ApiCallResult finalResult = new ApiCallResult();
+		try {
+			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+			url.append("/audit/report/api/forward-reports");
+			url.append("?userId=" + userId);
+			url.append("&companyId=" + companyId);
+			url.append("&parentId=" + parentId);
+			url.append("&orderIds=" + URLEncoder.encode(reportIds, "utf-8"));
+			url.append("&bcc=" + URLEncoder.encode(bcc, "utf-8"));
+			url.append("&to=" + URLEncoder.encode(to, "utf-8"));
+			url.append("&cc=" + URLEncoder.encode(cc, "utf-8"));
+			url.append("&message=" + URLEncoder.encode(message, "utf-8"));
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, reportIds);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			} else {
+				logger.info("forwardedAuditReports failed from psi-service!!!");
+				finalResult.setMessage("forwardedAuditReports failed from psi-service!!! code[" + result.getStatusCode()
+						+ "] msg:" + result.getResponseString());
+			}
+		} catch (Exception e) {
+			logger.error("error Exception!", e);
+			finalResult.setMessage("error Exception!" + e);
 		}
 		return finalResult;
 	}
