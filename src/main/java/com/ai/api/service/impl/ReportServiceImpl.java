@@ -439,4 +439,26 @@ public class ReportServiceImpl implements ReportService {
 		// TODO Auto-generated method stub
 		return reportDao.getPDFCertificate(lotusId);
 	}
+
+	@Override
+	public boolean forwardedAuditReports(String userId, String reportIds,
+			ReportsForwardingBean reportsForwardingBean) {
+		// TODO Auto-generated method stub
+		String companyId = "";
+		String parentId = "";
+		UserBean user = null;
+		try {
+			user = userService.getCustById(userId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null) {
+				parentId = "";
+			}
+			companyId = user.getCompany().getId();
+		}
+		return reportDao.forwardedAuditReports(reportsForwardingBean, companyId, parentId, userId, reportIds);
+	}
 }

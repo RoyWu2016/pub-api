@@ -533,22 +533,4 @@ public class AuditServiceImpl implements AuditService {
 		return excelStream;
 	}
 
-	@Override
-	public ApiCallResult forwardedAuditReports(String userId, String reportIds, String to, String cc, String bcc,
-			String message) {
-		// TODO Auto-generated method stub
-		String companyId = "";
-		String parentId = "";
-		UserBean user = this.getUserBeanByUserId(userId);
-		if (null != user) {
-			parentId = user.getCompany().getParentCompanyId();
-			if (parentId == null)
-				parentId = "";
-			companyId = user.getCompany().getId();
-		}
-		ApiCallResult result = auditorDao.forwardedAuditReports(userId, companyId, parentId, reportIds, to, cc, bcc, message);
-
-		return result;
-	}
-
 }

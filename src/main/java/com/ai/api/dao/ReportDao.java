@@ -15,8 +15,7 @@ import com.ai.commons.beans.sync.LotusSyncBean;
  * Created by yan on 2016/7/25.
  */
 public interface ReportDao {
-    ApiCallResult getAuditReports(String userId, String companyId, String parentId,
-                                  PageParamBean paramBean);
+	ApiCallResult getAuditReports(String userId, String companyId, String parentId, PageParamBean paramBean);
 
 	PageBean<ClientReportSearchBean> getPSIReports(String userId, String companyId, String parentId,
 			PageParamBean paramBean);
@@ -43,4 +42,7 @@ public interface ReportDao {
 	List<LotusSyncBean> listAllSyncObjByOracleId(String productId, String reportDetail);
 
 	String getPDFCertificate(String lotusId);
+
+	boolean forwardedAuditReports(ReportsForwardingBean reportsForwardingBean, String companyId, String parentId,
+			String userId, String reportIds);
 }
