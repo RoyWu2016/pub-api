@@ -35,6 +35,8 @@ import com.ai.commons.services.FileService;
 import com.alibaba.fastjson.JSON;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +82,9 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/product-categories", method = RequestMethod.GET)
+	@ApiOperation(value = "Get ProductCategory List API", response = ProductCategoryDtoBean.class, responseContainer = "List")
 	public ResponseEntity<List<ProductCategoryDtoBean>> getProductCategoryList(
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 
 		List<ProductCategoryDtoBean> result = parameterService.getProductCategoryList(refresh);
@@ -95,7 +99,9 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/product-families", method = RequestMethod.GET)
+	@ApiOperation(value = "Get ProductFamily List API", response = ProductFamilyDtoBean.class, responseContainer = "List")
 	public ResponseEntity<List<ProductFamilyDtoBean>> getProductFamilyList(
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 
 		List<ProductFamilyDtoBean> result = parameterService.getProductFamilyList(refresh);
@@ -109,7 +115,9 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	@RequestMapping(value = "/parameter/countries-with-calling-country-code", method = RequestMethod.GET)
+	@ApiOperation(value = "Get Country List API", response = CountryBean.class, responseContainer = "List")
 	public ResponseEntity<List<CountryBean>> getCountryList(
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		logger.info("Get countries-with-calling-country-code ...");
 		List<GeoCountryCallingCodeBean> result = parameterService.getCountryList(refresh);
@@ -133,7 +141,9 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/checklist-test-sample-size-list", method = RequestMethod.GET)
+	@ApiOperation(value = "Get Test Sample Size List API", response = ChecklistSampleSize.class, responseContainer = "List")
 	public ResponseEntity<List<ChecklistSampleSize>> getTestSampleSizeList(
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 
 		Map<String, List<ChecklistTestSampleSizeBean>> resultMap = parameterService.getTestSampleSizeList(refresh);
@@ -149,7 +159,9 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/public-tests", method = RequestMethod.GET)
+	@ApiOperation(value = "Get Checklist Public Test List API", response = CKLTestVO.class, responseContainer = "List")
 	public ResponseEntity<List<CKLTestVO>> getChecklistPublicTestList(
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		logger.info("get checklistPublicTests");
 		List<CKLTestVO> result = parameterService.getChecklistPublicTestList(refresh);
@@ -164,7 +176,9 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/public-defects", method = RequestMethod.GET)
+	@ApiOperation(value = "Get Checklist Public Defect List API", response = CKLDefectVO.class, responseContainer = "List")
 	public ResponseEntity<List<CKLDefectVO>> getChecklistPublicDefectList(
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		logger.info("get checklistPublicDefects");
 		List<CKLDefectVO> result = parameterService.getChecklistPublicDefectList(refresh);
@@ -179,7 +193,9 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/product-types", method = RequestMethod.GET)
+	@ApiOperation(value = "Get ProductCategory List API", response = SysProductTypeBean.class, responseContainer = "Map")
 	public ResponseEntity<Map<String, Object>> getProductTypeList(
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<SysProductTypeBean> sysProductTypeBeanList = parameterService.getProductTypeList(refresh);
@@ -196,7 +212,9 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/textile-product-categories", method = RequestMethod.GET)
+	@ApiOperation(value = "Get Textile Product Category List API", response = TextileDropdownListOptionBean.class, responseContainer = "List")
 	public ResponseEntity<List<TextileDropdownListOptionBean>> getTextileProductCategories(
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		// TODO Auto-generated method stub
 		logger.info("get getTextileProductCategory");
@@ -238,7 +256,9 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/ai-offices", method = RequestMethod.GET)
+	@ApiOperation(value = "Get AiOffice List API", response = DropdownListOptionBean.class, responseContainer = "List")
 	public ResponseEntity<List<DropdownListOptionBean>> getAiOffices(
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		// TODO Auto-generated method stub
 		logger.info("get getAiOffices");
@@ -261,6 +281,7 @@ public class ParameterImpl implements Parameter {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/parameter/server-time", method = RequestMethod.GET)
+	@ApiOperation(value = "Get China Time API", response = ChinaTimeBean.class)
 	public ResponseEntity<ChinaTimeBean> getChinaTime() {
 		// TODO Auto-generated method stub
 		ChinaTimeBean chinaTimeBean = parameterService.getChinaTime();
@@ -270,7 +291,9 @@ public class ParameterImpl implements Parameter {
 	@Override
 	// @TokenSecured
 	@RequestMapping(value = "/parameter/continents", method = RequestMethod.GET)
+	@ApiOperation(value = "Get Continent List API", response = DropdownListOptionBean.class, responseContainer = "List")
 	public ResponseEntity<ApiCallResult> getContinents(
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		logger.info("invoking: /parameter/continents?refresh=" + refresh);
 		ApiCallResult callResult = new ApiCallResult();
@@ -309,7 +332,9 @@ public class ParameterImpl implements Parameter {
 	@Override
 	// @TokenSecured
 	@RequestMapping(value = "/parameter/countries", method = RequestMethod.GET)
+	@ApiOperation(value = "Get AllCountries List API", response = DropdownListOptionBean.class, responseContainer = "List")
 	public ResponseEntity<ApiCallResult> getAllCountries(
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		logger.info("invoking: /parameter/all-countries?refresh=" + refresh);
 		ApiCallResult callResult = new ApiCallResult();
@@ -348,7 +373,11 @@ public class ParameterImpl implements Parameter {
 	@Override
 	// @TokenSecured
 	@RequestMapping(value = "/parameter/continent/{continentId}/countries", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getCountriesByContinentId(@PathVariable("continentId") String continentId,
+	@ApiOperation(value = "Get Countries By ContinentId API", response = DropdownListOptionBean.class, responseContainer = "List")
+	public ResponseEntity<ApiCallResult> getCountriesByContinentId(
+			@ApiParam(value = "continentId", required = true)
+			@PathVariable("continentId") String continentId,
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		// TODO Auto-generated method stub
 		logger.info("invoking: /parameter/continent/" + continentId + "/countries?refresh=" + refresh);
@@ -389,7 +418,11 @@ public class ParameterImpl implements Parameter {
 	@Override
 	// @TokenSecured
 	@RequestMapping(value = "/parameter/country/{countryId}/provinces", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getProvincesByCountryId(@PathVariable("countryId") String countryId,
+	@ApiOperation(value = "Get Provinces By CountryId API", response = DropdownListOptionBean.class, responseContainer = "List")
+	public ResponseEntity<ApiCallResult> getProvincesByCountryId(
+			@ApiParam(value = "countryId", required = true)
+			@PathVariable("countryId") String countryId,
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		// TODO Auto-generated method stub
 		logger.info("invoking: /parameter/country/" + countryId + "/provinces?refresh=" + refresh);
@@ -429,7 +462,11 @@ public class ParameterImpl implements Parameter {
 	@Override
 	// @TokenSecured
 	@RequestMapping(value = "/parameter/province/{provinceId}/cities", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getCitiesByProvinceId(@PathVariable("provinceId") String provinceId,
+	@ApiOperation(value = "Get Cities By ProvinceId API", response = DropdownListOptionBean.class, responseContainer = "List")
+	public ResponseEntity<ApiCallResult> getCitiesByProvinceId(
+			@ApiParam(value = "provinceId", required = true)
+			@PathVariable("provinceId") String provinceId,
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		// TODO Auto-generated method stub
 		logger.info("invoking: /parameter/province/" + provinceId + "/cities?refresh=" + refresh);
@@ -469,7 +506,11 @@ public class ParameterImpl implements Parameter {
 	@Override
 	// @TokenSecured
 	@RequestMapping(value = "/parameter/country/{countryId}/cities", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getCitiesByCountryId(@PathVariable("countryId") String countryId,
+	@ApiOperation(value = "Get Cities By CountryId API", response = DropdownListOptionBean.class, responseContainer = "List")
+	public ResponseEntity<ApiCallResult> getCitiesByCountryId(
+			@ApiParam(value = "countryId", required = true)
+			@PathVariable("countryId") String countryId,
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		// TODO Auto-generated method stub
 		logger.info("invoking: /parameter/country/" + countryId + "/cities?refresh=" + refresh);
@@ -508,7 +549,11 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	@RequestMapping(value = "/parameter/sic/{sicId}/base64", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getSaleImage(@PathVariable("sicId") String sicId,
+	@ApiOperation(value = "Get Sale Image API", response = String.class)
+	public ResponseEntity<ApiCallResult> getSaleImage(
+			@ApiParam(value = "sicId", required = true)
+			@PathVariable("sicId") String sicId,
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 
 		logger.info("getSaleImage  sicId:[" + sicId + "]  | refresh:[" + refresh + "]");
@@ -541,7 +586,10 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	@RequestMapping(value = "/parameter/{userName}/is-aca-user", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> isACAUser(@PathVariable("userName") String userName) {
+	@ApiOperation(value = "Check User Is ACA-User Or Not API", response = boolean.class)
+	public ResponseEntity<ApiCallResult> isACAUser(
+			@ApiParam(value = "userName", required = true)
+			@PathVariable("userName") String userName) {
 		logger.info("invoke: " + "/parameter/" + userName + "/is-aca-user");
 		logger.info("check if userName exist: " + userName);
 		ApiCallResult result = new ApiCallResult();
@@ -557,7 +605,11 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	@RequestMapping(value = "/parameter/resources/{resourceName}/base64", method = RequestMethod.GET)
-	public ResponseEntity<String> getCommonImagesBase64(@PathVariable("resourceName") String resourceName,
+	@ApiOperation(value = "Get Common Image Base64 String API", response = String.class)
+	public ResponseEntity<String> getCommonImagesBase64(
+			@ApiParam(value = "resourceName", required = true)
+			@PathVariable("resourceName") String resourceName,
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		logger.info("invoke: " + "/parameter/resources/" + resourceName + "/base64");
 //		ApiCallResult callResult = new ApiCallResult();
