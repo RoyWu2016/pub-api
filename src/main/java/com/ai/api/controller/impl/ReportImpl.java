@@ -341,7 +341,7 @@ public class ReportImpl implements Report {
 	@RequestMapping(value = "/user/{userId}/reports/{reportIds}/forwarded", method = RequestMethod.POST)
 	@ApiOperation(value = "Forward User's Reports By Email", response = String.class)
 	public ResponseEntity<String> forwardReports(@ApiParam(required = true) @PathVariable("userId") String userId,
-			@ApiParam(allowableValues = "comma delimited report ids", required = true) @PathVariable("reportIds") String reportIds,
+			@ApiParam(value = "comma delimited report ids", required = true) @PathVariable("reportIds") String reportIds,
 			@ApiParam(required = true) @RequestBody ReportsForwardingBean reportsForwardingBean) {
 		reportIds = reportIds.replace(",", ";");
 		if (StringUtils.isBlank(reportsForwardingBean.getTo())) {
@@ -383,14 +383,27 @@ public class ReportImpl implements Report {
 			finalResult.setMessage("Can not get Certificate from MW");
 			return new ResponseEntity<>(finalResult, HttpStatus.OK);
 		}
-		// try {
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// finalResult.setMessage("Exception: " + e.toString());
-		// return new ResponseEntity<>(finalResult,
-		// HttpStatus.INTERNAL_SERVER_ERROR);
-		// }
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/audit-reports/{reportIds}/forwarded", method = RequestMethod.POST)
+	public ResponseEntity<String> forwardedAuditReports(@PathVariable("userId") String userId,
+			@PathVariable("reportIds") String reportIds,
+			@ApiParam(required = true) @RequestBody ReportsForwardingBean reportsForwardingBean) {
+		// TODO Auto-generated method stub
+		reportIds = reportIds.replace(",", ";");
+		logger.info("invoke: " + "/user/" + userId + "/audit-reports/" + reportIds + "forwarded");
+		reportIds = reportIds.replace(",", ";");
+		if (StringUtils.isBlank(reportsForwardingBean.getTo())) {
+			return new ResponseEntity<>("the field 'to' can not be null!", HttpStatus.BAD_REQUEST);
+		}
+		boolean b = reportService.forwardedAuditReports(userId, reportIds,reportsForwardingBean);
+		if (b) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }
