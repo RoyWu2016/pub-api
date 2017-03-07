@@ -5,7 +5,7 @@ import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 import com.ai.commons.beans.psi.api.ApiOrderFactoryBean;
 
 public interface AuditService {
-	
+
 	ApiCallResult getDraft(String userId, String draftId);
 
 	ApiCallResult createDraft(String userId, String serviceType);
@@ -14,11 +14,11 @@ public interface AuditService {
 
 	ApiCallResult deleteDrafts(String userId, String draftIds);
 
-    ApiCallResult searchDrafts(String userId, String serviceType,String startDate,String endDate,
-                               String keyWord,int pageSize,int pageNo);
+	ApiCallResult searchDrafts(String userId, String serviceType, String startDate, String endDate, String keyWord,
+			int pageSize, int pageNo);
 
-    ApiCallResult searchOrders(String userId,String serviceType, String startDate,String endDate,
-                               String orderStatus,String keyWord,int pageSize,int pageNo);
+	ApiCallResult searchOrders(String userId, String serviceType, String startDate, String endDate, String orderStatus,
+			String keyWord, int pageSize, int pageNo);
 
 	ApiCallResult createDraftFromPreviousOrder(String userId, String orderId, String serviceType);
 
@@ -39,6 +39,9 @@ public interface AuditService {
 	ApiCallResult exportAuditReport(String userId);
 
 	ApiCallResult supplierConfirmOrder(String orderId, String auditDate, String containReadyTime,
-									   ApiOrderFactoryBean orderFactoryBean);
+			ApiOrderFactoryBean orderFactoryBean);
+
+	ApiCallResult forwardedAuditReports(String userId, String reportIds, String to, String cc, String bcc,
+			String message);
 
 }
