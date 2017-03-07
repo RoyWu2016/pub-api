@@ -17,6 +17,7 @@ import com.ai.api.util.RedisUtil;
 import com.ai.commons.DateUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.audit.AuditBookingBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.OrderFactoryBean;
@@ -26,6 +27,9 @@ import com.ai.userservice.common.util.MD5;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 @RestController
-@Api(tags = {"Supplier"}, description = "Supplier APIs")
+@Api(tags = { "Supplier" }, description = "Supplier APIs")
 public class SupplierImpl implements Supplier {
 	private static final Logger logger = LoggerFactory.getLogger(SupplierImpl.class);
 
@@ -71,8 +75,9 @@ public class SupplierImpl implements Supplier {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/suppliers", method = RequestMethod.GET)
-	public ResponseEntity<List<SupplierSearchResultBean>> getSuppliersByUserId(@PathVariable("userId") String userId)
-			throws IOException, AIException {
+	@ApiOperation(value = "Get User's Supplier List", response = SupplierSearchResultBean.class)
+	public ResponseEntity<List<SupplierSearchResultBean>> getSuppliersByUserId(
+			@ApiParam(required = true) @PathVariable("userId") String userId) throws IOException, AIException {
 		System.out.println("get user's suppliers by userId: " + userId);
 
 		List<FactorySearchBean> factorySearchBeenList = factoryService.getSuppliersByUserId(userId);
@@ -113,24 +118,29 @@ public class SupplierImpl implements Supplier {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/supplier/{supplierId}", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getSupplierDetailInfoById(@PathVariable("userId") String userId,
-			@PathVariable("supplierId") String supplierId) throws IOException, AIException {
+	@ApiOperation(value = "Get User's Supplier Detail Info", response = SupplierDetailBean.class)
+	public ResponseEntity<ApiCallResult> getSupplierDetailInfoById(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("supplierId") String supplierId) throws IOException, AIException {
 		System.out.println("get user's supplier detail by supplierId: " + supplierId);
 
-        ApiCallResult result = factoryService.getUserSupplierDetailInfoById(userId, supplierId);
+		ApiCallResult result = factoryService.getUserSupplierDetailInfoById(userId, supplierId);
 
-		if (null==result.getMessage()) {
+		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(result,HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/supplier/{supplierId}", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> updateUserSupplierDetailInfo(@PathVariable("userId") String userId,
-			@PathVariable("supplierId") String supplierId, @RequestBody SupplierDetailBean supplierDetailBean)
+	@ApiOperation(value = "Update User's Supplier Detail Info", response = Boolean.class)
+	public ResponseEntity<ApiCallResult> updateUserSupplierDetailInfo(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("supplierId") String supplierId,
+			@ApiParam(required = true) @RequestBody SupplierDetailBean supplierDetailBean)
 			throws IOException, AIException {
 		logger.info("updating supplier detail info for user: " + userId);
 		ApiCallResult callResult = new ApiCallResult();
@@ -148,8 +158,11 @@ public class SupplierImpl implements Supplier {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/suppliers/{supplierIds}", method = RequestMethod.DELETE)
-	public ResponseEntity<ApiCallResult> deleteSuppliers(@PathVariable("userId") String userId,
-			@PathVariable("supplierIds") String supplierIds) throws IOException, AIException {
+	@ApiOperation(value = "Delete User's Suppliers Info", response = Boolean.class)
+	public ResponseEntity<ApiCallResult> deleteSuppliers(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "sepearted by comma when multiple format like '123,232,334'", required = true) @PathVariable("supplierIds") String supplierIds)
+			throws IOException, AIException {
 		logger.info("deleting supplier for user: " + userId);
 		ApiCallResult callResult = factoryService.deleteSuppliers(supplierIds);
 		return new ResponseEntity<>(callResult, HttpStatus.OK);
@@ -158,16 +171,19 @@ public class SupplierImpl implements Supplier {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/supplier", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> createSupplier(@PathVariable("userId") String userId,
-			@RequestBody SupplierDetailBean supplierDetailBean) throws IOException, AIException {
+	@ApiOperation(value = "Add User's Supplier", response = SupplierDetailBean.class)
+	public ResponseEntity<ApiCallResult> createSupplier(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @RequestBody SupplierDetailBean supplierDetailBean)
+			throws IOException, AIException {
 		if (null != supplierDetailBean && ("").equals(supplierDetailBean.getUserId())) {
 			supplierDetailBean.setUserId(userId);
 		}
 		String supplierId = factoryService.createSupplier(supplierDetailBean);
 		if (null != supplierId) {
-            ApiCallResult result = factoryService.getUserSupplierDetailInfoById(userId, supplierId);
+			ApiCallResult result = factoryService.getUserSupplierDetailInfoById(userId, supplierId);
 			if (null != result.getMessage()) {
-				return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			} else {
 				return new ResponseEntity<>(result, HttpStatus.OK);
 			}
@@ -178,8 +194,10 @@ public class SupplierImpl implements Supplier {
 
 	@Override
 	@RequestMapping(value = "/order/{orderId}/factory", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getFactoryConfirm(@PathVariable("orderId") String orderId,
-			@RequestParam("password") String password) {
+	@ApiOperation(value = "Get Inspection Factory Confirmation Info", response = InspectionBookingBean.class)
+	public ResponseEntity<ApiCallResult> getFactoryConfirm(
+			@ApiParam(required = true) @PathVariable("orderId") String orderId,
+			@ApiParam(required = true) @RequestParam("password") String password) {
 		logger.info("getFactoryConfirm ...");
 		logger.info("orderId:" + orderId);
 		ApiCallResult callResult = new ApiCallResult();
@@ -198,7 +216,8 @@ public class SupplierImpl implements Supplier {
 					try {
 						UserBean u = userService.getCustById(orderBean.getOrder().getOrderGeneralInfo().getUserId());
 						object.put("userCompanyName", u.getCompany().getName());
-						object.put("allowPostponementBySuppliers",u.getPreferences().getBooking().isAllowPostponementBySuppliers());
+						object.put("allowPostponementBySuppliers",
+								u.getPreferences().getBooking().isAllowPostponementBySuppliers());
 						object.put("ChinaDatetime", parameterService.getChinaTime().getDatetime());
 						object.put("productCategoryList", parameterService.getProductCategoryList(false));
 						object.put("productFamilyList", parameterService.getProductFamilyList(false));
@@ -208,7 +227,7 @@ public class SupplierImpl implements Supplier {
 								e);
 					}
 					try {
-                        ApiCallResult result = factoryService.getUserSupplierDetailInfoById("nullUserId",
+						ApiCallResult result = factoryService.getUserSupplierDetailInfoById("nullUserId",
 								orderBean.getOrder().getOrderSupplier().getSupplierId());
 						String userId = orderBean.getOrder().getOrderGeneralInfo().getUserId();
 						UserBean userBean = userService.getCustById(userId);
@@ -226,10 +245,10 @@ public class SupplierImpl implements Supplier {
 							String str = factory.getFactoryProductLines();
 							if (null != str) {
 								String[] strArray = str.split(";");
-								objectFactory.put("factoryProductLines",strArray);
+								objectFactory.put("factoryProductLines", strArray);
 							}
 							object.getJSONObject("order").put("orderFactory", objectFactory);
-						}else {
+						} else {
 							String str = factory.getFactoryProductLines();
 							if (null != str) {
 								String[] strArray = str.split(";");
@@ -271,14 +290,17 @@ public class SupplierImpl implements Supplier {
 
 	@Override
 	@RequestMapping(value = "/order/{orderId}/audit-factory", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getAuditFactoryConfirm(@PathVariable("orderId") String orderId,
-														   @RequestParam("password") String password) {
+	@ApiOperation(value = "Get Audit Factory Confirmation Info", response = AuditBookingBean.class)
+	public ResponseEntity<ApiCallResult> getAuditFactoryConfirm(
+			@ApiParam(required = true) @PathVariable("orderId") String orderId,
+			@ApiParam(required = true) @RequestParam("password") String password) {
 		logger.info("getAuditFactoryConfirm ...");
 		logger.info("orderId:" + orderId);
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-            AuditBookingBean auditBookingBean = (AuditBookingBean)auditorService.getOrderDetail("nullUserId", orderId).getContent();
-			if (null!=auditBookingBean && null!=auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode()) {
+			AuditBookingBean auditBookingBean = (AuditBookingBean) auditorService.getOrderDetail("nullUserId", orderId)
+					.getContent();
+			if (null != auditBookingBean && null != auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode()) {
 				String validateCode = auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode();
 				String pw = MD5.toMD5(validateCode);
 
@@ -291,12 +313,15 @@ public class SupplierImpl implements Supplier {
 					try {
 						UserBean u = userService.getCustById(auditBookingBean.getOrderGeneralInfo().getUserId());
 						object.put("userCompanyName", u.getCompany().getName());
-						object.put("allowPostponementBySuppliers",u.getPreferences().getBooking().isAllowPostponementBySuppliers());
+						object.put("allowPostponementBySuppliers",
+								u.getPreferences().getBooking().isAllowPostponementBySuppliers());
 						object.put("ChinaDatetime", parameterService.getChinaTime().getDatetime());
 						object.put("productCategoryList", parameterService.getProductCategoryList(false));
 						object.put("productFamilyList", parameterService.getProductFamilyList(false));
 					} catch (Exception e) {
-						logger.error("error occur while adding [userCompanyNameChinaDatetime productCategoryList productFamilyList] to result",e);
+						logger.error(
+								"error occur while adding [userCompanyNameChinaDatetime productCategoryList productFamilyList] to result",
+								e);
 					}
 					callResult.setContent(object);
 					return new ResponseEntity<>(callResult, HttpStatus.OK);
@@ -318,10 +343,13 @@ public class SupplierImpl implements Supplier {
 
 	@Override
 	@RequestMapping(value = "/order/{orderId}/factory", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> updateFactoryConfirm(@PathVariable("orderId") String orderId,
-			@RequestParam("password") String password, @RequestParam("inspectionDate") String inspectionDateString,
-			@RequestParam("containerReadyDate") String containReadyTime,
-			@RequestBody OrderFactoryBean orderFactoryBean) {
+	@ApiOperation(value = "Confirm Inspection Factory Info", response = InspectionBookingBean.class)
+	public ResponseEntity<ApiCallResult> updateFactoryConfirm(
+			@ApiParam(required = true) @PathVariable("orderId") String orderId,
+			@ApiParam(required = true) @RequestParam("password") String password,
+			@ApiParam(value = "format like 2016-12-01", required = true) @RequestParam("inspectionDate") String inspectionDateString,
+			@ApiParam(value = "format like 2016-12-01", required = true) @RequestParam("containerReadyDate") String containReadyTime,
+			@ApiParam(required = true) @RequestBody OrderFactoryBean orderFactoryBean) {
 		logger.info("updateSupplierConfirm ...");
 		logger.info("orderId:" + orderId);
 		ApiCallResult callResult = new ApiCallResult();
@@ -379,53 +407,61 @@ public class SupplierImpl implements Supplier {
 		return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-    @Override
-    @RequestMapping(value = "/order/{orderId}/audit-factory", method = RequestMethod.PUT)
-    public ResponseEntity<ApiCallResult> updateAuditFactoryConfirm(@PathVariable("orderId") String orderId,
-                                                                   @RequestParam("password") String password,
-                                                                   @RequestParam("auditDate") String auditDate,
-                                                                   @RequestParam("containerReadyDate") String containReadyTime,
-                                                                   @RequestBody ApiOrderFactoryBean orderFactoryBean) {
-        logger.info("updateAuditFactoryConfirm ...");
-        logger.info("orderId:" + orderId);
-        ApiCallResult callResult = new ApiCallResult();
-        String cachePassword = RedisUtil.hget("passwordCache", orderId);
-        auditDate = DateUtils.toStringWithAINewInteral(auditDate);
-        containReadyTime = DateUtils.toStringWithAINewInteral(containReadyTime);
-        try {
-            if (null == cachePassword) {
-                AuditBookingBean auditBookingBean = (AuditBookingBean)auditorService.getOrderDetail("nullUserId", orderId).getContent();
-                if (null!=auditBookingBean && null!=auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode()) {
-                    String validateCode = auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode();
-                    cachePassword = DigestUtils.shaHex(MD5.toMD5(validateCode));
-                    RedisUtil.hset("passwordCache", orderId, cachePassword, RedisUtil.HOUR * 24 * 3);
-                }else {
-                    logger.info("can not get order by id:" + orderId);
-                    callResult.setMessage("can not get order by id:" + orderId);
-                    return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }
-            if (cachePassword.equalsIgnoreCase(password)) {
-                callResult = auditorService.supplierConfirmOrder(orderId, auditDate, containReadyTime, orderFactoryBean);
-                if (null == callResult.getMessage()) {
-                    logger.info("success updateAuditFactoryConfirm!!!!");
-                    return new ResponseEntity<>(callResult, HttpStatus.OK);
-                }
-            }else {
-                logger.info("incorrect pw !   [" + password + "] || should be :" + cachePassword);
-                callResult.setMessage("Incorrect password.");
-            }
-        } catch (Exception e) {
-            logger.error("error in updateAuditFactoryConfirm", e);
-            callResult.setMessage("Error exception: " + e);
-        }
-        return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+	@Override
+	@RequestMapping(value = "/order/{orderId}/audit-factory", method = RequestMethod.PUT)
+	@ApiOperation(value = "Confirm Audit Factory Info", response = AuditBookingBean.class)
+	public ResponseEntity<ApiCallResult> updateAuditFactoryConfirm(
+			@ApiParam(required = true) @PathVariable("orderId") String orderId,
+			@ApiParam(required = true) @RequestParam("password") String password,
+			@ApiParam(value = "format like 2016-12-01", required = true) @RequestParam("auditDate") String auditDate,
+			@ApiParam(value = "format like 2016-12-01", required = true) @RequestParam("containerReadyDate") String containReadyTime,
+			@ApiParam(required = true) @RequestBody ApiOrderFactoryBean orderFactoryBean) {
+		logger.info("updateAuditFactoryConfirm ...");
+		logger.info("orderId:" + orderId);
+		ApiCallResult callResult = new ApiCallResult();
+		String cachePassword = RedisUtil.hget("passwordCache", orderId);
+		auditDate = DateUtils.toStringWithAINewInteral(auditDate);
+		containReadyTime = DateUtils.toStringWithAINewInteral(containReadyTime);
+		try {
+			if (null == cachePassword) {
+				AuditBookingBean auditBookingBean = (AuditBookingBean) auditorService
+						.getOrderDetail("nullUserId", orderId).getContent();
+				if (null != auditBookingBean
+						&& null != auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode()) {
+					String validateCode = auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode();
+					cachePassword = DigestUtils.shaHex(MD5.toMD5(validateCode));
+					RedisUtil.hset("passwordCache", orderId, cachePassword, RedisUtil.HOUR * 24 * 3);
+				} else {
+					logger.info("can not get order by id:" + orderId);
+					callResult.setMessage("can not get order by id:" + orderId);
+					return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+			}
+			if (cachePassword.equalsIgnoreCase(password)) {
+				callResult = auditorService.supplierConfirmOrder(orderId, auditDate, containReadyTime,
+						orderFactoryBean);
+				if (null == callResult.getMessage()) {
+					logger.info("success updateAuditFactoryConfirm!!!!");
+					return new ResponseEntity<>(callResult, HttpStatus.OK);
+				}
+			} else {
+				logger.info("incorrect pw !   [" + password + "] || should be :" + cachePassword);
+				callResult.setMessage("Incorrect password.");
+			}
+		} catch (Exception e) {
+			logger.error("error in updateAuditFactoryConfirm", e);
+			callResult.setMessage("Error exception: " + e);
+		}
+		return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 
 	@Override
 	@RequestMapping(value = "/order/{orderId}/supplier", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> updateSupplierDetailInfo(@PathVariable("orderId") String orderId,
-			@RequestParam("password") String password, @RequestBody SupplierDetailBean supplierDetailBean)
+	@ApiOperation(value = "Update User's Supplier Info Without Login", response = InspectionBookingBean.class)
+	public ResponseEntity<ApiCallResult> updateSupplierDetailInfo(
+			@ApiParam(required = true) @PathVariable("orderId") String orderId,
+			@ApiParam(required = true) @RequestParam("password") String password,
+			@ApiParam(required = true) @RequestBody SupplierDetailBean supplierDetailBean)
 			throws IOException, AIException {
 		logger.info("updateUserSupplierDetailInfo orderId: " + orderId);
 		ApiCallResult callResult = new ApiCallResult();
