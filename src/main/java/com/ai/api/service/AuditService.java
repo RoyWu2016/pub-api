@@ -36,6 +36,8 @@ public interface AuditService {
 
 	ApiCallResult cancelOrder(String userId, String orderId, String reason, String reasonOption);
 
+	ApiCallResult getAuditReportPDFInfo(String userId,String orderId);
+
 	ApiCallResult supplierConfirmOrder(String orderId, String auditDate, String containReadyTime,
 			ApiOrderFactoryBean orderFactoryBean);
 

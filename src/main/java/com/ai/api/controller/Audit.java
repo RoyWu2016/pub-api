@@ -62,4 +62,6 @@ public interface Audit {
 
 	ResponseEntity<ApiCallResult<List<SimpleOrderSearchBean>>> getReInspectionList(String userId, String serviceType,
 			String keyword, String pageSize, String pageNumber);
+
+	ResponseEntity<ApiCallResult> getAuditReportPDFInfo(String userId,String orderId);
 }
