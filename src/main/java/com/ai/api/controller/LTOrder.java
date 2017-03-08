@@ -14,7 +14,7 @@ public interface LTOrder {
 	
 	public ResponseEntity<ApiCallResult> editOrder(HttpServletRequest request, String userId, String orderId, OrderMaster order, Boolean sendMail);
 	
-	public ResponseEntity<ApiCallResult> searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize);
+	public ResponseEntity<ApiCallResult> searchLTOrders(String userId, String orderStatus, String cloneType, Integer pageNumber, Integer pageSize);
 	
 	public ResponseEntity<ApiCallResult> findOrder(String orderId, String userId);
 

@@ -8,6 +8,7 @@ package com.ai.api.service.impl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -74,21 +75,23 @@ public class LTOrderServiceImpl implements LTOrderService {
 	private LTEmailService ltEmailService;
 
 	@Override
-	public List<OrderSearchBean> searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException {
+	public List<OrderSearchBean> searchLTOrders(Map<String, Object> searchParams, Integer pageNumber, Integer pageSize) throws IOException, AIException {
 		String companyId = "";
 		String parentId = "";
+		String userId = String.valueOf(searchParams.get("userId"));
 		UserBean user = userService.getCustById(userId);
 		if (null != user) {
 			parentId = user.getCompany().getParentCompanyId();
 			if (parentId == null)
 				parentId = "";
 			companyId = user.getCompany().getId();
+			searchParams.put("clientId", companyId);
 		}
 		if (null==companyId){
 		    logger.info("use incorrect userId["+userId+"] to search LT orders");
 			throw new AIException("incorrect userId");
 		}
-		return ltorderDao.searchLTOrders(companyId, orderStatus, pageSize, pageNumber, Sort.Direction.DESC.name().toLowerCase());
+		return ltorderDao.searchLTOrders(searchParams, pageSize, pageNumber, Sort.Direction.DESC.name().toLowerCase());
 	}
 	
 	@Override
