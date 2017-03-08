@@ -2,6 +2,8 @@ package com.ai.api.dao.impl;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.config.ServiceConfig;
@@ -14,7 +16,9 @@ import com.ai.commons.beans.PageParamBean;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.audit.AuditReportsSearchBean;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
+import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.ai.commons.beans.psi.api.ApiOrderFactoryBean;
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -332,7 +336,7 @@ public class AuditDaoImpl implements AuditDao {
 
 	@Override
 	public ApiCallResult supplierConfirmOrder(String orderId, String auditDate, String containReadyTime,
-			ApiOrderFactoryBean orderFactoryBean) {
+                                              ApiOrderFactoryBean orderFactoryBean) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/api/audit/supplierConfirmAudit")
 				.append("?orderId=" + orderId).append("&auditDate=" + auditDate)
 				.append("&containReadyTime=" + containReadyTime);
@@ -344,6 +348,36 @@ public class AuditDaoImpl implements AuditDao {
 			} else {
 				logger.info("supplierConfirmAuditOrder failed from psi-service!!!");
 				finalResult.setMessage("supplierConfirmAuditOrder failed from psi-service!!! code["
+						+ result.getStatusCode() + "] msg:" + result.getResponseString());
+			}
+		} catch (Exception e) {
+			logger.error("error Exception!", e);
+			finalResult.setMessage("error Exception!" + e);
+		}
+		return finalResult;
+	}
+
+	@Override
+	public ApiCallResult getAuditReportPDFInfo(String userId, String companyId, String parentId,String orderId){
+		StringBuilder url = new StringBuilder(config.getPsiServiceUrl())
+				.append("/audit/report/api/list-all-final-report")
+				.append("?userId=").append(userId)
+				.append("&companyId=").append(companyId)
+				.append("&parentId=").append(parentId)
+				.append("&orderId=").append(orderId);
+		ApiCallResult finalResult = new ApiCallResult();
+		try {
+			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(),null);
+			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+				List<FileMetaBean> fileMetaBeanList = JSON.parseArray(result.getResponseString(),FileMetaBean.class);
+				List<String> returnList = new ArrayList<>();
+				for (FileMetaBean f:fileMetaBeanList){
+					returnList.add(f.getFileName());
+				}
+				finalResult.setContent(returnList);
+			} else {
+				logger.info("getAuditReportPDFInfo failed from psi-service!!!");
+				finalResult.setMessage("getAuditReportPDFInfo failed from psi-service!!! code["
 						+ result.getStatusCode() + "] msg:" + result.getResponseString());
 			}
 		} catch (Exception e) {
