@@ -71,14 +71,14 @@ public class LTOrderDaoImpl implements LTOrderDao {
 	private ServiceConfig config;
 
 	@Override
-	public List<OrderSearchBean> searchLTOrders(String compId, String orderStatus, Integer pageNumber, Integer pageSize,
+	public List<OrderSearchBean> searchLTOrders(Map<String, Object> searchParams, Integer pageNumber, Integer pageSize,
 			String direction) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		
 		List<OrderSearchBean> orderSearchList = new ArrayList<OrderSearchBean>();
 		
-		List<OrderDTO> orders = Arrays.asList(restTemplate.getForObject(buildOrderSearchCriteria(compId, orderStatus, pageSize,
+		List<OrderDTO> orders = Arrays.asList(restTemplate.getForObject(buildOrderSearchCriteria(searchParams, pageSize,
 				pageNumber, direction, config.getAimsServiceBaseUrl() + "/api/ordermanagement/search").build()
 						.encode().toUri(),
 				OrderDTO[].class));
@@ -87,6 +87,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		for (OrderDTO order : orders) {
 			OrderSearchBean orderSearch = new OrderSearchBean();
 			orderSearch.setOrderId(order.getId());
+			orderSearch.setDescription(order.getDescription());
 			orderSearch.setSupplierName(null != order.getSupplier() ? StringUtils.stripToEmpty(order.getSupplier().getName()) : null );
 			orderSearch.setServiceType("LT");
 			orderSearch.setServiceTypeText("LT");
@@ -114,16 +115,22 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		return orderSearchList;
 	}
 
-	private UriComponentsBuilder buildOrderSearchCriteria(String compId, String orderStatus, Integer pageSize,
+	private UriComponentsBuilder buildOrderSearchCriteria(Map<String, Object> searchParams, Integer pageSize,
 			Integer pageNumber, String direction, String url) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("page", pageNumber - 1)
 				.queryParam("size", pageSize).queryParam("direction", direction);
 
-		if (!StringUtils.stripToEmpty(orderStatus).trim().isEmpty())
+		String orderStatus = null != searchParams.get("orderStatus") ? String.valueOf(searchParams.get("orderStatus")) : null;
+		if (!StringUtils.stripToEmpty(orderStatus).isEmpty())
 			builder.queryParam("statusCode", orderStatus.trim());
 
-		if (!StringUtils.stripToEmpty(compId).trim().isEmpty())
-			builder.queryParam("clientId", compId.trim());
+		String clientId = null != searchParams.get("clientId") ? String.valueOf(searchParams.get("clientId")) : null;
+		if (!StringUtils.stripToEmpty(clientId).trim().isEmpty())
+			builder.queryParam("clientId", clientId.trim());
+
+		String cloneType = null != searchParams.get("cloneType") ? String.valueOf(searchParams.get("cloneType")) : null;
+		if (!StringUtils.stripToEmpty(cloneType).trim().isEmpty())
+			builder.queryParam("cloneType", cloneType.trim());
 		
 		builder.queryParam("requestor", "external");
 		return builder;
@@ -312,6 +319,21 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		restTemplate.delete(builder.build().toUri());
 		ApiCallResult result = new ApiCallResult();
 		result.setMessage("Test Assignment deleted successfully");
+		return result;
+	}
+	
+	@Override
+	public ApiCallResult cloneOrder(String userId, String orderId, String cloneType) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/")
+				.append(orderId).append("/user/").append(userId)
+				.append("/clone/").append(cloneType).toString();
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+		OrderDTO clonedOrder = restTemplate.postForObject(builder.build().encode().toUri(), null, OrderDTO.class);
+		OrderDTO order = findOrder(clonedOrder.getId());
+		ApiCallResult result = new ApiCallResult();
+		result.setContent(order);
 		return result;
 	}
 }
