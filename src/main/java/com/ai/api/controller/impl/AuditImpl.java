@@ -21,10 +21,12 @@ import com.ai.api.service.AuditService;
 import com.ai.api.service.OrderService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 /***************************************************************************
@@ -286,8 +288,9 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/re-audit-list", method = RequestMethod.GET)
+	@ApiOperation(value = "Get User's Reaudit List", response = SimpleOrderSearchBean.class)
 	public ResponseEntity<ApiCallResult<List<SimpleOrderSearchBean>>> getReInspectionList(
-			@PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("userId") String userId,
 			@RequestParam(value = "service-type", required = false) String serviceType,
 			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
 			@RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
