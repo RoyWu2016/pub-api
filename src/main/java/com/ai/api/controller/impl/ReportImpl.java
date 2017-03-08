@@ -18,6 +18,7 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
@@ -388,6 +389,7 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-reports/{reportIds}/forwarded", method = RequestMethod.POST)
+	@ApiOperation(value = "Forward Audit Reports by E-mail",  response = String.class)
 	public ResponseEntity<String> forwardedAuditReports(@PathVariable("userId") String userId,
 			@PathVariable("reportIds") String reportIds,
 			@ApiParam(required = true) @RequestBody ReportsForwardingBean reportsForwardingBean) {
