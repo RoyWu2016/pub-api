@@ -331,26 +331,6 @@ public class AuditDaoImpl implements AuditDao {
 	}
 
 	@Override
-	public PageBean<AuditReportsSearchBean> exportAuditReport(String userId, String companyId, String parentId) {
-		try {
-			PageParamBean parm = new PageParamBean();
-			parm.setIsShowAll(true);
-			String parmStr = URLEncoder.encode(JsonUtil.mapToJson(parm), "utf-8");
-			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-			url.append("/audit/report/api/report-list");
-			url.append("?userId=" + userId);
-			url.append("&companyId=" + companyId);
-			url.append("&parentId=" + parentId);
-			url.append("&param=" + parmStr);
-			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
-			return JsonUtil.mapToObject(result.getResponseString(), PageBean.class);
-		} catch (IOException e) {
-			logger.error("Error exportAuditReport!" + ExceptionUtils.getStackTrace(e));
-		}
-		return null;
-	}
-
-	@Override
 	public ApiCallResult supplierConfirmOrder(String orderId, String auditDate, String containReadyTime,
 			ApiOrderFactoryBean orderFactoryBean) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/api/audit/supplierConfirmAudit")

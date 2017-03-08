@@ -236,12 +236,53 @@ public class ReportImpl implements Report {
 
 	@Override
 	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/export-audit-reports", method = RequestMethod.GET)
+	@ApiOperation(value = "Export Audit Report As Excle API", response = String.class)
+	public ResponseEntity<ApiCallResult> exportAuditReports(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "start", required = false, defaultValue = "") String start,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "end", required = false, defaultValue = "") String end) {
+		// TODO Auto-generated method stub
+		logger.info("invoke: " + "/user/" + userId + "/export-audit-reports");
+		Map<String, String[]> criterias = new HashMap<String, String[]>();
+		List<String> orderItems = new ArrayList<String>();
+		orderItems.add("inspectionDate");
+
+		String inspectionPeriod = null;
+		if (!("".equals(start) && "".equals(end))) {
+			inspectionPeriod = start + " - " + end;
+			criterias.put("INSPECTION_DATE", new String[] { inspectionPeriod });
+		} else {
+			// get last 3 month
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar rightNow = Calendar.getInstance();
+			String endStr = sf.format(rightNow.getTime());
+			rightNow.add(Calendar.MONTH, -3);
+			String startStr = sf.format(rightNow.getTime());
+
+			inspectionPeriod = startStr + " - " + endStr;
+		}
+
+		PageParamBean criteriaBean = new PageParamBean();
+		criteriaBean.setCriterias(criterias);
+		criteriaBean.setOrderItems(orderItems);
+		criteriaBean.setIsShowAll(true);
+		ApiCallResult result = reportService.exportAuditReport(userId, criteriaBean, inspectionPeriod);
+		if (null == result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@TokenSecured
 	@ApiOperation(value = "Export Inspection Report As Excle API", response = InputStream.class)
 	@RequestMapping(value = "/user/{userId}/export-reports", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, String>> exportReports(
 			@ApiParam(required = true) @PathVariable("userId") String userId,
-			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "inspection start date", required = false, defaultValue = "") String start,
-			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "inspection end date", required = false, defaultValue = "") String end,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "start", required = false, defaultValue = "") String start,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "end", required = false, defaultValue = "") String end,
 			HttpServletResponse httpResponse) {
 		logger.info("export reports ... ");
 		logger.info("userId : " + userId);
@@ -389,7 +430,7 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-reports/{reportIds}/forwarded", method = RequestMethod.POST)
-	@ApiOperation(value = "Forward Audit Reports by E-mail",  response = String.class)
+	@ApiOperation(value = "Forward Audit Reports by E-mail", response = String.class)
 	public ResponseEntity<String> forwardedAuditReports(@PathVariable("userId") String userId,
 			@PathVariable("reportIds") String reportIds,
 			@ApiParam(required = true) @RequestBody ReportsForwardingBean reportsForwardingBean) {
@@ -400,7 +441,7 @@ public class ReportImpl implements Report {
 		if (StringUtils.isBlank(reportsForwardingBean.getTo())) {
 			return new ResponseEntity<>("the field 'to' can not be null!", HttpStatus.BAD_REQUEST);
 		}
-		boolean b = reportService.forwardedAuditReports(userId, reportIds,reportsForwardingBean);
+		boolean b = reportService.forwardedAuditReports(userId, reportIds, reportsForwardingBean);
 		if (b) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {

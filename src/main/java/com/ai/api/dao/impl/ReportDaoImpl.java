@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.ai.commons.beans.*;
+import com.ai.commons.beans.audit.AuditReportsSearchBean;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -55,7 +57,8 @@ public class ReportDaoImpl implements ReportDao {
 			logger.info("post !!! Url:" + url);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, certType);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				ApprovalCertificateBean bean = (ApprovalCertificateBean)JSON.parseObject(result.getResponseString(), ApprovalCertificateBean.class);
+				ApprovalCertificateBean bean = (ApprovalCertificateBean) JSON.parseObject(result.getResponseString(),
+						ApprovalCertificateBean.class);
 				String name = bean.getApprover().trim();
 				bean.setApprover(name);
 				return bean;
@@ -126,8 +129,8 @@ public class ReportDaoImpl implements ReportDao {
 	}
 
 	@Override
-	public ApiCallResult getAuditReports(String userId, String companyId, String parentId,PageParamBean criteria) {
-        ApiCallResult finalResult = new ApiCallResult();
+	public ApiCallResult getAuditReports(String userId, String companyId, String parentId, PageParamBean criteria) {
+		ApiCallResult finalResult = new ApiCallResult();
 		try {
 			logger.info("getAuditReports json before encoding: " + JsonUtil.mapToJson(criteria));
 			String param = URLEncoder.encode(JsonUtil.mapToJson(criteria), "utf-8");
@@ -140,14 +143,16 @@ public class ReportDaoImpl implements ReportDao {
 			url.append("&param=" + param);
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                finalResult.setContent(JSON.parseObject(result.getResponseString(), PageBean.class));
+				finalResult.setContent(JSON.parseObject(result.getResponseString(), PageBean.class));
 			} else {
-				logger.error("getAuditReports from psi-service error: " + result.getStatusCode() + " || "+ result.getResponseString());
-                finalResult.setMessage("getAuditReports from psi-service error: " + result.getStatusCode() + " || "+ result.getResponseString());
+				logger.error("getAuditReports from psi-service error: " + result.getStatusCode() + " || "
+						+ result.getResponseString());
+				finalResult.setMessage("getAuditReports from psi-service error: " + result.getStatusCode() + " || "
+						+ result.getResponseString());
 			}
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
-            finalResult.setMessage("Exception: " + e.toString());
+			finalResult.setMessage("Exception: " + e.toString());
 		}
 		return finalResult;
 
@@ -308,21 +313,22 @@ public class ReportDaoImpl implements ReportDao {
 	@Override
 	public String getPDFCertificate(String lotusId) {
 		// TODO Auto-generated method stub
-//		StringBuilder url = new StringBuilder(config.getMwServiceUrl() + "/report/getPDFCertificate?reportId=" + lotusId);
-//		logger.info("requesting: " + url.toString());
-//		InputStream inputStream = null;
-//		try {
-//			HttpClient httpclient = HttpClients.createDefault();
-//			HttpGet httpget = new HttpGet(url.toString());
-//			HttpResponse response = httpclient.execute(httpget);
-//			HttpEntity entity = response.getEntity();
-//			inputStream = entity.getContent();
-//			return inputStream;
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
+		// StringBuilder url = new StringBuilder(config.getMwServiceUrl() +
+		// "/report/getPDFCertificate?reportId=" + lotusId);
+		// logger.info("requesting: " + url.toString());
+		// InputStream inputStream = null;
+		// try {
+		// HttpClient httpclient = HttpClients.createDefault();
+		// HttpGet httpget = new HttpGet(url.toString());
+		// HttpResponse response = httpclient.execute(httpget);
+		// HttpEntity entity = response.getEntity();
+		// inputStream = entity.getContent();
+		// return inputStream;
+		// } catch (Exception e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+
 		StringBuilder url = new StringBuilder(config.getLotusApiUrl() + lotusId);
 		logger.info("requesting: " + url.toString());
 		GetRequest request = GetRequest.newInstance().setUrl(url.toString());
@@ -343,8 +349,8 @@ public class ReportDaoImpl implements ReportDao {
 	}
 
 	@Override
-	public boolean forwardedAuditReports(ReportsForwardingBean reportsForwardingBean, String companyId,
-			String parentId, String userId, String reportIds) {
+	public boolean forwardedAuditReports(ReportsForwardingBean reportsForwardingBean, String companyId, String parentId,
+			String userId, String reportIds) {
 		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/audit/report/api/forward-reports");
 		try {
@@ -370,5 +376,25 @@ public class ReportDaoImpl implements ReportDao {
 			logger.error(ExceptionUtils.getStackTrace(e));
 			return false;
 		}
+	}
+
+	@Override
+	public PageBean<AuditReportsSearchBean> exportAuditReport(String userId, String companyId, String parentId,
+			PageParamBean criteriaBean) {
+		// TODO Auto-generated method stub
+		try {
+			String parmStr = URLEncoder.encode(JsonUtil.mapToJson(criteriaBean), "utf-8");
+			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+			url.append("/audit/report/api/report-list");
+			url.append("?userId=" + userId);
+			url.append("&companyId=" + companyId);
+			url.append("&parentId=" + parentId);
+			url.append("&param=" + parmStr);
+			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+			return JsonUtil.mapToObject(result.getResponseString(), PageBean.class);
+		} catch (IOException e) {
+			logger.error("Error exportAuditReport!" + ExceptionUtils.getStackTrace(e));
+		}
+		return null;
 	}
 }
