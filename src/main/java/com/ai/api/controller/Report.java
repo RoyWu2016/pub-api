@@ -51,4 +51,6 @@ public interface Report {
 
 	ResponseEntity<String> forwardedAuditReports(String userId, String reportIds,
 			ReportsForwardingBean reportsForwardingBean);
+
+	ResponseEntity<ApiCallResult> exportAuditReports(String userId, String start, String end);
 }

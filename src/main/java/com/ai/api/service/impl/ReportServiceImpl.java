@@ -46,11 +46,13 @@ import com.ai.api.service.UserService;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.audit.AuditReportsSearchBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
 import com.ai.commons.beans.sync.LotusSyncBean;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 /**
  * Created by yan on 2016/7/25.
@@ -460,5 +462,243 @@ public class ReportServiceImpl implements ReportService {
 			companyId = user.getCompany().getId();
 		}
 		return reportDao.forwardedAuditReports(reportsForwardingBean, companyId, parentId, userId, reportIds);
+	}
+	
+	private UserBean getUserBeanByUserId(String userId) {
+		UserBean user = null;
+		try {
+			user = userService.getCustById(userId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return user;
+	}
+
+	@Override
+	public ApiCallResult exportAuditReport(String userId, PageParamBean criteriaBean, String inspectionPeriod) {
+		// TODO Auto-generated method stub
+		String companyId = "";
+		String parentId = "";
+		UserBean user = this.getUserBeanByUserId(userId);
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		ApiCallResult result = new ApiCallResult();
+		PageBean<AuditReportsSearchBean> bean = reportDao.exportAuditReport(userId, companyId, parentId,criteriaBean);
+		if (null == bean) {
+			result.setMessage("Error from psi AuditReportApiController");
+		} else {
+			try {
+				String resultStr = bean.getPageItems().toString();
+				List<AuditReportsSearchBean> list = JsonUtil.mapToObject(resultStr,
+						new TypeReference<List<AuditReportsSearchBean>>() {
+						});
+				String fileStr = null;
+				XSSFWorkbook wb = new XSSFWorkbook();
+				InputStream inputStream = createExcleAuditRreport(wb, list, user.getLogin(),inspectionPeriod);
+				if (inputStream != null) {
+					byte[] data = IOUtils.toByteArray(inputStream);
+					fileStr = Base64.encode(data);
+
+					result.setContent(fileStr);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				result.setMessage("Error when creating excle file in api: " + e.toString());
+			}
+		}
+		return result;
+	}
+
+	private InputStream createExcleAuditRreport(XSSFWorkbook wb, List<AuditReportsSearchBean> list, String clientLogin,
+			String inspectionPeriod) throws IOException {
+		// TODO Auto-generated method stub
+
+		// TODO Auto-generated method stub
+		int i = 0;
+		Font font = wb.createFont();
+		font.setFontName("Verdana");
+		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+
+		CellStyle tileCS = wb.createCellStyle();
+		tileCS.setAlignment(CellStyle.ALIGN_CENTER);
+		tileCS.setFillForegroundColor(HSSFColor.WHITE.index);
+		tileCS.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+		tileCS.setFont(font);
+
+		CellStyle dateCS = wb.createCellStyle();
+		dateCS.setFillForegroundColor(HSSFColor.WHITE.index);
+		dateCS.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+
+		CellStyle tableHeadeCS = wb.createCellStyle();
+		tableHeadeCS.setAlignment(CellStyle.ALIGN_CENTER);
+		tableHeadeCS.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		tableHeadeCS.setFont(font);
+		tableHeadeCS.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+		tableHeadeCS.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+		tableHeadeCS.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+		tableHeadeCS.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+
+		CellStyle tableCS = wb.createCellStyle();
+		tableCS.setAlignment(CellStyle.ALIGN_CENTER);
+		tableCS.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		tableCS.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+		tableCS.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+		tableCS.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+		tableCS.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+		tableCS.setWrapText(true);
+
+		Sheet sheet = wb.createSheet("AI Audit Reports List(" + inspectionPeriod + ")");
+		Row row = null;
+		for (i = 0; i <= 10; i++) {
+			row = sheet.createRow(i);
+			for (int j = 0; j < 9; j++) {
+				row.createCell(j).setCellStyle(tileCS);
+			}
+		}
+
+		sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 23));
+
+		String fileName = config.getExcleLoggoCommonSource() + File.separator + "logo.png";
+		// String fileName = "e:" + File.separator + "logo.jpg";
+		logger.info("Found the logo resource: " + fileName);
+		InputStream is = new FileInputStream(fileName);
+		byte[] bytes = IOUtils.toByteArray(is);
+
+		int pictureIdx = wb.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+
+		CreationHelper helper = wb.getCreationHelper();
+		Drawing drawing = sheet.createDrawingPatriarch();
+		ClientAnchor anchor = helper.createClientAnchor();
+
+		anchor.setCol1(0);
+		anchor.setRow1(0);
+
+		Picture pict = drawing.createPicture(anchor, pictureIdx);
+		pict.resize();
+
+		row = sheet.getRow(4);
+		Cell cell = row.createCell(0);
+		cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		cell.setCellValue("List of Audit Reports");
+		cell.setCellStyle(tileCS);
+
+		row = sheet.getRow(6);
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MMMM-dd", Locale.ENGLISH);
+		cell = row.createCell(0);
+		cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		cell.setCellValue("Date: " + sf.format(new Date()));
+		cell.setCellStyle(dateCS);
+
+		row = sheet.getRow(7);
+		cell = row.createCell(0);
+		cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		cell.setCellValue("Client login: " + clientLogin);
+		cell.setCellStyle(dateCS);
+
+		String[] title = new String[] { "Order Id", "Order Number", "Status", "Audit Type", "Sic Name", "ManDay",
+				"If Key Account", "If Re-Inspection", "Client Name", "Frozen Date", "Date Confirmed", "Date Confirmed",
+				"Inspectors Names List", "Number Of Workers", "Factory Name", "Charge", "Supplier Name", "Booking Date",
+				"Client Reference", "Order Placer", "Ai Office", "Status Text", "Service Text", "Sub-Service Type" };
+		row = sheet.createRow(10);
+		for (int k = 0; k < title.length; k++) {
+			cell = row.createCell(k);
+			cell.setCellStyle(tableHeadeCS);
+			cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			cell.setCellValue(title[k]);
+			sheet.autoSizeColumn((short) k);
+		}
+
+		int rowid = 11;
+		for (AuditReportsSearchBean each : list) {
+			row = sheet.createRow(rowid);
+			for (int cellid = 0; cellid < title.length; cellid++) {
+				cell = row.createCell(cellid);
+				cell.setCellStyle(tableCS);
+				cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				switch (cellid) {
+				case 0:
+					cell.setCellValue(each.getOrderId());
+					break;
+				case 1:
+					cell.setCellValue(each.getOrderNumber());
+					break;
+				case 2:
+					cell.setCellValue(each.getStatus());
+					break;
+				case 3:
+					cell.setCellValue(each.getAuditType());
+					break;
+				case 4:
+					cell.setCellValue(each.getSicName());
+					break;
+				case 5:
+					cell.setCellValue(each.getManDay());
+					break;
+				case 6:
+					cell.setCellValue(each.getIsKeyAccount());
+					break;
+				case 7:
+					cell.setCellValue(each.getIsReInspection());
+					break;
+				case 8:
+					cell.setCellValue(each.getClientName());
+					break;
+				case 9:
+					cell.setCellValue(each.getFrozenDate());
+					break;
+				case 10:
+					cell.setCellValue(each.getDateConfirmed());
+					break;
+				case 11:
+					cell.setCellValue(each.getInspectorsNamesList().toString());
+					break;
+				case 12:
+					cell.setCellValue(each.getNumberOfWorkers());
+					break;
+				case 13:
+					cell.setCellValue(each.getFactoryName());
+					break;
+				case 14:
+					cell.setCellValue(each.getCharge());
+					break;
+				case 15:
+					cell.setCellValue(each.getSupplierName());
+					break;
+				case 16:
+					cell.setCellValue(each.getBookingDate());
+					break;
+				case 17:
+					cell.setCellValue(each.getClientReference());
+					break;
+				case 18:
+					cell.setCellValue(each.getOrderPlacer());
+					break;
+				case 19:
+					cell.setCellValue(each.getAiOffice());
+					break;
+				case 20:
+					cell.setCellValue(each.getStatusText());
+					break;
+				case 21:
+					cell.setCellValue(each.getServiceText());
+					break;
+				case 22:
+					cell.setCellValue(each.getSubServiceType());
+					break;
+				}
+			}
+			rowid++;
+		}
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		wb.write(out);
+		InputStream excelStream = new ByteArrayInputStream(out.toByteArray());
+		out.close();
+
+		return excelStream;
 	}
 }

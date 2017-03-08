@@ -46,4 +46,6 @@ public interface ReportService {
 	String getPDFCertificate(String lotusId);
 
 	boolean forwardedAuditReports(String userId, String reportIds, ReportsForwardingBean reportsForwardingBean);
+
+	ApiCallResult exportAuditReport(String userId, PageParamBean criteriaBean, String inspectionPeriod);
 }
