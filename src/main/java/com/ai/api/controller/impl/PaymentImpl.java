@@ -12,9 +12,13 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.payment.PaymentInfoBean;
 import com.ai.commons.beans.payment.PaymentPaidBean;
 import com.ai.commons.beans.payment.PaymentSearchResultBean;
+import com.ai.commons.beans.psi.OrderPayRecordBean;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,12 +63,21 @@ public class PaymentImpl implements Payment {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/payments", method = RequestMethod.GET)
-	public ResponseEntity<PageBean<PaymentSearchResultBean>> getPaymentList(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Get Payment List API", response = PageBean.class)
+	public ResponseEntity<PageBean<PaymentSearchResultBean>> getPaymentList(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "paid", required = false, defaultValue = "false") boolean paid,
+			@ApiParam(value = "start", required = false)
 			@RequestParam(value = "start", required = false, defaultValue = "") String start,
+			@ApiParam(value = "end", required = false)
 			@RequestParam(value = "end", required = false, defaultValue = "") String end,
+			@ApiParam(value = "keyword", required = false)
 			@RequestParam(value = "keyword", required = false, defaultValue = "") String keywords,
+			@ApiParam(value = "page No.", required = false)
 			@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+			@ApiParam(value = "page Size", required = false)
 			@RequestParam(value = "pagesize", required = false, defaultValue = "20") Integer pagesize) {
 		logger.info("get PaymentList----userId[" + userId + "] | paid[" + paid + "] | start[" + start + "] | end[" + end
 				+ "] | keyword[" + keywords + "] | page[" + page + "]");
@@ -129,8 +142,14 @@ public class PaymentImpl implements Payment {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/payment-type/{paymentType}/payment", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> generatePayment(@PathVariable("userId") String userId,
-			@PathVariable("paymentType") String paymentType, @RequestParam("orderIds") String orderIds) {
+	@ApiOperation(value = "Generate Payment API", response = PaymentInfoBean.class,responseContainer = "List")
+	public ResponseEntity<ApiCallResult> generatePayment(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "payment Type", required = true)
+			@PathVariable("paymentType") String paymentType,
+			@ApiParam(value = "orderIds", required = true)
+			@RequestParam("orderIds") String orderIds) {
 		logger.info("invoke: " + "/user/" + userId + "/payment-type/" + paymentType + "payment?orderIds=" + orderIds);
 		ApiCallResult result = new ApiCallResult();
 		try {
@@ -188,7 +207,10 @@ public class PaymentImpl implements Payment {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/payment", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> markAsPaid(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Mark As Paid API", response = boolean.class)
+	public ResponseEntity<ApiCallResult> markAsPaid(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
 			@RequestBody PaymentPaidBean orders) {
 		logger.info("invoke: " + "/user/" + userId + "/payment");
 		ApiCallResult result = paymentService.markAsPaid(userId, orders);
@@ -202,7 +224,10 @@ public class PaymentImpl implements Payment {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/payment-history", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> findPaymentMarkAsPaidByUserId(@PathVariable("userId") String userId) {
+	@ApiOperation(value = "Find Payment Mark As Paid ByUserId API", response = OrderPayRecordBean.class,responseContainer = "List")
+	public ResponseEntity<ApiCallResult> findPaymentMarkAsPaidByUserId(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId) {
 		logger.info("invoke: " + "/user/" + userId + "/payment-history");
 		ApiCallResult result = new ApiCallResult();
 		try {

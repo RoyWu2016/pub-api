@@ -32,6 +32,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +82,11 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> getUserProfile(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Get UserProfile API", response = UserBean.class)
+	public ResponseEntity<JSONObject> getUserProfile(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) throws IOException, AIException {
 
 		if (userId == null) {
@@ -118,7 +125,10 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/company", method = RequestMethod.PUT)
-	public ResponseEntity<UserBean> updateUserProfileCompany(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Update User Profile Company API", response = UserBean.class)
+	public ResponseEntity<UserBean> updateUserProfileCompany(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
 			@RequestBody CompanyBean newComp) throws IOException, AIException {
 		logger.info("updating company for user: " + userId);
 		UserBean cust = userService.updateCompany(newComp, userId);
@@ -132,7 +142,10 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/contact-info", method = RequestMethod.PUT)
-	public ResponseEntity<UserBean> updateUserProfileContact(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Update User Profile Contact API", response = UserBean.class)
+	public ResponseEntity<UserBean> updateUserProfileContact(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
 			@RequestBody ContactInfoBean newContact) throws IOException, AIException {
 		logger.info("updating User contact " + userId);
 		UserBean cust = userService.updateContact(newContact, userId);
@@ -146,7 +159,10 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/preference/booking", method = RequestMethod.PUT)
-	public ResponseEntity<UserBean> updateUserBookingPreference(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Update User Booking Preference API", response = UserBean.class)
+	public ResponseEntity<UserBean> updateUserBookingPreference(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
 			@RequestBody BookingPreferenceBean newBookingPref) throws IOException, AIException {
 		logger.info("Updating User booking preference: " + userId);
 
@@ -161,7 +177,10 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/preference/booking/preferred-product-families", method = RequestMethod.PUT)
-	public ResponseEntity<UserBean> updateUserBookingPreferredProductFamily(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Update User Booking Preference Product Family API", response = UserBean.class)
+	public ResponseEntity<UserBean> updateUserBookingPreferredProductFamily(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
 			@RequestBody List<String> newPreferred) throws IOException, AIException {
 		logger.info("Updating User preferred product family: " + userId);
 
@@ -176,7 +195,10 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/password", method = RequestMethod.PUT)
-	public ResponseEntity<ServiceCallResult> updateUserPassword(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Update User Password API", response = String.class)
+	public ResponseEntity<ServiceCallResult> updateUserPassword(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
 			@RequestBody HashMap<String, String> pwdMap) throws IOException, AIException {
 		logger.info("Updating User password! userId: " + userId);
 
@@ -195,7 +217,11 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, String>> getCompanyLogo(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Get Company Logo API", response = String.class, responseContainer = "Map")
+	public ResponseEntity<Map<String, String>> getCompanyLogo(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "companyId", required = true)
 			@PathVariable("companyId") String companyId) {
 		logger.info("get companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
 		Map<String, String> result = new HashMap<String, String>();
@@ -216,8 +242,13 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.POST)
-	public ResponseEntity<String> updateCompanyLogo(@PathVariable("userId") String userId,
-			@PathVariable("companyId") String companyId, @RequestBody CompanyLogoBean logoBean) {
+	@ApiOperation(value = "Update Company Logo API", response = String.class)
+	public ResponseEntity<String> updateCompanyLogo(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "companyId", required = true)
+			@PathVariable("companyId") String companyId,
+			@RequestBody CompanyLogoBean logoBean) {
 		logger.info("update companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
 		boolean b = false;
 		try {
@@ -235,7 +266,11 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.DELETE)
-	public ResponseEntity<String> deleteCompanyLogo(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Delete Company Logo API", response = String.class)
+	public ResponseEntity<String> deleteCompanyLogo(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "companyId", required = true)
 			@PathVariable("companyId") String companyId) {
 		logger.info("delete companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
 		boolean b = false;
@@ -253,6 +288,7 @@ public class UserImpl implements User {
 
 	@Override
 	@RequestMapping(value = "/user", method = RequestMethod.PUT)
+	@ApiOperation(value = "Create New Account API", response = Boolean.class)
 	public ResponseEntity<Boolean> createNewAccount(@RequestBody ClientInfoBean clientInfoBean)
 			throws IOException, AIException {
 		logger.info("creating a new account . . . . . ");
@@ -266,7 +302,11 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/employee/{employeeId}", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> getEmployeeProfile(@PathVariable("employeeId") String employeeId,
+	@ApiOperation(value = "Get Employee Profile API", response = EmployeeBean.class)
+	public ResponseEntity<JSONObject> getEmployeeProfile(
+			@ApiParam(value = "employeeId", required = true)
+			@PathVariable("employeeId") String employeeId,
+			@ApiParam(value = "true or false", required = false)
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) throws IOException, AIException {
 		// TODO Auto-generated method stub
 		logger.info("getEmployeeProfile employeeId: " + employeeId);
@@ -397,8 +437,13 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/dashboard", method = RequestMethod.GET)
-	public ResponseEntity<DashboardBean> getUserDashboard(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Get User Dashboard API", response = DashboardBean.class)
+	public ResponseEntity<DashboardBean> getUserDashboard(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false)
 			@RequestParam(value = "startDate", required = false, defaultValue = "") String startDate,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false)
 			@RequestParam(value = "endDate", required = false, defaultValue = "") String endDate)
 			throws IOException, AIException {
 
@@ -421,7 +466,10 @@ public class UserImpl implements User {
 	@Override
 	// @TokenSecured
 	@RequestMapping(value = "/user/{login}/reset-password", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> resetPassword(@PathVariable("login") String login) {
+	@ApiOperation(value = "Reset Password API", response = String.class)
+	public ResponseEntity<ApiCallResult> resetPassword(
+			@ApiParam(value = "login", required = true)
+			@PathVariable("login") String login) {
 		logger.info("invoking: " + "/user/" + login + "/reset-password");
 		ApiCallResult callResult = new ApiCallResult();
 
