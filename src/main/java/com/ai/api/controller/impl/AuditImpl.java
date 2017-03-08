@@ -3,6 +3,11 @@ package com.ai.api.controller.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ai.commons.beans.audit.AuditBookingBean;
+import com.ai.commons.beans.audit.api.ApiAuditOrderBean;
+import com.ai.commons.beans.order.SimpleAuditSearchBean;
+import com.ai.commons.beans.order.SimpleDraftSearchBean;
+import com.ai.commons.beans.psi.api.ApiOrderPriceMandayViewBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +26,6 @@ import com.ai.api.service.AuditService;
 import com.ai.api.service.OrderService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 
@@ -64,8 +68,12 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-draft", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> createDraft(@ApiParam(required = true) @PathVariable("userId") String userId,
-			@ApiParam(value = "must be one of ma, ea, stra, ctpat", required = true) @RequestParam(value = "serviceType") String serviceType) {
+	@ApiOperation(value = "Create Draft API", response = AuditBookingBean.class)
+	public ResponseEntity<ApiCallResult> createDraft(
+			@ApiParam(required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "must be one of ma, ea, stra, ctpat", required = true)
+			@RequestParam(value = "serviceType") String serviceType) {
 		logger.info("invoke: " + "/user/" + userId + "/audit-draft?serviceType=" + serviceType);
 		ApiCallResult result = auditorService.createDraft(userId, serviceType);
 		if (null == result.getMessage()) {
@@ -78,8 +86,14 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-draft/previous-order/{orderId}", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> createDraftFromPreviousOrder(@PathVariable("userId") String userId,
-			@PathVariable("orderId") String orderId, @RequestParam("serviceType") String serviceType) {
+	@ApiOperation(value = "Create Draft From Previous Order API", response = AuditBookingBean.class)
+	public ResponseEntity<ApiCallResult> createDraftFromPreviousOrder(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "orderId", required = true)
+			@PathVariable("orderId") String orderId,
+			@ApiParam(value = "serviceType", required = true)
+			@RequestParam("serviceType") String serviceType) {
 		logger.info("invoke: " + "/user/" + userId + "/audit-draft/previous-psi-order/" + orderId + "?serviceType="
 				+ serviceType);
 		ApiCallResult result = auditorService.createDraftFromPreviousOrder(userId, orderId, serviceType);
@@ -93,7 +107,11 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-draft/{draftId}", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getDraft(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Get Draft API", response = AuditBookingBean.class)
+	public ResponseEntity<ApiCallResult> getDraft(
+            @ApiParam(value = "userId", required = true)
+	        @PathVariable("userId") String userId,
+            @ApiParam(value = "draftId", required = true)
 			@PathVariable("draftId") String draftId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-draft/" + draftId);
@@ -108,8 +126,13 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-draft/{draftId}", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> saveDraft(@PathVariable("userId") String userId,
-			@PathVariable("draftId") String draftId, @RequestBody ApiAuditBookingBean draft) {
+	@ApiOperation(value = "Save Draft API", response = boolean.class)
+	public ResponseEntity<ApiCallResult> saveDraft(
+            @ApiParam(value = "userId", required = true)
+	        @PathVariable("userId") String userId,
+            @ApiParam(value = "draftId", required = true)
+			@PathVariable("draftId") String draftId,
+            @RequestBody ApiAuditBookingBean draft) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-draft/" + draftId);
 		draft.getDraft().setDraftId(draftId);
@@ -124,7 +147,11 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-drafts", method = RequestMethod.DELETE)
-	public ResponseEntity<ApiCallResult> deleteDrafts(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Delete Draft API", response = boolean.class)
+	public ResponseEntity<ApiCallResult> deleteDrafts(
+            @ApiParam(value = "userId", required = true)
+            @PathVariable("userId") String userId,
+            @ApiParam(value = "if multiple,separated by semicolon", required = true)
 			@RequestParam("draftIds") String draftIds) {
 		logger.info("invoke: " + "/user/" + userId + "/audit-drafts?draftIds=" + draftIds);
 		ApiCallResult result = auditorService.deleteDrafts(userId, draftIds);
@@ -138,7 +165,10 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-drafts", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> searchDrafts(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Search Drafts API", response = SimpleDraftSearchBean.class,responseContainer = "List")
+	public ResponseEntity<ApiCallResult> searchDrafts(
+            @ApiParam(value = "userId", required = true)
+            @PathVariable("userId") String userId,
 			@RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
 			@RequestParam(value = "start", required = false, defaultValue = "") String startDate,
 			@RequestParam(value = "end", required = false, defaultValue = "") String endDate,
@@ -158,7 +188,11 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-orders", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> searchOrders(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Search Orders API", response = SimpleAuditSearchBean.class,responseContainer = "List")
+	public ResponseEntity<ApiCallResult> searchOrders(
+            @ApiParam(value = "userId", required = true)
+            @PathVariable("userId") String userId,
+            @ApiParam(value = "should be one or more value in [ma,ea,ctpat,stra]", required = false)
 			@RequestParam(value = "service-type", required = false, defaultValue = "ma,ea,ctpat,stra") String serviceType,
 			@RequestParam(value = "start", required = false, defaultValue = "") String startDate,
 			@RequestParam(value = "end", required = false, defaultValue = "") String endDate,
@@ -179,7 +213,11 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-order", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> createOrderByDraft(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Create Order By Draft API", response = ApiAuditBookingBean.class)
+	public ResponseEntity<ApiCallResult> createOrderByDraft(
+            @ApiParam(value = "userId", required = true)
+            @PathVariable("userId") String userId,
+            @ApiParam(value = "draftId", required = true)
 			@RequestParam("draftId") String draftId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order?draftId=" + draftId);
@@ -194,7 +232,11 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}/editing", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> editOrder(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Edit Order API", response = ApiAuditBookingBean.class)
+	public ResponseEntity<ApiCallResult> editOrder(
+            @ApiParam(value = "userId", required = true)
+            @PathVariable("userId") String userId,
+            @ApiParam(value = "orderId", required = true)
 			@PathVariable("orderId") String orderId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId + "/editing");
@@ -209,7 +251,11 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getOrderDetail(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Get Order Detail API", response = ApiAuditOrderBean.class)
+	public ResponseEntity<ApiCallResult> getOrderDetail(
+            @ApiParam(value = "userId", required = true)
+            @PathVariable("userId") String userId,
+            @ApiParam(value = "orderId", required = true)
 			@PathVariable("orderId") String orderId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId);
@@ -224,8 +270,14 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}/audit-draft/{draftId}/saved", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> saveOrderByDraft(@PathVariable("userId") String userId,
-			@PathVariable("draftId") String draftId, @PathVariable("orderId") String orderId) {
+	@ApiOperation(value = "Save Order By Draft API", response = ApiAuditBookingBean.class)
+	public ResponseEntity<ApiCallResult> saveOrderByDraft(
+            @ApiParam(value = "userId", required = true)
+            @PathVariable("userId") String userId,
+            @ApiParam(value = "draftId", required = true)
+			@PathVariable("draftId") String draftId,
+            @ApiParam(value = "orderId", required = true)
+            @PathVariable("orderId") String orderId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId + "/audit-draft/" + draftId + "/saved");
 		ApiCallResult result = auditorService.saveOrderByDraft(userId, draftId, orderId);
@@ -239,7 +291,11 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-draft/{draftId}/price", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> calculatePricing(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Calculate Pricing API", response = ApiOrderPriceMandayViewBean.class)
+	public ResponseEntity<ApiCallResult> calculatePricing(
+            @ApiParam(value = "userId", required = true)
+            @PathVariable("userId") String userId,
+            @ApiParam(value = "draftId", required = true)
 			@PathVariable("draftId") String draftId,
 			@RequestParam(value = "employeeCount", required = false) String employeeCount) {
 		// TODO Auto-generated method stub
@@ -256,8 +312,14 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}/draft/{draftId}/re-audit", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> reAudit(@PathVariable("userId") String userId,
-			@PathVariable("orderId") String orderId, @PathVariable("draftId") String draftId) {
+	@ApiOperation(value = "ReAudit API", response = ApiAuditBookingBean.class)
+	public ResponseEntity<ApiCallResult> reAudit(
+            @ApiParam(value = "userId", required = true)
+            @PathVariable("userId") String userId,
+            @ApiParam(value = "orderId", required = true)
+			@PathVariable("orderId") String orderId,
+            @ApiParam(value = "draftId", required = true)
+            @PathVariable("draftId") String draftId) {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId + "/draftId/" + draftId + "/re-audit");
 		ApiCallResult result = auditorService.reAudit(userId, draftId, orderId);
@@ -271,7 +333,11 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-order/{orderId}", method = RequestMethod.DELETE)
-	public ResponseEntity<ApiCallResult> cancelOrder(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Cancel Order API", response = boolean.class)
+	public ResponseEntity<ApiCallResult> cancelOrder(
+            @ApiParam(value = "userId", required = true)
+            @PathVariable("userId") String userId,
+            @ApiParam(value = "orderId", required = true)
 			@PathVariable("orderId") String orderId,
 			@RequestParam(value = "reason", required = false, defaultValue = "") String reason,
 			@RequestParam(value = "reasonOption", required = false, defaultValue = "") String reasonOption) {
@@ -288,9 +354,10 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/re-audit-list", method = RequestMethod.GET)
-	@ApiOperation(value = "Get User's Reaudit List", response = SimpleOrderSearchBean.class)
+	@ApiOperation(value = "Get User's ReAudit List", response = SimpleOrderSearchBean.class,responseContainer = "List")
 	public ResponseEntity<ApiCallResult<List<SimpleOrderSearchBean>>> getReInspectionList(
-			@ApiParam(required = true) @PathVariable("userId") String userId,
+            @ApiParam(value = "userId", required = true)
+            @PathVariable("userId") String userId,
 			@RequestParam(value = "service-type", required = false) String serviceType,
 			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
 			@RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
@@ -316,8 +383,10 @@ public class AuditImpl implements Audit {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/export-audit-reports", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> exportAuditReport(@PathVariable("userId") String userId) {
-		// TODO Auto-generated method stub
+	@ApiOperation(value = "Export Audit Report API", response = String.class)
+	public ResponseEntity<ApiCallResult> exportAuditReport(
+            @ApiParam(value = "userId", required = true)
+            @PathVariable("userId") String userId) {
 		logger.info("invoke: " + "/user/" + userId + "/export-audit-reports");
 		ApiCallResult result = auditorService.exportAuditReport(userId);
 		if (null == result.getMessage()) {

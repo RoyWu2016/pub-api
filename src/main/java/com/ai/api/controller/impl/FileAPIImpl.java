@@ -21,8 +21,10 @@ import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.fileservice.FileMetaBean;
+import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -74,7 +76,11 @@ public class FileAPIImpl implements FileAPI {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/file/{fileId}/detail", method = RequestMethod.GET)
-	public ResponseEntity<FileMetaBean> getFileDetailInfo(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Get File Detail Info API", response = FileMetaBean.class)
+	public ResponseEntity<FileMetaBean> getFileDetailInfo(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "fileId", required = true)
 			@PathVariable("fileId") String fileId) throws IOException, AIException {
 		FileMetaBean fileInfo = null;
 		try {
@@ -93,7 +99,12 @@ public class FileAPIImpl implements FileAPI {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/file/{fileId}", method = RequestMethod.GET)
-	public boolean getFile(@PathVariable("userId") String userId, @PathVariable("fileId") String fileId,
+	@ApiOperation(value = "Get File API", response = String.class)
+	public boolean getFile(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "fileId", required = true)
+			@PathVariable("fileId") String fileId,
 			HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		FileMetaBean fileMetaBean = myFileService.getFileService().getFileInfoById(fileId);
@@ -111,7 +122,11 @@ public class FileAPIImpl implements FileAPI {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/file/{fileId}/base64", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, String>> getFileBase64(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Get File Base64 API", response = String.class,responseContainer = "Map")
+	public ResponseEntity<Map<String, String>> getFileBase64(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "fileId", required = true)
 			@PathVariable("fileId") String fileId) throws IOException {
 		Map<String, String> result = new HashMap<String, String>();
 		InputStream inputStream = myFileService.getFileService().getFile(fileId);
@@ -129,8 +144,14 @@ public class FileAPIImpl implements FileAPI {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/doc-type/{docType}/source/{sourceId}/file", method = RequestMethod.POST)
-	public ResponseEntity<FileMetaBean> uploadFile(@PathVariable("userId") String userId,
-			@PathVariable("docType") String docType, @PathVariable("sourceId") String sourceId,
+	@ApiOperation(value = "Upload File API", response = FileMetaBean.class)
+	public ResponseEntity<FileMetaBean> uploadFile(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "docType", required = true)
+			@PathVariable("docType") String docType,
+			@ApiParam(value = "sourceId", required = true)
+			@PathVariable("sourceId") String sourceId,
 			MultipartHttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		String bucket = ConstMap.bucketMap.get(docType.toUpperCase());
@@ -184,7 +205,11 @@ public class FileAPIImpl implements FileAPI {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/file/{fileId}", method = RequestMethod.DELETE)
-	public ResponseEntity<String> deleteFile(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Delete File API", response = String.class)
+	public ResponseEntity<String> deleteFile(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "fileId", required = true)
 			@PathVariable("fileId") String fileId) throws IOException {
 		try {
 			myFileService.getFileService().deleteFile(fileId, userId);
@@ -198,7 +223,11 @@ public class FileAPIImpl implements FileAPI {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/files/{srcId}", method = RequestMethod.GET)
-	public ResponseEntity<List<FileMetaBean>> getFilesList(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Get File List API", response = FileMetaBean.class,responseContainer = "List")
+	public ResponseEntity<List<FileMetaBean>> getFilesList(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "srcId", required = true)
 			@PathVariable("srcId") String srcId, @RequestParam(value = "docType", required = false) String docType)
 			throws IOException {
 		// TODO Auto-generated method stub
@@ -219,7 +248,10 @@ public class FileAPIImpl implements FileAPI {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/copy-files", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> copyFiles(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Copy Files API", response = FileMetaBean.class,responseContainer = "List")
+	public ResponseEntity<ApiCallResult> copyFiles(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
 			@ApiParam(value = "if multiple,separated by semicolon", required = true) @RequestParam(value = "fileIds") String fileIds,
 			@RequestParam(value = "newSrcId") String newSrcId,
 			@RequestParam(value = "userName", required = false, defaultValue = "") String userName) throws IOException {
