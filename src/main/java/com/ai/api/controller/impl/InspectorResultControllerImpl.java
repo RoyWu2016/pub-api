@@ -237,13 +237,18 @@ public class InspectorResultControllerImpl implements InspectorResultController 
         if (StringUtils.isNotBlank(username)){
             url.append("?username=").append(username);
         }
+	    logger.info("=====ready to updateDataWithFileids=====");
+	    logger.info("map: " + map);
         try {
             logger.info("approveReport requesting: " + url.toString());
             ServiceResponse result = HttpUtils.postJson(url.toString(),null,map);
+	        logger.info("result from ip service: " + result.toString());
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setContent(result.getResponseString());
+	            logger.info("===== updateDataWithFileids finished successfully =====");
                 return new ResponseEntity<>(callResult, HttpStatus.OK);
             }else {
+	            logger.info("===== updateDataWithFileids failed =====");
                 callResult.setMessage(result.getResponseString());
             }
         } catch (Exception e) {
