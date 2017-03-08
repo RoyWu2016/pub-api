@@ -10,6 +10,7 @@ import com.ai.api.service.ChecklistService;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
 import com.ai.commons.util.JsonUtils;
@@ -17,6 +18,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +52,7 @@ import org.springframework.web.bind.annotation.RestController;
  ***************************************************************************/
 
 @RestController
-@Api(tags = {"Checklist"}, description = "Checklist APIs")
+@Api(tags = { "Checklist" }, description = "Checklist APIs")
 public class ChecklistImpl implements Checklist {
 
 	protected Logger logger = LoggerFactory.getLogger(ChecklistImpl.class);
@@ -59,7 +63,9 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklists", method = RequestMethod.GET)
-	public ResponseEntity<JSONArray> searchPrivateChecklist(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Search User's Private Chcecklist", response = CKLChecklistSearchVO.class)
+	public ResponseEntity<JSONArray> searchPrivateChecklist(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
 			@RequestParam(value = "keyword", required = false) String keyword,
 			@RequestParam(value = "pageNumber", required = false) String pageNumber) {
 		logger.info("searchChecklist ...");
@@ -98,7 +104,9 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/public-checklists", method = RequestMethod.GET)
-	public ResponseEntity<List<CKLChecklistSearchVO>> searchPublicChecklist(@PathVariable("userId") String userId,
+	@ApiOperation(value = "Search User's Public Chcecklist", response = CKLChecklistSearchVO.class)
+	public ResponseEntity<List<CKLChecklistSearchVO>> searchPublicChecklist(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
 			@RequestParam(value = "keyword", required = false) String keyword,
 			@RequestParam(value = "pageNumber", required = false) String pageNumber) {
 		logger.info("searchPublicChecklist ...");
@@ -117,8 +125,9 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult<CKLChecklistVO>> createChecklist(@PathVariable("userId") String userId,
-			@RequestBody CKLChecklistVO checklistVO) {
+	@ApiOperation(value = "Create User's New Chcecklist", response = CKLChecklistVO.class)
+	public ResponseEntity<ApiCallResult<CKLChecklistVO>> createChecklist(
+			@ApiParam(required = true) @PathVariable("userId") String userId, @RequestBody CKLChecklistVO checklistVO) {
 		logger.info("createChecklist ...");
 		logger.info("userId :" + userId);
 		logger.info("checklistBean :" + checklistVO.toString());
@@ -134,8 +143,11 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult<CKLChecklistVO>> updateChecklist(@PathVariable("userId") String userId,
-			@PathVariable("checklistId") String checklistId, @RequestBody CKLChecklistVO checklist) {
+	@ApiOperation(value = "Update User's Checklist", response = CKLChecklistVO.class)
+	public ResponseEntity<ApiCallResult<CKLChecklistVO>> updateChecklist(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("checklistId") String checklistId,
+			@ApiParam(required = true) @RequestBody CKLChecklistVO checklist) {
 		logger.info("updateChecklist ...");
 		logger.info("userId :" + userId);
 		logger.info("checklistId :" + checklistId);
@@ -154,8 +166,9 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}", method = RequestMethod.GET)
-	public ResponseEntity<CKLChecklistVO> getChecklist(@PathVariable("userId") String userId,
-			@PathVariable("checklistId") String checklistId) {
+	@ApiOperation(value = "Get User's Checklist", response = CKLChecklistVO.class)
+	public ResponseEntity<CKLChecklistVO> getChecklist(@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("checklistId") String checklistId) {
 		logger.info("getChecklist ...");
 		logger.info("userId :" + userId);
 		logger.info("checklistId :" + checklistId);
@@ -284,7 +297,7 @@ public class ChecklistImpl implements Checklist {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}
-	
+
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/public-checklist/{checklistId}", method = RequestMethod.POST)
@@ -298,5 +311,5 @@ public class ChecklistImpl implements Checklist {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}
-	
+
 }

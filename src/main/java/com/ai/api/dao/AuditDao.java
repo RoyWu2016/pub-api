@@ -41,8 +41,6 @@ public interface AuditDao {
 	ApiCallResult cancelOrder(String userId, String companyId, String parentId, String orderId, String reason,
 			String reasonOption);
 
-	PageBean<AuditReportsSearchBean> exportAuditReport(String userId, String companyId, String parentId);
-
 	ApiCallResult supplierConfirmOrder(String orderId, String auditDate, String containReadyTime,
 									   ApiOrderFactoryBean orderFactoryBean);
 

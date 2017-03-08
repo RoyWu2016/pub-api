@@ -380,20 +380,4 @@ public class AuditImpl implements Audit {
 		}
 	}
 
-	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/export-audit-reports", method = RequestMethod.GET)
-	@ApiOperation(value = "Export Audit Report API", response = String.class)
-	public ResponseEntity<ApiCallResult> exportAuditReport(
-            @ApiParam(value = "userId", required = true)
-            @PathVariable("userId") String userId) {
-		logger.info("invoke: " + "/user/" + userId + "/export-audit-reports");
-		ApiCallResult result = auditorService.exportAuditReport(userId);
-		if (null == result.getMessage()) {
-			return new ResponseEntity<>(result, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
 }

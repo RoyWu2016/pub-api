@@ -6,6 +6,7 @@ import java.util.List;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.audit.AuditReportsSearchBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
 import com.ai.commons.beans.report.ReportsForwardingBean;
@@ -45,4 +46,7 @@ public interface ReportDao {
 
 	boolean forwardedAuditReports(ReportsForwardingBean reportsForwardingBean, String companyId, String parentId,
 			String userId, String reportIds);
+
+	PageBean<AuditReportsSearchBean> exportAuditReport(String userId, String companyId, String parentId,
+			PageParamBean criteriaBean);
 }
