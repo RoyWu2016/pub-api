@@ -48,4 +48,6 @@ public interface ReportService {
 	boolean forwardedAuditReports(String userId, String reportIds, ReportsForwardingBean reportsForwardingBean);
 
 	ApiCallResult exportAuditReport(String userId, PageParamBean criteriaBean, String inspectionPeriod);
+
+	ApiCallResult getAuditReportPDFInfo(String userId,String orderId);
 }
