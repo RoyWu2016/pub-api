@@ -13,6 +13,8 @@ import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.checklist.vo.CKLChecklistSearchVO;
 import com.ai.commons.beans.checklist.vo.CKLChecklistVO;
+import com.ai.commons.beans.checklist.vo.CKLDefectVO;
+import com.ai.commons.beans.checklist.vo.CKLTestVO;
 import com.ai.commons.util.JsonUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -183,8 +185,9 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklists/{checklistIds}", method = RequestMethod.DELETE)
-	public ResponseEntity deleteChecklist(@PathVariable("userId") String userId,
-			@PathVariable("checklistIds") String checklistIds) {
+	@ApiOperation(value = "Delete User's Checklist", response = Boolean.class)
+	public ResponseEntity deleteChecklist(@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("checklistIds") String checklistIds) {
 		logger.info("deleteChecklist ...");
 		logger.info("userId :" + userId);
 		logger.info("checklistIds :" + checklistIds);
@@ -200,8 +203,9 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist-name/{checklistName}", method = RequestMethod.GET)
-	public ResponseEntity checklistNameExist(@PathVariable("userId") String userId,
-			@PathVariable("checklistName") String checklistName) {
+	@ApiOperation(value = "Check If User's Checklist Name Already Exist", response = Boolean.class)
+	public ResponseEntity checklistNameExist(@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("checklistName") String checklistName) {
 		logger.info("checklistNameExist ...");
 		logger.info("userId :" + userId);
 		logger.info("checklistName :" + checklistName);
@@ -217,8 +221,10 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}/feedback", method = RequestMethod.PUT)
-	public ResponseEntity saveFeedback(@PathVariable("userId") String userId,
-			@PathVariable("checklistId") String checklistId, @RequestBody String feedback) {
+	@ApiOperation(value = "User Give Feedback to a Chcecklist", response = Boolean.class)
+	public ResponseEntity saveFeedback(@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("checklistId") String checklistId,
+			@ApiParam(required = true) @RequestBody String feedback) {
 		logger.info("saveFeedback ...");
 		logger.info("userId :" + userId);
 		logger.info("checklistId :" + checklistId);
@@ -234,8 +240,9 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/{checklistId}/approved", method = RequestMethod.PUT)
-	public ResponseEntity approved(@PathVariable("userId") String userId,
-			@PathVariable("checklistId") String checklistId) {
+	@ApiOperation(value = "User Approve a Checklist", response = Boolean.class)
+	public ResponseEntity approved(@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("checklistId") String checklistId) {
 		logger.info("approved ...");
 		logger.info("userId :" + userId);
 		logger.info("checklistId :" + checklistId);
@@ -250,8 +257,10 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/checklist/product-qty/{productQty}/sample-size", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> calculateChecklistSampleSize(@PathVariable("userId") String userId,
-			@PathVariable("productQty") Integer productQty,
+	@ApiOperation(value = "Calculate Checklist Sample Size", response = Integer.class)
+	public ResponseEntity<ApiCallResult> calculateChecklistSampleSize(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("productQty") Integer productQty,
 			@RequestParam(value = "sampleLevel", required = false, defaultValue = "") String sampleLevel,
 			@RequestParam(value = "unit", required = false, defaultValue = "") String unit,
 			@RequestParam(value = "criticalDefects", required = false, defaultValue = "") String criticalDefects,
@@ -272,8 +281,9 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/public-test/{testId}", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> createTest(@PathVariable("userId") String userId,
-			@PathVariable("testId") String testId) {
+	@ApiOperation(value = "Create User's Private Test", response = CKLTestVO.class)
+	public ResponseEntity<ApiCallResult> createTest(@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("testId") String testId) {
 		logger.info("invoke: " + "/user/" + userId + "/test?testId=" + testId);
 		ApiCallResult result = checklistService.createTest(userId, testId);
 		if (null != result.getMessage()) {
@@ -287,8 +297,9 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/public-defect/{defectId}", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> createDefect(@PathVariable("userId") String userId,
-			@PathVariable("defectId") String defectId) {
+	@ApiOperation(value = "Create User's Private Defect", response = CKLDefectVO.class)
+	public ResponseEntity<ApiCallResult> createDefect(@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("defectId") String defectId) {
 		logger.info("invoke: " + "/user/" + userId + "/defect?defectId=" + defectId);
 		ApiCallResult result = checklistService.createDefect(userId, defectId);
 		if (null != result.getMessage()) {
@@ -301,8 +312,10 @@ public class ChecklistImpl implements Checklist {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/public-checklist/{checklistId}", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> importChecklist(@PathVariable("userId") String userId,
-			@PathVariable("checklistId") String checklistId) {
+	@ApiOperation(value = " Import Public Checklist To Draft In Booking", response = CKLChecklistVO.class)
+	public ResponseEntity<ApiCallResult> importChecklist(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("checklistId") String checklistId) {
 		logger.info("invoke: " + "/user/" + userId + "/public-checklist/" + checklistId);
 		ApiCallResult result = checklistService.importChecklist(userId, checklistId);
 		if (null != result.getMessage()) {
