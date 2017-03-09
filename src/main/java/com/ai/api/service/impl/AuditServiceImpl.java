@@ -1,36 +1,9 @@
 package com.ai.api.service.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 import com.ai.commons.beans.psi.api.ApiOrderFactoryBean;
-import org.apache.commons.io.IOUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.ClientAnchor;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Picture;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,14 +15,9 @@ import com.ai.api.dao.AuditDao;
 import com.ai.api.service.AuditService;
 import com.ai.api.service.UserService;
 import com.ai.commons.Consts;
-import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.audit.AuditReportsSearchBean;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 import com.ai.consts.ConstMap;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 public class AuditServiceImpl implements AuditService {
 
@@ -255,7 +223,7 @@ public class AuditServiceImpl implements AuditService {
 	}
 
 	@Override
-	public ApiCallResult calculatePricing(String userId, String draftId, String employeeCount) {
+	public ApiCallResult calculatePricing(String userId, String draftId, String sampleSize) {
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -265,7 +233,7 @@ public class AuditServiceImpl implements AuditService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		ApiCallResult result = auditorDao.calculatePricing(userId, companyId, parentId, draftId, employeeCount);
+		ApiCallResult result = auditorDao.calculatePricing(userId, companyId, parentId, draftId, sampleSize);
 
 		return result;
 	}

@@ -297,11 +297,17 @@ public class AuditImpl implements Audit {
             @PathVariable("userId") String userId,
             @ApiParam(value = "draftId", required = true)
 			@PathVariable("draftId") String draftId,
-			@RequestParam(value = "employeeCount", required = false) String employeeCount) {
-		// TODO Auto-generated method stub
+            @ApiParam(value = "for StrA it can be empty.<br />" +
+		            "for EA SA8000 if number of workers:<br /> " +
+		            "<=500 then 1, 500~1200 then 2<br />1200~3200 then 3, >3200 then 4<br />" +
+		            "for EA SMETA if number of workers:<br /> " +
+		            "<=100 then 1<br />100~500 then2<br />500~1000 then 3<br /> >1000 then 4<br />" +
+		            "for MA/CTPAT if number of workers:<br />" +
+		            "<=500 then 1, 500~3000 then 2, >3000 then 3", required = true)
+			@RequestParam(value = "sampleSize", required = true) String sampleSize) {
 		logger.info(
-				"invoke: " + "/user/" + userId + "/audit-draft/" + draftId + "/price?employee-count=" + employeeCount);
-		ApiCallResult result = auditorService.calculatePricing(userId, draftId, employeeCount);
+				"invoke: " + "/user/" + userId + "/audit-draft/" + draftId + "/price?sample-size=" + sampleSize);
+		ApiCallResult result = auditorService.calculatePricing(userId, draftId, sampleSize);
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
