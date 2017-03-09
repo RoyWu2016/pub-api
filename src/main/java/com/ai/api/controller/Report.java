@@ -53,4 +53,6 @@ public interface Report {
 			ReportsForwardingBean reportsForwardingBean);
 
 	ResponseEntity<ApiCallResult> exportAuditReports(String userId, String start, String end);
+
+	ResponseEntity<ApiCallResult> getAuditReportPDFInfo(String userId,String orderId);
 }

@@ -701,4 +701,18 @@ public class ReportServiceImpl implements ReportService {
 
 		return excelStream;
 	}
+
+	@Override
+	public ApiCallResult getAuditReportPDFInfo(String userId,String orderId){
+		String companyId = "";
+		String parentId = "";
+		UserBean user = this.getUserBeanByUserId(userId);
+		if (null != user) {
+			parentId = user.getCompany().getParentCompanyId();
+			if (parentId == null)
+				parentId = "";
+			companyId = user.getCompany().getId();
+		}
+		return reportDao.getAuditReportPDFInfo(userId,companyId,parentId,orderId);
+	}
 }

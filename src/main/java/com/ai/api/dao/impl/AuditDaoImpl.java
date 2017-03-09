@@ -357,34 +357,4 @@ public class AuditDaoImpl implements AuditDao {
 		return finalResult;
 	}
 
-	@Override
-	public ApiCallResult getAuditReportPDFInfo(String userId, String companyId, String parentId,String orderId){
-		StringBuilder url = new StringBuilder(config.getPsiServiceUrl())
-				.append("/audit/report/api/list-all-final-report")
-				.append("?userId=").append(userId)
-				.append("&companyId=").append(companyId)
-				.append("&parentId=").append(parentId)
-				.append("&orderId=").append(orderId);
-		ApiCallResult finalResult = new ApiCallResult();
-		try {
-			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(),null);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				List<FileMetaBean> fileMetaBeanList = JSON.parseArray(result.getResponseString(),FileMetaBean.class);
-				List<String> returnList = new ArrayList<>();
-				for (FileMetaBean f:fileMetaBeanList){
-					returnList.add(f.getFileName());
-				}
-				finalResult.setContent(returnList);
-			} else {
-				logger.info("getAuditReportPDFInfo failed from psi-service!!!");
-				finalResult.setMessage("getAuditReportPDFInfo failed from psi-service!!! code["
-						+ result.getStatusCode() + "] msg:" + result.getResponseString());
-			}
-		} catch (Exception e) {
-			logger.error("error Exception!", e);
-			finalResult.setMessage("error Exception!" + e);
-		}
-		return finalResult;
-	}
-
 }

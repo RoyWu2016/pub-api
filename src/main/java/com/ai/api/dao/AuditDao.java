@@ -44,6 +44,4 @@ public interface AuditDao {
 	ApiCallResult supplierConfirmOrder(String orderId, String auditDate, String containReadyTime,
 									   ApiOrderFactoryBean orderFactoryBean);
 
-	ApiCallResult getAuditReportPDFInfo(String userId, String companyId, String parentId,String orderId);
-
 }

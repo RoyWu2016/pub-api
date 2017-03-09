@@ -449,4 +449,22 @@ public class ReportImpl implements Report {
 		}
 	}
 
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/audit-report/{orderId}/pdf-info", method = RequestMethod.GET)
+	@ApiOperation(value = "Get Audit Report PDF Info API", response = String.class,responseContainer = "List")
+	public ResponseEntity<ApiCallResult> getAuditReportPDFInfo(
+			@ApiParam(value = "userId", required = true)
+			@PathVariable("userId") String userId,
+			@ApiParam(value = "orderId", required = true)
+			@PathVariable("orderId") String orderId) {
+		logger.info("invoke: " + "/user/" + userId + "/audit-report/"+orderId+"/pdf-info");
+		ApiCallResult result = reportService.getAuditReportPDFInfo(userId,orderId);
+		if (null == result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 }
