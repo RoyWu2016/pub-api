@@ -18,6 +18,7 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.PageParamBean;
+import com.ai.commons.beans.fileservice.ApiFileMetaBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.report.ApprovalCertificateBean;
 import com.ai.commons.beans.psi.report.ClientReportSearchBean;
@@ -452,7 +453,7 @@ public class ReportImpl implements Report {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/audit-report/{orderId}/pdf-info", method = RequestMethod.GET)
-	@ApiOperation(value = "Get Audit Report PDF Info API", response = String.class,responseContainer = "List")
+	@ApiOperation(value = "Get Audit Report PDF Info API", response = ApiFileMetaBean.class,responseContainer = "List")
 	public ResponseEntity<ApiCallResult> getAuditReportPDFInfo(
 			@ApiParam(value = "userId", required = true)
 			@PathVariable("userId") String userId,

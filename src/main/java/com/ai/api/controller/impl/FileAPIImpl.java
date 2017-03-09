@@ -20,6 +20,7 @@ import com.ai.api.service.APIFileService;
 import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.fileservice.ApiFileMetaBean;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
@@ -76,8 +77,8 @@ public class FileAPIImpl implements FileAPI {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/file/{fileId}/detail", method = RequestMethod.GET)
-	@ApiOperation(value = "Get File Detail Info API", response = FileMetaBean.class)
-	public ResponseEntity<FileMetaBean> getFileDetailInfo(
+	@ApiOperation(value = "Get File Detail Info API", response = ApiFileMetaBean.class)
+	public ResponseEntity<ApiFileMetaBean> getFileDetailInfo(
 			@ApiParam(value = "userId", required = true)
 			@PathVariable("userId") String userId,
 			@ApiParam(value = "fileId", required = true)
@@ -93,7 +94,7 @@ public class FileAPIImpl implements FileAPI {
 			logger.info("Null result!from[getFileDetailInfo]");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(fileInfo, HttpStatus.OK);
+		return new ResponseEntity<>(new ApiFileMetaBean(fileInfo), HttpStatus.OK);
 	}
 
 	@Override
