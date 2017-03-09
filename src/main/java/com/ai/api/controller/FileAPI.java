@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.commons.beans.fileservice.ApiFileMetaBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -34,7 +35,7 @@ import com.ai.commons.beans.fileservice.FileMetaBean;
 
 public interface FileAPI {
 
-	ResponseEntity<FileMetaBean> getFileDetailInfo(String userId, String fileId) throws IOException, AIException;
+	ResponseEntity<ApiFileMetaBean> getFileDetailInfo(String userId, String fileId) throws IOException, AIException;
 
 	boolean getFile(String userId, String fileId, HttpServletRequest request, HttpServletResponse httpResponse)
 			throws IOException;
