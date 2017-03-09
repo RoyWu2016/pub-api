@@ -10,6 +10,7 @@ import java.util.List;
 import com.ai.commons.beans.*;
 import com.ai.commons.beans.audit.AuditReportsSearchBean;
 
+import com.ai.commons.beans.fileservice.ApiFileMetaBean;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
@@ -413,9 +414,11 @@ public class ReportDaoImpl implements ReportDao {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(),null);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				List<FileMetaBean> fileMetaBeanList = JSON.parseArray(result.getResponseString(),FileMetaBean.class);
-				List<String> returnList = new ArrayList<>();
-				for (FileMetaBean f:fileMetaBeanList){
-					returnList.add(f.getFileName());
+				List<ApiFileMetaBean> returnList = new ArrayList<>();
+				if (null!=fileMetaBeanList&&fileMetaBeanList.size()>0){
+					for (FileMetaBean f:fileMetaBeanList){
+						returnList.add(new ApiFileMetaBean(f));
+					}
 				}
 				finalResult.setContent(returnList);
 			} else {
