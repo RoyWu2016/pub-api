@@ -1,8 +1,6 @@
 package com.ai.api.dao;
 
 import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.audit.AuditReportsSearchBean;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
 import com.ai.commons.beans.psi.api.ApiOrderFactoryBean;
 
@@ -34,7 +32,7 @@ public interface AuditDao {
 	ApiCallResult saveOrderByDraft(String userId, String draftId, String companyId, String parentId);
 
 	ApiCallResult calculatePricing(String userId, String companyId, String parentId, String draftId,
-			String employeeCount);
+			int employeeCount);
 
 	ApiCallResult reAudit(String userId, String companyId, String parentId, String draftId, String orderId);
 

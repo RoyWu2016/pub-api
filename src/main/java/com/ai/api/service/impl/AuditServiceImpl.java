@@ -223,7 +223,7 @@ public class AuditServiceImpl implements AuditService {
 	}
 
 	@Override
-	public ApiCallResult calculatePricing(String userId, String draftId, String sampleSize) {
+	public ApiCallResult calculatePricing(String userId, String draftId, int employeeCount) {
 		String companyId = "";
 		String parentId = "";
 		UserBean user = this.getUserBeanByUserId(userId);
@@ -233,7 +233,7 @@ public class AuditServiceImpl implements AuditService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		ApiCallResult result = auditorDao.calculatePricing(userId, companyId, parentId, draftId, sampleSize);
+		ApiCallResult result = auditorDao.calculatePricing(userId, companyId, parentId, draftId, employeeCount);
 
 		return result;
 	}

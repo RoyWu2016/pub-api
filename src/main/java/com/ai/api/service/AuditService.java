@@ -30,7 +30,7 @@ public interface AuditService {
 
 	ApiCallResult saveOrderByDraft(String userId, String draftId, String orderId);
 
-	ApiCallResult calculatePricing(String userId, String draftId, String employeeCount);
+	ApiCallResult calculatePricing(String userId, String draftId, int employeeCount);
 
 	ApiCallResult reAudit(String userId, String draftId, String orderId);
 

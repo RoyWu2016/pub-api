@@ -297,17 +297,11 @@ public class AuditImpl implements Audit {
             @PathVariable("userId") String userId,
             @ApiParam(value = "draftId", required = true)
 			@PathVariable("draftId") String draftId,
-            @ApiParam(value = "for StrA it can be empty.<br />" +
-		            "for EA SA8000 if number of workers:<br /> " +
-		            "<=500 then 1, 500~1200 then 2<br />1200~3200 then 3, >3200 then 4<br />" +
-		            "for EA SMETA if number of workers:<br /> " +
-		            "<=100 then 1<br />100~500 then2<br />500~1000 then 3<br /> >1000 then 4<br />" +
-		            "for MA/CTPAT if number of workers:<br />" +
-		            "<=500 then 1, 500~3000 then 2, >3000 then 3", required = true)
-			@RequestParam(value = "sampleSize", required = true) String sampleSize) {
+            @ApiParam(value = "worker number of the factory. for StrA it can be any number, won't get calculated.<br />", required = true)
+			@RequestParam(value = "employeeCount", required = true, defaultValue = "500") int employeeCount) {
 		logger.info(
-				"invoke: " + "/user/" + userId + "/audit-draft/" + draftId + "/price?sample-size=" + sampleSize);
-		ApiCallResult result = auditorService.calculatePricing(userId, draftId, sampleSize);
+				"invoke: " + "/user/" + userId + "/audit-draft/" + draftId + "/price?sample-size=" + employeeCount);
+		ApiCallResult result = auditorService.calculatePricing(userId, draftId, employeeCount);
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {

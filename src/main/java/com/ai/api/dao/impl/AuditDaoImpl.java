@@ -262,7 +262,7 @@ public class AuditDaoImpl implements AuditDao {
 
 	@Override
 	public ApiCallResult calculatePricing(String userId, String companyId, String parentId, String draftId,
-			String sampleSize) {
+			int empoyeeCount) {
 		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
@@ -271,7 +271,7 @@ public class AuditDaoImpl implements AuditDao {
 		url.append("&draftId=" + draftId);
 		url.append("&companyId=" + companyId);
 		url.append("&parentId=" + parentId);
-		url.append("&auditSampleSize=" + sampleSize);
+		url.append("&auditSampleSize=" + empoyeeCount);
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
@@ -317,7 +317,7 @@ public class AuditDaoImpl implements AuditDao {
 		url.append("&orderId=" + orderId);
 		url.append("&reasonOption=" + reasonOption);
 		try {
-			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+			ServiceCallResult result = HttpUtil.issueDeleteRequest(url.toString(), null);
 			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
 			logger.error("Error cancelOrder!" + ExceptionUtils.getStackTrace(e));
