@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.ai.aims.services.model.search.SearchPackageTestCriteria;
 import com.ai.aims.services.model.search.SearchTagCriteria;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
 import com.ai.api.bean.UserBean;
@@ -64,6 +65,11 @@ public class LTParameterServiceImpl implements LTParameterService {
 	@Autowired
 	@Qualifier("userService")
 	private UserService userService;
+	
+	@Override
+	public ApiCallResult searchPackages(String programID) throws IOException {
+		return ltparameterDao.searchPackages(programID);
+	}
 
 	@Override
 	public ApiCallResult searchOffice() throws IOException {
@@ -87,7 +93,7 @@ public class LTParameterServiceImpl implements LTParameterService {
 	}
 
 	@Override
-	public ApiCallResult searchTestWithFilters(String countries, String regions, String testNames, 
+	public ApiCallResult searchTagTests(String countries, String regions, String testNames, 
 			String tags, String productCategory, String office, String program) throws IOException {
 		SearchTagTestCriteria criteria = new SearchTagTestCriteria();
 		if(!StringUtils.stripToEmpty(countries).isEmpty())
@@ -104,8 +110,20 @@ public class LTParameterServiceImpl implements LTParameterService {
 			criteria.setOffice(office);
 		if(!StringUtils.stripToEmpty(program).isEmpty())
 			criteria.setProgram(program);
-		return ltparameterDao.searchTests(criteria);
+		return ltparameterDao.searchTagTests(criteria);
 	}
+	
+	@Override
+	public ApiCallResult searchPackageTests(String countries, String testNames, 
+			String pckage, String office, String program) throws IOException {
+		SearchPackageTestCriteria criteria = new SearchPackageTestCriteria();
+		criteria.setCountry(countries);
+		criteria.setTestName(testNames);
+		criteria.setPackageId(pckage);
+		criteria.setOfficeId(office);
+		criteria.setProgramId(program);
+		return ltparameterDao.searchPackageTests(criteria);
+	};
 
 	@Override
 	public ApiCallResult searchProgram(String programId) throws IOException {
