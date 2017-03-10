@@ -315,6 +315,7 @@ public class AuditDaoImpl implements AuditDao {
 		url.append("&companyId=" + companyId);
 		url.append("&parentId=" + parentId);
 		url.append("&orderId=" + orderId);
+		url.append("&draftId=" + "");
 		url.append("&reasonOption=" + reasonOption);
 		try {
 			ServiceCallResult result = HttpUtil.issueDeleteRequest(url.toString(), null);
