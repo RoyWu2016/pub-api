@@ -684,7 +684,7 @@ public class ReportServiceImpl implements ReportService {
 					cell.setCellValue(each.getStatusText());
 					break;
 				case 21:
-					cell.setCellValue(each.getServiceText());
+					cell.setCellValue(each.getAuditType());
 					break;
 				case 22:
 					cell.setCellValue(each.getSubServiceType());
