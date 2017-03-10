@@ -20,6 +20,23 @@ package com.ai.api.controller.impl;
  * </PRE>
  ***************************************************************************/
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.ai.aims.services.dto.TestFilterDTO;
 import com.ai.aims.services.model.TestMaster;
 import com.ai.api.bean.OfficeSearchBean;
@@ -33,21 +50,6 @@ import com.ai.api.service.LTParameterService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.program.model.Program;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 @SuppressWarnings({"rawtypes"})
 @RestController
@@ -63,6 +65,22 @@ public class LTParameterImpl implements LTParameter {
 	@Autowired
 	@Qualifier("ltparameterService")
 	private LTParameterService ltparameterService;
+	
+	@Override
+	@ApiOperation(value = "Search Packages API", produces = "application/json", response = OfficeSearchBean.class, httpMethod = "GET")
+	@TokenSecured
+	@RequestMapping(value = "/parameter/lt/program/{programID}/packages", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchPackages(
+			@ApiParam(value="Program ID") @PathVariable String programID) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltparameterService.searchPackages(programID);
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("search packages error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	
 	@Override
 	@ApiOperation(value = "Search Office API", produces = "application/json", response = OfficeSearchBean.class, httpMethod = "GET")
@@ -124,13 +142,13 @@ public class LTParameterImpl implements LTParameter {
 			logger.info("get lt program from redis successfully");
 			return new ResponseEntity<Program>(program, HttpStatus.OK);
 		}*/
-	}	
+	}
 	
 	@Override
-	@ApiOperation(value = "Search LT Tests with filters API", produces = "application/json", response = TestFilterDTO.class, httpMethod = "GET", responseContainer = "List")
+	@ApiOperation(value = "Search LT Tests by Tags API", produces = "application/json", response = TestFilterDTO.class, httpMethod = "GET", responseContainer = "List")
 	@TokenSecured
-	@RequestMapping(value = "/parameter/lt/tests", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> searchTestsWithFilters(			
+	@RequestMapping(value = "/parameter/lt/tags/tests", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchTagTests(			
 			@ApiParam(value="Countries") @RequestParam(value = "countries", required = false, defaultValue = "") String countries, 
 			@ApiParam(value="Regions") @RequestParam(value = "regions", required = false, defaultValue = "") String regions, 
 			@ApiParam(value="Test Names") @RequestParam(value = "testNames", required = false, defaultValue = "") String testNames,
@@ -139,28 +157,36 @@ public class LTParameterImpl implements LTParameter {
 			@ApiParam(value="Office ID") @RequestParam(value = "office", required = false, defaultValue = "") String office,
 			@ApiParam(value="Program ID") @RequestParam(value = "program", required = false, defaultValue = "") String program) {
 		ApiCallResult callResult = new ApiCallResult();
-		/*if (!refresh) {
-			logger.info("try to searchTests from redis ...");
-			String jsonStringTextileProductCategory = RedisUtil.get("ltTestsCache");
-			tests = JSON.parseArray(jsonStringTextileProductCategory, TestMaster.class);
+		try {
+			callResult = ltparameterService.searchTagTests(
+					countries, regions, testNames, tags, productCategory, office, program);
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("search LT Tests error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't get LT tests");
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		if (null == tests) {*/
-			try {
-				callResult = ltparameterService.searchTestWithFilters(
-						countries, regions, testNames, tags, productCategory, office, program);
-				logger.info("saving searchTests");
-				//RedisUtil.set("ltTestsCache", JSON.toJSONString(tests), RedisUtil.HOUR * 24);
-
-				return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
-			} catch (Exception e) {
-				logger.error("search LT Tests error: " + ExceptionUtils.getFullStackTrace(e));
-				callResult.setMessage("can't get LT tests");
-				return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		/*} else {
-			logger.info("get lt tests from redis successfully");
-			return new ResponseEntity<List<TestMaster>>(tests, HttpStatus.OK);
-		}*/
+	}
+	
+	@Override
+	@ApiOperation(value = "Search LT Tests by Packages API", produces = "application/json", response = TestFilterDTO.class, httpMethod = "GET", responseContainer = "List")
+	@TokenSecured
+	@RequestMapping(value = "/parameter/lt/packages/tests", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchPackageTests(			
+			@ApiParam(value="Countries") @RequestParam(value = "countries", required = false, defaultValue = "") String countries, 
+			@ApiParam(value="Test Names") @RequestParam(value = "testNames", required = false, defaultValue = "") String testNames,
+			@ApiParam(value="Package ID") @RequestParam(value = "package", required = false, defaultValue = "") String pckage,
+			@ApiParam(value="Office ID") @RequestParam(value = "office", required = false, defaultValue = "") String office,
+			@ApiParam(value="Program ID") @RequestParam(value = "program", required = false, defaultValue = "") String program) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltparameterService.searchPackageTests(countries, testNames, pckage, office, program);
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("search LT Tests error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't get LT tests");
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 		
 	@Override
