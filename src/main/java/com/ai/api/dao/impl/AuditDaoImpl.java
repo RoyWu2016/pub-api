@@ -225,7 +225,7 @@ public class AuditDaoImpl implements AuditDao {
 	@Override
 	public ApiCallResult getOrderDetail(String userId, String orderId, String companyId, String parentId) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		ApiCallResult<ApiAuditOrderBean> finalResult = new ApiCallResult<ApiAuditOrderBean>();
+		ApiCallResult finalResult = new ApiCallResult<>();
 		url.append("/api/audit/getOrder?userId=").append(userId);
 		url.append("&orderId=").append(orderId);
 		url.append("&companyId=").append(companyId);
@@ -233,11 +233,6 @@ public class AuditDaoImpl implements AuditDao {
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			finalResult = JSON.parseObject(result.getResponseString(),finalResult.getClass());
-            ApiAuditOrderBean a = new ApiAuditOrderBean();
-            String jsonStr = JSON.toJSONString(finalResult.getContent());
-//            a = JSON.parseObject(jsonStr,ApiAuditOrderBean.class);
-            ApiAuditOrderBean aa = JSON.parseObject(jsonStr, ApiAuditOrderBean.class);
-//			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 			if (null == finalResult.getContent()) {
 				finalResult.setMessage("null result from psi-service! code:[" + result.getStatusCode() + "] response:"
 						+ result.getResponseString());
