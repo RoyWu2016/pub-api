@@ -294,7 +294,7 @@ public class AuditDaoImpl implements AuditDao {
 		url.append("&parentId=" + parentId);
 		url.append("&orderId=" + orderId);
 		try {
-			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, orderId);
 			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
 			logger.error("Error reAudit!" + ExceptionUtils.getStackTrace(e));
