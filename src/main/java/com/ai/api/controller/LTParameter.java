@@ -31,7 +31,7 @@ public interface LTParameter {
 
 	public ResponseEntity<ApiCallResult> searchProgram(boolean refresh, String programId);
 	
-	public ResponseEntity<ApiCallResult> searchTestsWithFilters(String countries, String regions, String testNames, 
+	public ResponseEntity<ApiCallResult> searchTagTests(String countries, String regions, String testNames, 
 			String tags, String productCategory, String office, String program);
 	
 	public ResponseEntity<ApiCallResult> searchTest(boolean refresh, String testId);
@@ -45,4 +45,9 @@ public interface LTParameter {
 	public ResponseEntity<ApiCallResult> searchRegions();
 	
 	public ResponseEntity<ApiCallResult> searchTATs(String officeId);
+
+	public ResponseEntity<ApiCallResult> searchPackages(String programId);
+
+	public ResponseEntity<ApiCallResult> searchPackageTests(String countries,
+			String testNames, String pckage, String office, String program);
 }

@@ -22,12 +22,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ai.aims.constants.Status;
 import com.ai.aims.services.dto.TestFilterDTO;
+import com.ai.aims.services.dto.packagemgmt.PackageDTO;
 import com.ai.aims.services.model.OfficeMaster;
 import com.ai.aims.services.model.ProductCategory;
 import com.ai.aims.services.model.Region;
 import com.ai.aims.services.model.Tag;
 import com.ai.aims.services.model.TestMaster;
 import com.ai.aims.services.model.TurnAroundTime;
+import com.ai.aims.services.model.search.SearchPackageTestCriteria;
 import com.ai.aims.services.model.search.SearchTagCriteria;
 import com.ai.aims.services.model.search.SearchTagResponse;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
@@ -71,6 +73,22 @@ public class LTParameterDaoImpl implements LTParameterDao {
 	@Autowired
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
+	
+	@Override
+	public ApiCallResult searchPackages(String programID) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/package/search/").toString();
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url.toString())
+				.queryParam("program", programID)
+				.queryParam("requestor", "external");
+		PackageDTO[] packages = restTemplate.getForObject(builder.build().encode().toUri(), PackageDTO[].class);
+		
+		ApiCallResult callResult = new ApiCallResult();
+		callResult.setContent(packages);
+		return callResult;
+	}
 
 	@Override
 	public ApiCallResult searchOffice() throws IOException {
@@ -112,12 +130,23 @@ public class LTParameterDaoImpl implements LTParameterDao {
 	}
 	
 	@Override
-	public ApiCallResult searchTests(SearchTagTestCriteria criteria) throws IOException {
+	public ApiCallResult searchTagTests(SearchTagTestCriteria criteria) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		ApiCallResult callResult = new ApiCallResult();
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/tag/search/tests").toString();		
 		List<TestFilterDTO> tests = Arrays.asList(restTemplate.getForObject(buildTagTestSearchCriteria(criteria, url).build().encode().toUri(), TestFilterDTO[].class));
+		callResult.setContent(tests);
+		return callResult;
+	}
+	
+	@Override
+	public ApiCallResult searchPackageTests(SearchPackageTestCriteria criteria) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		ApiCallResult callResult = new ApiCallResult();
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/package/tests").toString();		
+		List<TestFilterDTO> tests = Arrays.asList(restTemplate.getForObject(buildPackageTestSearchCriteria(criteria, url).build().encode().toUri(), TestFilterDTO[].class));
 		callResult.setContent(tests);
 		return callResult;
 	}
@@ -285,5 +314,26 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		
 		return builder;
 	}
+	
+	private UriComponentsBuilder buildPackageTestSearchCriteria(SearchPackageTestCriteria criteria, String url) {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+				.queryParam("requestor", "external");
+		
+		if(null != criteria.getCountry() && !criteria.getCountry().isEmpty())
+			builder.queryParam("country", String.join(",", criteria.getCountry()));
 
+		if(null != criteria.getPackageId() && !criteria.getPackageId().isEmpty())
+			builder.queryParam("packageId", criteria.getPackageId());
+
+		if(null != criteria.getOfficeId() && !criteria.getOfficeId().isEmpty())
+			builder.queryParam("officeId", criteria.getOfficeId());
+
+		if(null != criteria.getProgramId() && !criteria.getProgramId().isEmpty())
+			builder.queryParam("programId", criteria.getProgramId());
+
+		if(null != criteria.getTestName() && !criteria.getTestName().isEmpty())
+			builder.queryParam("testName", criteria.getTestName());
+		
+		return builder;
+	}
 }
