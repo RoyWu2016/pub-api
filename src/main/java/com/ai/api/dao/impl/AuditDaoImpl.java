@@ -1,6 +1,7 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.config.ServiceConfig;
@@ -307,17 +308,17 @@ public class AuditDaoImpl implements AuditDao {
 	public ApiCallResult cancelOrder(String userId, String companyId, String parentId, String orderId, String reason,
 			String reasonOption) {
 		// TODO Auto-generated method stub
-		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
-		url.append("/api/audit/cancelOrder");
-		url.append("?userId=" + userId);
-		url.append("&reason=" + reason);
-		url.append("&companyId=" + companyId);
-		url.append("&parentId=" + parentId);
-		url.append("&orderId=" + orderId);
-		url.append("&draftId=" + "");
-		url.append("&reasonOption=" + reasonOption);
 		try {
+			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
+			url.append("/api/audit/cancelOrder");
+			url.append("?userId=" + userId);
+			url.append("&reason=" + URLEncoder.encode(reason,"UTF-8"));
+			url.append("&companyId=" + companyId);
+			url.append("&parentId=" + parentId);
+			url.append("&orderId=" + orderId);
+			url.append("&draftId=" + "");
+			url.append("&reasonOption=" + URLEncoder.encode(reasonOption,"UTF-8"));
 			ServiceCallResult result = HttpUtil.issueDeleteRequest(url.toString(), null);
 			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
