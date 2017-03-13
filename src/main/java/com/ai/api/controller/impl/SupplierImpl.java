@@ -19,9 +19,11 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.audit.AuditBookingBean;
+import com.ai.commons.beans.audit.api.ApiAuditOrderBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.OrderFactoryBean;
 import com.ai.commons.beans.psi.api.ApiOrderFactoryBean;
+import com.ai.commons.beans.psi.api.ApiOrderPriceMandayViewBean;
 import com.ai.commons.beans.supplier.SupplierSearchResultBean;
 import com.ai.userservice.common.util.MD5;
 import com.alibaba.fastjson.JSON;
@@ -298,20 +300,22 @@ public class SupplierImpl implements Supplier {
 		logger.info("orderId:" + orderId);
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-			AuditBookingBean auditBookingBean = (AuditBookingBean) auditorService.getOrderDetail("nullUserId", orderId)
+            callResult = auditorService.getOrderDetail("nullUserId", orderId);
+//            ApiAuditOrderBean apiAuditOrderBean1 = JSON.toJavaObject(JSON.t(callResult.getContent()),ApiAuditOrderBean.class);
+			ApiAuditOrderBean apiAuditOrderBean = (ApiAuditOrderBean) auditorService.getOrderDetail("nullUserId", orderId)
 					.getContent();
-			if (null != auditBookingBean && null != auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode()) {
-				String validateCode = auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode();
+			if (null != apiAuditOrderBean && null != apiAuditOrderBean.getOrderGeneralInfo().getSupplierValidateCode()) {
+				String validateCode = apiAuditOrderBean.getOrderGeneralInfo().getSupplierValidateCode();
 				String pw = MD5.toMD5(validateCode);
 
 				if (pw.equalsIgnoreCase(password)) {
-					JSONObject object = (JSONObject) JSON.toJSON(auditBookingBean);
+					JSONObject object = (JSONObject) JSON.toJSON(apiAuditOrderBean);
 
 					String newPW = DigestUtils.shaHex(password);
 					object.put("updateConfirmSupplierPwd", newPW);
 
 					try {
-						UserBean u = userService.getCustById(auditBookingBean.getOrderGeneralInfo().getUserId());
+						UserBean u = userService.getCustById(apiAuditOrderBean.getOrderGeneralInfo().getUserId());
 						object.put("userCompanyName", u.getCompany().getName());
 						object.put("allowPostponementBySuppliers",
 								u.getPreferences().getBooking().isAllowPostponementBySuppliers());
@@ -514,6 +518,14 @@ public class SupplierImpl implements Supplier {
 			callResult.setMessage("updateUserSupplierDetailInfo can not find by id:" + orderId);
 			return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	public static void main(String args[]){
+		String str2 = "{\"orderSupplier\":{\"supplierName\":\"Test Jerome\",\"supplierAddress\":\"Cc\",\"supplierMGRNumber\":\"+1 201-555-5555\",\"supplierCountry\":\"Philippines\",\"supplierId\":\"C04C7D4CFCEEFC7848258052006C8150\",\"orderId\":\"2896524908404272936BF711F35802EE\",\"supplierCity\":\"Cebu\",\"supplierMGRMobile\":\"+1 201-555-5555\",\"supplierMGREmail\":[\"sneha.shejwal@asiainspection.com\",\"jerome.ramos@asiainspection.com\"],\"supplierPostCode\":\"6000\",\"supplierProductLines\":[\"bigCat1_s1\",\"bigCat1_s2\",\"bigCat1_s3\",\"bigCat1_s4\",\"bigCat1_s5\",\"bigCat1_s6\",\"bigCat1_s7\"],\"supplierMGRName\":\"Jerome Ramos\"},\"orderGeneralInfo\":{\"serviceType\":\"5\",\"supplierValidateCode\":\"497421\",\"orderNumber\":\"R-Cloud-AIDEV-1703873\",\"orderId\":\"2896524908404272936BF711F35802EE\",\"allowChangeInspectionDate\":false,\"serviceTypeText\":\"MA\",\"icneeded\":false,\"actualInspectionDateUnixTimestamp\":1489161600,\"container40\":0,\"actualInspectionDate\":\"2017-Mar-11\",\"container20\":0,\"orderPlacer\":\"sneha.shejwal@asiainspection.com\",\"expectedShipDateUnixTimestamp\":0,\"container40HQ\":0,\"bookingDateUnixTimestamp\":1489075200,\"userId\":\"48826F725B644EB1A5BEDAB48E6317E5\",\"companyId\":\"973EA05C363A4C93A07E614A65AE5F40\",\"statusText\":\"FINISHED\",\"bookingDate\":\"2017-Mar-10\",\"clientRefNb\":\"MA Ref 1003\",\"status\":\"60\"},\"orderFactory\":{\"factoryMGRMobile\":\"919970135285\",\"factoryCity\":\"29103194\",\"factoryId\":\"C04C7D4CFCEEFC7848258052006C8150\",\"factoryMGRNumber\":\"9970135285\",\"factoryName\":\"sneha\",\"factoryAddress\":\"-\",\"isMutiLocation\":false,\"factoryMGRName\":\"sneha s\"},\"draft\":{\"isAnOrderNotADraft\":true},\"orderAuditFieldsList\":[{\"fieldName\":\"Social Accountability\",\"orderId\":\"2896524908404272936BF711F35802EE\",\"weight\":\"1\",\"description\":\"This section includes workers interviews and a short assessment of the general working conditions found in the factory.\",\"id\":\"6E657C10CDC04E38AC5512E59B5A8438\",\"fieldType\":\"OPTIONAL\",\"selected\":true,\"fieldId\":\"8E9FDED1122B47469E884532D7993075\"},{\"fieldName\":\"Procurement Conditions\",\"orderId\":\"2896524908404272936BF711F35802EE\",\"weight\":\"1\",\"description\":\"This section includes an assessment of the raw materials and components supply as well as information on subcontractors practice.\",\"id\":\"0FAEE5C66A144AF993FE1DE018D2DD45\",\"fieldType\":\"OPTIONAL\",\"selected\":true,\"fieldId\":\"34C2B0047D5B48D197B45AAD383062AA\"},{\"fieldName\":\"R&D - Sampling Capability\",\"orderId\":\"2896524908404272936BF711F35802EE\",\"weight\":\"1\",\"description\":\"This section includes an assessment of the capability of the factory to design and develop new products.\\n\",\"id\":\"3A514B9627974F118880138CA54AA99F\",\"fieldType\":\"OPTIONAL\",\"selected\":true,\"fieldId\":\"FD249BFED0E846F79ECCAFA9C4055F7E\"},{\"fieldName\":\"Hygiene & Security\",\"orderId\":\"2896524908404272936BF711F35802EE\",\"weight\":\"1\",\"description\":\"This section includes an assessment of the sanitary conditions and the security level of the facilities.\\n\",\"id\":\"6370CF89F96E4113BB81730D924DC8E8\",\"fieldType\":\"OPTIONAL\",\"selected\":true,\"fieldId\":\"8703ADB95072427793DACE385D990F48\"},{\"fieldName\":\"Environment\",\"orderId\":\"2896524908404272936BF711F35802EE\",\"weight\":\"1\",\"description\":\"This section includes a short assessment of the factory policy with environmental issues.\\n\",\"id\":\"1C783C92DB50495098C8455939C9E4BB\",\"fieldType\":\"OPTIONAL\",\"selected\":true,\"fieldId\":\"548721F08E9647789112AD7237705944\"},{\"fieldName\":\"Factory Profile\",\"orderId\":\"2896524908404272936BF711F35802EE\",\"weight\":\"1\",\"description\":\"This section provides you with general information about the factory.\",\"id\":\"91055A506FF6404CB64D0378F78880AE\",\"fieldType\":\"MANDATORY\",\"selected\":true,\"fieldId\":\"45E27FBCDABF4142A33A7CA6F5926111\"},{\"fieldName\":\"Work-Flow and Organization Charts\",\"orderId\":\"2896524908404272936BF711F35802EE\",\"weight\":\"1\",\"description\":\"This section includes a report on the workflows at the factory, as well as a chart of the factory's organization.\",\"id\":\"CC6777D389574647B385D695F54479DF\",\"fieldType\":\"MANDATORY\",\"selected\":true,\"fieldId\":\"DD341638FE624F678A8130480ED52E4E\"},{\"fieldName\":\"Production Lines-Capacity\",\"orderId\":\"2896524908404272936BF711F35802EE\",\"weight\":\"1\",\"description\":\"This section includes a calculation chart of the overall production capacity, as well as an output check of the production lines running during the Audit.\\n\",\"id\":\"D1595F76301E470586ED9C5F0A65C07B\",\"fieldType\":\"MANDATORY\",\"selected\":true,\"fieldId\":\"5EC69BF4F7CD428484C4DBF54DF605AE\"},{\"fieldName\":\"Factory Facilities-Machinery Conditions\",\"orderId\":\"2896524908404272936BF711F35802EE\",\"weight\":\"1\",\"description\":\"This section includes a review of the machineries and equipment tools.\\n\",\"id\":\"FE089AB5DADF4852A18BD747675BCDE1\",\"fieldType\":\"MANDATORY\",\"selected\":true,\"fieldId\":\"D7E414B00B084857B0C18BC946B71539\"},{\"fieldName\":\"Quality Assurance System\",\"orderId\":\"2896524908404272936BF711F35802EE\",\"weight\":\"1\",\"description\":\"The section includes an assessment of the internal quality processes, QC facilities, quality team, records and quality certificates.\\n\",\"id\":\"1112783CDF53482A8B2915208D5DF134\",\"fieldType\":\"MANDATORY\",\"selected\":true,\"fieldId\":\"084C8039C52C490DA0FAA93323AF14F8\"},{\"fieldName\":\"RoHS Standards\",\"orderId\":\"2896524908404272936BF711F35802EE\",\"weight\":\"1\",\"description\":\"This section includes level of awareness and/or compliance of the factory regarding RoHS standards (Restriction of use of certain Hazardous Substances in Electrical and Electronic Equipment).\\n\",\"id\":\"CB5B2B0FBAC347B48A98F2342C44D856\",\"fieldType\":\"OPTIONAL\",\"selected\":true,\"fieldId\":\"9233862F14FC466ABAAF9C12E216C5CA\"},{\"specificField\":\"new ist1\",\"orderId\":\"2896524908404272936BF711F35802EE\",\"weight\":\"1\",\"id\":\"9AAA8E9680454F9C8E1FFCF15A9787B5\",\"fieldType\":\"SPECIFIC\",\"selected\":false}],\"orderPrice\":{\"orderId\":\"2896524908404272936BF711F35802EE\",\"totalMandayByClient\":2,\"measurementSampleQuantity\":0,\"sampleCollectedAndSentByAI\":false,\"optionalCharge\":300.0,\"auditNbOfMDBookedByClient\":2,\"auditUnitPrice\":649.0,\"totalQuantity\":0.0,\"sampleCollectionRequestByClient\":false,\"auditPrice\":1298.0,\"inspUnitPrice\":649.0,\"sampleSizeUnit\":\"Pcs\",\"sampleLevel\":\"II\",\"nbOfExtraReports\":0,\"measurementSampleLevel\":\"S4\",\"optionalQuantity\":6,\"totalCharge\":1727.0,\"sampleCollectionRate\":30.0,\"factoryWorkers\":\"2\",\"otherCharge\":300.0,\"inspectionCharge\":1298.0,\"fabricSampleLevel\":\"0\",\"expressBookingFee\":129.0,\"sampleSizeTotal\":0.0,\"extraReportRate\":69.0,\"nbOfContainers\":0,\"optionalUnitPrice\":50.0,\"pointsQtyToInspect\":0},\"orderExtra\":{\"cancelable\":false,\"isReInspection\":false,\"orderId\":\"2896524908404272936BF711F35802EE\",\"editable\":false},\"orderAuditGeneral\":{\"contactFactoryOrNot\":false,\"orderId\":\"2896524908404272936BF711F35802EE\",\"followSA8000Guidelines\":true,\"totalNumberOfBuilding\":1,\"factoryAreaSqm\":0,\"sampleSize\":\"2\",\"poNumber\":\"PO1003\"}}";
+		ApiAuditOrderBean aa = JSON.parseObject(str2, ApiAuditOrderBean.class);
+		logger.info("");
+		logger.info("");
+
 	}
 
 }
