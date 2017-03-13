@@ -125,5 +125,5 @@
     <bean id="ltEmailService" class="com.ai.api.service.impl.LTEmailServiceImpl" />
 
     <!-- Scheduler configuration -->
-    <import resource="spring-scheduler.xml"/>
+    <!--<import resource="spring-scheduler.xml"/>-->
 </beans>
