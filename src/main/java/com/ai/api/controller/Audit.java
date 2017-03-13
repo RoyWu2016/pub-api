@@ -61,5 +61,5 @@ public interface Audit {
 	ResponseEntity<ApiCallResult> cancelOrder(String userId, String reason, String orderId, String reasonOption);
 
 	ResponseEntity<ApiCallResult<List<SimpleOrderSearchBean>>> getReInspectionList(String userId, String serviceType,
-			String keyword, String pageSize, String pageNumber);
+			String keyword, int pageSize, int pageNumber);
 }
