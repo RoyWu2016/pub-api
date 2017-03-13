@@ -19,9 +19,11 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.audit.AuditBookingBean;
+import com.ai.commons.beans.audit.api.ApiAuditOrderBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.OrderFactoryBean;
 import com.ai.commons.beans.psi.api.ApiOrderFactoryBean;
+import com.ai.commons.beans.psi.api.ApiOrderPriceMandayViewBean;
 import com.ai.commons.beans.supplier.SupplierSearchResultBean;
 import com.ai.userservice.common.util.MD5;
 import com.alibaba.fastjson.JSON;
@@ -298,20 +300,21 @@ public class SupplierImpl implements Supplier {
 		logger.info("orderId:" + orderId);
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-			AuditBookingBean auditBookingBean = (AuditBookingBean) auditorService.getOrderDetail("nullUserId", orderId)
-					.getContent();
-			if (null != auditBookingBean && null != auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode()) {
-				String validateCode = auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode();
+            callResult = auditorService.getOrderDetail("nullUserId", orderId);
+			String jsonStr = JSON.toJSONString(auditorService.getOrderDetail("nullUserId", orderId).getContent());
+            ApiAuditOrderBean apiAuditOrderBean = JSON.parseObject(jsonStr,ApiAuditOrderBean.class);
+			if (null != apiAuditOrderBean && null != apiAuditOrderBean.getOrderGeneralInfo().getSupplierValidateCode()) {
+				String validateCode = apiAuditOrderBean.getOrderGeneralInfo().getSupplierValidateCode();
 				String pw = MD5.toMD5(validateCode);
 
 				if (pw.equalsIgnoreCase(password)) {
-					JSONObject object = (JSONObject) JSON.toJSON(auditBookingBean);
+					JSONObject object = (JSONObject) JSON.toJSON(apiAuditOrderBean);
 
 					String newPW = DigestUtils.shaHex(password);
 					object.put("updateConfirmSupplierPwd", newPW);
 
 					try {
-						UserBean u = userService.getCustById(auditBookingBean.getOrderGeneralInfo().getUserId());
+						UserBean u = userService.getCustById(apiAuditOrderBean.getOrderGeneralInfo().getUserId());
 						object.put("userCompanyName", u.getCompany().getName());
 						object.put("allowPostponementBySuppliers",
 								u.getPreferences().getBooking().isAllowPostponementBySuppliers());
