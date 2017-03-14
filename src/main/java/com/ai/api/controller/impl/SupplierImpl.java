@@ -299,9 +299,10 @@ public class SupplierImpl implements Supplier {
 		logger.info("getAuditFactoryConfirm ...");
 		logger.info("orderId:" + orderId);
 		ApiCallResult callResult = new ApiCallResult();
+		ApiCallResult temp = new ApiCallResult();
 		try {
-			callResult = auditorService.getOrderDetail("nullUserId", orderId);
-			String jsonStr = JSON.toJSONString(callResult.getContent());
+			temp = auditorService.getOrderDetail("nullUserId", orderId);
+			String jsonStr = JSON.toJSONString(temp.getContent());
 			ApiAuditOrderBean apiAuditOrderBean = JSON.parseObject(jsonStr, ApiAuditOrderBean.class);
 			if (null != apiAuditOrderBean
 					&& null != apiAuditOrderBean.getOrderGeneralInfo().getSupplierValidateCode()) {
