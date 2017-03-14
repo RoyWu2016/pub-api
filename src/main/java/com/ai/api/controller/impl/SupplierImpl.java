@@ -299,11 +299,9 @@ public class SupplierImpl implements Supplier {
 		logger.info("getAuditFactoryConfirm ...");
 		logger.info("orderId:" + orderId);
 		ApiCallResult callResult = new ApiCallResult();
-		ApiCallResult temp = new ApiCallResult();
 		try {
-			temp = auditorService.getOrderDetail("nullUserId", orderId);
-			String jsonStr = JSON.toJSONString(temp.getContent());
-			ApiAuditOrderBean apiAuditOrderBean = JSON.parseObject(jsonStr, ApiAuditOrderBean.class);
+			ApiAuditOrderBean apiAuditOrderBean = JSON.toJavaObject(
+					(JSONObject)auditorService.getOrderDetail("nullUserId", orderId).getContent(), ApiAuditOrderBean.class);
 			if (null != apiAuditOrderBean
 					&& null != apiAuditOrderBean.getOrderGeneralInfo().getSupplierValidateCode()) {
 				String validateCode = apiAuditOrderBean.getOrderGeneralInfo().getSupplierValidateCode();
@@ -430,8 +428,8 @@ public class SupplierImpl implements Supplier {
 		containReadyTime = DateUtils.toStringWithAINewInteral(containReadyTime);
 		try {
 			if (null == cachePassword) {
-				AuditBookingBean auditBookingBean = (AuditBookingBean) auditorService
-						.getOrderDetail("nullUserId", orderId).getContent();
+				AuditBookingBean auditBookingBean = JSON.toJavaObject(
+						(JSONObject)auditorService.getOrderDetail("nullUserId", orderId).getContent(),AuditBookingBean.class);
 				if (null != auditBookingBean
 						&& null != auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode()) {
 					String validateCode = auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode();

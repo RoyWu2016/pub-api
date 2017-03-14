@@ -11,6 +11,8 @@ import com.ai.api.bean.SupplierContactInfoBean;
 import com.ai.api.bean.SupplierDetailBean;
 import com.ai.api.bean.legacy.ContactBean;
 import com.ai.api.dao.impl.FactoryDaoImpl;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -157,7 +159,7 @@ public class SupplierImplTest {
                 .content(new ObjectMapper().writeValueAsString(supplierDetailBean)))
                 .andExpect(status().isOk());
 
-        SupplierDetailBean detailBean = (SupplierDetailBean)factoryDao.getUserSupplierDetailInfoById(userID, supplierId).getContent();
+        SupplierDetailBean detailBean = JSON.toJavaObject((JSONObject)factoryDao.getUserSupplierDetailInfoById(userID, supplierId).getContent(),SupplierDetailBean.class);
 
         Assert.assertEquals(detailBean.getEntityName(),supplierDetailBean.getEntityName());
         Assert.assertEquals(detailBean.getCity(),supplierDetailBean.getCity());
