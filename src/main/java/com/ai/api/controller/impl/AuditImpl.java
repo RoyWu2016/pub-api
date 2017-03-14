@@ -274,7 +274,6 @@ public class AuditImpl implements Audit {
 			@PathVariable("draftId") String draftId,
 			@ApiParam(value = "orderId", required = true)
 			@PathVariable("orderId") String orderId) {
-		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId + "/audit-draft/" + draftId + "/saved");
 		ApiCallResult result = auditorService.saveOrderByDraft(userId, draftId, orderId);
 		if (null == result.getMessage()) {

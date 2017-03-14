@@ -248,7 +248,7 @@ public class AuditDaoImpl implements AuditDao {
 	public ApiCallResult saveOrderByDraft(String userId, String draftId, String companyId, String parentId) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
-		url.append("/api/audit/reAudit");
+		url.append("/api/audit/saveOrder");
 		url.append("?userId=" + userId);
 		url.append("&draftId=" + draftId);
 		url.append("&companyId=" + companyId);
