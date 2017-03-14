@@ -300,10 +300,11 @@ public class SupplierImpl implements Supplier {
 		logger.info("orderId:" + orderId);
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-            callResult = auditorService.getOrderDetail("nullUserId", orderId);
-			String jsonStr = JSON.toJSONString(auditorService.getOrderDetail("nullUserId", orderId).getContent());
-            ApiAuditOrderBean apiAuditOrderBean = JSON.parseObject(jsonStr,ApiAuditOrderBean.class);
-			if (null != apiAuditOrderBean && null != apiAuditOrderBean.getOrderGeneralInfo().getSupplierValidateCode()) {
+			callResult = auditorService.getOrderDetail("nullUserId", orderId);
+			String jsonStr = JSON.toJSONString(callResult.getContent());
+			ApiAuditOrderBean apiAuditOrderBean = JSON.parseObject(jsonStr, ApiAuditOrderBean.class);
+			if (null != apiAuditOrderBean
+					&& null != apiAuditOrderBean.getOrderGeneralInfo().getSupplierValidateCode()) {
 				String validateCode = apiAuditOrderBean.getOrderGeneralInfo().getSupplierValidateCode();
 				String pw = MD5.toMD5(validateCode);
 
@@ -328,17 +329,18 @@ public class SupplierImpl implements Supplier {
 					}
 					callResult.setContent(object);
 					return new ResponseEntity<>(callResult, HttpStatus.OK);
+				}else{
+					logger.info("incorrect pw !   [" + password + "] || should be :" + pw);
+					callResult.setMessage("Incorrect password!");
+					return new ResponseEntity<>(callResult, HttpStatus.OK);
 				}
-				logger.info("incorrect pw !   [" + password + "] || should be :" + pw);
-				callResult.setMessage("Incorrect password!");
-				return new ResponseEntity<>(callResult, HttpStatus.OK);
 			} else {
 				callResult.setMessage("Get order error!");
 				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
 			logger.error("error in getSupplierConfirm", e);
-			callResult.setMessage("Internal service error.");
+			callResult.setMessage("Internal service error." + e);
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
