@@ -10,9 +10,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,25 +112,18 @@ public class LTOrderServiceImpl implements LTOrderService {
 	}
 
 	@Override
-	public ApiCallResult editOrder(String userId, OrderMaster order, boolean sendEmail) {
-		try{
-			ApiCallResult apiCallResult = ltorderDao.editOrder(userId, order);
-			OrderDTO orderDTO = JSON.toJavaObject((JSONObject)apiCallResult.getContent(),OrderDTO.class);
-			if(sendEmail){
-				UserBean user = userService.getCustById(userId);
-				String companyId = user.getCompany().getId();
-				boolean sendEmailAddOrder = ltEmailService.sendEmailAddOrder(orderDTO, companyId);
-				if(!sendEmailAddOrder) {
-					logger.error(ExceptionUtils.getFullStackTrace(new AIException("Error during send mail after saving order")));
-					apiCallResult.setMessage("Error during send mail after saving order");
-	}
+	public ApiCallResult editOrder(String userId, OrderMaster order, boolean sendEmail) throws Exception {
+		ApiCallResult apiCallResult = ltorderDao.editOrder(userId, order);
+		OrderDTO orderDTO = (OrderDTO) apiCallResult.getContent();
+		if(sendEmail){
+			UserBean user = userService.getCustById(userId);
+			String companyId = user.getCompany().getId();
+			boolean sendEmailAddOrder = ltEmailService.sendEmailAddOrder(orderDTO, companyId);
+			if(!sendEmailAddOrder) {
+				throw new AIException("Error during send mail after saving order");
 			}
-			return apiCallResult;
-		} catch (Exception e) {
-			logger.error("Exception in edit Order :: ");
-			logger.error(ExceptionUtils.getStackTrace(e));
-			return new ApiCallResult<>();
 		}
+		return apiCallResult;
 	}
 	
 	@Override
