@@ -429,20 +429,20 @@ public class SupplierImpl implements Supplier {
 		containReadyTime = DateUtils.toStringWithAINewInteral(containReadyTime);
 		try {
 			if (null == cachePassword) {
-				ApiAuditOrderBean auditBookingBean = new ApiAuditOrderBean();
-				ApiCallResult temp = new ApiCallResult();
-				temp = auditorService.getOrderDetail("nullUserId", orderId);
+				ApiCallResult temp = auditorService.getOrderDetail("nullUserId", orderId);
 				String jsonStr = JSON.toJSONString(temp.getContent());
-				auditBookingBean = JSON.parseObject(jsonStr, ApiAuditOrderBean.class);
-				if (null != auditBookingBean && null != auditBookingBean.getOrderGeneralInfo()
-						&& null != auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode()) {
-					String validateCode = auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode();
-					cachePassword = DigestUtils.shaHex(MD5.toMD5(validateCode));
-					RedisUtil.hset("passwordCache", orderId, cachePassword, RedisUtil.HOUR * 24 * 3);
-				} else {
-					logger.info("can not get order by id:" + orderId);
-					callResult.setMessage("can not get order by id:" + orderId);
-					return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+				if(null != jsonStr) {
+					ApiAuditOrderBean auditBookingBean = JSON.parseObject(jsonStr, ApiAuditOrderBean.class);
+					if (null != auditBookingBean && null != auditBookingBean.getOrderGeneralInfo()
+							&& null != auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode()) {
+						String validateCode = auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode();
+						cachePassword = DigestUtils.shaHex(MD5.toMD5(validateCode));
+						RedisUtil.hset("passwordCache", orderId, cachePassword, RedisUtil.HOUR * 24 * 3);
+					} else {
+						logger.info("can not get order by id:" + orderId);
+						callResult.setMessage("can not get order by id:" + orderId);
+						return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+					}
 				}
 			}
 			if (cachePassword.equalsIgnoreCase(password)) {
