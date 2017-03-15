@@ -361,7 +361,7 @@ public class ReportDaoImpl implements ReportDao {
 		} catch (Exception e) {
 			reportsForwardingBean.getMessage().trim().replace(" ", "%20");
 		}
-		url.append("?productIds=").append(reportIds).append("&to=").append(reportsForwardingBean.getTo()).append("&cc=")
+		url.append("?orderIds=").append(reportIds).append("&to=").append(reportsForwardingBean.getTo()).append("&cc=")
 				.append(reportsForwardingBean.getCc()).append("&bcc=").append(reportsForwardingBean.getBcc())
 				.append("&message=").append(reportsForwardingBean.getMessage()).append("&userId=").append(userId)
 				.append("&companyId=").append(companyId).append("&parentId=").append(parentId);
