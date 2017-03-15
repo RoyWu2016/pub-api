@@ -144,7 +144,7 @@ public class LTOrderImpl implements LTOrder {
 			order.setId(orderId);
 			callResult = ltOrderService.editOrder(userId, order, sendMail);
 		} catch (Exception e) {
-			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			logger.error("Edit order error: " + ExceptionUtils.getFullStackTrace(e));
 			callResult.setMessage("Error in saving updates to LT order.");
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -162,7 +162,7 @@ public class LTOrderImpl implements LTOrder {
 		try {
 			callResult = ltOrderService.deleteOrders(userId, orderIds);
 		} catch (Exception e) {
-			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
+			logger.error("Delete order error: " + ExceptionUtils.getFullStackTrace(e));
 			callResult.setMessage("Error in deleting LT order.");
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
