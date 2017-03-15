@@ -598,14 +598,15 @@ public class ParameterImpl implements Parameter {
 		logger.info("invoke: " + "/parameter/" + userName + "/is-aca-user");
 		logger.info("check if userName exist: " + userName);
 		ApiCallResult result = new ApiCallResult();
-		boolean isUsrNameExist = parameterService.checkIfUserNameExist(userName);
-		if(isUsrNameExist) {
+		boolean isUserNameExist = parameterService.checkIfUserNameExist(userName);
+		if(isUserNameExist) {
 			boolean isAcaUser = parameterService.isACAUser(userName);
 			result.setContent(isAcaUser);
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		}else {
-			result.setMessage(userName + " does not exist.");;
+			result.setMessage(userName + " does not exist.");
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	@Override
