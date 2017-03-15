@@ -11,7 +11,9 @@ import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.audit.api.ApiAuditBookingBean;
+import com.ai.commons.beans.audit.api.ApiAuditOrderBean;
 import com.ai.commons.beans.psi.api.ApiOrderFactoryBean;
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -223,14 +225,14 @@ public class AuditDaoImpl implements AuditDao {
 	@Override
 	public ApiCallResult getOrderDetail(String userId, String orderId, String companyId, String parentId) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
-		ApiCallResult finalResult = new ApiCallResult();
+		ApiCallResult finalResult = new ApiCallResult<>();
 		url.append("/api/audit/getOrder?userId=").append(userId);
 		url.append("&orderId=").append(orderId);
 		url.append("&companyId=").append(companyId);
 		url.append("&parentId=").append(parentId);
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
-			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
+			finalResult = JSON.parseObject(result.getResponseString(),finalResult.getClass());
 			if (null == finalResult.getContent()) {
 				finalResult.setMessage("null result from psi-service! code:[" + result.getStatusCode() + "] response:"
 						+ result.getResponseString());
@@ -246,13 +248,13 @@ public class AuditDaoImpl implements AuditDao {
 	public ApiCallResult saveOrderByDraft(String userId, String draftId, String companyId, String parentId) {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
 		ApiCallResult finalResult = new ApiCallResult();
-		url.append("/api/audit/reAudit");
+		url.append("/api/audit/saveOrder");
 		url.append("?userId=" + userId);
 		url.append("&draftId=" + draftId);
 		url.append("&companyId=" + companyId);
 		url.append("&parentId=" + parentId);
 		try {
-			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
+			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null,draftId);
 			finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 		} catch (IOException e) {
 			logger.error("Error saveOrderByDraft!" + ExceptionUtils.getStackTrace(e));

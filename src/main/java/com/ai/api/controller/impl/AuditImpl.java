@@ -147,7 +147,7 @@ public class AuditImpl implements Audit {
 	public ResponseEntity<ApiCallResult> deleteDrafts(
 			@ApiParam(value = "userId", required = true)
 			@PathVariable("userId") String userId,
-			@ApiParam(value = "if multiple,separated by semicolon", required = true)
+			@ApiParam(value = "if multiple, separated by comma", required = true)
 			@RequestParam("draftIds") String draftIds) {
 		logger.info("invoke: " + "/user/" + userId + "/audit-drafts?draftIds=" + draftIds);
 		ApiCallResult result = auditorService.deleteDrafts(userId, draftIds);
@@ -274,7 +274,6 @@ public class AuditImpl implements Audit {
 			@PathVariable("draftId") String draftId,
 			@ApiParam(value = "orderId", required = true)
 			@PathVariable("orderId") String orderId) {
-		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/audit-order/" + orderId + "/audit-draft/" + draftId + "/saved");
 		ApiCallResult result = auditorService.saveOrderByDraft(userId, draftId, orderId);
 		if (null == result.getMessage()) {
