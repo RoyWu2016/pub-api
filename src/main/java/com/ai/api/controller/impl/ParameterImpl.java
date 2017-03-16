@@ -92,12 +92,6 @@ public class ParameterImpl implements Parameter {
 			logger.error("Product category list not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		for(ProductCategoryDtoBean each : result) {
-			if("Audit".equalsIgnoreCase(each.getName())) {
-				result.remove(each);
-				break;
-			}
-		}
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
