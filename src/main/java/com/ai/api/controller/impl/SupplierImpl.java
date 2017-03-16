@@ -337,8 +337,8 @@ public class SupplierImpl implements Supplier {
 						auditSupplierBean.setExpressFee(String.valueOf(user.getRate().getExpressFee()));
 					}
 
-					List<FileMetaBean> fileList = myFileService.getFileService().getFileInfoBySrcIdAndFileType(
-							auditSupplierBean.getOrderGeneralInfo().getUserId(), "ORDER_ATT");
+					List<FileMetaBean> fileList = myFileService.getFileService().getFileInfoBySrcIdAndFileType(orderId,
+							"ORDER_ATT");
 					if (null != fileList) {
 						List<ApiFileMetaBean> attachmentsList = new ArrayList<ApiFileMetaBean>();
 						for (FileMetaBean each : fileList) {
@@ -348,6 +348,8 @@ public class SupplierImpl implements Supplier {
 							bean.setFileType(each.getFileType());
 							bean.setId(each.getId());
 							bean.setSrcId(each.getSrcId());
+							
+							attachmentsList.add(bean);
 						}
 						auditSupplierBean.setAttachmentsList(attachmentsList);
 					}
