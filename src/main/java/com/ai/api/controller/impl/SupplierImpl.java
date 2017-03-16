@@ -332,6 +332,10 @@ public class SupplierImpl implements Supplier {
 					auditSupplierBean.setOrderGeneralInfo(apiAuditOrderBean.getOrderGeneralInfo());
 					auditSupplierBean.setOrderPrice(apiAuditOrderBean.getOrderPrice());
 					auditSupplierBean.setOrderSupplier(apiAuditOrderBean.getOrderSupplier());
+					UserBean user = userService.getCustById(auditSupplierBean.getOrderGeneralInfo().getUserId());
+					if (null != user && null != user.getRate()) {
+						auditSupplierBean.setExpressFee(String.valueOf(user.getRate().getExpressFee()));
+					}
 
 					List<FileMetaBean> fileList = myFileService.getFileService().getFileInfoBySrcIdAndFileType(
 							auditSupplierBean.getOrderGeneralInfo().getUserId(), "ORDER_ATT");
@@ -363,7 +367,7 @@ public class SupplierImpl implements Supplier {
 								ApiProductCategoryBean bean = new ApiProductCategoryBean();
 								bean.setId(each.getId());
 								bean.setName(each.getName());
-								
+
 								list.add(bean);
 							}
 							auditSupplierBean.setProductCategoryList(list);
