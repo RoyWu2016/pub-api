@@ -56,16 +56,12 @@ public class SurveyServiceImpl implements SurveyService{
             ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
             logger.info(result.getReasonPhase()+"||"+result.getResponseString());
             if(result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-                JSONObject object = JSON.parseObject(result.getResponseString());
-                String dateStr = StringUtils.isNotBlank(object.getString("lastShow"))?object.getString("lastShow"):"1997-Dec-10";
-                Date lastShow = DateUtils.toDateWithAI(dateStr);
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(new Date());
-                cal.add(Calendar.DATE, -7);
-                if (lastShow.before(cal.getTime())) {
-                    apiCallResult.setContent(false);
+                if (StringUtils.isNotBlank(result.getResponseString())) {
+                    apiCallResult.setContent("true".equalsIgnoreCase(result.getResponseString()));
                 } else {
-                    apiCallResult.setContent(true);
+                    logger.info("Error!!!seen-nps-survey-in-last-7-days return blank message from customerService");
+                    apiCallResult.setContent(false);
+                    apiCallResult.setMessage("Error from customerService,blank return!");
                 }
             }else {
                 apiCallResult.setMessage("error from customerService!"+result.getResponseString());
