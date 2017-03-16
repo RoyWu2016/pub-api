@@ -301,7 +301,8 @@ public class SupplierImpl implements Supplier {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			ApiAuditOrderBean apiAuditOrderBean = JSON.toJavaObject(
-					(JSONObject)auditorService.getOrderDetail("nullUserId", orderId).getContent(), ApiAuditOrderBean.class);
+					(JSONObject) auditorService.getOrderDetail("nullUserId", orderId).getContent(),
+					ApiAuditOrderBean.class);
 			if (null != apiAuditOrderBean
 					&& null != apiAuditOrderBean.getOrderGeneralInfo().getSupplierValidateCode()) {
 				String validateCode = apiAuditOrderBean.getOrderGeneralInfo().getSupplierValidateCode();
@@ -328,7 +329,7 @@ public class SupplierImpl implements Supplier {
 					}
 					callResult.setContent(object);
 					return new ResponseEntity<>(callResult, HttpStatus.OK);
-				}else{
+				} else {
 					logger.info("incorrect pw !   [" + password + "] || should be :" + pw);
 					callResult.setMessage("Incorrect password!");
 					return new ResponseEntity<>(callResult, HttpStatus.OK);
@@ -428,17 +429,20 @@ public class SupplierImpl implements Supplier {
 		containReadyTime = DateUtils.toStringWithAINewInteral(containReadyTime);
 		try {
 			if (null == cachePassword) {
-				AuditBookingBean auditBookingBean = JSON.toJavaObject(
-						(JSONObject)auditorService.getOrderDetail("nullUserId", orderId).getContent(),AuditBookingBean.class);
-				if (null != auditBookingBean
-						&& null != auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode()) {
-					String validateCode = auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode();
-					cachePassword = DigestUtils.shaHex(MD5.toMD5(validateCode));
-					RedisUtil.hset("passwordCache", orderId, cachePassword, RedisUtil.HOUR * 24 * 3);
-				} else {
-					logger.info("can not get order by id:" + orderId);
-					callResult.setMessage("can not get order by id:" + orderId);
-					return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+				ApiCallResult temp = auditorService.getOrderDetail("nullUserId", orderId);
+				String jsonStr = JSON.toJSONString(temp.getContent());
+				if(null != jsonStr) {
+					ApiAuditOrderBean auditBookingBean = JSON.parseObject(jsonStr, ApiAuditOrderBean.class);
+					if (null != auditBookingBean && null != auditBookingBean.getOrderGeneralInfo()
+							&& null != auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode()) {
+						String validateCode = auditBookingBean.getOrderGeneralInfo().getSupplierValidateCode();
+						cachePassword = DigestUtils.shaHex(MD5.toMD5(validateCode));
+						RedisUtil.hset("passwordCache", orderId, cachePassword, RedisUtil.HOUR * 24 * 3);
+					} else {
+						logger.info("can not get order by id:" + orderId);
+						callResult.setMessage("can not get order by id:" + orderId);
+						return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+					}
 				}
 			}
 			if (cachePassword.equalsIgnoreCase(password)) {
