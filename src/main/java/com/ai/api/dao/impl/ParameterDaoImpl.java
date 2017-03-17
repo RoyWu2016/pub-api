@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -115,7 +116,13 @@ public class ParameterDaoImpl implements ParameterDao {
 				ServiceCallResult result = HttpUtil.issueGetRequest(request7);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					productFamilyList = JSON.parseArray(result.getResponseString(), ProductFamilyDtoBean.class);
-
+					Iterator<ProductFamilyDtoBean> iterator = productFamilyList.iterator();
+					while (iterator.hasNext()){
+						ProductFamilyDtoBean next = iterator.next();
+						if (next.getCategoryId().equalsIgnoreCase("bigCat9")){
+							iterator.remove();
+						}
+					}
 					LOGGER.info("saving productFamilyListCache");
 					RedisUtil.set("productFamilyListCache", JSON.toJSONString(productFamilyList), RedisUtil.HOUR * 24);
 				} else {
