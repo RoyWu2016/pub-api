@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -15,6 +16,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.fileservice.ApiFileMetaBean;
+import com.ai.commons.beans.fileservice.FileMetaBean;
+import com.ai.commons.beans.fileservice.FileType;
+import com.ai.commons.services.FileService;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -72,6 +77,10 @@ public class ReportServiceImpl implements ReportService {
 	@Autowired
 	@Qualifier("userService")
 	private UserService userService;
+
+	@Autowired
+	@Qualifier("fileService")
+	private FileService fileService;
 
 	@Override
 	public ApiCallResult getAuditReports(String useId, PageParamBean paramBean) {
@@ -704,15 +713,20 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public ApiCallResult getAuditReportPDFInfo(String userId,String orderId){
-		String companyId = "";
-		String parentId = "";
-		UserBean user = this.getUserBeanByUserId(userId);
-		if (null != user) {
-			parentId = user.getCompany().getParentCompanyId();
-			if (parentId == null)
-				parentId = "";
-			companyId = user.getCompany().getId();
+		ApiCallResult finalResult = new ApiCallResult();
+		List<ApiFileMetaBean> returnList = new ArrayList<>();
+		List<FileMetaBean> fileMetaBeanList = null;
+		try {
+			fileMetaBeanList = fileService.getFileInfoBySrcIdAndFileType(orderId, FileType.PROD_FINAL_REPORT.getType(), false);
+		}catch (Exception e){
+			finalResult.setMessage("Error exception!!"+e);
 		}
-		return reportDao.getAuditReportPDFInfo(userId,companyId,parentId,orderId);
+		if (null!=fileMetaBeanList&&fileMetaBeanList.size()>0){
+			for (FileMetaBean f:fileMetaBeanList){
+				returnList.add(new ApiFileMetaBean(f));
+			}
+		}
+		finalResult.setContent(returnList);
+		return finalResult;
 	}
 }
