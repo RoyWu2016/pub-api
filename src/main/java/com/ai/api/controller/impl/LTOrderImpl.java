@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ai.aims.services.dto.TestFilterDTO;
 import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
@@ -198,6 +199,26 @@ public class LTOrderImpl implements LTOrder {
 			logger.info("get lt programs from redis successfully");
 			return new ResponseEntity<List<Program>>(programs, HttpStatus.OK);
 		}*/
+	}
+	
+	@Override
+	@ApiOperation(value = "Update LT Program Tests", produces = "application/json", response = TestFilterDTO.class, httpMethod = "PUT", responseContainer = "List")
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/lt/program/{programId}/tests", method = RequestMethod.PUT)
+	public ResponseEntity<ApiCallResult> updateProgramTests(
+			@ApiParam(value="User ID") @PathVariable String userId,
+			@ApiParam(value="Program ID") @PathVariable String programId,
+			@ApiParam(value="Test IDs") @RequestParam(value = "tests", required = true, defaultValue = "")  String tests,
+			@ApiParam(value="Update Favorite Tests") @RequestParam(value = "isFavorite", required = false, defaultValue = "false") Boolean isFavorite) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltparameterService.updateProgramTests(userId, programId, tests, isFavorite);
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("update LT Program Tests error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't update LT program tests");
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@ApiOperation(value = "Get Order Test Assignments API", produces = "application/json", response = OrderTestBean.class, httpMethod = "GET")

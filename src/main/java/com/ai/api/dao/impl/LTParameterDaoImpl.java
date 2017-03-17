@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -30,6 +31,7 @@ import com.ai.aims.services.model.Tag;
 import com.ai.aims.services.model.TestMaster;
 import com.ai.aims.services.model.TurnAroundTime;
 import com.ai.aims.services.model.search.SearchPackageTestCriteria;
+import com.ai.aims.services.model.search.SearchProgramTestCriteria;
 import com.ai.aims.services.model.search.SearchTagCriteria;
 import com.ai.aims.services.model.search.SearchTagResponse;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
@@ -149,6 +151,36 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		List<TestFilterDTO> tests = Arrays.asList(restTemplate.getForObject(buildPackageTestSearchCriteria(criteria, url).build().encode().toUri(), TestFilterDTO[].class));
 		callResult.setContent(tests);
 		return callResult;
+	}
+	
+	@Override
+	public ApiCallResult searchProgramTests(SearchProgramTestCriteria criteria) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		ApiCallResult callResult = new ApiCallResult();
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/program/tests").toString();
+		List<TestFilterDTO> tests = Arrays.asList(restTemplate.getForObject(buildProgramTestSearchCriteria(criteria, url).build().encode().toUri(), TestFilterDTO[].class));
+		callResult.setContent(tests);
+		return callResult;
+	}
+
+	@Override
+	public ApiCallResult updateProgramTests(String userId, String programId, String tests, Boolean isFavorite) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		String url = new StringBuilder(config.getProgramServiceBaseUrl())
+			.append("/program/").append(programId)
+			.append("/user/").append(userId).append("/tests").toString();
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+				.queryParam("requestor", "external")
+				.queryParam("isFavorite", isFavorite);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("tests", tests);
+		restTemplate.put(builder.build().encode().toUri(), params);
+		SearchProgramTestCriteria criteria = new SearchProgramTestCriteria();
+		criteria.setIsFavorite(isFavorite);
+		criteria.setProgramId(programId);
+		return searchProgramTests(criteria);
 	}
 	
 	@Override
@@ -333,6 +365,28 @@ public class LTParameterDaoImpl implements LTParameterDao {
 
 		if(null != criteria.getTestName() && !criteria.getTestName().isEmpty())
 			builder.queryParam("testName", criteria.getTestName());
+		
+		return builder;
+	}
+	
+	private UriComponentsBuilder buildProgramTestSearchCriteria(SearchProgramTestCriteria criteria, String url) {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+				.queryParam("requestor", "external");
+		
+		if(null != criteria.getCountry() && !criteria.getCountry().isEmpty())
+			builder.queryParam("country", String.join(",", criteria.getCountry()));
+
+		if(null != criteria.getOfficeId() && !criteria.getOfficeId().isEmpty())
+			builder.queryParam("officeId", criteria.getOfficeId());
+
+		if(null != criteria.getProgramId() && !criteria.getProgramId().isEmpty())
+			builder.queryParam("programId", criteria.getProgramId());
+
+		if(null != criteria.getTestName() && !criteria.getTestName().isEmpty())
+			builder.queryParam("testName", criteria.getTestName());
+
+		if(null != criteria.getIsFavorite())
+			builder.queryParam("isFavorite", criteria.getIsFavorite());
 		
 		return builder;
 	}

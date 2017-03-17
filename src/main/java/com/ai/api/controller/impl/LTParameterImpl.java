@@ -188,6 +188,27 @@ public class LTParameterImpl implements LTParameter {
 			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@Override
+	@ApiOperation(value = "Search LT Tests by Program API", produces = "application/json", response = TestFilterDTO.class, httpMethod = "GET", responseContainer = "List")
+	@TokenSecured
+	@RequestMapping(value = "/parameter/lt/programs/tests", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchProgramTests(
+			@ApiParam(value="Countries") @RequestParam(value = "countries", required = false, defaultValue = "") String countries, 
+			@ApiParam(value="Test Names") @RequestParam(value = "testNames", required = false, defaultValue = "") String testNames,
+			@ApiParam(value="Office ID") @RequestParam(value = "office", required = false, defaultValue = "") String office,
+			@ApiParam(value="Program ID") @RequestParam(value = "program", required = false, defaultValue = "") String program,
+			@ApiParam(value="Only search for favorite tests") @RequestParam(value = "isFavorite", required = false, defaultValue = "false") Boolean isFavorite) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltparameterService.searchProgramTests(countries, testNames, office, program, isFavorite);
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("search LT Tests error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't get LT tests");
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 		
 	@Override
 	@ApiOperation(value = "Search LT Test By Test Id API", produces = "application/json", response = TestMaster.class, httpMethod = "GET")
