@@ -9,6 +9,7 @@ package com.ai.api.dao;
 import java.io.IOException;
 
 import com.ai.aims.services.model.search.SearchPackageTestCriteria;
+import com.ai.aims.services.model.search.SearchProgramTestCriteria;
 import com.ai.aims.services.model.search.SearchTagCriteria;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
 import com.ai.commons.beans.ApiCallResult;
@@ -44,6 +45,8 @@ public interface LTParameterDao {
 	
 	public ApiCallResult searchPackageTests(SearchPackageTestCriteria criteria) throws IOException;
 	
+	public ApiCallResult searchProgramTests(SearchProgramTestCriteria criteria) throws IOException;
+
 	public ApiCallResult searchTestsByName(String testName) throws IOException;
 	
 	public ApiCallResult searchTest(String testId) throws IOException;
@@ -57,4 +60,6 @@ public interface LTParameterDao {
 	public ApiCallResult searchTATs(String officeId) throws IOException;
 
 	public ApiCallResult searchPackages(String programID) throws IOException;
+
+	public ApiCallResult updateProgramTests(String userId, String programId, String tests, Boolean isFavorite) throws IOException;
 }
