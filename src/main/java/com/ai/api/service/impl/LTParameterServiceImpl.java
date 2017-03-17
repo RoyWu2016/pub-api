@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.ai.aims.services.model.search.SearchPackageTestCriteria;
+import com.ai.aims.services.model.search.SearchProgramTestCriteria;
 import com.ai.aims.services.model.search.SearchTagCriteria;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
 import com.ai.api.bean.UserBean;
@@ -123,7 +124,19 @@ public class LTParameterServiceImpl implements LTParameterService {
 		criteria.setOfficeId(office);
 		criteria.setProgramId(program);
 		return ltparameterDao.searchPackageTests(criteria);
-	};
+	}
+	
+	@Override
+	public ApiCallResult searchProgramTests(String countries, String testNames, String office, 
+			String program, Boolean isFavorite) throws IOException {
+		SearchProgramTestCriteria criteria = new SearchProgramTestCriteria();
+		criteria.setCountry(countries);
+		criteria.setTestName(testNames);
+		criteria.setOfficeId(office);
+		criteria.setProgramId(program);
+		criteria.setIsFavorite(isFavorite);
+		return ltparameterDao.searchProgramTests(criteria);
+	}
 
 	@Override
 	public ApiCallResult searchProgram(String programId) throws IOException {
@@ -162,5 +175,11 @@ public class LTParameterServiceImpl implements LTParameterService {
 	@Override
 	public ApiCallResult searchTATs(String officeId) throws IOException {
 		return ltparameterDao.searchTATs(officeId);
+	}
+
+	@Override
+	public ApiCallResult updateProgramTests(String userId, String programId, String tests,
+			Boolean isFavorite) throws IOException {
+		return ltparameterDao.updateProgramTests(userId, programId, tests, isFavorite);
 	}
 }
