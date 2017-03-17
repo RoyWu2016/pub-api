@@ -623,12 +623,14 @@ public class UserServiceImpl implements UserService {
 		// ------------Set QualityManual Properties ----------------
 
 		QualityManual qualityManual = new QualityManual();
-		qualityManual.setDocType("QUALITY_MANUAL");
-		qualityManual.setFilename(qualityManualBean.getQmFileName());
-		qualityManual.setPublishDate(qualityManualBean.getQmReleaseDate());
-		qualityManual.setUrl(config.getCustomerServiceUrl() + "/customer/" + compId + "/quality-manual-file");
-
+		if (null != qualityManualBean.getQmFileName() && !qualityManualBean.getQmFileName().isEmpty()) {
+			qualityManual.setDocType("QUALITY_MANUAL");
+			qualityManual.setFilename(qualityManualBean.getQmFileName());
+			qualityManual.setPublishDate(qualityManualBean.getQmReleaseDate());
+			qualityManual.setUrl(config.getCustomerServiceUrl() + "/customer/" + compId + "/quality-manual-file");
+		}
 		bookingbean.setQualityManual(qualityManual);
+
 		preferencesBean.setBooking(bookingbean);
 
 		ReportPreferenceBean reportPreferenceBean = new ReportPreferenceBean();
