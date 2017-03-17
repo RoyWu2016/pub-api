@@ -45,6 +45,9 @@ public interface LTParameterService {
 	
 	public ApiCallResult searchPackageTests(String countries, String testNames, 
 			String pckage, String office, String program) throws IOException;
+
+	public ApiCallResult searchProgramTests(String countries, String testNames,
+			String office, String program, Boolean isFavorite) throws IOException;
 	
 	public ApiCallResult searchTest(String testId) throws IOException;
 	
@@ -59,4 +62,6 @@ public interface LTParameterService {
 	public ApiCallResult searchTATs(String officeId) throws IOException;
 
 	public ApiCallResult searchPackages(String programID) throws IOException;
+	
+	public ApiCallResult updateProgramTests(String userId, String programId, String tests, Boolean isFavorite) throws IOException;
 }
