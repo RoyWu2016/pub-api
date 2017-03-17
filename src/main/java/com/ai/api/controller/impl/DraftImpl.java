@@ -219,7 +219,7 @@ public class DraftImpl implements Draft {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-drafts", method = RequestMethod.GET)
 	public ResponseEntity<List<DraftOrder>> searchDraft(@PathVariable("userId") String userId,
-	                                                    @RequestParam(value = "service-type", defaultValue = "") String serviceType,
+	                                                    @RequestParam(value = "service-type", defaultValue = "1,2,3,4,6") String serviceType,
 	                                                    @RequestParam(value = "start", required = false, defaultValue = "") String startDate,
 	                                                    @RequestParam(value = "end", required = false, defaultValue = "") String endDate,
 	                                                    @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
