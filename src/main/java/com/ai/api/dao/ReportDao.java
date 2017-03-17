@@ -50,5 +50,5 @@ public interface ReportDao {
 	PageBean<AuditReportsSearchBean> exportAuditReport(String userId, String companyId, String parentId,
 			PageParamBean criteriaBean);
 
-	ApiCallResult getAuditReportPDFInfo(String userId, String companyId, String parentId,String orderId);
+//	ApiCallResult getAuditReportPDFInfo(String userId, String companyId, String parentId,String orderId);
 }
