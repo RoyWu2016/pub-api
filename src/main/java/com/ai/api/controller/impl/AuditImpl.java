@@ -165,7 +165,8 @@ public class AuditImpl implements Audit {
 	public ResponseEntity<ApiCallResult> searchDrafts(
 			@ApiParam(value = "userId", required = true)
 			@PathVariable("userId") String userId,
-			@RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
+			@ApiParam(value = "should be one or more value in [ma,ea,ctpat,stra]", required = false)
+			@RequestParam(value = "service-type", required = false, defaultValue = "ma,ea,ctpat,stra") String serviceType,
 			@RequestParam(value = "start", required = false, defaultValue = "") String startDate,
 			@RequestParam(value = "end", required = false, defaultValue = "") String endDate,
 			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
