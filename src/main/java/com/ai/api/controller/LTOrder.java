@@ -29,4 +29,7 @@ public interface LTOrder {
 	public ResponseEntity<ApiCallResult> deleteOrderTestAssignment(String userId, String orderId, String testId);
 
 	public ResponseEntity<ApiCallResult> cloneOrder(String userId, String orderId, String cloneType);
+
+	public ResponseEntity<ApiCallResult> updateProgramTests(String userId, String programId, 
+			String tests, Boolean isFavorite);
 }
