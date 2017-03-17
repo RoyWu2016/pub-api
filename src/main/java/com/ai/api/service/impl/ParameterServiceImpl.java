@@ -47,7 +47,14 @@ public class ParameterServiceImpl implements ParameterService {
 
     @Override
     public List<ProductCategoryDtoBean> getProductCategoryList(boolean refresh){
-        return paramDao.getProductCategoryList(refresh);
+    	List<ProductCategoryDtoBean> result = paramDao.getProductCategoryList(refresh);
+		for(ProductCategoryDtoBean each : result) {
+			if("Audit".equalsIgnoreCase(each.getName())) {
+				result.remove(each);
+				break;
+			}
+		}
+        return result;
     }
 
     @Override
