@@ -1,5 +1,6 @@
 package com.ai.api.controller.impl;
 
+import com.ai.api.bean.ProductFamilyDtoBean;
 import com.ai.api.controller.Survey;
 import com.ai.api.service.SurveyService;
 import com.ai.commons.annotation.TokenSecured;
@@ -7,6 +8,7 @@ import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.NetPromoterScoreClientInfoBean;
 import com.ai.commons.beans.NetPromoterScoreResponseBean;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,21 +39,10 @@ public class SurveyImpl implements Survey {
 
     @Override
     @TokenSecured
-    @RequestMapping(value = "/user/{userId}/seen-nps-survey-in-last-7-days", method = RequestMethod.GET)
-    public ResponseEntity<ApiCallResult> hasSeenRecently(@PathVariable("userId") String userId) {
-        ApiCallResult<Boolean> result = surveyService.hasSeenRecently(userId);
-        if (null == result.getMessage()) {
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    @TokenSecured
-    @RequestMapping(value = "/user/{userId}/seen-nps-survey-in-last-7-days", method = RequestMethod.PUT)
-    public ResponseEntity<ApiCallResult> updateSurveyDate(@PathVariable("userId") String userId, @RequestBody NetPromoterScoreClientInfoBean scoreInfo) {
-        ApiCallResult<Boolean> result = surveyService.updateSurveyDate(userId,scoreInfo);
+    @RequestMapping(value = "/user/{userId}/show-survey", method = RequestMethod.GET)
+    @ApiOperation(value = "Check if need to show survey API", response = ProductFamilyDtoBean.class, responseContainer = "List")
+    public ResponseEntity<ApiCallResult> showSurvey(@PathVariable("userId") String userId) {
+        ApiCallResult<Boolean> result = surveyService.showSurvey(userId);
         if (null == result.getMessage()) {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
