@@ -229,18 +229,7 @@ public class FileAPIImpl implements FileAPI {
 				List<ApiFileMetaBean> list = new ArrayList<ApiFileMetaBean>();
 				for (FileMetaBean each : result) {
 					String fileType = each.getFileType();
-					if (ConstMap.DOC_TYPE.CHECKLIST_TEST.toString().equalsIgnoreCase(fileType)
-							|| ConstMap.DOC_TYPE.ACCESS_MAP.toString().equalsIgnoreCase(fileType)
-							|| ConstMap.DOC_TYPE.AUDIT_PREVIEW_DOC.toString().equalsIgnoreCase(fileType)
-							|| ConstMap.DOC_TYPE.BUS_LIC.toString().equalsIgnoreCase(fileType)
-							|| ConstMap.DOC_TYPE.CHECKLIST_EXPECTED_DEFECT.toString().equalsIgnoreCase(fileType)
-							|| ConstMap.DOC_TYPE.CHECKLIST_TEST.toString().equalsIgnoreCase(fileType)
-							|| ConstMap.DOC_TYPE.EXPORT_LIC.toString().equalsIgnoreCase(fileType)
-							|| ConstMap.DOC_TYPE.ISO_CERT.toString().equalsIgnoreCase(fileType)
-							|| ConstMap.DOC_TYPE.ORDER_ATT.toString().equalsIgnoreCase(fileType)
-							|| ConstMap.DOC_TYPE.OTHER_DOC.toString().equalsIgnoreCase(fileType)
-							|| ConstMap.DOC_TYPE.ROHS_CERT.toString().equalsIgnoreCase(fileType)
-							|| ConstMap.DOC_TYPE.TAX_CERT.toString().equalsIgnoreCase(fileType)) {
+					if (ConstMap.DOC_TYPE.contains(fileType)) {
 						ApiFileMetaBean bean = new ApiFileMetaBean();
 						bean.setFileName(each.getFileName());
 						bean.setFileSize(each.getFileSize());

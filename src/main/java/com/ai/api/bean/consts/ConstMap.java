@@ -1,7 +1,9 @@
 package com.ai.api.bean.consts;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /***************************************************************************
  * <PRE>
@@ -25,10 +27,7 @@ public class ConstMap {
 
 	public final static Map<String, String> bucketMap = new HashMap();
 	public final static Map<String, String> serviceTypeMap = new HashMap();
-
-	public static enum DOC_TYPE {
-		ACCESS_MAP, CHECKLIST_TEST, CHECKLIST_EXPECTED_DEFECT, BUS_LIC, EXPORT_LIC, ROHS_CERT, TAX_CERT, ISO_CERT, OTHER_DOC, ORDER_ATT, AUDIT_PREVIEW_DOC
-	}
+	public final static Set<String> DOC_TYPE = new HashSet<String>();
 
 	static {
 		bucketMap.put("ACCESS_MAP", "access-map");
@@ -60,5 +59,17 @@ public class ConstMap {
 		serviceTypeMap.put("ea", "9"); // Ethical Audit, formerly social audit
 		serviceTypeMap.put("ctpat", "5,51");
 		serviceTypeMap.put("stra", "9,91");
+		
+		DOC_TYPE.add("ACCESS_MAP");
+		DOC_TYPE.add("CHECKLIST_TEST");
+		DOC_TYPE.add("CHECKLIST_EXPECTED_DEFECT");
+		DOC_TYPE.add("BUS_LIC");
+		DOC_TYPE.add("EXPORT_LIC");
+		DOC_TYPE.add("ROHS_CERT");
+		DOC_TYPE.add("TAX_CERT");
+		DOC_TYPE.add("ISO_CERT");
+		DOC_TYPE.add("OTHER_DOC");
+		DOC_TYPE.add("ORDER_ATT");
+		DOC_TYPE.add("AUDIT_PREVIEW_DOC");
 	}
 }
