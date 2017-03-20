@@ -216,7 +216,7 @@ public class FileAPIImpl implements FileAPI {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/files/{srcId}", method = RequestMethod.GET)
-	@ApiOperation(value = "Get File List API", response = FileMetaBean.class, responseContainer = "List")
+	@ApiOperation(value = "Get File List API", response = ApiFileMetaBean.class, responseContainer = "List")
 	public ResponseEntity<List<ApiFileMetaBean>> getFilesList(
 			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
 			@ApiParam(value = "srcId", required = true) @PathVariable("srcId") String srcId,
