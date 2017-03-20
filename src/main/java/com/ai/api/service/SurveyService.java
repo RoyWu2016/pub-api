@@ -14,9 +14,7 @@ import com.ai.commons.beans.NetPromoterScoreResponseBean;
  */
 public interface SurveyService {
 
-    ApiCallResult hasSeenRecently(String userId);
-
-    ApiCallResult updateSurveyDate(String userId,NetPromoterScoreClientInfoBean scoreInfo);
+    ApiCallResult showSurvey(String userId);
 
     ApiCallResult saveSurvey(String userId,NetPromoterScoreResponseBean score);
 }
