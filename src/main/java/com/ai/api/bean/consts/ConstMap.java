@@ -72,6 +72,7 @@ public class ConstMap {
 		DOC_TYPE.add("OTHER_DOC");
 		DOC_TYPE.add("ORDER_ATT");
 		DOC_TYPE.add("AUDIT_PREVIEW_DOC");
+		DOC_TYPE.add("PROD_REPORT_PICTURE");
 		
 		STATUS.add("15");
 		STATUS.add("17");
