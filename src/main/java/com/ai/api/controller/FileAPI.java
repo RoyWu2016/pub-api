@@ -45,7 +45,7 @@ public interface FileAPI {
 
 	ResponseEntity<String> deleteFile(String userId, String fileId) throws IOException;
 	
-	ResponseEntity<List<FileMetaBean>> getFilesList(String userId,String srcId,String docType) throws IOException;
+	ResponseEntity<List<ApiFileMetaBean>> getFilesList(String userId,String srcId,String docType) throws IOException;
 
 	ResponseEntity<Map<String, String>> getFileBase64(String userId, String fileId)
 			throws IOException;

@@ -15,9 +15,7 @@ import org.springframework.http.ResponseEntity;
  */
 public interface Survey {
 
-    ResponseEntity<ApiCallResult> hasSeenRecently(String userId);
-
-    ResponseEntity<ApiCallResult> updateSurveyDate(String userId,NetPromoterScoreClientInfoBean scoreInfo);
+    ResponseEntity<ApiCallResult> showSurvey(String userId);
 
     ResponseEntity<ApiCallResult> saveSurvey(String userId,NetPromoterScoreResponseBean score);
 }
