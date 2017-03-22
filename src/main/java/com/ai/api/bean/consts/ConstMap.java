@@ -28,6 +28,7 @@ public class ConstMap {
 	public final static Map<String, String> bucketMap = new HashMap();
 	public final static Map<String, String> serviceTypeMap = new HashMap();
 	public final static Set<String> DOC_TYPE = new HashSet<String>();
+	public final static Set<String> STATUS = new HashSet<String>();
 
 	static {
 		bucketMap.put("ACCESS_MAP", "access-map");
@@ -71,5 +72,16 @@ public class ConstMap {
 		DOC_TYPE.add("OTHER_DOC");
 		DOC_TYPE.add("ORDER_ATT");
 		DOC_TYPE.add("AUDIT_PREVIEW_DOC");
+		
+		STATUS.add("15");
+		STATUS.add("17");
+		STATUS.add("20");
+		STATUS.add("22");
+		STATUS.add("23");
+		STATUS.add("25");
+		STATUS.add("30");
+		STATUS.add("40");
+		STATUS.add("50");
+		STATUS.add("60");
 	}
 }
