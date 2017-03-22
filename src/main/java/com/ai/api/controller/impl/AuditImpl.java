@@ -1,7 +1,9 @@
 package com.ai.api.controller.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.controller.Audit;
 import com.ai.api.service.AuditService;
 import com.ai.api.service.OrderService;
@@ -194,10 +196,27 @@ public class AuditImpl implements Audit {
 			@RequestParam(value = "start", required = false, defaultValue = "") String startDate,
 			@RequestParam(value = "end", required = false, defaultValue = "") String endDate,
 			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
-			@RequestParam(value = "status", required = false, defaultValue = "") String orderStatus,
+			@ApiParam(value="status must be within: 15,17,20,22,23,25,30,40,50,60 and separated by comma")@RequestParam(value = "status", required = false, defaultValue = "") String orderStatus,
 			@RequestParam(value = "page-size", required = false, defaultValue = "20") int pageSize,
 			@RequestParam(value = "page", required = false, defaultValue = "1") int pageNumber) {
-
+		if("".equals(orderStatus)){
+			orderStatus = "15,17,20,22,23,25,30,40,50,60";
+		}else {
+			List<String> status = new ArrayList<String>();
+			String[] str = orderStatus.split(",");
+			for(int i=0;i<str.length;i++) {
+				if(ConstMap.STATUS.contains(str[i])) {
+					status.add(str[i]);
+				}
+			}
+			if(status.size() <= 0) {
+				ApiCallResult temp = new ApiCallResult();
+				temp.setMessage("status must be within: 15,17,20,22,23,25,30,40,50,60");
+				return new ResponseEntity<>(temp, HttpStatus.INTERNAL_SERVER_ERROR);
+			}else {
+				orderStatus = String.join(",", status);
+			}
+		}
 		ApiCallResult result = auditorService.searchOrders(userId, serviceType, startDate, endDate, orderStatus,
 				keyword, pageSize, pageNumber);
 		if (null == result.getMessage()) {

@@ -163,7 +163,7 @@ public class PaymentDaoImpl implements PaymentDao {
 			} else {
 				logger.error("save draft error from psi service : " + result.getStatusCode() + ", "
 						+ result.getResponseString());
-				temp.setMessage("save draft error from psi service : " + result.getStatusCode() + ", "
+				temp.setMessage("generate payment error from psi service : " + result.getStatusCode() + ", "
 						+ result.getResponseString());
 			}
 		} catch (Exception e) {
