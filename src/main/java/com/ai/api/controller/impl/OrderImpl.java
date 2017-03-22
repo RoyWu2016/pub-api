@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.Order;
 import com.ai.api.service.APIFileService;
@@ -44,6 +45,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+
+import io.swagger.annotations.ApiParam;
 
 /***************************************************************************
  * <PRE>
@@ -246,10 +249,25 @@ public class OrderImpl implements Order {
 			@RequestParam(value = "start", required = false, defaultValue = "") String startDate,
 			@RequestParam(value = "end", required = false, defaultValue = "") String endDate,
 			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
-			@RequestParam(value = "status", required = false, defaultValue = "") String orderStatus,
+			@ApiParam(value="status must be within: 15,17,20,22,23,25,30,40,50,60 and separated by comma")@RequestParam(value = "status", required = false, defaultValue = "") String orderStatus,
 			@RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
 			@RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
-
+		if("".equals(orderStatus)){
+			orderStatus = "15,17,20,22,23,25,30,40,50,60";
+		}else {
+			List<String> status = new ArrayList<String>();
+			String[] str = orderStatus.split(",");
+			for(int i=0;i<str.length;i++) {
+				if(ConstMap.STATUS.contains(str[i])) {
+					status.add(str[i]);
+				}
+			}
+			if(status.size() <= 0) {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}else {
+				orderStatus = String.join(",", status);
+			}
+		}
 		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
 		try {
 			ordersList = orderService.searchOrders(userId, serviceType, startDate, endDate, keyword, orderStatus,
