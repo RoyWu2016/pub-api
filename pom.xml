@@ -96,11 +96,11 @@
 		<!--</dependency> -->
 
 
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>jsr311-api</artifactId>
-			<version>1.0</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>javax.ws.rs</groupId>-->
+			<!--<artifactId>jsr311-api</artifactId>-->
+			<!--<version>1.0</version>-->
+		<!--</dependency>-->
 
 		<!-- Junit -->
 		<dependency>
@@ -167,23 +167,23 @@
 		</dependency>
 
 		<!-- Swagger 2.0 -->
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>2.5.0</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>io.springfox</groupId>-->
+			<!--<artifactId>springfox-swagger2</artifactId>-->
+			<!--<version>2.5.0</version>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>2.5.0</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>io.springfox</groupId>-->
+			<!--<artifactId>springfox-swagger-ui</artifactId>-->
+			<!--<version>2.5.0</version>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>21.0</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.google.guava</groupId>-->
+			<!--<artifactId>guava</artifactId>-->
+			<!--<version>21.0</version>-->
+		<!--</dependency>-->
 
 		<!-- config redis data and client jar -->
 		<dependency>
@@ -232,7 +232,14 @@
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
-	</dependencies>
+        <!-- https://mvnrepository.com/artifact/com.github.kongchen/swagger-maven-plugin -->
+        <!--<dependency>-->
+            <!--<groupId>com.github.kongchen</groupId>-->
+            <!--<artifactId>swagger-maven-plugin</artifactId>-->
+            <!--<version>3.1.4</version>-->
+        <!--</dependency>-->
+
+    </dependencies>
 
 	<repositories>
 		<repository>
@@ -266,6 +273,24 @@
 	<build>
 		<finalName>api</finalName>
 		<plugins>
+            <!--<plugin>-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>properties-maven-plugin</artifactId>-->
+                <!--<version>1.0.0</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>initialize</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>read-project-properties</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<files>-->
+                                <!--<file>${basedir}/src/main/resources/</file>-->
+                            <!--</files>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>templating-maven-plugin</artifactId>
@@ -281,11 +306,92 @@
 					</execution>
 				</executions>
 			</plugin>
-
+            <plugin>
+                <groupId>com.github.kongchen</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <version>3.1.4</version>
+                <configuration>
+                    <apiSources>
+                        <apiSource>
+                            <springmvc>true</springmvc>
+                            <locations>
+                                <location>com.ai.api.controller.impl</location>
+                            </locations>
+                            <schemes>
+                                <scheme>http</scheme>
+                                <!--<scheme>https</scheme>-->
+                            </schemes>
+                            <host>localhost:8080</host>
+                            <!--<basePath>/api</basePath>-->
+                            <info>
+                                <title>AsiaInspection - Api Documentation</title>
+                                <version>0.2</version>
+                                <!-- use markdown here because I'm using markdown for output,
+                                if you need to use html or other markup language, you need to use your target language,
+                                 and note escape your description for xml -->
+                                <!--<description>-->
+                                    <!--This is a sample.-->
+                                <!--</description>-->
+                                <!--<termsOfService>-->
+                                    <!--http://www.github.com/kongchen/swagger-maven-plugin-->
+                                <!--</termsOfService>-->
+                                <!--<contact>-->
+                                    <!--<email>kongchen@gmail.com</email>-->
+                                    <!--<name>Kong Chen</name>-->
+                                    <!--<url>http://kongch.com</url>-->
+                                <!--</contact>-->
+                                <license>
+                                    <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+                                    <name>Apache 2.0</name>
+                                </license>
+                            </info>
+                            <!--<securityDefinitions>-->
+                                <!--<securityDefinition>-->
+                                    <!--<name>basicAuth</name>-->
+                                    <!--<type>basic</type>-->
+                                <!--</securityDefinition>-->
+                                <!--<securityDefinition>-->
+                                <!--<json>/securityDefinition.json</json>-->
+                                <!--</securityDefinition>-->
+                            <!--</securityDefinitions>-->
+                            <!-- Support classpath or file absolute path here.
+                            1) classpath e.g: "classpath:/markdown.hbs", "classpath:/templates/hello.html"
+                            2) file e.g: "${basedir}/src/main/resources/markdown.hbs",
+                                "${basedir}/src/main/resources/template/hello.html" -->
+                            <!--<templatePath>${basedir}/src/test/resources/strapdown.html.hbs</templatePath>-->
+                            <!--<outputPath>${basedir}/generated/document.html</outputPath>-->
+                            <swaggerDirectory>${basedir}/src/main/resources</swaggerDirectory>
+                            <!--<swaggerDirectory>${basedir}/src/main/resources</swaggerDirectory>-->
+                            <!--<outputPath>D:\\AI_DEV\\document.html</outputPath>-->
+                            <!--<swaggerDirectory>D:\\AI_DEV</swaggerDirectory>-->
+                            <!--<swaggerApiReader>com.wordnik.swagger.jaxrs.reader.DefaultJaxrsApiReader</swaggerApiReader>-->
+                            <!--<attachSwaggerArtifact>true</attachSwaggerArtifact>-->
+                            <!--<modelConverters>io.swagger.validator.BeanValidator</modelConverters>-->
+                        </apiSource>
+                    </apiSources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <!-- Adding dependency to swagger-hibernate-validations to enable the BeanValidator as a custom
+                         model converter -->
+                    <!--<dependency>-->
+                    <!--<groupId>io.swagger</groupId>-->
+                    <!--<artifactId>swagger-hibernate-validations</artifactId>-->
+                    <!--<version>1.5.6</version>-->
+                    <!--</dependency>-->
+                </dependencies>
+            </plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
