@@ -5184,9 +5184,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "lcnumber" : {
-          "type" : "string"
-        },
         "icneeded" : {
           "type" : "boolean",
           "default" : false
@@ -5197,10 +5194,13 @@
         "lcbeneName" : {
           "type" : "string"
         },
+        "lcappName" : {
+          "type" : "string"
+        },
         "lcbeneAddress" : {
           "type" : "string"
         },
-        "lcappName" : {
+        "lcnumber" : {
           "type" : "string"
         }
       }
@@ -6028,19 +6028,19 @@
           "type" : "boolean",
           "default" : false
         },
-        "lcapplicantCompanyName" : {
-          "type" : "string"
-        },
-        "lcbeneficaryCompanyName" : {
-          "type" : "string"
-        },
-        "lcnumber" : {
+        "lcbeneficaryAddress" : {
           "type" : "string"
         },
         "lcapplicantAddress" : {
           "type" : "string"
         },
-        "lcbeneficaryAddress" : {
+        "lcbeneficaryCompanyName" : {
+          "type" : "string"
+        },
+        "lcapplicantCompanyName" : {
+          "type" : "string"
+        },
+        "lcnumber" : {
           "type" : "string"
         }
       }
@@ -6712,34 +6712,6 @@
         "password" : {
           "type" : "string"
         },
-        "contactInfo" : {
-          "$ref" : "#/definitions/ContactInfoBean"
-        },
-        "introducedBy" : {
-          "type" : "string"
-        },
-        "activity" : {
-          "type" : "string"
-        },
-        "isTestAccount" : {
-          "type" : "boolean",
-          "default" : false
-        },
-        "affiliateID" : {
-          "type" : "string"
-        },
-        "turnover" : {
-          "type" : "string"
-        },
-        "uniqueId" : {
-          "type" : "string"
-        },
-        "domainName" : {
-          "type" : "string"
-        },
-        "userIp" : {
-          "type" : "string"
-        },
         "login" : {
           "type" : "string"
         },
@@ -6750,6 +6722,34 @@
           "type" : "string"
         },
         "introducedByOtherType" : {
+          "type" : "string"
+        },
+        "contactInfo" : {
+          "$ref" : "#/definitions/ContactInfoBean"
+        },
+        "userIp" : {
+          "type" : "string"
+        },
+        "isTestAccount" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "introducedBy" : {
+          "type" : "string"
+        },
+        "turnover" : {
+          "type" : "string"
+        },
+        "domainName" : {
+          "type" : "string"
+        },
+        "affiliateID" : {
+          "type" : "string"
+        },
+        "activity" : {
           "type" : "string"
         }
       }
@@ -9501,10 +9501,7 @@
         "supplierValidateCode" : {
           "type" : "string"
         },
-        "lcnumber" : {
-          "type" : "string"
-        },
-        "itlmanager" : {
+        "sic" : {
           "type" : "string"
         },
         "icneeded" : {
@@ -9516,13 +9513,16 @@
         "lcbeneName" : {
           "type" : "string"
         },
-        "lcbeneAddress" : {
+        "itlmanager" : {
           "type" : "string"
         },
         "lcappName" : {
           "type" : "string"
         },
-        "sic" : {
+        "lcbeneAddress" : {
+          "type" : "string"
+        },
+        "lcnumber" : {
           "type" : "string"
         }
       }
