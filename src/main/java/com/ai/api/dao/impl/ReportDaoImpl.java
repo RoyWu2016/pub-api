@@ -57,7 +57,7 @@ public class ReportDaoImpl implements ReportDao {
 			url.append("&userId=" + userId);
 			url.append("&companyId=" + companyId);
 			url.append("&parentId=" + parentId);
-			logger.info("post !!! Url:" + url);
+//			logger.info("post !!! Url:" + url);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, certType);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				ApprovalCertificateBean bean = (ApprovalCertificateBean) JSON.parseObject(result.getResponseString(),
@@ -66,8 +66,8 @@ public class ReportDaoImpl implements ReportDao {
 				bean.setApprover(name);
 				return bean;
 			} else {
-				logger.error("getApprovalCertificate from psi-service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				logger.error("getApprovalCertificate from psi-service error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 				return null;
 			}
 		} catch (Exception e) {
@@ -84,13 +84,13 @@ public class ReportDaoImpl implements ReportDao {
 			url.append("?userId=" + userId);
 			url.append("&companyId=" + companyId);
 			url.append("&parentId=" + parentId);
-			logger.info("post !!! Url:" + url);
+//			logger.info("post !!! Url:" + url);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, cert);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return true;
 			} else {
-				logger.error("confirmApprovalCertificate from psi-service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				logger.error("confirmApprovalCertificate from psi-service error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 				return false;
 			}
 		} catch (Exception e) {
@@ -148,8 +148,8 @@ public class ReportDaoImpl implements ReportDao {
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				finalResult.setContent(JSON.parseObject(result.getResponseString(), PageBean.class));
 			} else {
-				logger.error("getAuditReports from psi-service error: " + result.getStatusCode() + " || "
-						+ result.getResponseString());
+//				logger.error("getAuditReports from psi-service error: " + result.getStatusCode() + " || "
+//						+ result.getResponseString());
 				finalResult.setMessage("getAuditReports from psi-service error: " + result.getStatusCode() + " || "
 						+ result.getResponseString());
 			}
@@ -172,13 +172,13 @@ public class ReportDaoImpl implements ReportDao {
 			StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/report/api/report-list");
 			url.append("?userId=" + userId).append("&companyId=" + companyId).append("&parentId=" + parentId)
 					.append("&param=" + param);
-			logger.info("requesting !!! Url:" + url.toString());
+//			logger.info("requesting !!! Url:" + url.toString());
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return JSON.parseObject(result.getResponseString(), PageBean.class);
 			} else {
-				logger.error("searchClientReports from psi-service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				logger.error("searchClientReports from psi-service error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 			}
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
@@ -198,13 +198,13 @@ public class ReportDaoImpl implements ReportDao {
 			url.append("&userId=" + userId);
 			url.append("&companyId=" + companyId);
 			url.append("&parentId=" + parentId);
-			logger.info("post !!! Url:" + url);
+//			logger.info("post !!! Url:" + url);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, certType);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return JSON.parseObject(result.getResponseString(), ApprovalCertificateBean.class);
 			} else {
-				logger.error("getReferenceApproveCertificate from psi-service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				logger.error("getReferenceApproveCertificate from psi-service error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 				return null;
 			}
 		} catch (Exception e) {
@@ -222,13 +222,13 @@ public class ReportDaoImpl implements ReportDao {
 			url.append("?userId=" + userId);
 			url.append("&companyId=" + companyId);
 			url.append("&parentId=" + parentId);
-			logger.info("post !!! Url:" + url);
+//			logger.info("post !!! Url:" + url);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, new HashMap<>());
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return true;
 			} else {
-				logger.error("getReferenceApproveCertificate from psi-service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				logger.error("getReferenceApproveCertificate from psi-service error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 				return false;
 			}
 		} catch (Exception e) {
@@ -246,13 +246,13 @@ public class ReportDaoImpl implements ReportDao {
 			url.append("?userId=" + userId);
 			url.append("&companyId=" + companyId);
 			url.append("&parentId=" + parentId);
-			logger.info("post !!! Url:" + url);
+//			logger.info("post !!! Url:" + url);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, new HashMap<>());
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return true;
 			} else {
-				logger.error("getReferenceApproveCertificate from psi-service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				logger.error("getReferenceApproveCertificate from psi-service error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 				return false;
 			}
 		} catch (Exception e) {
@@ -275,13 +275,13 @@ public class ReportDaoImpl implements ReportDao {
 				.append("&message=").append(reportsForwardingBean.getMessage()).append("&userId=").append(userId)
 				.append("&companyId=").append(companyId).append("&parentId=").append(parentId);
 		try {
-			logger.info("requesting url: " + url.toString());
+//			logger.info("requesting url: " + url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, new HashMap<>());
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return true;
 			} else {
-				logger.error("forward reports from psi-service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				logger.error("forward reports from psi-service error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 				return false;
 			}
 		} catch (Exception e) {
@@ -295,15 +295,15 @@ public class ReportDaoImpl implements ReportDao {
 		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/lotus-sync/list-by-oracle-id/" + productId);
 		url.append("?syncObj=" + reportDetail);
-		logger.info("requesting: " + url.toString());
+//		logger.info("requesting: " + url.toString());
 		GetRequest request = GetRequest.newInstance().setUrl(url.toString());
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return JSON.parseObject(result.getResponseString(), List.class);
 			} else {
-				logger.error("listAllSyncObjByOracleId from psi-service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				logger.error("listAllSyncObjByOracleId from psi-service error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 				return null;
 			}
 		} catch (IOException e) {
@@ -333,15 +333,15 @@ public class ReportDaoImpl implements ReportDao {
 		// }
 
 		StringBuilder url = new StringBuilder(config.getLotusApiUrl() + lotusId);
-		logger.info("requesting: " + url.toString());
+//		logger.info("requesting: " + url.toString());
 		GetRequest request = GetRequest.newInstance().setUrl(url.toString());
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return result.getResponseString();
 			} else {
-				logger.error("listAllSyncObjByOracleId from psi-service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				logger.error("listAllSyncObjByOracleId from psi-service error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 				return null;
 			}
 		} catch (IOException e) {
@@ -366,13 +366,13 @@ public class ReportDaoImpl implements ReportDao {
 				.append("&message=").append(reportsForwardingBean.getMessage()).append("&userId=").append(userId)
 				.append("&companyId=").append(companyId).append("&parentId=").append(parentId);
 		try {
-			logger.info("requesting url: " + url.toString());
+//			logger.info("requesting url: " + url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, new HashMap<>());
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return true;
 			} else {
-				logger.error("forward reports from psi-service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				logger.error("forward reports from psi-service error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 				return false;
 			}
 		} catch (Exception e) {

@@ -151,7 +151,7 @@ public class ParameterDaoImpl implements ParameterDao {
 		}
 		if (null == countryList) {
 			String SysProductFamilyBeanURL = config.getParamServiceUrl() + "/geography/calling-code/listAll";
-			LOGGER.info("requesting url: " + SysProductFamilyBeanURL.toString());
+//			LOGGER.info("requesting url: " + SysProductFamilyBeanURL.toString());
 			GetRequest request7 = GetRequest.newInstance().setUrl(SysProductFamilyBeanURL);
 			try {
 				ServiceCallResult result = HttpUtil.issueGetRequest(request7);
@@ -297,7 +297,7 @@ public class ParameterDaoImpl implements ParameterDao {
 		}
 		if (null == checklistPublicTestList) {
 			String url = config.getChecklistServiceUrl() + "/ws/publicAPI/tests";
-			LOGGER.info("Get! url : " + url);
+//			LOGGER.info("Get! url : " + url);
 			GetRequest request = GetRequest.newInstance().setUrl(url);
 			try {
 				ServiceCallResult result = HttpUtil.issueGetRequest(request);
@@ -333,7 +333,7 @@ public class ParameterDaoImpl implements ParameterDao {
 		}
 		if (null == checklistPublicDefectList) {
 			String url = config.getChecklistServiceUrl() + "/ws/publicAPI/defects";
-			LOGGER.info("Get! url : " + url);
+//			LOGGER.info("Get! url : " + url);
 			GetRequest request = GetRequest.newInstance().setUrl(url);
 			try {
 				ServiceCallResult result = HttpUtil.issueGetRequest(request);
@@ -438,7 +438,7 @@ public class ParameterDaoImpl implements ParameterDao {
 			String baseUrl = config.getParamServiceUrl() + "/systemconfig/classified/list/AI_OFFICE";
 			GetRequest request = GetRequest.newInstance().setUrl(baseUrl);
 			try {
-				LOGGER.info("send for request: " + baseUrl);
+//				LOGGER.info("send for request: " + baseUrl);
 				ServiceCallResult result = HttpUtil.issueGetRequest(request);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					JSONObject object = JSONObject.parseObject(result.getResponseString());
@@ -464,7 +464,7 @@ public class ParameterDaoImpl implements ParameterDao {
 		String fileStr = null;
 		try {
             url.append("/sales/salespicture/get-by-sale/").append(URLEncoder.encode(sicId,"UTF-8"));
-            LOGGER.info("requesting: " + url.toString());
+//            LOGGER.info("requesting: " + url.toString());
             GetRequest request = GetRequest.newInstance().setUrl(url.toString());
             ServiceCallResult result = HttpUtil.issueGetRequest(request);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
