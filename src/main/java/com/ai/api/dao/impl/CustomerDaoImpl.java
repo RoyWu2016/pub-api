@@ -119,8 +119,8 @@ public class CustomerDaoImpl implements CustomerDao {
 					&& result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return true;
 			} else {
-				LOGGER.info("update user fail! error from customerService :" + result.getResponseString() + " || code:"
-						+ result.getStatusCode());
+//				LOGGER.info("update user fail! error from customerService :" + result.getResponseString() + " || code:"
+//						+ result.getStatusCode());
 			}
 		} catch (IOException e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
@@ -157,7 +157,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(60000)
 					.setSocketTimeout(60000).setConnectTimeout(60000).build();
 			httpGet.setConfig(requestConfig);
-			LOGGER.info("get companyLogo doGet----url:[" + url + "]");
+//			LOGGER.info("get companyLogo doGet----url:[" + url + "]");
 			response = httpClient.execute(httpGet);
 			if (null == response)
 				return null;
@@ -197,13 +197,13 @@ public class CustomerDaoImpl implements CustomerDao {
 
 			httpPost.setEntity(entity.build());
 			httpPost.setConfig(requestConfig);
-			LOGGER.info("update companyLogo doPost----url:[" + url + "]");
+//			LOGGER.info("update companyLogo doPost----url:[" + url + "]");
 			response = httpClient.execute(httpPost);
 			if (response.getStatusLine().getStatusCode() == 200) {
 				b = true;
 			}
 			String responseJson = EntityUtils.toString(response.getEntity(), "UTF-8");
-			LOGGER.info("update logo responseJson:" + responseJson);
+//			LOGGER.info("update logo responseJson:" + responseJson);
 		} catch (Exception e) {
 			LOGGER.error("ERROR", e);
 		} /*
@@ -227,13 +227,13 @@ public class CustomerDaoImpl implements CustomerDao {
 			RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(60000)
 					.setSocketTimeout(60000).setConnectTimeout(60000).build();
 			httpDelete.setConfig(requestConfig);
-			LOGGER.info("delete companyLogo doDelete----url:[" + url + "]");
+//			LOGGER.info("delete companyLogo doDelete----url:[" + url + "]");
 			response = httpClient.execute(httpDelete);
 			if (response.getStatusLine().getStatusCode() == 200) {
 				b = true;
 			}
 			String responseJson = EntityUtils.toString(response.getEntity(), "UTF-8");
-			LOGGER.info("delete logo responseJson:" + responseJson);
+//			LOGGER.info("delete logo responseJson:" + responseJson);
 
 		} catch (Exception e) {
 			LOGGER.error("ERROR", e);
@@ -270,7 +270,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		// TODO Auto-generated method stub
 		EmployeeBean generalUserBean = null;
 		if (!refresh) {
-			LOGGER.info("try to getEmployeeProfile from redis ...");
+//			LOGGER.info("try to getEmployeeProfile from redis ...");
 			// String jsonString = RedisUtil.get("employeeCache");
 			String jsonString = RedisUtil.hget("employeeCache", employeeId);
 			if (null != jsonString) {
@@ -282,7 +282,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		GetRequest request = GetRequest.newInstance().setUrl(sb.toString());
 		try {
 			if (null == generalUserBean) {
-				LOGGER.info("requesting url: " + sb.toString());
+//				LOGGER.info("requesting url: " + sb.toString());
 				ServiceCallResult result = HttpUtil.issueGetRequest(request);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					if (StringUtils.isBlank(result.getResponseString())) {
@@ -296,8 +296,8 @@ public class CustomerDaoImpl implements CustomerDao {
 					// JSON.toJSONString(generalUserBean),RedisUtil.HOUR * 2);
 					return generalUserBean;
 				} else {
-					LOGGER.error("getEmployeeProfile from user-service error: " + result.getStatusCode() + ", "
-							+ result.getResponseString());
+//					LOGGER.error("getEmployeeProfile from user-service error: " + result.getStatusCode() + ", "
+//							+ result.getResponseString());
 					return null;
 				}
 			} else {
@@ -320,7 +320,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
-				LOGGER.info("Check if ACA Accessible login:" + login + " || result:" + result.getResponseString());
+//				LOGGER.info("Check if ACA Accessible login:" + login + " || result:" + result.getResponseString());
 				if (result.getResponseString().equalsIgnoreCase("true")) {
 					return true;
 				} else {
@@ -340,15 +340,15 @@ public class CustomerDaoImpl implements CustomerDao {
 		StringBuilder url = new StringBuilder(config.getPsiServiceUrl() + "/dashBoard/statistics");
 		url.append("?userId=" + userId).append("&companyId=" + companyId).append("&parentId=" + parentId)
 				.append("&startDate=" + startDate).append("&endDate=" + endDate);
-		LOGGER.info("requesting url: " + url.toString());
+//		LOGGER.info("requesting url: " + url.toString());
 		GetRequest request = GetRequest.newInstance().setUrl(url.toString());
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return JsonUtil.mapToObject(result.getResponseString(), DashboardBean.class);
 			} else {
-				LOGGER.error("getUserDashboard from psi-service error:" + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				LOGGER.error("getUserDashboard from psi-service error:" + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -365,7 +365,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			StringBuilder url = new StringBuilder(
 					config.getCustomerServiceUrl() + "/customer-legacy/get-lost-login-password-new");
 			url.append("?login=" + loginCode).append("&email=" + "");
-			LOGGER.info("requesting url: " + url.toString());
+//			LOGGER.info("requesting url: " + url.toString());
 			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 
@@ -384,7 +384,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		try {
 //			String login = URLEncoder.encode(userName, "UTF-8");
 			url.append(userName);
-			LOGGER.info("requseting: " + url.toString());
+//			LOGGER.info("requseting: " + url.toString());
 			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
