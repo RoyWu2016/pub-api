@@ -193,12 +193,12 @@ public class InspectionDaoImpl implements InspectionDao {
 				.append("&samplingLevel=").append(samplingLevel)
 				.append("&measurementSamplingLevel=").append(measurementSamplingSize);
 		try {
-			logger.info("Invoking: " + url.toString());
+//			logger.info("Invoking: " + url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,new HashMap<>());
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				finalResult = JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 			} else {
-				logger.error("calculate Pricing error from psi service : " + result.getStatusCode() + ", "+ result.getResponseString());
+//				logger.error("calculate Pricing error from psi service : " + result.getStatusCode() + ", "+ result.getResponseString());
 				finalResult.setMessage("calculate Pricing error from psi service : " + result.getStatusCode() + ", "+ result.getResponseString());
 			}
 		} catch (IOException e) {

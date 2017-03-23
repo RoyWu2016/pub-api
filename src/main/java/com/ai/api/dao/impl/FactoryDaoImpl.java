@@ -160,7 +160,7 @@ public class FactoryDaoImpl implements FactoryDao {
 
 		try {
 			ClientFactoryBean clientFactoryBean = convertToClientFactoryBean(supplierDetailBean);
-			LOGGER.info("to update supplier: " + JsonUtils.toJson(clientFactoryBean));
+//			LOGGER.info("to update supplier: " + JsonUtils.toJson(clientFactoryBean));
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, clientFactoryBean);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 
@@ -301,16 +301,16 @@ public class FactoryDaoImpl implements FactoryDao {
 	public String createSupplier(SupplierDetailBean supplierDetailBean) throws IOException, AIException {
 		// TODO Auto-generated method stub
 		String url = config.getFactoryServiceUrl() + "/saveSupplierOnly";
-		LOGGER.info("createSupplier url: " + url);
+//		LOGGER.info("createSupplier url: " + url);
 		try {
 			ClientFactoryBean clientFactoryBean = convertToClientFactoryBean(supplierDetailBean);
-			LOGGER.info("to create supplier: " + JsonUtils.toJson(clientFactoryBean));
+//			LOGGER.info("to create supplier: " + JsonUtils.toJson(clientFactoryBean));
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, clientFactoryBean);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return JsonUtil.mapToObject(result.getResponseString(), String.class);
 			} else {
-				LOGGER.error("create Supplier from factory service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				LOGGER.error("create Supplier from factory service error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 			}
 		} catch (IOException e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
@@ -326,7 +326,7 @@ public class FactoryDaoImpl implements FactoryDao {
 				.append("?orderId=" + orderId).append("&inspectionDateString=" + inspectionDateString)
 				.append("&containReadyTime=" + containReadyTime);
 
-		LOGGER.info("requesting url: " + sbUrl.toString());
+//		LOGGER.info("requesting url: " + sbUrl.toString());
 		ApiCallResult temp = new ApiCallResult();
 		try {
 			ServiceCallResult result = HttpUtil.issuePostRequest(sbUrl.toString(), null, orderFactoryBean);
@@ -334,8 +334,8 @@ public class FactoryDaoImpl implements FactoryDao {
 				JSONObject object = JSONObject.parseObject(result.getResponseString());
 				return JsonUtil.mapToObject(result.getResponseString(), ApiCallResult.class);
 			} else {
-				LOGGER.error("supplierConfirmOrder factory service error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				LOGGER.error("supplierConfirmOrder factory service error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 				temp.setMessage("supplierConfirmOrder factory service error: " + result.getStatusCode() + ", "
 						+ result.getResponseString());
 				temp.setContent(false);
@@ -358,7 +358,7 @@ public class FactoryDaoImpl implements FactoryDao {
 		try {
 			StringBuilder url = new StringBuilder(
 					config.getPsiServiceUrl() + "/order/api/supplierFactory/" + supplierId);
-			LOGGER.info("Get!!! url :" + url);
+//			LOGGER.info("Get!!! url :" + url);
 			GetRequest request = GetRequest.newInstance().setUrl(url.toString());
 			ServiceCallResult result = HttpUtil.issueGetRequest(request);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
@@ -366,8 +366,8 @@ public class FactoryDaoImpl implements FactoryDao {
 				Object arrayStr = object.get("content");
 				return JsonUtil.mapToObject(arrayStr + "", OrderFactoryBean.class);
 			} else {
-				LOGGER.error("getOrder error from psi service : " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				LOGGER.error("getOrder error from psi service : " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 			}
 		} catch (Exception e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
