@@ -29,7 +29,10 @@ import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -415,5 +418,21 @@ public class CustomerDaoImpl implements CustomerDao {
 			return new ContactBean();
 		}
 		
+	}
+
+	@Override
+	public HttpResponse getQualityManual(String userId) {
+		// TODO Auto-generated method stub
+		String url = new StringBuilder(config.getCustomerServiceUrl()).append("/customer/{customerId}/quality-manual-file").toString();
+		url = UriComponentsBuilder.fromUriString(url).buildAndExpand(userId).toString();
+		try {
+			HttpClient httpclient = HttpClients.createDefault();
+			HttpGet httpget = new HttpGet(url);
+			HttpResponse response = httpclient.execute(httpget);
+			return response;
+		} catch (IOException e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
 	}
 }
