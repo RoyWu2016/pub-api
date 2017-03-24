@@ -630,7 +630,7 @@ public class UserServiceImpl implements UserService {
 			qualityManual.setDocType("QUALITY_MANUAL");
 			qualityManual.setFilename(qualityManualBean.getQmFileName());
 			qualityManual.setPublishDate(qualityManualBean.getQmReleaseDate());
-			qualityManual.setUrl(config.getCustomerServiceUrl() + "/customer/" + compId + "/quality-manual-file");
+			qualityManual.setUrl("/user/" + compId + "/quality-manual");
 		}
 		bookingbean.setQualityManual(qualityManual);
 
