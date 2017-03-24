@@ -83,6 +83,9 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -1070,5 +1073,38 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean getQualityManual(String userId,HttpServletResponse httpResponse) throws IOException, AIException {
+		// TODO Auto-generated method stub
+		UserBean userBean = this.getCustById(userId);
+		String parentId = "";
+		String companyId = "";
+		if (null != userBean) {
+			parentId = userBean.getCompany().getParentCompanyId();
+			if (null == parentId) {
+				parentId = "";
+			}
+			companyId = userBean.getCompany().getId();
+		}
+		HttpResponse resp = customerDao.getQualityManual(companyId);
+		if(null != resp) {
+			Header h = resp.getLastHeader("Content-Disposition");
+			if(null != h) {
+				httpResponse.setHeader(h.getName(),h.getValue());
+			}
+			HttpEntity entity = resp.getEntity();
+			InputStream inputStream = entity.getContent();
+			ServletOutputStream output = httpResponse.getOutputStream();
+			httpResponse.setStatus(HttpServletResponse.SC_OK);
+			byte[] buffer = new byte[10240];
+			for (int length = 0; (length = inputStream.read(buffer)) > 0;) {
+				output.write(buffer, 0, length);
+			}
+			return true;
+		}else {
+			return false;
+		}
 	}
 }
