@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.ResponseEntity;
 
 import com.ai.api.bean.BookingPreferenceBean;
@@ -84,4 +86,6 @@ public interface User {
 	ResponseEntity<JSONObject> getUserProfile(String userId, boolean refresh) throws IOException, AIException;
 
 	ResponseEntity<ApiCallResult> resetPassword(String login);
+
+	ResponseEntity<String> getQualityManual(String userId, HttpServletResponse httpResponse);
 }
