@@ -20,6 +20,8 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		<property name="ignoreAcceptHeader" value="false" />
 		<property name="useJaf" value="false" />
 	</bean> -->
+    <!-- the mvc resources tag does the magic -->
+    <mvc:resources mapping="/doc/**" location="/WEB-INF/swagger/" />
 	<context:component-scan base-package="com.ai.api, version" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
         <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
@@ -61,12 +63,12 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 	<!--</context:component-scan> -->
 
 	<!-- Enables swgger ui -->
-	<mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/" />
-	<mvc:resources mapping="/webjars/**"
-		location="classpath:/META-INF/resources/webjars/" />
+	<!--<mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/" />-->
+	<!--<mvc:resources mapping="/webjars/**"-->
+		<!--location="classpath:/META-INF/resources/webjars/" />-->
 
 	<!-- Include a swagger configuration -->
-	<bean name="/applicationSwaggerConfig" class="com.ai.api.config.ApplicationSwaggerConfig" />
+	<!--<bean name="/applicationSwaggerConfig" class="com.ai.api.config.ApplicationSwaggerConfig" />-->
 
 	<!-- bean that will enable json to be returned -->
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
@@ -84,7 +86,6 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 				</constructor-arg>
 			</bean>
 		</property>
-
 		<property name="viewResolvers">
 			<list>
 				<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
