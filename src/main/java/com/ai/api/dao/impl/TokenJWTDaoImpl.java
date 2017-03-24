@@ -95,8 +95,8 @@ public class TokenJWTDaoImpl {
                 logger.error("error!! tokenSession can not be cast to String .");
             }
             if (StringUtils.isNotBlank(tokenStr)) {
-//                logger.info("saving tokenSession to Redis for 1 week ...");
-                RedisUtil.hset(TOKENKEY, sessionId,tokenStr,RedisUtil.HOUR * 24 * 7);
+//                logger.info("saving tokenSession to Redis for 1 day ...");
+                RedisUtil.hset(TOKENKEY, sessionId,tokenStr,RedisUtil.HOUR * 24);
 //                logger.info("success!  saved!!!");
             }
 		}catch (Exception e){
