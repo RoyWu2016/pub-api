@@ -12,9 +12,12 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.SSOUserServiceDao;
 import com.ai.commons.Consts;
 import com.ai.commons.HttpUtil;
+import com.ai.commons.JsonUtil;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.user.TokenSession;
 import com.alibaba.fastjson.JSON;
@@ -23,6 +26,8 @@ import org.jose4j.jwt.JwtClaims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 /***************************************************************************
@@ -51,6 +56,10 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 
 	@Autowired
     private TokenJWTDaoImpl tokenJWTDao;
+
+	@Autowired
+	@Qualifier("serviceConfig")
+	private ServiceConfig config;
 
 	@Override
 	public ServiceCallResult refreshAPIToken(HttpServletRequest request,HttpServletResponse response) {
@@ -223,5 +232,33 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 
         return token;
     }
+
+    @Override
+	public ApiCallResult isFirstLogin(String login){
+		ApiCallResult result = new ApiCallResult();
+		StringBuilder url = new StringBuilder(config.getSsoUserServiceUrl());
+		url.append("/history/login/");
+		url.append(login);
+		url.append("/server/");
+		url.append("PublicAPI");
+		url.append("/login-count");
+		try {
+			ServiceCallResult callResult = HttpUtil.issueGetRequest(url.toString(), null);
+			if (callResult.getStatusCode() == HttpStatus.OK.value() && callResult.getReasonPhase().equalsIgnoreCase("OK")){
+			    int loginTimes = Integer.parseInt(callResult.getResponseString());
+			    if (loginTimes<2){
+			        result.setContent(true);
+                }else {
+			        result.setContent(false);
+                }
+            }else {
+			    result.setMessage("network Error while calling sso! "+ callResult.getResponseString());
+            }
+		}catch (Exception e){
+			result.setMessage("Error Exception!"+e);
+			LOGGER.error("Error Exception!",e);
+		}
+		return result;
+	}
 
 }
