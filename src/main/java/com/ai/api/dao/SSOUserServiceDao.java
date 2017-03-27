@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 
 /***************************************************************************
@@ -42,4 +43,6 @@ public interface SSOUserServiceDao {
 	ServiceCallResult checkAccessHeader(String headerValue);
 
 	String getToken(String authorizationHeader, HttpServletResponse response) throws IOException;
+
+	ApiCallResult isFirstLogin(String login);
 }

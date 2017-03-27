@@ -493,4 +493,23 @@ public class UserImpl implements User {
 
 	}
 
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/quality-manual", method = RequestMethod.GET)
+	@ApiOperation(value = "Is First Login", response = String.class)
+	public ResponseEntity<ApiCallResult> isFirstLogin(@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId) {
+        ApiCallResult apiCallResult = new ApiCallResult();
+        try {
+            apiCallResult = userService.isFirstLogin(userId);
+            if (null==apiCallResult.getMessage()){
+                return new ResponseEntity<>(apiCallResult,HttpStatus.OK);
+            }
+		}  catch (Exception e) {
+			e.printStackTrace();
+			apiCallResult.setMessage(e.toString());
+		}
+		return new ResponseEntity<>(apiCallResult,HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
 }
