@@ -246,7 +246,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 			ServiceCallResult callResult = HttpUtil.issueGetRequest(url.toString(), null);
 			if (callResult.getStatusCode() == HttpStatus.OK.value() && callResult.getReasonPhase().equalsIgnoreCase("OK")){
 			    int loginTimes = Integer.parseInt(callResult.getResponseString());
-			    if (loginTimes==1){
+			    if (loginTimes<2){
 			        result.setContent(true);
                 }else {
 			        result.setContent(false);

@@ -1114,7 +1114,7 @@ public class UserServiceImpl implements UserService {
 	public ApiCallResult isFirstLogin(String userId) throws Exception {
 		UserBean userBean = this.getCustById(userId);
 		if (null==userBean){
-			new Exception("Can not getUser by id:"+userId);
+			throw new Exception("Can not getUser by id:"+userId);
 		}
 		return ssoUserServiceDao.isFirstLogin(userBean.getLogin());
 	}
