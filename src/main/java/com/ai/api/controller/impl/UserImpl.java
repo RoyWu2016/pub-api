@@ -10,35 +10,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.ai.api.bean.BookingPreferenceBean;
-import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.ContactInfoBean;
-import com.ai.api.bean.EmployeeBean;
-import com.ai.api.bean.UserBean;
-import com.ai.api.controller.User;
-import com.ai.api.exception.AIException;
-import com.ai.api.service.UserService;
-import com.ai.api.util.RedisUtil;
-import com.ai.commons.StringUtils;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.customer.DashboardBean;
-import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +26,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ai.api.bean.BookingPreferenceBean;
+import com.ai.api.bean.CompanyBean;
+import com.ai.api.bean.CompanyLogoBean;
+import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.EmployeeBean;
+import com.ai.api.bean.UserBean;
+import com.ai.api.bean.consts.ConstMap;
+import com.ai.api.controller.User;
+import com.ai.api.exception.AIException;
+import com.ai.api.service.UserService;
+import com.ai.api.util.RedisUtil;
+import com.ai.commons.StringUtils;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.audit.api.ApiEmployeeBean;
+import com.ai.commons.beans.customer.DashboardBean;
+import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /***************************************************************************
  * <PRE>
@@ -294,124 +295,22 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/employee/{employeeId}", method = RequestMethod.GET)
-	@ApiOperation(value = "Get Employee Profile API", response = EmployeeBean.class)
-	public ResponseEntity<JSONObject> getEmployeeProfile(
+	@ApiOperation(value = "Get Employee Profile API", response = ApiEmployeeBean.class)
+	public ResponseEntity<ApiEmployeeBean> getEmployeeProfile(
 			@ApiParam(value = "employeeId", required = true) @PathVariable("employeeId") String employeeId,
 			@ApiParam(value = "true or false", required = false) @RequestParam(value = "refresh", defaultValue = "false") boolean refresh)
 			throws IOException, AIException {
 		// TODO Auto-generated method stub
 		logger.info("getEmployeeProfile employeeId: " + employeeId);
 		EmployeeBean cust = userService.getEmployeeProfile(employeeId, refresh);
+		ApiEmployeeBean result = null;
 		if (cust != null) {
-			JSONObject object = JSON.parseObject(JSON.toJSONString(cust));
-			object.remove("joinDate");
-			object.remove("password");
-			object.remove("createTime");
-			object.remove("updateTime");
-			object.remove("criteriaStatusList");
-			object.remove("criteriaDepartmentIdList");
-			object.remove("criteriaGroupIdList");
-			object.remove("criteriaRoleIdList");
-			object.remove("reportTos");
-			object.remove("modifiedBy");
-			object.remove("modifiedDate");
 			try {
-				object.remove("groups");
-				JSONArray roles = object.getJSONArray("roles");
-
-				Map<String, HashSet<String>> result = new HashMap<String, HashSet<String>>();
-
-				HashSet<String> AIMS = new HashSet<String>();
-				HashSet<String> Audit = new HashSet<String>();
-				HashSet<String> Checklist = new HashSet<String>();
-				HashSet<String> CloudReport = new HashSet<String>();
-				HashSet<String> Customer = new HashSet<String>();
-				HashSet<String> Factory_Portal = new HashSet<String>();
-				HashSet<String> GI = new HashSet<String>();
-				HashSet<String> IP_Generation = new HashSet<String>();
-				HashSet<String> IRP = new HashSet<String>();
-				HashSet<String> Inspection = new HashSet<String>();
-				HashSet<String> InspectorApp = new HashSet<String>();
-				HashSet<String> Mail_Console = new HashSet<String>();
-				HashSet<String> PROG = new HashSet<String>();
-				HashSet<String> Program = new HashSet<String>();
-				HashSet<String> Report_Portal_Inspector = new HashSet<String>();
-				HashSet<String> Report_Portal_Supervisor = new HashSet<String>();
-				HashSet<String> SSO_Management = new HashSet<String>();
-				HashSet<String> Sales_Management = new HashSet<String>();
-				HashSet<String> Sample = new HashSet<String>();
-				for (int i = 0; i < roles.size(); i++) {
-
-					JSONObject role = roles.getJSONObject(i);
-
-					if ("AIMS".equalsIgnoreCase(role.getString("moduleName"))) {
-						AIMS.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), AIMS);
-					} else if ("Audit".equalsIgnoreCase(role.getString("moduleName"))) {
-						Audit.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Audit);
-					} else if ("Checklist".equalsIgnoreCase(role.getString("moduleName"))) {
-						Checklist.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Checklist);
-					} else if ("CloudReport".equalsIgnoreCase(role.getString("moduleName"))) {
-						CloudReport.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), CloudReport);
-					} else if ("Customer".equalsIgnoreCase(role.getString("moduleName"))) {
-						Customer.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Customer);
-					} else if ("Factory-Portal".equalsIgnoreCase(role.getString("moduleName"))) {
-						Factory_Portal.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Factory_Portal);
-					} else if ("GI".equalsIgnoreCase(role.getString("moduleName"))) {
-						GI.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), GI);
-					} else if ("IP Generation".equalsIgnoreCase(role.getString("moduleName"))) {
-						IP_Generation.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), IP_Generation);
-					} else if ("IRP".equalsIgnoreCase(role.getString("moduleName"))) {
-						IRP.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), IRP);
-					} else if ("Inspection".equalsIgnoreCase(role.getString("moduleName"))) {
-						Inspection.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Inspection);
-					} else if ("InspectorApp".equalsIgnoreCase(role.getString("moduleName"))) {
-						InspectorApp.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), InspectorApp);
-					} else if ("Mail Console".equalsIgnoreCase(role.getString("moduleName"))) {
-						Mail_Console.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Mail_Console);
-					} else if ("PROG".equalsIgnoreCase(role.getString("moduleName"))) {
-						PROG.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), PROG);
-					} else if ("Program".equalsIgnoreCase(role.getString("moduleName"))) {
-						Program.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Program);
-					} else if ("Report Portal-Inspector".equalsIgnoreCase(role.getString("moduleName"))) {
-						Report_Portal_Inspector.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Report_Portal_Inspector);
-					} else if ("Report Portal-Supervisor".equalsIgnoreCase(role.getString("moduleName"))) {
-						Report_Portal_Supervisor.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Report_Portal_Supervisor);
-					} else if ("SSO Management".equalsIgnoreCase(role.getString("moduleName"))) {
-						SSO_Management.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), SSO_Management);
-					} else if ("Sales Management".equalsIgnoreCase(role.getString("moduleName"))) {
-						Sales_Management.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Sales_Management);
-					} else if ("Sample".equalsIgnoreCase(role.getString("moduleName"))) {
-						Sample.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Sample);
-					}
-
-					// result =
-					// createModule(result,role.getString("moduleName"),role.getString("displayName"));
-
-				}
-				object.put("roles", result);
+				result = ConstMap.convert2ApiEmployeeBean(cust);
 			} catch (Exception e) {
 				logger.error("error!! set roles value", e);
 			}
-			return new ResponseEntity<>(object, HttpStatus.OK);
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
