@@ -23,6 +23,7 @@ import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.audit.api.ApiEmployeeBean;
 import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.alibaba.fastjson.JSONObject;
@@ -81,7 +82,7 @@ public interface User {
 	ResponseEntity<DashboardBean> getUserDashboard(String userId, String startDate, String endDate)
 			throws IOException, AIException;
 
-	ResponseEntity<JSONObject> getEmployeeProfile(String employeeId, boolean refresh) throws IOException, AIException;
+	ResponseEntity<ApiEmployeeBean> getEmployeeProfile(String employeeId, boolean refresh) throws IOException, AIException;
 
 	ResponseEntity<JSONObject> getUserProfile(String userId, boolean refresh) throws IOException, AIException;
 
