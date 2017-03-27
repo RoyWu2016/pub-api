@@ -7,7 +7,6 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,11 +14,9 @@ import java.util.List;
 
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
-import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.OrderDao;
 import com.ai.api.util.AIUtil;
-import com.ai.commons.Consts;
 import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.ApiCallResult;
@@ -30,7 +27,6 @@ import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.ProductBean;
 import com.alibaba.fastjson.JSONObject;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.client.utils.DateUtils;
@@ -135,15 +131,16 @@ public class OrderDaoImpl implements OrderDao {
 					.append("&parentId=").append(parentId).append("&draftId=").append(draftId);
 //			logger.info("Post!!! url :" + url);
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, draftId);
-			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
+			if (result.getStatusCode() == HttpStatus.OK.value() &&
+					!result.getResponseString().contains("Create new order to database (by draft) faild!")) {
 				JSONObject object = JSONObject.parseObject(result.getResponseString());
 				Object arrayStr = object.get("content");
 				return JsonUtil.mapToObject(arrayStr + "", InspectionBookingBean.class);
 				// return JsonUtil.mapToObject(result.getResponseString(),
 				// InspectionBookingBean.class);
 			} else {
-//				logger.error("createOrderByDraft error from psi service : " + result.getStatusCode() + ", "
-//						+ result.getResponseString());
+				logger.error("createOrderByDraft error from psi service : " + result.getStatusCode() + ", "
+						+ result.getResponseString());
 			}
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
