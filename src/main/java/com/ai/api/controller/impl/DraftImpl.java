@@ -20,10 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ai.api.controller.Draft;
 import com.ai.api.service.DraftService;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.audit.AuditBookingBean;
 import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /***************************************************************************
  * <PRE>
@@ -44,6 +48,7 @@ import com.ai.commons.beans.psi.InspectionProductBookingBean;
  ***************************************************************************/
 
 @RestController
+@Api(tags = {"Draft"}, description = "Draft booking APIs")
 public class DraftImpl implements Draft {
 
 	protected Logger logger = LoggerFactory.getLogger(DraftImpl.class);
@@ -54,6 +59,7 @@ public class DraftImpl implements Draft {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/drafts/{draftIds}", method = RequestMethod.DELETE)
+	@ApiOperation(value = "Delete Draft API", response = Boolean.class)
 	public ResponseEntity<Boolean> deleteDrafts(@PathVariable("userId") String userId, @PathVariable("draftIds") String draftIds) {
 		try {
 			logger.info("deleteDrafts. . .");
