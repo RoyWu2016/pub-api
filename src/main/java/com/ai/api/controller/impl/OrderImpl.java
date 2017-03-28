@@ -46,6 +46,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 
 /***************************************************************************
@@ -69,6 +70,7 @@ import io.swagger.annotations.ApiParam;
  ***************************************************************************/
 @SuppressWarnings("rawtypes")
 @RestController
+@Api(tags = {"Order"}, description = "Order booking APIs")
 public class OrderImpl implements Order {
 
 	protected Logger logger = LoggerFactory.getLogger(OrderImpl.class);
