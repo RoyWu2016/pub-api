@@ -121,8 +121,9 @@ public class DraftImpl implements Draft {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/draft/{draftId}", method = RequestMethod.GET)
 	@ApiOperation(value = "Get User Draft API", response = InspectionBookingBean.class)
-	public ResponseEntity<InspectionBookingBean> getDraft(@ApiParam(required = true) @PathVariable final String userId,
-			@ApiParam(required = true) @PathVariable final String draftId) {
+	public ResponseEntity<InspectionBookingBean> getDraft(
+			@ApiParam(required = true, name = "userId") @PathVariable final String userId,
+			@ApiParam(required = true, name = "draftId") @PathVariable final String draftId) {
 
 		if (userId == null || userId.isEmpty() || draftId == null || draftId.isEmpty()) {
 			logger.error("userId:" + userId + ", draftId:" + draftId + " can't be null!");
