@@ -37,6 +37,7 @@ import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.audit.AuditBookingBean;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
@@ -47,6 +48,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 /***************************************************************************
@@ -70,7 +72,7 @@ import io.swagger.annotations.ApiParam;
  ***************************************************************************/
 @SuppressWarnings("rawtypes")
 @RestController
-@Api(tags = {"Order"}, description = "Order booking APIs")
+@Api(tags = { "Order" }, description = "Order booking APIs")
 public class OrderImpl implements Order {
 
 	protected Logger logger = LoggerFactory.getLogger(OrderImpl.class);
@@ -91,9 +93,11 @@ public class OrderImpl implements Order {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}", method = RequestMethod.DELETE)
-	public ResponseEntity<Boolean> cancelOrder(@PathVariable("userId") String userId,
-			@PathVariable("orderId") String orderId, @RequestParam("reason") String reason,
-			@RequestParam(value = "reason_options", required = false) String reason_options) {
+	@ApiOperation(value = "Cancel User Order API", response = Boolean.class)
+	public ResponseEntity<Boolean> cancelOrder(@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("orderId") String orderId,
+			@ApiParam(required = true) @RequestParam("reason") String reason,
+			@ApiParam(required = false) @RequestParam(value = "reason_options", required = false) String reason_options) {
 		try {
 			logger.info("cancelOrder ...");
 			logger.info("userId :" + userId);
@@ -114,17 +118,19 @@ public class OrderImpl implements Order {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getOrderDetail(@PathVariable("userId") String userId,
-			@PathVariable("orderId") String orderId) {
+	@ApiOperation(value = "Get User Order Detail API", response = InspectionBookingBean.class)
+	public ResponseEntity<ApiCallResult> getOrderDetail(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("orderId") String orderId) {
 		if (userId == null || userId.isEmpty() || orderId == null || orderId.isEmpty()) {
 			logger.error("userId:" + userId + ", orderId:" + orderId + " can't be null!");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-			logger.info("getOrderDetail ...");
-			logger.info("userId :" + userId);
-			logger.info("orderId:" + orderId);
+			// logger.info("getOrderDetail ...");
+			// logger.info("userId :" + userId);
+			// logger.info("orderId:" + orderId);
 			InspectionBookingBean orderBean = orderService.getOrderDetail(userId, orderId);
 			if (orderBean != null) {
 				JSONObject jsonObject = (JSONObject) JSON.toJSON(orderBean);
@@ -164,8 +170,10 @@ public class OrderImpl implements Order {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-order", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> createOrderByDraft(@PathVariable("userId") String userId,
-			@RequestParam(value = "draftId", required = true) String draftId) {
+	@ApiOperation(value = "Create Order by Draft API", response = InspectionBookingBean.class)
+	public ResponseEntity<Map<String, Object>> createOrderByDraft(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @RequestParam(value = "draftId", required = true) String draftId) {
 
 		if (userId == null || userId.isEmpty() || draftId == null || draftId.isEmpty()) {
 			logger.error("userId:" + userId + ", draftId:" + draftId + " can't be null!");
@@ -193,8 +201,10 @@ public class OrderImpl implements Order {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}/editing", method = RequestMethod.PUT)
-	public ResponseEntity<Map<String, Object>> editOrder(@PathVariable("userId") String userId,
-			@PathVariable("orderId") String orderId) {
+	@ApiOperation(value = "Edit User Order API", response = InspectionBookingBean.class)
+	public ResponseEntity<Map<String, Object>> editOrder(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("orderId") String orderId) {
 		if (userId == null || userId.isEmpty() || orderId == null || orderId.isEmpty()) {
 			logger.error("userId:" + userId + ", orderId:" + orderId + " can't be null!");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -202,9 +212,9 @@ public class OrderImpl implements Order {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			logger.info("editOrder ...");
-			logger.info("userId :" + userId);
-			logger.info("orderId:" + orderId);
+			// logger.info("editOrder ...");
+			// logger.info("userId :" + userId);
+			// logger.info("orderId:" + orderId);
 			InspectionBookingBean orderBean = orderService.editOrder(userId, orderId);
 			if (orderBean != null) {
 				map.put("success", true);
@@ -221,15 +231,18 @@ public class OrderImpl implements Order {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-order/{orderId}/draft/{draftId}/saved", method = RequestMethod.PUT)
-	public ResponseEntity<Map<String, Object>> saveOrderByDraft(@PathVariable("userId") String userId,
-			@PathVariable("draftId") String draftId, @PathVariable("orderId") String orderId) {
+	@ApiOperation(value = "Save Order by Draft API", response = InspectionBookingBean.class)
+	public ResponseEntity<Map<String, Object>> saveOrderByDraft(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("draftId") String draftId,
+			@ApiParam(required = true) @PathVariable("orderId") String orderId) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			logger.info("saveOrderByDraft ...");
-			logger.info("userId :" + userId);
-			logger.info("draftId :" + draftId);
-			logger.info("orderId:" + orderId);
+			// logger.info("saveOrderByDraft ...");
+			// logger.info("userId :" + userId);
+			// logger.info("draftId :" + draftId);
+			// logger.info("orderId:" + orderId);
 			InspectionBookingBean orderBean = orderService.saveOrderByDraft(userId, draftId);
 			if (orderBean != null) {
 				map.put("success", true);
@@ -246,27 +259,29 @@ public class OrderImpl implements Order {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-orders", method = RequestMethod.GET)
-	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(@PathVariable("userId") String userId,
-			@RequestParam(value = "service-type",defaultValue = "1,2,3,4,6") String serviceType,
-			@RequestParam(value = "start", required = false, defaultValue = "") String startDate,
-			@RequestParam(value = "end", required = false, defaultValue = "") String endDate,
-			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
-			@ApiParam(value="status must be within: 15,17,20,22,23,25,30,40,50,60 and separated by comma")@RequestParam(value = "status", required = false, defaultValue = "") String orderStatus,
-			@RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
-			@RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
-		if("".equals(orderStatus)){
+	@ApiOperation(value = "Search User Orders API", response = SimpleOrderSearchBean.class)
+	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = false) @RequestParam(value = "service-type", defaultValue = "1,2,3,4,6") String serviceType,
+			@ApiParam(required = false) @RequestParam(value = "start", required = false, defaultValue = "") String startDate,
+			@ApiParam(required = false) @RequestParam(value = "end", required = false, defaultValue = "") String endDate,
+			@ApiParam(required = false) @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@ApiParam(value = "status must be within: 15,17,20,22,23,25,30,40,50,60 and separated by comma") @RequestParam(value = "status", required = false, defaultValue = "") String orderStatus,
+			@ApiParam(required = false) @RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
+			@ApiParam(required = false) @RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
+		if ("".equals(orderStatus)) {
 			orderStatus = "15,17,20,22,23,25,30,40,50,60";
-		}else {
+		} else {
 			List<String> status = new ArrayList<String>();
 			String[] str = orderStatus.split(",");
-			for(int i=0;i<str.length;i++) {
-				if(ConstMap.STATUS.contains(str[i])) {
+			for (int i = 0; i < str.length; i++) {
+				if (ConstMap.STATUS.contains(str[i])) {
 					status.add(str[i]);
 				}
 			}
-			if(status.size() <= 0) {
+			if (status.size() <= 0) {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}else {
+			} else {
 				orderStatus = String.join(",", status);
 			}
 		}
@@ -285,11 +300,13 @@ public class OrderImpl implements Order {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/re-inspection-list", method = RequestMethod.GET)
-	public ResponseEntity<List<SimpleOrderSearchBean>> getReInspectionList(@PathVariable("userId") String userId,
-			@RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
-			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
-			@RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
-			@RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
+	@ApiOperation(value = "Get User Re-inspction List API", response = SimpleOrderSearchBean.class)
+	public ResponseEntity<List<SimpleOrderSearchBean>> getReInspectionList(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = false) @RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
+			@ApiParam(required = false) @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@ApiParam(required = false) @RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
+			@ApiParam(required = false) @RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
 
 		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
 		String orderStatus = "60";
@@ -307,11 +324,13 @@ public class OrderImpl implements Order {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-orders-export", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, String>> exportOrders(@PathVariable("userId") String userId,
-			@RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
-			@RequestParam(value = "start", required = false, defaultValue = "") String start,
-			@RequestParam(value = "end", required = false, defaultValue = "") String end,
-			@RequestParam(value = "status", required = false, defaultValue = "") String orderStatus) {
+	@ApiOperation(value = "Export Orders Excle Base64", response = String.class)
+	public ResponseEntity<Map<String, String>> exportOrders(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = false) @RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
+			@ApiParam(required = false) @RequestParam(value = "start", required = false, defaultValue = "") String start,
+			@ApiParam(required = false) @RequestParam(value = "end", required = false, defaultValue = "") String end,
+			@ApiParam(required = false) @RequestParam(value = "status", required = false, defaultValue = "") String orderStatus) {
 
 		Map<String, String> result = new HashMap<String, String>();
 		String inspectionPeriod = null;
@@ -353,8 +372,10 @@ public class OrderImpl implements Order {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/order/{orderId}/draft/{draftId}/re-inspection", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> reInspection(@PathVariable("userId") String userId,
-			@PathVariable("orderId") String orderId, @PathVariable("draftId") String draftId) {
+	@ApiOperation(value = "Re-inspection Api", response = InspectionBookingBean.class)
+	public ResponseEntity<ApiCallResult> reInspection(@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("orderId") String orderId,
+			@ApiParam(required = true) @PathVariable("draftId") String draftId) {
 		logger.info("invoke: " + "/user/" + userId + "/order/" + orderId + "/draft/" + draftId + "/re-inspection");
 		ApiCallResult result = orderService.reInspection(userId, orderId, draftId);
 		if (null == result.getMessage()) {
@@ -367,8 +388,10 @@ public class OrderImpl implements Order {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/order/{orderId}/files", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> getFilesByOrderID(@PathVariable("userId") String userId,
-			@PathVariable("orderId") String orderId) throws IOException {
+	@ApiOperation(value = "Get Files by Order Id", response = FileMetaBean.class)
+	public ResponseEntity<ApiCallResult> getFilesByOrderID(
+			@ApiParam(required = true) @PathVariable("userId") String userId,
+			@ApiParam(required = true) @PathVariable("orderId") String orderId) throws IOException {
 		// TODO Auto-generated method stub
 		logger.info("invoke: " + "/user/" + userId + "/order/" + orderId + "/files");
 		ApiCallResult result = new ApiCallResult();
