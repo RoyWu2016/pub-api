@@ -46,16 +46,14 @@ import com.ai.api.bean.SubordinateSettingsBean;
 import com.ai.api.bean.SuperMasterBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
-import com.ai.api.dao.CompanyDao;
-import com.ai.api.dao.CustomerDao;
-import com.ai.api.dao.FeatureDao;
-import com.ai.api.dao.ParameterDao;
+import com.ai.api.dao.*;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.api.util.BASE64DecodedMultipartFile;
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.StringUtils;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.ApproverBean;
 import com.ai.commons.beans.customer.CompanyEntireBean;
@@ -138,6 +136,10 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	@Qualifier("featureDao")
 	private FeatureDao featureDao;
+
+	@Autowired
+	@Qualifier("ssoUserServiceDao")
+	private SSOUserServiceDao ssoUserServiceDao;
 
 	private UserBean getUserBeanByService(String userId) {
 		if (StringUtils.isBlank(userId)) {
@@ -1106,5 +1108,14 @@ public class UserServiceImpl implements UserService {
 		}else {
 			return false;
 		}
+	}
+
+	@Override
+	public ApiCallResult isFirstLogin(String userId) throws Exception {
+		UserBean userBean = this.getCustById(userId);
+		if (null==userBean){
+			throw new Exception("Can not getUser by id:"+userId);
+		}
+		return ssoUserServiceDao.isFirstLogin(userBean.getLogin());
 	}
 }

@@ -37,6 +37,8 @@ import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
+import com.ai.api.util.RedisUtil;
+import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
@@ -389,6 +391,33 @@ public class UserImpl implements User {
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/is-first-time-log-in-aca", method = RequestMethod.GET)
+	@ApiOperation(value = "Is First Login", response = boolean.class)
+	public ResponseEntity<ApiCallResult> isFirstLogin(@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId) {
+        ApiCallResult apiCallResult = new ApiCallResult();
+        try {
+            logger.info("check from redis...");
+            String existing = RedisUtil.hget("loginUserList",userId);
+            if (StringUtils.isNotBlank(existing)){
+                apiCallResult.setContent(false);
+                return new ResponseEntity<>(apiCallResult,HttpStatus.OK);
+            }
+            logger.info("check from service...");
+            apiCallResult = userService.isFirstLogin(userId);
+            if (null==apiCallResult.getMessage()){
+                RedisUtil.hset("loginUserList",userId,apiCallResult.getContent().toString(),RedisUtil.HOUR*24*365*10);
+                return new ResponseEntity<>(apiCallResult,HttpStatus.OK);
+            }
+		}  catch (Exception e) {
+			e.printStackTrace();
+			apiCallResult.setMessage(e.toString());
+		}
+		return new ResponseEntity<>(apiCallResult,HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
 
