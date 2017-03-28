@@ -38,7 +38,9 @@
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
-        url = "/swagger.json";
+          var after = window.location.href;
+          after = after.replace("doc/index.html", "");
+          url = after + "/swagger.json";
       }
 
       hljs.configure({
