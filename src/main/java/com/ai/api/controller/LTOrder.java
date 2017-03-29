@@ -30,6 +30,7 @@ public interface LTOrder {
 
 	public ResponseEntity<ApiCallResult> cloneOrder(String userId, String orderId, String cloneType);
 
-	public ResponseEntity<ApiCallResult> updateProgramTests(String userId, String programId, 
-			String tests, Boolean isFavorite);
+	public ResponseEntity<ApiCallResult> updateProgramTests(String userId, String programId, String tests, Boolean isFavorite);
+
+	public ResponseEntity<ApiCallResult> searchProgramTestLocations(String userId, String programId);
 }

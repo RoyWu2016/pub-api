@@ -64,4 +64,6 @@ public interface LTParameterService {
 	public ApiCallResult searchPackages(String programID) throws IOException;
 	
 	public ApiCallResult updateProgramTests(String userId, String programId, String tests, Boolean isFavorite) throws IOException;
+	
+	public ApiCallResult searchProgramTestLocations(String programId) throws IOException;
 }

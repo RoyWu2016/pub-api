@@ -4441,7 +4441,39 @@
             "schema" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/definitions/Program"
+                "$ref" : "#/definitions/ProgramDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/lt/program/{programId}/testlocations" : {
+      "get" : {
+        "tags" : [ "Lab Test" ],
+        "summary" : "Search User's LT Program Test Locations API",
+        "description" : "",
+        "operationId" : "searchProgramTestLocations",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "User ID",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "programId",
+          "in" : "path",
+          "description" : "Program ID",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/OfficeDTO"
               }
             }
           }
