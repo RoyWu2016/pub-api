@@ -3,6 +3,7 @@ package com.ai.api.dao;
 import java.io.InputStream;
 import java.util.HashMap;
 
+import org.apache.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ai.api.bean.EmployeeBean;
@@ -42,5 +43,7 @@ public interface CustomerDao {
 	boolean checkIfUserNameExist(String userName);
 	
 	ContactBean getCustomerContact(String customerId);
+
+	HttpResponse getQualityManual(String userId);
 
 }

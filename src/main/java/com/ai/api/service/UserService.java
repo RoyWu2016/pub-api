@@ -20,6 +20,7 @@ import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
@@ -85,4 +86,8 @@ public interface UserService {
 	ServiceCallResult resetPassword(String login);
 
 	boolean isMasterOfSuperMaster(String superUserId, String masterUserId) throws IOException;
+
+	boolean getQualityManual(String userId,HttpServletResponse httpResponse) throws IOException, AIException;
+
+	ApiCallResult isFirstLogin(String userId) throws Exception;
 }

@@ -101,14 +101,14 @@ public class PaymentDaoImpl implements PaymentDao {
 		url.append("?userId=" + userId).append("&companyId=" + companyId).append("&parentId=" + parentId);
 		ApiCallResult temp = new ApiCallResult();
 		try {
-			logger.info("requesting: " + url.toString());
+//			logger.info("requesting: " + url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, orders);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				temp.setContent(true);
 				return temp;
 			} else {
-				logger.error("Mark Payment As Paid from psi error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				logger.error("Mark Payment As Paid from psi error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 				temp.setMessage("Mark Payment As Paid from psi error: " + result.getStatusCode() + ", "
 						+ result.getResponseString());
 			}
@@ -129,13 +129,13 @@ public class PaymentDaoImpl implements PaymentDao {
 			logger.info("searchPaymentList json after encoding: " + param);
 			url.append("?userId=" + userId).append("&companyId=" + companyId).append("&parentId=" + parentId)
 					.append("&isPaid=" + paid).append("&param=" + param);
-			logger.info("Requesting url: " + url.toString());
+//			logger.info("Requesting url: " + url.toString());
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return JSON.parseObject(result.getResponseString(), PageBean.class);
 			} else {
-				logger.error("searchPaymentList from psi error: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				logger.error("searchPaymentList from psi error: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 			}
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
@@ -150,7 +150,7 @@ public class PaymentDaoImpl implements PaymentDao {
 		url.append("?userId=" + userId).append("&paymentType=" + paymentType).append("&companyId=" + companyId)
 				.append("&parentId=" + parentId);
 		ApiCallResult temp = new ApiCallResult();
-		logger.info("requesting: " + url.toString());
+//		logger.info("requesting: " + url.toString());
 		try {
 			String[] tempStr = orderIds.split(",");
 			List<String> list = Arrays.asList(tempStr);
@@ -161,9 +161,9 @@ public class PaymentDaoImpl implements PaymentDao {
 						}));
 				return temp;
 			} else {
-				logger.error("save draft error from psi service : " + result.getStatusCode() + ", "
-						+ result.getResponseString());
-				temp.setMessage("save draft error from psi service : " + result.getStatusCode() + ", "
+//				logger.error("save draft error from psi service : " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
+				temp.setMessage("generate payment error from psi service : " + result.getStatusCode() + ", "
 						+ result.getResponseString());
 			}
 		} catch (Exception e) {
@@ -178,7 +178,7 @@ public class PaymentDaoImpl implements PaymentDao {
 		// TODO Auto-generated method stub
 		StringBuilder url = new StringBuilder(
 				config.getPsiServiceUrl() + "/payment/api/find-history-by-userid?userId=" + userId);
-		logger.info("Requesting url: " + url.toString());
+//		logger.info("Requesting url: " + url.toString());
 		ApiCallResult temp = new ApiCallResult();
 		try {
 			ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
@@ -188,8 +188,8 @@ public class PaymentDaoImpl implements PaymentDao {
 						});
 				temp.setContent(list);
 			} else {
-				logger.error("Get error from psi service payment-history: " + result.getStatusCode() + ", "
-						+ result.getResponseString());
+//				logger.error("Get error from psi service payment-history: " + result.getStatusCode() + ", "
+//						+ result.getResponseString());
 				temp.setMessage("Get error from psi service payment-history: " + result.getStatusCode() + ", "
 						+ result.getResponseString());
 			}

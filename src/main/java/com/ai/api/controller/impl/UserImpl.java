@@ -10,31 +10,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import com.ai.api.bean.BookingPreferenceBean;
-import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.ContactInfoBean;
-import com.ai.api.bean.EmployeeBean;
-import com.ai.api.bean.UserBean;
-import com.ai.api.controller.User;
-import com.ai.api.exception.AIException;
-import com.ai.api.service.UserService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.customer.DashboardBean;
-import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import org.apache.commons.lang.ObjectUtils;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +26,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ai.api.bean.BookingPreferenceBean;
+import com.ai.api.bean.CompanyBean;
+import com.ai.api.bean.CompanyLogoBean;
+import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.EmployeeBean;
+import com.ai.api.bean.UserBean;
+import com.ai.api.bean.consts.ConstMap;
+import com.ai.api.controller.User;
+import com.ai.api.exception.AIException;
+import com.ai.api.service.UserService;
+import com.ai.api.util.RedisUtil;
+import com.ai.commons.StringUtils;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.audit.api.ApiEmployeeBean;
+import com.ai.commons.beans.customer.DashboardBean;
+import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /***************************************************************************
  * <PRE>
@@ -68,7 +73,7 @@ import org.springframework.web.bind.annotation.RestController;
  ***************************************************************************/
 
 @RestController
-@Api(tags = {"User Profile"}, description = "User profile APIs")
+@Api(tags = { "User Profile" }, description = "User profile APIs")
 public class UserImpl implements User {
 	private static final Logger logger = LoggerFactory.getLogger(UserImpl.class);
 
@@ -84,10 +89,9 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
 	@ApiOperation(value = "Get UserProfile API", response = UserBean.class)
 	public ResponseEntity<JSONObject> getUserProfile(
-			@ApiParam(value = "userId", required = true)
-			@PathVariable("userId") String userId,
-			@ApiParam(value = "true or false", required = false)
-			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) throws IOException, AIException {
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "true or false", required = false) @RequestParam(value = "refresh", defaultValue = "false") boolean refresh)
+			throws IOException, AIException {
 
 		if (userId == null) {
 			logger.error("User id can't be null or empty!");
@@ -127,8 +131,7 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}/company", method = RequestMethod.PUT)
 	@ApiOperation(value = "Update User Profile Company API", response = UserBean.class)
 	public ResponseEntity<UserBean> updateUserProfileCompany(
-			@ApiParam(value = "userId", required = true)
-			@PathVariable("userId") String userId,
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
 			@RequestBody CompanyBean newComp) throws IOException, AIException {
 		logger.info("updating company for user: " + userId);
 		UserBean cust = userService.updateCompany(newComp, userId);
@@ -144,8 +147,7 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}/contact-info", method = RequestMethod.PUT)
 	@ApiOperation(value = "Update User Profile Contact API", response = UserBean.class)
 	public ResponseEntity<UserBean> updateUserProfileContact(
-			@ApiParam(value = "userId", required = true)
-			@PathVariable("userId") String userId,
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
 			@RequestBody ContactInfoBean newContact) throws IOException, AIException {
 		logger.info("updating User contact " + userId);
 		UserBean cust = userService.updateContact(newContact, userId);
@@ -161,8 +163,7 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}/preference/booking", method = RequestMethod.PUT)
 	@ApiOperation(value = "Update User Booking Preference API", response = UserBean.class)
 	public ResponseEntity<UserBean> updateUserBookingPreference(
-			@ApiParam(value = "userId", required = true)
-			@PathVariable("userId") String userId,
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
 			@RequestBody BookingPreferenceBean newBookingPref) throws IOException, AIException {
 		logger.info("Updating User booking preference: " + userId);
 
@@ -179,8 +180,7 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}/preference/booking/preferred-product-families", method = RequestMethod.PUT)
 	@ApiOperation(value = "Update User Booking Preference Product Family API", response = UserBean.class)
 	public ResponseEntity<UserBean> updateUserBookingPreferredProductFamily(
-			@ApiParam(value = "userId", required = true)
-			@PathVariable("userId") String userId,
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
 			@RequestBody List<String> newPreferred) throws IOException, AIException {
 		logger.info("Updating User preferred product family: " + userId);
 
@@ -197,8 +197,7 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}/password", method = RequestMethod.PUT)
 	@ApiOperation(value = "Update User Password API", response = String.class)
 	public ResponseEntity<ServiceCallResult> updateUserPassword(
-			@ApiParam(value = "userId", required = true)
-			@PathVariable("userId") String userId,
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
 			@RequestBody HashMap<String, String> pwdMap) throws IOException, AIException {
 		logger.info("Updating User password! userId: " + userId);
 
@@ -219,10 +218,8 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.GET)
 	@ApiOperation(value = "Get Company Logo API", response = String.class, responseContainer = "Map")
 	public ResponseEntity<Map<String, String>> getCompanyLogo(
-			@ApiParam(value = "userId", required = true)
-			@PathVariable("userId") String userId,
-			@ApiParam(value = "companyId", required = true)
-			@PathVariable("companyId") String companyId) {
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "companyId", required = true) @PathVariable("companyId") String companyId) {
 		logger.info("get companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
 		Map<String, String> result = new HashMap<String, String>();
 		try {
@@ -244,10 +241,8 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.POST)
 	@ApiOperation(value = "Update Company Logo API", response = String.class)
 	public ResponseEntity<String> updateCompanyLogo(
-			@ApiParam(value = "userId", required = true)
-			@PathVariable("userId") String userId,
-			@ApiParam(value = "companyId", required = true)
-			@PathVariable("companyId") String companyId,
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "companyId", required = true) @PathVariable("companyId") String companyId,
 			@RequestBody CompanyLogoBean logoBean) {
 		logger.info("update companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
 		boolean b = false;
@@ -268,10 +263,8 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}/company/{companyId}/logo", method = RequestMethod.DELETE)
 	@ApiOperation(value = "Delete Company Logo API", response = String.class)
 	public ResponseEntity<String> deleteCompanyLogo(
-			@ApiParam(value = "userId", required = true)
-			@PathVariable("userId") String userId,
-			@ApiParam(value = "companyId", required = true)
-			@PathVariable("companyId") String companyId) {
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "companyId", required = true) @PathVariable("companyId") String companyId) {
 		logger.info("delete companyLogo----userId[" + userId + "]companyId[" + companyId + "]");
 		boolean b = false;
 		try {
@@ -302,125 +295,22 @@ public class UserImpl implements User {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/employee/{employeeId}", method = RequestMethod.GET)
-	@ApiOperation(value = "Get Employee Profile API", response = EmployeeBean.class)
-	public ResponseEntity<JSONObject> getEmployeeProfile(
-			@ApiParam(value = "employeeId", required = true)
-			@PathVariable("employeeId") String employeeId,
-			@ApiParam(value = "true or false", required = false)
-			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) throws IOException, AIException {
+	@ApiOperation(value = "Get Employee Profile API", response = ApiEmployeeBean.class)
+	public ResponseEntity<ApiEmployeeBean> getEmployeeProfile(
+			@ApiParam(value = "employeeId", required = true) @PathVariable("employeeId") String employeeId,
+			@ApiParam(value = "true or false", required = false) @RequestParam(value = "refresh", defaultValue = "false") boolean refresh)
+			throws IOException, AIException {
 		// TODO Auto-generated method stub
 		logger.info("getEmployeeProfile employeeId: " + employeeId);
 		EmployeeBean cust = userService.getEmployeeProfile(employeeId, refresh);
+		ApiEmployeeBean result = null;
 		if (cust != null) {
-			JSONObject object = JSON.parseObject(JSON.toJSONString(cust));
-			object.remove("joinDate");
-			object.remove("password");
-			object.remove("createTime");
-			object.remove("updateTime");
-			object.remove("criteriaStatusList");
-			object.remove("criteriaDepartmentIdList");
-			object.remove("criteriaGroupIdList");
-			object.remove("criteriaRoleIdList");
-			object.remove("reportTos");
-			object.remove("modifiedBy");
-			object.remove("modifiedDate");
 			try {
-				object.remove("groups");
-				JSONArray roles = object.getJSONArray("roles");
-				
-				Map<String, HashSet<String>> result = new HashMap<String, HashSet<String>>();
-				
-				HashSet<String> AIMS = new HashSet<String>();
-				HashSet<String> Audit = new HashSet<String>();
-				HashSet<String> Checklist = new HashSet<String>();
-				HashSet<String> CloudReport = new HashSet<String>();
-				HashSet<String> Customer = new HashSet<String>();
-				HashSet<String> Factory_Portal = new HashSet<String>();
-				HashSet<String> GI = new HashSet<String>();
-				HashSet<String> IP_Generation = new HashSet<String>();
-				HashSet<String> IRP = new HashSet<String>();
-				HashSet<String> Inspection = new HashSet<String>();
-				HashSet<String> InspectorApp = new HashSet<String>();
-				HashSet<String> Mail_Console = new HashSet<String>();
-				HashSet<String> PROG = new HashSet<String>();
-				HashSet<String> Program = new HashSet<String>();
-				HashSet<String> Report_Portal_Inspector = new HashSet<String>();
-				HashSet<String> Report_Portal_Supervisor = new HashSet<String>();
-				HashSet<String> SSO_Management = new HashSet<String>();
-				HashSet<String> Sales_Management = new HashSet<String>();
-				HashSet<String> Sample = new HashSet<String>();
-				for (int i = 0; i < roles.size(); i++) {
-					
-					JSONObject role = roles.getJSONObject(i);
-					
-					if ("AIMS".equalsIgnoreCase(role.getString("moduleName"))) {
-						AIMS.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), AIMS);
-					} else if ("Audit".equalsIgnoreCase(role.getString("moduleName"))) {
-						Audit.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Audit);
-					} else if ("Checklist".equalsIgnoreCase(role.getString("moduleName"))) {
-						Checklist.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Checklist);
-					} else if ("CloudReport".equalsIgnoreCase(role.getString("moduleName"))) {
-						CloudReport.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), CloudReport);
-					} else if ("Customer".equalsIgnoreCase(role.getString("moduleName"))) {
-						Customer.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Customer);
-					} else if ("Factory-Portal".equalsIgnoreCase(role.getString("moduleName"))) {
-						Factory_Portal.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Factory_Portal);
-					} else if ("GI".equalsIgnoreCase(role.getString("moduleName"))) {
-						GI.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), GI);
-					} else if ("IP Generation".equalsIgnoreCase(role.getString("moduleName"))) {
-						IP_Generation.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), IP_Generation);
-					} else if ("IRP".equalsIgnoreCase(role.getString("moduleName"))) {
-						IRP.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), IRP);
-					} else if ("Inspection".equalsIgnoreCase(role.getString("moduleName"))) {
-						Inspection.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Inspection);
-					} else if ("InspectorApp".equalsIgnoreCase(role.getString("moduleName"))) {
-						InspectorApp.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), InspectorApp);
-					} else if ("Mail Console".equalsIgnoreCase(role.getString("moduleName"))) {
-						Mail_Console.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Mail_Console);
-					} else if ("PROG".equalsIgnoreCase(role.getString("moduleName"))) {
-						PROG.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), PROG);
-					} else if ("Program".equalsIgnoreCase(role.getString("moduleName"))) {
-						Program.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Program);
-					} else if ("Report Portal-Inspector".equalsIgnoreCase(role.getString("moduleName"))) {
-						Report_Portal_Inspector.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Report_Portal_Inspector);
-					} else if ("Report Portal-Supervisor".equalsIgnoreCase(role.getString("moduleName"))) {
-						Report_Portal_Supervisor.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Report_Portal_Supervisor);
-					} else if ("SSO Management".equalsIgnoreCase(role.getString("moduleName"))) {
-						SSO_Management.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), SSO_Management);
-					} else if ("Sales Management".equalsIgnoreCase(role.getString("moduleName"))) {
-						Sales_Management.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Sales_Management);
-					} else if ("Sample".equalsIgnoreCase(role.getString("moduleName"))) {
-						Sample.add(role.getString("displayName"));
-						result.put(role.getString("moduleName"), Sample);
-					}
-
-					// result =
-					// createModule(result,role.getString("moduleName"),role.getString("displayName"));
-
-				}
-				object.put("roles", result);
+				result = ConstMap.convert2ApiEmployeeBean(cust);
 			} catch (Exception e) {
 				logger.error("error!! set roles value", e);
 			}
-			return new ResponseEntity<>(object, HttpStatus.OK);
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -439,12 +329,9 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{userId}/dashboard", method = RequestMethod.GET)
 	@ApiOperation(value = "Get User Dashboard API", response = DashboardBean.class)
 	public ResponseEntity<DashboardBean> getUserDashboard(
-			@ApiParam(value = "userId", required = true)
-			@PathVariable("userId") String userId,
-			@ApiParam(value = "must be in format like 2016-12-01", required = false)
-			@RequestParam(value = "startDate", required = false, defaultValue = "") String startDate,
-			@ApiParam(value = "must be in format like 2016-12-01", required = false)
-			@RequestParam(value = "endDate", required = false, defaultValue = "") String endDate)
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "startDate", required = false, defaultValue = "") String startDate,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "endDate", required = false, defaultValue = "") String endDate)
 			throws IOException, AIException {
 
 		if ("".equals(startDate) && "".equals(endDate)) {
@@ -468,8 +355,7 @@ public class UserImpl implements User {
 	@RequestMapping(value = "/user/{login}/reset-password", method = RequestMethod.PUT)
 	@ApiOperation(value = "Reset Password API", response = String.class)
 	public ResponseEntity<ApiCallResult> resetPassword(
-			@ApiParam(value = "login", required = true)
-			@PathVariable("login") String login) {
+			@ApiParam(value = "login", required = true) @PathVariable("login") String login) {
 		logger.info("invoking: " + "/user/" + login + "/reset-password");
 		ApiCallResult callResult = new ApiCallResult();
 
@@ -487,6 +373,52 @@ public class UserImpl implements User {
 			callResult.setMessage("Get null from internal service call.");
 			return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/quality-manual", method = RequestMethod.GET)
+	@ApiOperation(value = "Get User Quality-manual", response = String.class)
+	public ResponseEntity<String> getQualityManual(
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,HttpServletResponse httpResponse) {
+		try {
+			boolean b = userService.getQualityManual(userId,httpResponse);
+			if(b) {
+				return new ResponseEntity<>(HttpStatus.OK);
+			}
+		}  catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/is-first-time-log-in-aca", method = RequestMethod.GET)
+	@ApiOperation(value = "Is First Login", response = boolean.class)
+	public ResponseEntity<ApiCallResult> isFirstLogin(@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId) {
+        ApiCallResult apiCallResult = new ApiCallResult();
+        try {
+            logger.info("check from redis...");
+            String existing = RedisUtil.hget("loginUserList",userId);
+            if (StringUtils.isNotBlank(existing)){
+                apiCallResult.setContent(false);
+                return new ResponseEntity<>(apiCallResult,HttpStatus.OK);
+            }
+            logger.info("check from service...");
+            apiCallResult = userService.isFirstLogin(userId);
+            if (null==apiCallResult.getMessage()){
+                RedisUtil.hset("loginUserList",userId,apiCallResult.getContent().toString(),RedisUtil.HOUR*24*365*10);
+                return new ResponseEntity<>(apiCallResult,HttpStatus.OK);
+            }
+		}  catch (Exception e) {
+			e.printStackTrace();
+			apiCallResult.setMessage(e.toString());
+		}
+		return new ResponseEntity<>(apiCallResult,HttpStatus.INTERNAL_SERVER_ERROR);
+
 	}
 
 }

@@ -73,8 +73,8 @@ public class DraftDaoImpl implements DraftDao {
 				Object arrayStr = object.get("content");
 				return JsonUtil.mapToObject(arrayStr + "", boolean.class);
 			} else {
-				logger.error("delete drafts from psi error: " + result.getStatusCode() +
-						", " + result.getResponseString());
+//				logger.error("delete drafts from psi error: " + result.getStatusCode() +
+//						", " + result.getResponseString());
 			}
 
 		} catch (IOException e) {
@@ -99,8 +99,8 @@ public class DraftDaoImpl implements DraftDao {
 				Object arrayStr = object.get("content");
 				return JsonUtil.mapToObject(arrayStr+"", InspectionBookingBean.class);
 			} else {
-				logger.error("create draft error from psi service : " + result.getStatusCode() +
-						", " + result.getResponseString());
+//				logger.error("create draft error from psi service : " + result.getStatusCode() +
+//						", " + result.getResponseString());
 			}
 
 		} catch (IOException e) {
@@ -127,8 +127,8 @@ public class DraftDaoImpl implements DraftDao {
 				Object arrayStr = object.get("content");
 				return JsonUtil.mapToObject(arrayStr + "", InspectionBookingBean.class);
 			} else {
-				logger.error("createDraftFromPreviousOrder error from psi service : " + result.getStatusCode() +
-						", " + result.getResponseString());
+//				logger.error("createDraftFromPreviousOrder error from psi service : " + result.getStatusCode() +
+//						", " + result.getResponseString());
 			}
 
 		} catch (IOException e) {
@@ -149,8 +149,8 @@ public class DraftDaoImpl implements DraftDao {
 				Object arrayStr = object.get("content");
 				return JsonUtil.mapToObject(arrayStr + "", InspectionBookingBean.class);
 			} else {
-				logger.error("create draft error from psi service : " + result.getStatusCode() +
-						", " + result.getResponseString());
+//				logger.error("create draft error from psi service : " + result.getStatusCode() +
+//						", " + result.getResponseString());
 			}
 
 		} catch (IOException e) {
@@ -173,8 +173,8 @@ public class DraftDaoImpl implements DraftDao {
 				Object arrayStr = object.get("content");
 				return JsonUtil.mapToObject(arrayStr + "", boolean.class);
 			} else {
-				logger.error("save draft error from psi service : " + result.getStatusCode() +
-						", " + result.getResponseString());
+//				logger.error("save draft error from psi service : " + result.getStatusCode() +
+//						", " + result.getResponseString());
 			}
 
 		} catch (IOException e) {
@@ -192,7 +192,7 @@ public class DraftDaoImpl implements DraftDao {
         url.append("&parentId=").append(parentId);
         url.append("&draftId=").append(draftId);
         try {
-            logger.info("addProduct POST! URL : "+url.toString());
+//            logger.info("addProduct POST! URL : "+url.toString());
             ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(), null, draftId);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 logger.info("addProduct result from psi :"+result.getResponseString());
@@ -200,8 +200,8 @@ public class DraftDaoImpl implements DraftDao {
 				Object arrayStr = object.get("content");
 				return JsonUtil.mapToObject(arrayStr + "", InspectionProductBookingBean.class);
             } else {
-                logger.error("add product error from psi service : " + result.getStatusCode() +
-                        ", " + result.getResponseString());
+//                logger.error("add product error from psi service : " + result.getStatusCode() +
+//                        ", " + result.getResponseString());
             }
 
         } catch (IOException e) {
@@ -220,15 +220,15 @@ public class DraftDaoImpl implements DraftDao {
         url.append("&parentId=").append(parentId);
         url.append("&productDraftId=").append(productId);
         try {
-            logger.info("deleteProduct DELETE! URL : "+url.toString());
+//            logger.info("deleteProduct DELETE! URL : "+url.toString());
             ServiceCallResult result = HttpUtil.issueDeleteRequest(url.toString(), null);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
             	JSONObject object = JSONObject.parseObject(result.getResponseString());
 				Object arrayStr = object.get("content");
 				return JsonUtil.mapToObject(arrayStr + "", boolean.class);
             } else {
-                logger.error("delete product error from psi service : " + result.getStatusCode() +
-                        ", " + result.getResponseString());
+//                logger.error("delete product error from psi service : " + result.getStatusCode() +
+//                        ", " + result.getResponseString());
             }
 
         } catch (IOException e) {
@@ -249,14 +249,14 @@ public class DraftDaoImpl implements DraftDao {
 			.append("&samplingLevel=").append(samplingLevel)
 			.append("&measurementSamplingLevel=").append(measurementSamplingSize);
 		try {
-			logger.info("Invoking: " + url.toString());
+//			logger.info("Invoking: " + url.toString());
 			ServiceCallResult result = HttpUtil.issuePostRequest(url.toString(),null,new HashMap<>());
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				JSONObject object = JSONObject.parseObject(result.getResponseString());
 				Object arrayStr = object.get("content");
 				return JsonUtil.mapToObject(arrayStr + "", OrderPriceMandayViewBean.class);
 			} else {
-				logger.error("calculate Pricing error from psi service : " + result.getStatusCode() + ", "+ result.getResponseString());
+//				logger.error("calculate Pricing error from psi service : " + result.getStatusCode() + ", "+ result.getResponseString());
 			}
 
 		} catch (IOException e) {
@@ -293,7 +293,7 @@ public class DraftDaoImpl implements DraftDao {
 					 return pageBeanList.getPageItems();
 
 				} else {
-					logger.error("searchDraftOrder from PSI error: " + result.getStatusCode() + ", " + result.getResponseString());
+//					logger.error("searchDraftOrder from PSI error: " + result.getStatusCode() + ", " + result.getResponseString());
 				}
 			
 		}catch(IOException e){

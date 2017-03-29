@@ -46,16 +46,14 @@ import com.ai.api.bean.SubordinateSettingsBean;
 import com.ai.api.bean.SuperMasterBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.config.ServiceConfig;
-import com.ai.api.dao.CompanyDao;
-import com.ai.api.dao.CustomerDao;
-import com.ai.api.dao.FeatureDao;
-import com.ai.api.dao.ParameterDao;
+import com.ai.api.dao.*;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.api.util.BASE64DecodedMultipartFile;
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.StringUtils;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.ApproverBean;
 import com.ai.commons.beans.customer.CompanyEntireBean;
@@ -83,6 +81,9 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -135,6 +136,10 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	@Qualifier("featureDao")
 	private FeatureDao featureDao;
+
+	@Autowired
+	@Qualifier("ssoUserServiceDao")
+	private SSOUserServiceDao ssoUserServiceDao;
 
 	private UserBean getUserBeanByService(String userId) {
 		if (StringUtils.isBlank(userId)) {
@@ -627,7 +632,7 @@ public class UserServiceImpl implements UserService {
 			qualityManual.setDocType("QUALITY_MANUAL");
 			qualityManual.setFilename(qualityManualBean.getQmFileName());
 			qualityManual.setPublishDate(qualityManualBean.getQmReleaseDate());
-			qualityManual.setUrl(config.getCustomerServiceUrl() + "/customer/" + compId + "/quality-manual-file");
+			qualityManual.setUrl("user/" + compId + "/quality-manual");
 		}
 		bookingbean.setQualityManual(qualityManual);
 
@@ -1070,5 +1075,47 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean getQualityManual(String userId,HttpServletResponse httpResponse) throws IOException, AIException {
+		// TODO Auto-generated method stub
+		UserBean userBean = this.getCustById(userId);
+		String parentId = "";
+		String companyId = "";
+		if (null != userBean) {
+			parentId = userBean.getCompany().getParentCompanyId();
+			if (null == parentId) {
+				parentId = "";
+			}
+			companyId = userBean.getCompany().getId();
+		}
+		HttpResponse resp = customerDao.getQualityManual(companyId);
+		if(null != resp) {
+			Header h = resp.getLastHeader("Content-Disposition");
+			if(null != h) {
+				httpResponse.setHeader(h.getName(),h.getValue());
+			}
+			HttpEntity entity = resp.getEntity();
+			InputStream inputStream = entity.getContent();
+			ServletOutputStream output = httpResponse.getOutputStream();
+			httpResponse.setStatus(HttpServletResponse.SC_OK);
+			byte[] buffer = new byte[10240];
+			for (int length = 0; (length = inputStream.read(buffer)) > 0;) {
+				output.write(buffer, 0, length);
+			}
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+	@Override
+	public ApiCallResult isFirstLogin(String userId) throws Exception {
+		UserBean userBean = this.getCustById(userId);
+		if (null==userBean){
+			throw new Exception("Can not getUser by id:"+userId);
+		}
+		return ssoUserServiceDao.isFirstLogin(userBean.getLogin());
 	}
 }
