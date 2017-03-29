@@ -105,6 +105,7 @@ public class ConstMap {
 		apiEmployeeBean.setPhone(source.getPhone());
 		apiEmployeeBean.setPosition(source.getPosition());
 		apiEmployeeBean.setStatus(source.getStatus());
+		apiEmployeeBean.setLogin(source.getLogin());
 
 		List<EmployeeRole> allRoles = new ArrayList<EmployeeRole>();
 		if (null != source.getRoles()) {
