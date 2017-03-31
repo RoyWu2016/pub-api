@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -166,15 +167,14 @@ public class AIUtil {
 	public static boolean verifiedAccess(String userId, String verifiedCode, String sessionId) {
 		logger.info("SessionId: " + sessionId + " " + "User Id: " + userId + " " + "Verified Code: " + verifiedCode);
 		boolean flag = false;
-		String str = RedisUtil.get(sessionId);
-		logger.info("Get Session from Redis successfully: " + str);
+		String str = RedisUtil.hget("publicAPIToken",sessionId);
 		if (null != str) {
+			logger.info("Get Session from Redis successfully: " + str);
 			TokenSession session = (TokenSession) JsonUtil.mapToObject(str, TokenSession.class);
 			if (null != session) {
-				String token = session.getToken().substring(session.getToken().length() - 50,
+				String token = session.getToken().substring(session.getToken().length() - 49,
 						session.getToken().length());
-				String code = verifiedCode.substring(verifiedCode.length() - 50, verifiedCode.length());
-				if (userId.equals(session.getUserId()) && code.equals(token)) {
+				if (userId.equals(session.getUserId()) && verifiedCode.equals(token)) {
 					flag = true;
 					logger.info("User: " + userId +" get download access successfully");
 				}
