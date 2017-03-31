@@ -7,6 +7,7 @@
 package com.ai.api.dao.impl;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ai.aims.constants.Status;
 import com.ai.aims.services.dto.TestFilterDTO;
+import com.ai.aims.services.dto.office.OfficeDTO;
 import com.ai.aims.services.dto.packagemgmt.PackageDTO;
 import com.ai.aims.services.model.OfficeMaster;
 import com.ai.aims.services.model.ProductCategory;
@@ -44,7 +46,7 @@ import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.LTParameterDao;
 import com.ai.api.util.AIUtil;
 import com.ai.commons.beans.ApiCallResult;
-import com.ai.program.model.Program;
+import com.ai.program.dto.ProgramDTO;
 import com.ai.program.search.criteria.SearchProgramCriteria;
 
 /***************************************************************************
@@ -126,8 +128,21 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		ApiCallResult callResult = new ApiCallResult();
 
 		String url = new StringBuilder(config.getProgramServiceBaseUrl()).append("/program/search").toString();
-		List<Program> programs = Arrays.asList(restTemplate.getForObject(buildProgramSearchCriteria(criteria, url).build().encode().toUri(), Program[].class));	
+		List<ProgramDTO> programs = Arrays.asList(restTemplate.getForObject(buildProgramSearchCriteria(criteria, url).build().encode().toUri(), ProgramDTO[].class));	
 		callResult.setContent(programs);
+		return callResult;
+	}
+
+	@Override
+	public ApiCallResult searchProgramTestLocations(String programId) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		ApiCallResult callResult = new ApiCallResult();
+		
+		String url = new StringBuilder(config.getProgramServiceBaseUrl()).append("/program/").append(programId).append("/testlocations").toString();
+		URI uri = UriComponentsBuilder.fromHttpUrl(url).queryParam("requestor", "external").build().encode().toUri();
+		List<OfficeDTO> testLocations = Arrays.asList(restTemplate.getForObject(uri, OfficeDTO[].class));
+		callResult.setContent(testLocations);
 		return callResult;
 	}
 	
@@ -298,7 +313,8 @@ public class LTParameterDaoImpl implements LTParameterDao {
 	}
 
 	private UriComponentsBuilder buildProgramSearchCriteria(SearchProgramCriteria criteria, String url) {
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);	
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+				.queryParam("requestor", "external");	
 		
 		if(!StringUtils.stripToEmpty(criteria.getCompanyId()).trim().isEmpty())
 			builder.queryParam("companyId", criteria.getCompanyId().trim());

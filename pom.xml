@@ -216,6 +216,11 @@
 			<artifactId>program-services-model</artifactId>
 			<version>${program.service.model.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.ai.program.dto</groupId>
+			<artifactId>program-services-dto</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
         <!-- AspectJ dependencies -->
         <dependency>

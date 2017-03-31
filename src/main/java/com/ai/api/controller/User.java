@@ -88,7 +88,8 @@ public interface User {
 
 	ResponseEntity<ApiCallResult> resetPassword(String login);
 
-	ResponseEntity<String> getQualityManual(String userId, HttpServletResponse httpResponse);
-
 	ResponseEntity<ApiCallResult> isFirstLogin(String userId);
+
+	ResponseEntity<String> getQualityManual(String userId, String sessionId, String verifiedCode,
+			HttpServletResponse httpResponse);
 }

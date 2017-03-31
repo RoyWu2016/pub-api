@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.aims.services.dto.TestFilterDTO;
+import com.ai.aims.services.dto.office.OfficeDTO;
 import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
@@ -35,7 +36,7 @@ import com.ai.api.service.LTOrderService;
 import com.ai.api.service.LTParameterService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
-import com.ai.program.model.Program;
+import com.ai.program.dto.ProgramDTO;
 
 @SuppressWarnings({"rawtypes"})
 @RestController
@@ -113,7 +114,7 @@ public class LTOrderImpl implements LTOrder {
 	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> findOrder(
 			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
-			@PathVariable String userId) {
+			@ApiParam(value="User ID") @PathVariable String userId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
             OrderDTO order = ltOrderService.findOrder(orderId);
@@ -171,34 +172,40 @@ public class LTOrderImpl implements LTOrder {
 	}
 
 	@Override
-	@ApiOperation(value = "Search User's LT Program API", produces = "application/json", response = Program.class, httpMethod = "GET", responseContainer = "List")
+	@ApiOperation(value = "Search User's LT Program API", produces = "application/json", response = ProgramDTO.class, httpMethod = "GET", responseContainer = "List")
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/programs", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchPrograms(
-//			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh,
-			@PathVariable String userId) {
+			@ApiParam(value="User ID") @PathVariable String userId) {
 		ApiCallResult callResult = new ApiCallResult();
-		/*if (!refresh) {
-			logger.info("try to searchPrograms from redis ...");
-			String jsonStringTextileProductCategory = RedisUtil.get("ltProgramsCache");
-			programs = JSON.parseArray(jsonStringTextileProductCategory, Program.class);
-		}
-		if (null == programs) {*/
 		try {
 			callResult = ltparameterService.searchPrograms(userId);
 			logger.info("saving searchPrograms");
-			//RedisUtil.set("ltProgramsCache", JSON.toJSONString(programs), RedisUtil.HOUR * 24);
-
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("search Programs error: " + ExceptionUtils.getFullStackTrace(e));
 			callResult.setMessage("Error in getting LT programs:");
 			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		/*} else {
-			logger.info("get lt programs from redis successfully");
-			return new ResponseEntity<List<Program>>(programs, HttpStatus.OK);
-		}*/
+	}
+
+	@Override
+	@ApiOperation(value = "Search User's LT Program Test Locations API", produces = "application/json", response = OfficeDTO.class, httpMethod = "GET", responseContainer = "List")
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/lt/program/{programId}/testlocations", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchProgramTestLocations(
+			@ApiParam(value="User ID") @PathVariable String userId,
+			@ApiParam(value="Program ID") @PathVariable String programId) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			callResult = ltparameterService.searchProgramTestLocations(programId);
+			logger.info("saving searchPrograms");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("search Programs error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("Error in getting LT programs:");
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	@Override

@@ -148,78 +148,6 @@
         }
       }
     },
-    "/finance/net-suite/invoice" : {
-      "post" : {
-        "tags" : [ "Finance" ],
-        "summary" : "Save Invoice From NetSuite API",
-        "description" : "",
-        "operationId" : "processInvoice",
-        "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "string"
-            }
-          }
-        }
-      }
-    },
-    "/finance/net-suite/logs" : {
-      "post" : {
-        "tags" : [ "Finance" ],
-        "summary" : "Save Log From NetSuite API",
-        "description" : "",
-        "operationId" : "processNSLog",
-        "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "string"
-            }
-          }
-        }
-      }
-    },
-    "/finance/net-suite/memo" : {
-      "post" : {
-        "tags" : [ "Finance" ],
-        "summary" : "Save Memo From NetSuite API",
-        "description" : "",
-        "operationId" : "processCreditOrDebitMemos",
-        "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "string"
-            }
-          }
-        }
-      }
-    },
     "/order/{orderId}/audit-factory" : {
       "get" : {
         "tags" : [ "Supplier" ],
@@ -3488,6 +3416,7 @@
         }, {
           "name" : "",
           "in" : "path",
+          "description" : "User ID",
           "required" : true,
           "type" : "string"
         } ],
@@ -3754,6 +3683,38 @@
         }
       }
     },
+    "/user/{userId}/lt/program/{programId}/testlocations" : {
+      "get" : {
+        "tags" : [ "Lab Test" ],
+        "summary" : "Search User's LT Program Test Locations API",
+        "description" : "",
+        "operationId" : "searchProgramTestLocations",
+        "parameters" : [ {
+          "name" : "",
+          "in" : "path",
+          "description" : "User ID",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "",
+          "in" : "path",
+          "description" : "Program ID",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/OfficeDTO"
+              }
+            }
+          }
+        }
+      }
+    },
     "/user/{userId}/lt/program/{programId}/tests" : {
       "put" : {
         "tags" : [ "Lab Test" ],
@@ -3807,6 +3768,7 @@
         "parameters" : [ {
           "name" : "",
           "in" : "path",
+          "description" : "User ID",
           "required" : true,
           "type" : "string"
         } ],
@@ -3816,7 +3778,7 @@
             "schema" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/definitions/Program"
+                "$ref" : "#/definitions/ProgramDTO"
               }
             }
           }
@@ -4764,6 +4726,18 @@
           "name" : "userId",
           "in" : "path",
           "description" : "userId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "sessionId",
+          "in" : "query",
+          "description" : "user token sessionId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "code",
+          "in" : "query",
+          "description" : "last 50 chars of the user token",
           "required" : true,
           "type" : "string"
         } ],
@@ -5997,23 +5971,23 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "lcnumber" : {
-          "type" : "string"
-        },
-        "lcappAddress" : {
+        "lcbeneName" : {
           "type" : "string"
         },
         "icneeded" : {
           "type" : "boolean",
           "default" : false
         },
-        "lcbeneName" : {
-          "type" : "string"
-        },
         "lcappName" : {
           "type" : "string"
         },
+        "lcappAddress" : {
+          "type" : "string"
+        },
         "lcbeneAddress" : {
+          "type" : "string"
+        },
+        "lcnumber" : {
           "type" : "string"
         }
       }
@@ -6841,13 +6815,13 @@
           "type" : "boolean",
           "default" : false
         },
+        "lcapplicantCompanyName" : {
+          "type" : "string"
+        },
         "lcbeneficaryCompanyName" : {
           "type" : "string"
         },
         "lcapplicantAddress" : {
-          "type" : "string"
-        },
-        "lcapplicantCompanyName" : {
           "type" : "string"
         },
         "lcbeneficaryAddress" : {
@@ -7525,27 +7499,20 @@
         "password" : {
           "type" : "string"
         },
-        "introducedByTradeshow" : {
+        "login" : {
+          "type" : "string"
+        },
+        "refer" : {
           "type" : "string"
         },
         "introducedByOtherType" : {
           "type" : "string"
         },
+        "introducedByTradeshow" : {
+          "type" : "string"
+        },
         "introducedBy" : {
           "type" : "string"
-        },
-        "domainName" : {
-          "type" : "string"
-        },
-        "affiliateID" : {
-          "type" : "string"
-        },
-        "userIp" : {
-          "type" : "string"
-        },
-        "isTestAccount" : {
-          "type" : "boolean",
-          "default" : false
         },
         "contactInfo" : {
           "$ref" : "#/definitions/ContactInfoBean"
@@ -7553,16 +7520,23 @@
         "activity" : {
           "type" : "string"
         },
-        "login" : {
+        "domainName" : {
+          "type" : "string"
+        },
+        "isTestAccount" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "userIp" : {
+          "type" : "string"
+        },
+        "affiliateID" : {
           "type" : "string"
         },
         "uniqueId" : {
           "type" : "string"
         },
         "turnover" : {
-          "type" : "string"
-        },
-        "refer" : {
           "type" : "string"
         }
       }
@@ -10431,28 +10405,28 @@
         "supplierValidateCode" : {
           "type" : "string"
         },
-        "lcnumber" : {
-          "type" : "string"
-        },
-        "lcappAddress" : {
-          "type" : "string"
-        },
-        "itlmanager" : {
-          "type" : "string"
-        },
-        "icneeded" : {
+        "sic" : {
           "type" : "string"
         },
         "lcbeneName" : {
           "type" : "string"
         },
-        "sic" : {
+        "icneeded" : {
+          "type" : "string"
+        },
+        "itlmanager" : {
           "type" : "string"
         },
         "lcappName" : {
           "type" : "string"
         },
+        "lcappAddress" : {
+          "type" : "string"
+        },
         "lcbeneAddress" : {
+          "type" : "string"
+        },
+        "lcnumber" : {
           "type" : "string"
         }
       }
