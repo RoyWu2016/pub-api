@@ -48,9 +48,9 @@ public interface LTParameter {
 
 	public ResponseEntity<ApiCallResult> searchPackages(String programId);
 
-	public ResponseEntity<ApiCallResult> searchPackageTests(String countries,
+	public ResponseEntity<ApiCallResult> searchPackageTests(String countries, String regions,
 			String testNames, String pckage, String office, String program);
 
-	public ResponseEntity<ApiCallResult> searchProgramTests(String countries,
+	public ResponseEntity<ApiCallResult> searchProgramTests(String countries, String regions,
 			String testNames, String office, String program, Boolean isFavorite);
 }

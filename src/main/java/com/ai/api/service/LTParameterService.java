@@ -43,10 +43,10 @@ public interface LTParameterService {
 	public ApiCallResult searchTagTests(String countries, String regions, String testNames, 
 			String tags, String productCategory, String office, String program) throws IOException;
 	
-	public ApiCallResult searchPackageTests(String countries, String testNames, 
+	public ApiCallResult searchPackageTests(String countries, String regions, String testNames, 
 			String pckage, String office, String program) throws IOException;
 
-	public ApiCallResult searchProgramTests(String countries, String testNames,
+	public ApiCallResult searchProgramTests(String countries, String regions, String testNames,
 			String office, String program, Boolean isFavorite) throws IOException;
 	
 	public ApiCallResult searchTest(String testId) throws IOException;

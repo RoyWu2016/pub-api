@@ -367,8 +367,11 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
 				.queryParam("requestor", "external");
 		
-		if(null != criteria.getCountry() && !criteria.getCountry().isEmpty())
-			builder.queryParam("country", String.join(",", criteria.getCountry()));
+		if(null != criteria.getCountries())
+			builder.queryParam("countries", String.join(",", criteria.getCountries()));
+		
+		if(null != criteria.getRegions())
+			builder.queryParam("regions", String.join(",", criteria.getRegions()));
 
 		if(null != criteria.getPackageId() && !criteria.getPackageId().isEmpty())
 			builder.queryParam("packageId", criteria.getPackageId());
@@ -389,8 +392,11 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
 				.queryParam("requestor", "external");
 		
-		if(null != criteria.getCountry() && !criteria.getCountry().isEmpty())
-			builder.queryParam("country", String.join(",", criteria.getCountry()));
+		if(null != criteria.getCountries())
+			builder.queryParam("countries", String.join(",", criteria.getCountries()));
+		
+		if(null != criteria.getRegions())
+			builder.queryParam("regions", String.join(",", criteria.getRegions()));
 
 		if(null != criteria.getOfficeId() && !criteria.getOfficeId().isEmpty())
 			builder.queryParam("officeId", criteria.getOfficeId());

@@ -115,26 +115,40 @@ public class LTParameterServiceImpl implements LTParameterService {
 	}
 	
 	@Override
-	public ApiCallResult searchPackageTests(String countries, String testNames, 
+	public ApiCallResult searchPackageTests(String countries, String regions, String testNames, 
 			String pckage, String office, String program) throws IOException {
 		SearchPackageTestCriteria criteria = new SearchPackageTestCriteria();
-		criteria.setCountry(countries);
-		criteria.setTestName(testNames);
-		criteria.setPackageId(pckage);
-		criteria.setOfficeId(office);
-		criteria.setProgramId(program);
+		if(!StringUtils.stripToEmpty(countries).isEmpty())
+			criteria.setCountries(countries);
+		if(!StringUtils.stripToEmpty(regions).isEmpty())
+			criteria.setRegions(regions);
+		if(!StringUtils.stripToEmpty(testNames).isEmpty())
+			criteria.setTestName(testNames);
+		if(!StringUtils.stripToEmpty(pckage).isEmpty())
+			criteria.setPackageId(pckage);
+		if(!StringUtils.stripToEmpty(office).isEmpty())
+			criteria.setOfficeId(office);
+		if(!StringUtils.stripToEmpty(program).isEmpty())
+			criteria.setProgramId(program);
 		return ltparameterDao.searchPackageTests(criteria);
 	}
 	
 	@Override
-	public ApiCallResult searchProgramTests(String countries, String testNames, String office, 
+	public ApiCallResult searchProgramTests(String countries, String regions, String testNames, String office, 
 			String program, Boolean isFavorite) throws IOException {
 		SearchProgramTestCriteria criteria = new SearchProgramTestCriteria();
-		criteria.setCountry(countries);
-		criteria.setTestName(testNames);
-		criteria.setOfficeId(office);
-		criteria.setProgramId(program);
-		criteria.setIsFavorite(isFavorite);
+		if(!StringUtils.stripToEmpty(countries).isEmpty())
+			criteria.setCountries(countries);
+		if(!StringUtils.stripToEmpty(regions).isEmpty())
+			criteria.setRegions(regions);
+		if(!StringUtils.stripToEmpty(testNames).isEmpty())
+			criteria.setTestName(testNames);
+		if(!StringUtils.stripToEmpty(office).isEmpty())
+			criteria.setOfficeId(office);
+		if(!StringUtils.stripToEmpty(program).isEmpty())
+			criteria.setProgramId(program);
+		if(null != isFavorite)
+			criteria.setIsFavorite(isFavorite);
 		return ltparameterDao.searchProgramTests(criteria);
 	}
 
