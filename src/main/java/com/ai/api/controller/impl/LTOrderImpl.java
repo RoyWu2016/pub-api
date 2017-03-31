@@ -114,7 +114,7 @@ public class LTOrderImpl implements LTOrder {
 	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> findOrder(
 			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
-			@PathVariable String userId) {
+			@ApiParam(value="User ID") @PathVariable String userId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
             OrderDTO order = ltOrderService.findOrder(orderId);
@@ -176,7 +176,7 @@ public class LTOrderImpl implements LTOrder {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/programs", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchPrograms(
-			@PathVariable String userId) {
+			@ApiParam(value="User ID") @PathVariable String userId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			callResult = ltparameterService.searchPrograms(userId);
@@ -194,8 +194,8 @@ public class LTOrderImpl implements LTOrder {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/program/{programId}/testlocations", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchProgramTestLocations(
-			@PathVariable String userId,
-			@PathVariable String programId) {
+			@ApiParam(value="User ID") @PathVariable String userId,
+			@ApiParam(value="Program ID") @PathVariable String programId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			callResult = ltparameterService.searchProgramTestLocations(programId);
