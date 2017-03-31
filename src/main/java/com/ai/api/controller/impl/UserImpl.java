@@ -15,18 +15,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
@@ -39,7 +27,6 @@ import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
 import com.ai.api.util.AIUtil;
 import com.ai.api.util.RedisUtil;
-import com.ai.commons.JsonUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
@@ -47,13 +34,22 @@ import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.audit.api.ApiEmployeeBean;
 import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.ai.commons.beans.user.TokenSession;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /***************************************************************************
  * <PRE>
@@ -381,11 +377,11 @@ public class UserImpl implements User {
 	@Override
 //	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/quality-manual", method = RequestMethod.GET)
-	@ApiOperation(value = "Get User Quality-manual", response = String.class)
+	@ApiOperation(value = "Download User Quality Manual", response = String.class)
 	public ResponseEntity<String> getQualityManual(
 			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
-			@ApiParam(value = "sessionId just for testing", required = true) @RequestParam("sessionId") String sessionId,
-			@ApiParam(value = "verifiedCode", required = true) @RequestParam("verifiedCode") String verifiedCode,
+			@ApiParam(value = "user token sessionId", required = true) @RequestParam("sessionId") String sessionId,
+			@ApiParam(value = "last 50 chars of the user token", required = true) @RequestParam("code") String verifiedCode,
 			HttpServletResponse httpResponse) {
 		try {
 			if(AIUtil.verifiedAccess(userId, verifiedCode, sessionId)) {
