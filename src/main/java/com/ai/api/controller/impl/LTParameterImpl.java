@@ -174,13 +174,14 @@ public class LTParameterImpl implements LTParameter {
 	@RequestMapping(value = "/parameter/lt/packages/tests", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchPackageTests(			
 			@ApiParam(value="Countries") @RequestParam(value = "countries", required = false, defaultValue = "") String countries, 
+			@ApiParam(value="Regions") @RequestParam(value = "regions", required = false, defaultValue = "") String regions, 
 			@ApiParam(value="Test Names") @RequestParam(value = "testNames", required = false, defaultValue = "") String testNames,
 			@ApiParam(value="Package ID") @RequestParam(value = "package", required = false, defaultValue = "") String pckage,
 			@ApiParam(value="Office ID") @RequestParam(value = "office", required = false, defaultValue = "") String office,
 			@ApiParam(value="Program ID") @RequestParam(value = "program", required = false, defaultValue = "") String program) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-			callResult = ltparameterService.searchPackageTests(countries, testNames, pckage, office, program);
+			callResult = ltparameterService.searchPackageTests(countries, regions, testNames, pckage, office, program);
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("search LT Tests error: " + ExceptionUtils.getFullStackTrace(e));
@@ -195,13 +196,14 @@ public class LTParameterImpl implements LTParameter {
 	@RequestMapping(value = "/parameter/lt/programs/tests", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchProgramTests(
 			@ApiParam(value="Countries") @RequestParam(value = "countries", required = false, defaultValue = "") String countries, 
+			@ApiParam(value="Regions") @RequestParam(value = "regions", required = false, defaultValue = "") String regions, 
 			@ApiParam(value="Test Names") @RequestParam(value = "testNames", required = false, defaultValue = "") String testNames,
 			@ApiParam(value="Office ID") @RequestParam(value = "office", required = false, defaultValue = "") String office,
 			@ApiParam(value="Program ID") @RequestParam(value = "program", required = false, defaultValue = "") String program,
 			@ApiParam(value="Only search for favorite tests") @RequestParam(value = "isFavorite", required = false, defaultValue = "false") Boolean isFavorite) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-			callResult = ltparameterService.searchProgramTests(countries, testNames, office, program, isFavorite);
+			callResult = ltparameterService.searchProgramTests(countries, regions, testNames, office, program, isFavorite);
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("search LT Tests error: " + ExceptionUtils.getFullStackTrace(e));
