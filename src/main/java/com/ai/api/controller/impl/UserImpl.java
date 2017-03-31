@@ -37,6 +37,7 @@ import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
+import com.ai.api.util.AIUtil;
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.StringUtils;
@@ -378,7 +379,7 @@ public class UserImpl implements User {
 	}
 
 	@Override
-	@TokenSecured
+//	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/quality-manual", method = RequestMethod.GET)
 	@ApiOperation(value = "Get User Quality-manual", response = String.class)
 	public ResponseEntity<String> getQualityManual(
@@ -387,7 +388,7 @@ public class UserImpl implements User {
 			@ApiParam(value = "verifiedCode", required = true) @RequestParam("verifiedCode") String verifiedCode,
 			HttpServletResponse httpResponse) {
 		try {
-			if(ConstMap.verifiedAccess(userId, verifiedCode, sessionId)) {
+			if(AIUtil.verifiedAccess(userId, verifiedCode, sessionId)) {
 				boolean b = userService.getQualityManual(userId, httpResponse);
 				if (b) {
 					return new ResponseEntity<>(HttpStatus.OK);
