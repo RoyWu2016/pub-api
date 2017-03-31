@@ -3690,13 +3690,13 @@
         "description" : "",
         "operationId" : "searchProgramTestLocations",
         "parameters" : [ {
-          "name" : "",
+          "name" : "userId",
           "in" : "path",
           "description" : "User ID",
           "required" : true,
           "type" : "string"
         }, {
-          "name" : "",
+          "name" : "programId",
           "in" : "path",
           "description" : "Program ID",
           "required" : true,
