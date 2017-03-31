@@ -148,6 +148,78 @@
         }
       }
     },
+    "/finance/net-suite/invoice" : {
+      "post" : {
+        "tags" : [ "Finance" ],
+        "summary" : "Save Invoice From NetSuite API",
+        "description" : "",
+        "operationId" : "processInvoice",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/finance/net-suite/logs" : {
+      "post" : {
+        "tags" : [ "Finance" ],
+        "summary" : "Save Log From NetSuite API",
+        "description" : "",
+        "operationId" : "processNSLog",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/finance/net-suite/memo" : {
+      "post" : {
+        "tags" : [ "Finance" ],
+        "summary" : "Save Memo From NetSuite API",
+        "description" : "",
+        "operationId" : "processCreditOrDebitMemos",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
     "/order/{orderId}/audit-factory" : {
       "get" : {
         "tags" : [ "Supplier" ],
@@ -3679,7 +3751,7 @@
           "required" : true,
           "type" : "string"
         }, {
-          "name" : "orderIds",
+          "name" : "",
           "in" : "query",
           "description" : "Order IDs",
           "required" : true,
@@ -3702,13 +3774,13 @@
         "description" : "",
         "operationId" : "searchProgramTestLocations",
         "parameters" : [ {
-          "name" : "",
+          "name" : "userId",
           "in" : "path",
           "description" : "User ID",
           "required" : true,
           "type" : "string"
         }, {
-          "name" : "",
+          "name" : "programId",
           "in" : "path",
           "description" : "Program ID",
           "required" : true,
@@ -4731,7 +4803,7 @@
     "/user/{userId}/quality-manual" : {
       "get" : {
         "tags" : [ "User Profile" ],
-        "summary" : "Get User Quality-manual",
+        "summary" : "Download User Quality Manual",
         "description" : "",
         "operationId" : "getQualityManual",
         "parameters" : [ {
@@ -5983,24 +6055,20 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "lcbeneName" : {
-          "type" : "string"
-        },
         "icneeded" : {
           "type" : "boolean",
           "default" : false
+        },
+        "lcbeneName" : {
+          "type" : "string"
         },
         "lcappName" : {
           "type" : "string"
         },
-        "icneeded" : {
-          "type" : "boolean",
-          "default" : false
-        },
-        "lcappAddress" : {
+        "lcbeneAddress" : {
           "type" : "string"
         },
-        "lcbeneName" : {
+        "lcappAddress" : {
           "type" : "string"
         },
         "lcnumber" : {
@@ -6831,16 +6899,16 @@
           "type" : "boolean",
           "default" : false
         },
+        "lcbeneficaryCompanyName" : {
+          "type" : "string"
+        },
         "lcapplicantCompanyName" : {
           "type" : "string"
         },
         "lcapplicantAddress" : {
           "type" : "string"
         },
-        "lcapplicantAddress" : {
-          "type" : "string"
-        },
-        "lcbeneficaryCompanyName" : {
+        "lcbeneficaryAddress" : {
           "type" : "string"
         },
         "lcnumber" : {
@@ -7518,20 +7586,21 @@
         "login" : {
           "type" : "string"
         },
-        "refer" : {
-          "type" : "string"
-        },
-        "introducedByOtherType" : {
-          "type" : "string"
-        },
-        "introducedByTradeshow" : {
-          "type" : "string"
-        },
-        "introducedBy" : {
-          "type" : "string"
-        },
         "contactInfo" : {
           "$ref" : "#/definitions/ContactInfoBean"
+        },
+        "affiliateID" : {
+          "type" : "string"
+        },
+        "userIp" : {
+          "type" : "string"
+        },
+        "isTestAccount" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "turnover" : {
+          "type" : "string"
         },
         "activity" : {
           "type" : "string"
@@ -7539,26 +7608,19 @@
         "domainName" : {
           "type" : "string"
         },
-        "isTestAccount" : {
-          "type" : "boolean",
-          "default" : false
-        },
-        "userIp" : {
-          "type" : "string"
-        },
-        "affiliateID" : {
+        "introducedBy" : {
           "type" : "string"
         },
         "uniqueId" : {
           "type" : "string"
         },
-        "turnover" : {
-          "type" : "string"
-        },
-        "login" : {
-          "type" : "string"
-        },
         "refer" : {
+          "type" : "string"
+        },
+        "introducedByOtherType" : {
+          "type" : "string"
+        },
+        "introducedByTradeshow" : {
           "type" : "string"
         }
       }
@@ -7619,171 +7681,6 @@
         },
         "superMaster" : {
           "$ref" : "#/definitions/SuperMasterBean"
-        }
-      }
-    },
-    "CompanyCustomField" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "string"
-        },
-        "createTime" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "updateTime" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "createBy" : {
-          "type" : "string"
-        },
-        "updateBy" : {
-          "type" : "string"
-        },
-        "status" : {
-          "type" : "string"
-        },
-        "moduleId" : {
-          "$ref" : "#/definitions/CrmCompany"
-        },
-        "customFieldDetails" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "$ref" : "#/definitions/CompanyCustomFieldDetail"
-          }
-        }
-      }
-    },
-    "CompanyCustomFieldConstraint" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "string"
-        },
-        "createTime" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "updateTime" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "createBy" : {
-          "type" : "string"
-        },
-        "updateBy" : {
-          "type" : "string"
-        },
-        "status" : {
-          "type" : "string"
-        },
-        "name" : {
-          "type" : "string"
-        },
-        "value" : {
-          "type" : "string"
-        },
-        "customFieldDetail" : {
-          "$ref" : "#/definitions/CompanyCustomFieldDetail"
-        }
-      }
-    },
-    "CompanyCustomFieldDetail" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "string"
-        },
-        "createTime" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "updateTime" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "createBy" : {
-          "type" : "string"
-        },
-        "updateBy" : {
-          "type" : "string"
-        },
-        "status" : {
-          "type" : "string"
-        },
-        "typeCode" : {
-          "type" : "string"
-        },
-        "label" : {
-          "type" : "string"
-        },
-        "elementName" : {
-          "type" : "string"
-        },
-        "elementId" : {
-          "type" : "string"
-        },
-        "isRequired" : {
-          "type" : "boolean",
-          "default" : false
-        },
-        "displayOrder" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "customField" : {
-          "$ref" : "#/definitions/CompanyCustomField"
-        },
-        "constraints" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "$ref" : "#/definitions/CompanyCustomFieldConstraint"
-          }
-        },
-        "options" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "$ref" : "#/definitions/CompanyCustomFieldSelectOption"
-          }
-        }
-      }
-    },
-    "CompanyCustomFieldSelectOption" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "string"
-        },
-        "createTime" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "updateTime" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "createBy" : {
-          "type" : "string"
-        },
-        "updateBy" : {
-          "type" : "string"
-        },
-        "status" : {
-          "type" : "string"
-        },
-        "name" : {
-          "type" : "string"
-        },
-        "value" : {
-          "type" : "string"
-        },
-        "customFieldDetail" : {
-          "$ref" : "#/definitions/CompanyCustomFieldDetail"
         }
       }
     },
@@ -8050,13 +7947,6 @@
         },
         "contact" : {
           "$ref" : "#/definitions/CustContact"
-        },
-        "customFields" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "$ref" : "#/definitions/CompanyCustomField"
-          }
         }
       }
     },
@@ -10427,25 +10317,25 @@
         "supplierValidateCode" : {
           "type" : "string"
         },
-        "sic" : {
-          "type" : "string"
-        },
-        "lcbeneName" : {
-          "type" : "string"
-        },
         "icneeded" : {
           "type" : "string"
         },
         "itlmanager" : {
           "type" : "string"
         },
-        "itlmanager" : {
+        "lcbeneName" : {
+          "type" : "string"
+        },
+        "lcappName" : {
+          "type" : "string"
+        },
+        "lcbeneAddress" : {
           "type" : "string"
         },
         "lcappAddress" : {
           "type" : "string"
         },
-        "lcbeneName" : {
+        "sic" : {
           "type" : "string"
         },
         "lcnumber" : {
@@ -11958,6 +11848,12 @@
           "type" : "string"
         },
         "status" : {
+          "type" : "string"
+        },
+        "reorderRemark" : {
+          "type" : "string"
+        },
+        "retestRemark" : {
           "type" : "string"
         },
         "bookingRemark" : {
@@ -15751,6 +15647,12 @@
         "updateBy" : {
           "type" : "string"
         },
+        "reorderRemark" : {
+          "type" : "string"
+        },
+        "retestRemark" : {
+          "type" : "string"
+        },
         "bookingRemark" : {
           "type" : "string"
         },
@@ -16353,6 +16255,9 @@
           }
         },
         "country" : {
+          "type" : "string"
+        },
+        "region" : {
           "type" : "string"
         },
         "tags" : {
