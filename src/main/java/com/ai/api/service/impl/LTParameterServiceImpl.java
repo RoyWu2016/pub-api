@@ -182,4 +182,9 @@ public class LTParameterServiceImpl implements LTParameterService {
 			Boolean isFavorite) throws IOException {
 		return ltparameterDao.updateProgramTests(userId, programId, tests, isFavorite);
 	}
+
+	@Override
+	public ApiCallResult searchProgramTestLocations(String programId) throws IOException {
+		return ltparameterDao.searchProgramTestLocations(programId);
+	}
 }
