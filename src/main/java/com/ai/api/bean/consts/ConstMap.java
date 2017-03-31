@@ -10,7 +10,10 @@ import java.util.Set;
 import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.EmployeeGroup;
 import com.ai.api.bean.EmployeeRole;
+import com.ai.api.util.RedisUtil;
+import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.audit.api.ApiEmployeeBean;
+import com.ai.commons.beans.user.TokenSession;
 
 /***************************************************************************
  * <PRE>
@@ -147,5 +150,22 @@ public class ConstMap {
 				}
 			}
 		}
+	}
+	
+	public static boolean verifiedAccess(String userId, String verifiedCode, String sessionId) {
+		boolean flag = false;
+		String str = RedisUtil.get(sessionId);
+		if(null != str) {
+			TokenSession session = (TokenSession) JsonUtil.mapToObject(str, TokenSession.class);
+			if(null != session) {
+				String token = session.getToken().substring(session.getToken().length()-50, session.getToken().length());
+				String code = verifiedCode.substring(verifiedCode.length()-50, verifiedCode.length());
+				if(userId.equals(session.getUserId())&&code.equals(token)) {
+					flag = true;
+				}
+			}
+		}
+		
+		return flag;
 	}
 }
