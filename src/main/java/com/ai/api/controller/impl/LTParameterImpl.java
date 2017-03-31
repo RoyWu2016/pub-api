@@ -71,7 +71,7 @@ public class LTParameterImpl implements LTParameter {
 	@TokenSecured
 	@RequestMapping(value = "/parameter/lt/program/{programID}/packages", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchPackages(
-			@ApiParam(value="Program ID") @PathVariable String programID) {
+			@ApiParam(value="Program ID") @PathVariable("programID") String programID) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			callResult = ltparameterService.searchPackages(programID);
@@ -119,7 +119,7 @@ public class LTParameterImpl implements LTParameter {
 	@RequestMapping(value = "/parameter/lt/programs/{programId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchProgram(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh,
-			@PathVariable String programId) {
+			@PathVariable("programId") String programId) {
 		ApiCallResult callResult = new ApiCallResult();
 		/*if (!refresh) {
 			logger.info("try to searchProgram from redis ...");
@@ -216,7 +216,7 @@ public class LTParameterImpl implements LTParameter {
 	@RequestMapping(value = "/parameter/lt/test/{testId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchTest(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh,
-			@PathVariable String testId) {
+			@PathVariable("testId") String testId) {
 		ApiCallResult callResult = new ApiCallResult();
 		/*if (!refresh) {
 			logger.info("try to searchTest from redis ...");
@@ -293,7 +293,7 @@ public class LTParameterImpl implements LTParameter {
 	@TokenSecured
 	@RequestMapping(value = "/parameter/lt/category/{categoryId}/tags", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchTagsByCategory(
-			@ApiParam(value="Product Category ID") @PathVariable String categoryId) {
+			@ApiParam(value="Product Category ID") @PathVariable("categoryId") String categoryId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			callResult = ltparameterService.searchTags(categoryId);
@@ -326,7 +326,7 @@ public class LTParameterImpl implements LTParameter {
 	@TokenSecured
 	@RequestMapping(value = "/parameter/lt/office/{officeId}/tats", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchTATs(
-			@ApiParam(value="Office ID") @PathVariable String officeId) {
+			@ApiParam(value="Office ID") @PathVariable("officeId") String officeId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			callResult = ltparameterService.searchTATs(officeId);
