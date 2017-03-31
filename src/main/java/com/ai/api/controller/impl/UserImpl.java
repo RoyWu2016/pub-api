@@ -384,7 +384,7 @@ public class UserImpl implements User {
 	@ApiOperation(value = "Get User Quality-manual", response = String.class)
 	public ResponseEntity<String> getQualityManual(
 			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
-			@ApiParam(value = "sessionId", required = true) @RequestParam("sessionId") String sessionId,
+			@ApiParam(value = "sessionId just for testing", required = true) @RequestParam("sessionId") String sessionId,
 			@ApiParam(value = "verifiedCode", required = true) @RequestParam("verifiedCode") String verifiedCode,
 			HttpServletResponse httpResponse) {
 		try {
