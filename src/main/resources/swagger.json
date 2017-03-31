@@ -3416,6 +3416,7 @@
         }, {
           "name" : "",
           "in" : "path",
+          "description" : "User ID",
           "required" : true,
           "type" : "string"
         } ],
@@ -3691,11 +3692,13 @@
         "parameters" : [ {
           "name" : "",
           "in" : "path",
+          "description" : "User ID",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "",
           "in" : "path",
+          "description" : "Program ID",
           "required" : true,
           "type" : "string"
         } ],
@@ -3765,6 +3768,7 @@
         "parameters" : [ {
           "name" : "",
           "in" : "path",
+          "description" : "User ID",
           "required" : true,
           "type" : "string"
         } ],
@@ -4727,13 +4731,13 @@
         }, {
           "name" : "sessionId",
           "in" : "query",
-          "description" : "sessionId",
+          "description" : "user token sessionId",
           "required" : true,
           "type" : "string"
         }, {
-          "name" : "verifiedCode",
+          "name" : "code",
           "in" : "query",
-          "description" : "verifiedCode",
+          "description" : "last 50 chars of the user token",
           "required" : true,
           "type" : "string"
         } ],
@@ -5967,23 +5971,23 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "lcnumber" : {
-          "type" : "string"
-        },
-        "lcbeneAddress" : {
+        "lcbeneName" : {
           "type" : "string"
         },
         "icneeded" : {
           "type" : "boolean",
           "default" : false
         },
+        "lcappName" : {
+          "type" : "string"
+        },
         "lcappAddress" : {
           "type" : "string"
         },
-        "lcbeneName" : {
+        "lcbeneAddress" : {
           "type" : "string"
         },
-        "lcappName" : {
+        "lcnumber" : {
           "type" : "string"
         }
       }
@@ -6811,19 +6815,19 @@
           "type" : "boolean",
           "default" : false
         },
-        "lcnumber" : {
+        "lcapplicantCompanyName" : {
           "type" : "string"
         },
-        "lcbeneficaryAddress" : {
+        "lcbeneficaryCompanyName" : {
           "type" : "string"
         },
         "lcapplicantAddress" : {
           "type" : "string"
         },
-        "lcapplicantCompanyName" : {
+        "lcbeneficaryAddress" : {
           "type" : "string"
         },
-        "lcbeneficaryCompanyName" : {
+        "lcnumber" : {
           "type" : "string"
         }
       }
@@ -7495,24 +7499,36 @@
         "password" : {
           "type" : "string"
         },
-        "introducedBy" : {
+        "login" : {
           "type" : "string"
         },
-        "activity" : {
+        "refer" : {
+          "type" : "string"
+        },
+        "introducedByOtherType" : {
+          "type" : "string"
+        },
+        "introducedByTradeshow" : {
+          "type" : "string"
+        },
+        "introducedBy" : {
           "type" : "string"
         },
         "contactInfo" : {
           "$ref" : "#/definitions/ContactInfoBean"
         },
-        "domainName" : {
+        "activity" : {
           "type" : "string"
         },
-        "turnover" : {
+        "domainName" : {
           "type" : "string"
         },
         "isTestAccount" : {
           "type" : "boolean",
           "default" : false
+        },
+        "userIp" : {
+          "type" : "string"
         },
         "affiliateID" : {
           "type" : "string"
@@ -7520,19 +7536,7 @@
         "uniqueId" : {
           "type" : "string"
         },
-        "userIp" : {
-          "type" : "string"
-        },
-        "introducedByTradeshow" : {
-          "type" : "string"
-        },
-        "introducedByOtherType" : {
-          "type" : "string"
-        },
-        "login" : {
-          "type" : "string"
-        },
-        "refer" : {
+        "turnover" : {
           "type" : "string"
         }
       }
@@ -10401,10 +10405,10 @@
         "supplierValidateCode" : {
           "type" : "string"
         },
-        "lcnumber" : {
+        "sic" : {
           "type" : "string"
         },
-        "lcbeneAddress" : {
+        "lcbeneName" : {
           "type" : "string"
         },
         "icneeded" : {
@@ -10413,16 +10417,16 @@
         "itlmanager" : {
           "type" : "string"
         },
-        "lcappAddress" : {
-          "type" : "string"
-        },
-        "lcbeneName" : {
-          "type" : "string"
-        },
         "lcappName" : {
           "type" : "string"
         },
-        "sic" : {
+        "lcappAddress" : {
+          "type" : "string"
+        },
+        "lcbeneAddress" : {
+          "type" : "string"
+        },
+        "lcnumber" : {
           "type" : "string"
         }
       }
