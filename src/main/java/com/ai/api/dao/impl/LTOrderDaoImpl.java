@@ -330,6 +330,7 @@ public class LTOrderDaoImpl implements LTOrderDao {
 				.append(orderId).append("/user/").append(userId)
 				.append("/clone/").append(cloneType).toString();
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+		builder.queryParam("requestor", "external");
 		OrderDTO clonedOrder = restTemplate.postForObject(builder.build().encode().toUri(), null, OrderDTO.class);
 		OrderDTO order = findOrder(clonedOrder.getId());
 		ApiCallResult result = new ApiCallResult();
