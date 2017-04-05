@@ -216,14 +216,15 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             ServiceResponse result = HttpUtils.postJson(url.toString(),null,map);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setContent(result.getResponseString());
+	            logger.info("=====2nd step of report submitting [product ID]" + sourceId + " end =====");
                 return new ResponseEntity<>(callResult, HttpStatus.OK);
             }else {
 	            logger.error("createMapWithFileids error [product ID]: " + result.getResponseString());
 	            logger.error("reasonPhase: " + result.getReasonPhase());
 	            logger.error("statusCode: " + result.getStatusCode());
                 callResult.setMessage(result.getResponseString());
+	            logger.info("=====2nd step of report submitting [product ID]" + sourceId + " get error end =====");
             }
-	        logger.info("=====2nd step of report submitting [product ID]" + sourceId + " end =====");
         } catch (Exception e) {
             logger.error(ExceptionUtils.getFullStackTrace(e));
             callResult.setMessage("Exception: " + ExceptionUtils.getFullStackTrace(e));
@@ -339,8 +340,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             }
 //            logger.info("mapFileList size :"+mapFileList.size());
             File tempDir = null;
-            for (Map.Entry<String, List> map : mapFileList.entrySet())
-            {
+            for (Map.Entry<String, List> map : mapFileList.entrySet()) {
 //                logger.info("get each mapFile " + map.getKey()+" -- "+map.getValue());
                 List<FileMetaBean> beanList = new ArrayList<>();
                 List<File>  toBeDeleted = new ArrayList<>();
@@ -391,9 +391,10 @@ public class InspectorResultControllerImpl implements InspectorResultController 
         }catch(Exception e){
             logger.error("Error in uploading report [product ID]" + sourceId + "to file service!" + ExceptionUtils.getFullStackTrace(e));
             callResult.setMessage("Error in uploading reports! " + ExceptionUtils.getStackTrace(e));
+	        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     @Override
     @RequestMapping(value = "/results/file/{fileIds}", method = RequestMethod.GET)
     public @ResponseBody void getFile(@PathVariable("fileIds") String fileIds,HttpServletResponse response) throws IOException {
