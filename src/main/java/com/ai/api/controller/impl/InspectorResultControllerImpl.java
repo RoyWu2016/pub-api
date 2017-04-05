@@ -212,12 +212,18 @@ public class InspectorResultControllerImpl implements InspectorResultController 
         }
         try {
             logger.info("createMapWithFileids requesting: " + url.toString());
+	        logger.info("=====2nd step of report submitting [product ID]" + sourceId + "=====");
             ServiceResponse result = HttpUtils.postJson(url.toString(),null,map);
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setContent(result.getResponseString());
+	            logger.info("=====2nd step of report submitting [product ID]" + sourceId + " end =====");
                 return new ResponseEntity<>(callResult, HttpStatus.OK);
             }else {
+	            logger.error("createMapWithFileids error [product ID]: " + result.getResponseString());
+	            logger.error("reasonPhase: " + result.getReasonPhase());
+	            logger.error("statusCode: " + result.getStatusCode());
                 callResult.setMessage(result.getResponseString());
+	            logger.info("=====2nd step of report submitting [product ID]" + sourceId + " get error end =====");
             }
         } catch (Exception e) {
             logger.error(ExceptionUtils.getFullStackTrace(e));
@@ -237,7 +243,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
         if (StringUtils.isNotBlank(username)){
             url.append("?username=").append(username);
         }
-	    logger.info("=====ready to updateDataWithFileids=====");
+	    logger.info("=====ready to updateDataWithFileids [product ID]" + sourceId + "=====");
 	    logger.info("map: " + map);
         try {
             logger.info("approveReport requesting: " + url.toString());
@@ -245,10 +251,13 @@ public class InspectorResultControllerImpl implements InspectorResultController 
 	        logger.info("result from ip service: " + result.toString());
             if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
                 callResult.setContent(result.getResponseString());
-	            logger.info("===== updateDataWithFileids finished successfully =====");
+	            logger.info("===== updateDataWithFileids [product ID]" + sourceId + " finished successfully =====");
                 return new ResponseEntity<>(callResult, HttpStatus.OK);
             }else {
-	            logger.info("===== updateDataWithFileids failed =====");
+	            logger.info("===== updateDataWithFileids [product ID]" + sourceId + " failed =====");
+	            logger.error("createMapWithFileids error [product ID]: " + result.getResponseString());
+	            logger.error("reasonPhase: " + result.getReasonPhase());
+	            logger.error("statusCode: " + result.getStatusCode());
                 callResult.setMessage(result.getResponseString());
             }
         } catch (Exception e) {
@@ -297,8 +306,10 @@ public class InspectorResultControllerImpl implements InspectorResultController 
         ApiCallResult callResult = new ApiCallResult();
 	    int reqSize = request.getContentLength();
 	    if (reqSize > allowedSize) {
+		    logger.info("=====checking report size of " +  sourceId +"=====");
 		    logger.error("Request size " + reqSize + "large than "
 				    + allowedSize + ", " +allowedSizeInMB + " MB.");
+		    logger.info("=====checking report size of " +  sourceId +" end =====");
 		    callResult.setMessage("Uploading report data are larger than " + allowedSizeInMB + " MB.");
 		    return new ResponseEntity<>(callResult, HttpStatus.PAYLOAD_TOO_LARGE);
 	    } else {
@@ -306,7 +317,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
 	    }
 
         try{
-            logger.info("=====ready to upload reports=====");
+            logger.info("=====ready to upload report [product ID]" + sourceId + "=====");
             Map<String,List<FileMetaBean>> fileMetaList = new HashMap<>();
             Map<String, List> mapFileList = new HashMap<>();
             Iterator<String> itr = request.getFileNames();
@@ -376,14 +387,15 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                 logger.info("delete done!");
             }
             callResult.setContent(fileMetaList);
-	        logger.info("=====uploading reports done successfully =====");
+	        logger.info("=====uploading report [product ID]" + sourceId + " done successfully =====");
             return new ResponseEntity<>(callResult,HttpStatus.OK);
         }catch(Exception e){
-            logger.error("Error in uploading reports to file service!" + ExceptionUtils.getFullStackTrace(e));
+            logger.error("Error in uploading report [product ID]" + sourceId + "to file service!" + ExceptionUtils.getFullStackTrace(e));
             callResult.setMessage("Error in uploading reports! " + ExceptionUtils.getStackTrace(e));
-        }
         return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    }
+
     @Override
     @RequestMapping(value = "/results/file/{fileIds}", method = RequestMethod.GET)
     public @ResponseBody void getFile(@PathVariable("fileIds") String fileIds,HttpServletResponse response) throws IOException {
