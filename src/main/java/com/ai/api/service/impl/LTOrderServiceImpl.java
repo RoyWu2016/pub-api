@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.ai.aims.constants.OrderStatus;
 import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.CrmCompany;
 import com.ai.aims.services.model.OrderMaster;
@@ -118,8 +119,13 @@ public class LTOrderServiceImpl implements LTOrderService {
 		if(sendEmail){
 			UserBean user = userService.getCustById(userId);
 			String companyId = user.getCompany().getId();
-			boolean sendEmailAddOrder = ltEmailService.sendEmailAddOrder(orderDTO, companyId);
-			if(!sendEmailAddOrder) {
+			boolean sendEmailStatus = false;
+			if (OrderStatus.WAITING_FOR_CANCELLATION_CODE.equals(orderDTO.getStatusCode())) {
+				sendEmailStatus = ltEmailService.sendEmailWaitingForCancellation(orderDTO, companyId);
+			} else {
+				sendEmailStatus = ltEmailService.sendEmailAddOrder(orderDTO, companyId);
+			}
+			if(!sendEmailStatus) {
 				throw new AIException("Error during send mail after saving order");
 			}
 		}
