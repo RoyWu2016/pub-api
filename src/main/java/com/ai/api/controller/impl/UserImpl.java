@@ -306,21 +306,14 @@ public class UserImpl implements User {
 		if (cust != null) {
 			try {
 				result = ConstMap.convert2ApiEmployeeBean(cust);
+				return new ResponseEntity<>(result, HttpStatus.OK);
 			} catch (Exception e) {
 				logger.error("error!! set roles value", e);
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-	}
-
-	private Map<String, List<String>> createModule(Map<String, List<String>> result, String moduleName,
-			String displayName) {
-		// TODO Auto-generated method stub
-		// List<String> list = new ArrayList<String>();
-
-		return result;
 	}
 
 	@Override
