@@ -30,6 +30,7 @@ import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.OrderMaster;
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.api.bean.OrderTestBean;
+import com.ai.api.bean.SearchResultBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.LTOrder;
 import com.ai.api.service.LTOrderService;
@@ -92,11 +93,15 @@ public class LTOrderImpl implements LTOrder {
 			searchParams.put("orderStatus", orderStatus);
 			searchParams.put("cloneType", cloneType);
 			List<OrderSearchBean> list = ltOrderService.searchLTOrders(searchParams, pageSize, pageNumber);
+			Long total = ltOrderService.countTotalOrders(searchParams, pageSize, pageNumber);
+			SearchResultBean result = new SearchResultBean();
+			result.setPageItems(list);
+			result.setTotalSize(Integer.valueOf(null != total ? total.toString() : "0"));
+			result.setPageNo(pageNumber);
+			callResult.setContent(result);
 			if (null!=list && list.size()>0){
-				callResult.setContent(list);
 				return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 			}else {
-				callResult.setContent(list);
                 callResult.setMessage("Got empty LT orders list.");
                 return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.NO_CONTENT);
             }

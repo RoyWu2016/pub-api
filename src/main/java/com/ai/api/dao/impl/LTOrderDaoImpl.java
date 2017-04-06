@@ -69,6 +69,17 @@ public class LTOrderDaoImpl implements LTOrderDao {
 	@Autowired
 	@Qualifier("serviceConfig")
 	private ServiceConfig config;
+	
+	@Override
+	public Long countTotalOrders(Map<String, Object> searchParams, Integer pageNumber, Integer pageSize,
+			String direction) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		Long total = restTemplate.getForObject(buildOrderSearchCriteria(searchParams, pageSize,
+				pageNumber, direction, config.getAimsServiceBaseUrl() + "/api/ordermanagement/count/total")
+					.build().encode().toUri(), Long.class);
+		return total;
+	}
 
 	@Override
 	public List<OrderSearchBean> searchLTOrders(Map<String, Object> searchParams, Integer pageNumber, Integer pageSize,
