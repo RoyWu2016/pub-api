@@ -61,4 +61,6 @@ public interface LTOrderDao {
 	public ApiCallResult deleteOrderTestAssignment(String userId, String testId) throws IOException;
 
 	public ApiCallResult cloneOrder(String userId, String orderId, String cloneType) throws IOException;
+
+	public Long countTotalOrders(Map<String, Object> searchParams, Integer pageNumber, Integer pageSize, String direction) throws IOException;
 }
