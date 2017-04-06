@@ -75,6 +75,11 @@ public class LTOrderServiceImpl implements LTOrderService {
 	private LTEmailService ltEmailService;
 
 	@Override
+	public Long countTotalOrders(Map<String, Object> searchParams, Integer pageNumber, Integer pageSize) throws IOException, AIException {
+		return ltorderDao.countTotalOrders(searchParams, pageSize, pageNumber, Sort.Direction.DESC.name().toLowerCase());
+	}
+
+	@Override
 	public List<OrderSearchBean> searchLTOrders(Map<String, Object> searchParams, Integer pageNumber, Integer pageSize) throws IOException, AIException {
 		String companyId = "";
 		String parentId = "";
