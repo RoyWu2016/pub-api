@@ -414,6 +414,7 @@ public class UserImpl implements User {
 						RedisUtil.HOUR * 24 * 365 * 10);
 				return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
 			}
+            logger.error("fail from sso-service !"+apiCallResult.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			apiCallResult.setMessage(e.toString());
