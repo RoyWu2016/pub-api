@@ -261,4 +261,23 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 		return result;
 	}
 
+	@Override
+	public ApiCallResult resetPW(String employeeEmail){
+		ApiCallResult result = new ApiCallResult();
+		StringBuilder url = new StringBuilder(config.getSsoUserServiceUrl());
+		url.append("/password/reset");
+		try {
+			ServiceCallResult callResult = HttpUtil.issuePutRequest(url.toString(),null,employeeEmail);
+			if (callResult.getStatusCode() == HttpStatus.OK.value() && callResult.getReasonPhase().equalsIgnoreCase("OK")){
+				result.setContent(callResult.getResponseString());
+			}else {
+				result.setMessage("fail! "+ callResult.getStatusCode()+"||"+callResult.getResponseString());
+			}
+		}catch (Exception e){
+			result.setMessage("Error Exception!"+e);
+			LOGGER.error("Error Exception!",e);
+		}
+		return result;
+	}
+
 }

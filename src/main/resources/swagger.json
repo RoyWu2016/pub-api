@@ -47,6 +47,29 @@
   } ],
   "schemes" : [ "http" ],
   "paths" : {
+    "/ /employee/{employeeEmail}/reset-password" : {
+      "put" : {
+        "tags" : [ "User Profile" ],
+        "summary" : "Reset password by email",
+        "description" : "",
+        "operationId" : "resetPW",
+        "parameters" : [ {
+          "name" : "employeeEmail",
+          "in" : "path",
+          "description" : "employeeEmail",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
     "/auth/refresh-token" : {
       "put" : {
         "tags" : [ "Authentication" ],
@@ -6055,23 +6078,23 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "icneeded" : {
-          "type" : "boolean",
-          "default" : false
-        },
-        "lcbeneName" : {
+        "lcnumber" : {
           "type" : "string"
         },
         "lcappName" : {
           "type" : "string"
         },
+        "lcbeneName" : {
+          "type" : "string"
+        },
+        "icneeded" : {
+          "type" : "boolean",
+          "default" : false
+        },
         "lcbeneAddress" : {
           "type" : "string"
         },
         "lcappAddress" : {
-          "type" : "string"
-        },
-        "lcnumber" : {
           "type" : "string"
         }
       }
@@ -7583,29 +7606,32 @@
         "password" : {
           "type" : "string"
         },
-        "login" : {
+        "introducedByOtherType" : {
           "type" : "string"
         },
-        "contactInfo" : {
-          "$ref" : "#/definitions/ContactInfoBean"
-        },
-        "affiliateID" : {
-          "type" : "string"
-        },
-        "userIp" : {
+        "introducedByTradeshow" : {
           "type" : "string"
         },
         "isTestAccount" : {
           "type" : "boolean",
           "default" : false
         },
-        "turnover" : {
+        "login" : {
           "type" : "string"
+        },
+        "userIp" : {
+          "type" : "string"
+        },
+        "domainName" : {
+          "type" : "string"
+        },
+        "contactInfo" : {
+          "$ref" : "#/definitions/ContactInfoBean"
         },
         "activity" : {
           "type" : "string"
         },
-        "domainName" : {
+        "turnover" : {
           "type" : "string"
         },
         "introducedBy" : {
@@ -7614,13 +7640,10 @@
         "uniqueId" : {
           "type" : "string"
         },
+        "affiliateID" : {
+          "type" : "string"
+        },
         "refer" : {
-          "type" : "string"
-        },
-        "introducedByOtherType" : {
-          "type" : "string"
-        },
-        "introducedByTradeshow" : {
           "type" : "string"
         }
       }
@@ -10317,28 +10340,28 @@
         "supplierValidateCode" : {
           "type" : "string"
         },
-        "icneeded" : {
+        "lcnumber" : {
+          "type" : "string"
+        },
+        "sic" : {
           "type" : "string"
         },
         "itlmanager" : {
           "type" : "string"
         },
+        "lcappName" : {
+          "type" : "string"
+        },
         "lcbeneName" : {
           "type" : "string"
         },
-        "lcappName" : {
+        "icneeded" : {
           "type" : "string"
         },
         "lcbeneAddress" : {
           "type" : "string"
         },
         "lcappAddress" : {
-          "type" : "string"
-        },
-        "sic" : {
-          "type" : "string"
-        },
-        "lcnumber" : {
           "type" : "string"
         }
       }
@@ -14222,6 +14245,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "program" : {
+          "$ref" : "#/definitions/Program"
+        },
         "bookingOption" : {
           "$ref" : "#/definitions/ProgramBookingOption"
         },
@@ -14245,6 +14271,9 @@
         },
         "programCompany" : {
           "$ref" : "#/definitions/ProgramCompany"
+        },
+        "programName" : {
+          "type" : "string"
         }
       }
     },
