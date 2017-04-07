@@ -708,12 +708,24 @@
           "description" : "Office ID",
           "required" : true,
           "type" : "string"
-        } ],
+        }, {
+          "name" : "programId",
+          "in" : "query",
+          "description" : "Program ID",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "testIds",
+          "in" : "query",
+          "description" : "Test IDs",
+          "required" : false,
+          "type" : "string"
+        }  ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/TatSearchBean"
+              "$ref" : "#/definitions/TurnAroundTimeDTO"
             }
           }
         }

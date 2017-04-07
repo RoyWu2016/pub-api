@@ -57,7 +57,7 @@ public interface LTParameterDao {
 
 	public ApiCallResult searchRegions() throws IOException;
 	
-	public ApiCallResult searchTATs(String officeId) throws IOException;
+	public ApiCallResult searchTATs(String officeId, String programId, String testIds) throws IOException;
 
 	public ApiCallResult searchPackages(String programID) throws IOException;
 
