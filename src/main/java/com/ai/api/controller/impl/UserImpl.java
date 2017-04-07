@@ -423,7 +423,6 @@ public class UserImpl implements User {
 	}
 
 	@Override
-	@TokenSecured
 	@RequestMapping(value = "/employee/{employeeEmail}/reset-password", method = RequestMethod.PUT)
 	@ApiOperation(value = "Reset password by email", response = String.class)
 	public ResponseEntity<ApiCallResult> resetPW(@ApiParam(value = "employeeEmail", required = true) @PathVariable("employeeEmail") String employeeEmail) {
