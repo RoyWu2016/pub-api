@@ -356,13 +356,14 @@ public class UserServiceImpl implements UserService {
 		ContactInfoBean contactInfoBean = new ContactInfoBean();
 
 		MainBean main = new MainBean();
-		main.setSalutation(userBean.getFollowName());
-		main.setFamilyName(userBean.getLastName());
-		main.setGivenName(userBean.getFirstName());
+		main.setSalutation(contactBean.getMainGender());
+		main.setFamilyName(contactBean.getMainFamilyName());
+		main.setGivenName(contactBean.getMainGivenName());
 		main.setPosition(contactBean.getMainPosition());
-		main.setEmail(userBean.getPersonalEmail());
-		main.setPhoneNumber(userBean.getLandline());
-		main.setMobileNumber(userBean.getMobile());
+		main.setEmail(contactBean.getMainEmail());
+		main.setPhoneNumber(contactBean.getMainTel());
+		main.setMobileNumber(contactBean.getMainMobile());
+		main.setFax(contactBean.getMainFax());
 
 		contactInfoBean.setMain(main);
 
