@@ -11,6 +11,7 @@ import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.EmployeeGroup;
 import com.ai.api.bean.EmployeeRole;
 import com.ai.commons.beans.audit.api.ApiEmployeeBean;
+import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,7 +126,7 @@ public class ConstMap {
 			}
 		}
 		convert2Roles(apiEmployeeBean.getRoles(), allRoles);
-
+		logger.info(JSON.toJSONString(apiEmployeeBean));
 		return apiEmployeeBean;
 
 	}
