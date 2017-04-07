@@ -77,6 +77,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -98,6 +99,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -117,6 +119,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -138,6 +141,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -156,6 +160,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -180,6 +185,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -222,6 +228,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -241,6 +248,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -260,6 +268,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -279,6 +288,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -299,6 +309,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -320,6 +331,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -341,6 +353,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -362,6 +375,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -386,6 +400,7 @@ public class AuditImpl implements Audit {
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
+			logger.info("fail from psi-service!"+result.getMessage());
 			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

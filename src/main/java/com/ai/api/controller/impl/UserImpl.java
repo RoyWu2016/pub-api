@@ -432,8 +432,10 @@ public class UserImpl implements User {
 			if (StringUtils.isBlank(apiCallResult.getMessage())) {
 				return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
 			}
+			logger.info("fail from sso-service !"+apiCallResult.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error Exception!"+e);
 			apiCallResult.setMessage(e.toString());
 		}
 		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
