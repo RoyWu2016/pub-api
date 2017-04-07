@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -24,6 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ai.aims.constants.Status;
 import com.ai.aims.services.dto.TestFilterDTO;
+import com.ai.aims.services.dto.TurnAroundTimeDTO;
 import com.ai.aims.services.dto.office.OfficeDTO;
 import com.ai.aims.services.dto.packagemgmt.PackageDTO;
 import com.ai.aims.services.model.OfficeMaster;
@@ -31,7 +31,6 @@ import com.ai.aims.services.model.ProductCategory;
 import com.ai.aims.services.model.Region;
 import com.ai.aims.services.model.Tag;
 import com.ai.aims.services.model.TestMaster;
-import com.ai.aims.services.model.TurnAroundTime;
 import com.ai.aims.services.model.search.SearchPackageTestCriteria;
 import com.ai.aims.services.model.search.SearchProgramTestCriteria;
 import com.ai.aims.services.model.search.SearchTagCriteria;
@@ -41,7 +40,6 @@ import com.ai.api.bean.OfficeSearchBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.RegionSearchBean;
 import com.ai.api.bean.TagSearchBean;
-import com.ai.api.bean.TatSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.LTParameterDao;
 import com.ai.api.util.AIUtil;
@@ -282,24 +280,17 @@ public class LTParameterDaoImpl implements LTParameterDao {
 	}
 
 	@Override
-	public ApiCallResult searchTATs(String officeId) throws IOException {
+	public ApiCallResult searchTATs(String officeId, String programId, String testIds) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		AIUtil.addRestTemplateMessageConverter(restTemplate);
 		ApiCallResult callResult = new ApiCallResult();
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/tats/office/").append(officeId).toString();
-		List<TurnAroundTime> tats = Arrays.asList(restTemplate.getForObject(url, TurnAroundTime[].class));
-		List<TatSearchBean> tatResult = new ArrayList<TatSearchBean>(tats.size());
-		tats.stream().forEach(t -> tatResult.add(getTatDetails(t)));
-		callResult.setContent(tatResult);
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+		        .queryParam("programId", programId)
+		        .queryParam("testIds", testIds);
+		List<TurnAroundTimeDTO> tats = Arrays.asList(restTemplate.getForObject(builder.build().encode().toUri(), TurnAroundTimeDTO[].class));
+		callResult.setContent(tats);
 		return callResult;
-	}
-	
-	private TatSearchBean getTatDetails(TurnAroundTime tat) {
-		TatSearchBean tatSearchBean = new TatSearchBean();
-		BeanUtils.copyProperties(tat, tatSearchBean, "office", "isExpService");
-		tatSearchBean.setOffice(null != tat.getOffice() ? tat.getOffice().getName() : null);
-		tatSearchBean.setIsExpService("1".equals(tat.getIsExpService()) ? true : false);
-		return tatSearchBean;
 	}
 
 	private UriComponentsBuilder buildTagSearchCriteria(SearchTagCriteria criteria, String url) {
