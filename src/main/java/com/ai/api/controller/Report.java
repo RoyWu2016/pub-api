@@ -29,7 +29,7 @@ public interface Report {
 
 	ResponseEntity<List<String>> getUserReportPdfInfo(String userId, String reportId);
 
-	ResponseEntity<String> downloadPDF(String userId, String reportId, String fileName,
+	ResponseEntity<String> downloadPDF(String userId, String reportId,String sessionId, String verifiedCode, String fileName,
 			HttpServletResponse httpResponse);
 
 	ResponseEntity<Map<String, String>> exportReports(String userId, String starts, String ends,
@@ -44,8 +44,8 @@ public interface Report {
 
 	ResponseEntity<String> forwardReports(String userId, String reportIds, ReportsForwardingBean reportsForwardingBean);
 
-	ResponseEntity<ApiCallResult> downloadPDFBase64(String userId, String productId, String fileName,
-			HttpServletResponse httpResponse);
+//	ResponseEntity<ApiCallResult> downloadPDFBase64(String userId, String productId, String fileName,
+//			HttpServletResponse httpResponse);
 
 	ResponseEntity<ApiCallResult> getPDFCertificate(String userId, String productId, HttpServletResponse httpResponse);
 

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.controller.Report;
 import com.ai.api.service.ReportService;
+import com.ai.api.util.AIUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
@@ -192,48 +193,54 @@ public class ReportImpl implements Report {
 	@ApiOperation(value = "Download User's PDF Report", response = String.class)
 	public ResponseEntity<String> downloadPDF(@ApiParam(required = true) @PathVariable("userId") String userId,
 			@ApiParam(required = true) @PathVariable("productId") String productId,
-			@ApiParam(required = true) @PathVariable("fileName") String fileName, HttpServletResponse httpResponse) {
+			@ApiParam(required = true) @PathVariable("fileName") String fileName,
+											  @ApiParam(value = "user token sessionId", required = true) @RequestParam("sessionId") String sessionId,
+											  @ApiParam(value = "last 50 chars of the user token", required = true) @RequestParam("code") String verifiedCode,HttpServletResponse httpResponse) {
 		logger.info("downloadPDF ...");
 		logger.info("userId : " + userId);
 		logger.info("reportId : " + productId);
 		logger.info("fileName : " + fileName);
-		boolean b = reportService.downloadPDF(productId, fileName, httpResponse);
-		if (b) {
-			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/report/{productId}/filename/{fileName}/pdf-base64", method = RequestMethod.GET)
-	@ApiOperation(value = "Get User's PDF Report Base64 Code", response = String.class)
-	public ResponseEntity<ApiCallResult> downloadPDFBase64(
-			@ApiParam(required = true) @PathVariable("userId") String userId,
-			@ApiParam(required = true) @PathVariable("productId") String productId,
-			@ApiParam(required = true) @PathVariable("fileName") String fileName, HttpServletResponse httpResponse) {
-		logger.info("invoke: " + "/user/" + userId + "/report/" + productId + "/filename/" + fileName + "/pdf-base64");
-		InputStream input = reportService.downloadPDFBase64(productId, fileName, httpResponse);
-		ApiCallResult result = new ApiCallResult();
-		if (null == input) {
-			result.setMessage("ERROR!!! downloadPDFBase64");
-			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
-		} else {
-			try {
-				byte[] data = IOUtils.toByteArray(input);
-				String fileStr = Base64.encode(data);
-
-				result.setContent(fileStr);
-				return new ResponseEntity<>(result, HttpStatus.OK);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				result.setMessage(e.toString());
-				return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		if(AIUtil.verifiedAccess(userId, verifiedCode, sessionId)) {
+			boolean b = reportService.downloadPDF(productId, fileName, httpResponse);
+			if (b) {
+				return new ResponseEntity<>(HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
+		}else {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 	}
+
+//	@Override
+//	@TokenSecured
+//	@RequestMapping(value = "/user/{userId}/report/{productId}/filename/{fileName}/pdf-base64", method = RequestMethod.GET)
+//	@ApiOperation(value = "Get User's PDF Report Base64 Code", response = String.class)
+//	public ResponseEntity<ApiCallResult> downloadPDFBase64(
+//			@ApiParam(required = true) @PathVariable("userId") String userId,
+//			@ApiParam(required = true) @PathVariable("productId") String productId,
+//			@ApiParam(required = true) @PathVariable("fileName") String fileName, HttpServletResponse httpResponse) {
+//		logger.info("invoke: " + "/user/" + userId + "/report/" + productId + "/filename/" + fileName + "/pdf-base64");
+//		InputStream input = reportService.downloadPDFBase64(productId, fileName, httpResponse);
+//		ApiCallResult result = new ApiCallResult();
+//		if (null == input) {
+//			result.setMessage("ERROR!!! downloadPDFBase64");
+//			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+//		} else {
+//			try {
+//				byte[] data = IOUtils.toByteArray(input);
+//				String fileStr = Base64.encode(data);
+//
+//				result.setContent(fileStr);
+//				return new ResponseEntity<>(result, HttpStatus.OK);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//				result.setMessage(e.toString());
+//				return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+//			}
+//		}
+//	}
 
 	@Override
 	@TokenSecured
