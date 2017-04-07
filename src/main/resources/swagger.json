@@ -47,29 +47,6 @@
   } ],
   "schemes" : [ "http" ],
   "paths" : {
-    "/ /employee/{employeeEmail}/reset-password" : {
-      "put" : {
-        "tags" : [ "User Profile" ],
-        "summary" : "Reset password by email",
-        "description" : "",
-        "operationId" : "resetPW",
-        "parameters" : [ {
-          "name" : "employeeEmail",
-          "in" : "path",
-          "description" : "employeeEmail",
-          "required" : true,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "string"
-            }
-          }
-        }
-      }
-    },
     "/auth/refresh-token" : {
       "put" : {
         "tags" : [ "Authentication" ],
@@ -132,6 +109,29 @@
         "summary" : "Verify Public Api Token",
         "description" : "",
         "operationId" : "verifyPublicAPIToken",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/employee/{employeeEmail}/reset-password" : {
+      "put" : {
+        "tags" : [ "User Profile" ],
+        "summary" : "Reset password by email",
+        "description" : "",
+        "operationId" : "resetPW",
+        "parameters" : [ {
+          "name" : "employeeEmail",
+          "in" : "path",
+          "description" : "employeeEmail",
+          "required" : true,
+          "type" : "string"
+        } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
@@ -6081,20 +6081,20 @@
         "lcnumber" : {
           "type" : "string"
         },
-        "lcappName" : {
+        "lcbeneAddress" : {
           "type" : "string"
         },
-        "lcbeneName" : {
+        "lcappName" : {
           "type" : "string"
         },
         "icneeded" : {
           "type" : "boolean",
           "default" : false
         },
-        "lcbeneAddress" : {
+        "lcappAddress" : {
           "type" : "string"
         },
-        "lcappAddress" : {
+        "lcbeneName" : {
           "type" : "string"
         }
       }
@@ -6922,19 +6922,19 @@
           "type" : "boolean",
           "default" : false
         },
-        "lcbeneficaryCompanyName" : {
+        "lcnumber" : {
           "type" : "string"
         },
         "lcapplicantCompanyName" : {
           "type" : "string"
         },
-        "lcapplicantAddress" : {
+        "lcbeneficaryCompanyName" : {
           "type" : "string"
         },
         "lcbeneficaryAddress" : {
           "type" : "string"
         },
-        "lcnumber" : {
+        "lcapplicantAddress" : {
           "type" : "string"
         }
       }
@@ -7606,44 +7606,44 @@
         "password" : {
           "type" : "string"
         },
-        "introducedByOtherType" : {
-          "type" : "string"
-        },
-        "introducedByTradeshow" : {
-          "type" : "string"
-        },
-        "isTestAccount" : {
-          "type" : "boolean",
-          "default" : false
-        },
-        "login" : {
-          "type" : "string"
-        },
         "userIp" : {
-          "type" : "string"
-        },
-        "domainName" : {
-          "type" : "string"
-        },
-        "contactInfo" : {
-          "$ref" : "#/definitions/ContactInfoBean"
-        },
-        "activity" : {
-          "type" : "string"
-        },
-        "turnover" : {
           "type" : "string"
         },
         "introducedBy" : {
           "type" : "string"
         },
-        "uniqueId" : {
-          "type" : "string"
-        },
         "affiliateID" : {
           "type" : "string"
         },
+        "contactInfo" : {
+          "$ref" : "#/definitions/ContactInfoBean"
+        },
+        "isTestAccount" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "activity" : {
+          "type" : "string"
+        },
+        "domainName" : {
+          "type" : "string"
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "turnover" : {
+          "type" : "string"
+        },
+        "login" : {
+          "type" : "string"
+        },
         "refer" : {
+          "type" : "string"
+        },
+        "introducedByOtherType" : {
+          "type" : "string"
+        },
+        "introducedByTradeshow" : {
           "type" : "string"
         }
       }
@@ -8825,6 +8825,9 @@
           "type" : "string"
         },
         "mobileNumber" : {
+          "type" : "string"
+        },
+        "fax" : {
           "type" : "string"
         }
       }
@@ -10346,22 +10349,22 @@
         "sic" : {
           "type" : "string"
         },
-        "itlmanager" : {
+        "lcbeneAddress" : {
           "type" : "string"
         },
         "lcappName" : {
           "type" : "string"
         },
-        "lcbeneName" : {
-          "type" : "string"
-        },
         "icneeded" : {
           "type" : "string"
         },
-        "lcbeneAddress" : {
+        "lcappAddress" : {
           "type" : "string"
         },
-        "lcappAddress" : {
+        "lcbeneName" : {
+          "type" : "string"
+        },
+        "itlmanager" : {
           "type" : "string"
         }
       }

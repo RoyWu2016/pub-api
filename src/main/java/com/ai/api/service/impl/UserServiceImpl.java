@@ -783,20 +783,19 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserBean updateContact(ContactInfoBean newContact, String userId) throws IOException, AIException {
-		// get general user bean
-		GeneralUserBean user = customerDao.getGeneralUser(userId);
-		user.setFollowName(newContact.getMain().getSalutation());
-		user.setFirstName(newContact.getMain().getGivenName());
-		user.setLastName(newContact.getMain().getFamilyName());
-		user.setPersonalEmail(newContact.getMain().getEmail());
-		user.setLandline(newContact.getMain().getPhoneNumber());
-		user.setMobile(newContact.getMain().getMobileNumber());
 
 		String compId = getCustById(userId).getCompany().getId();
-
 		// get contact bean
 		ContactBean contact = companyDao.getCompanyContact(compId);
 		contact.setMainPosition(newContact.getMain().getPosition());
+		contact.setMainGender(newContact.getMain().getSalutation());
+		contact.setMainGivenName(newContact.getMain().getGivenName());
+		contact.setMainFamilyName(newContact.getMain().getFamilyName());
+		contact.setMainEmail(newContact.getMain().getEmail());
+		contact.setMainTel(newContact.getMain().getPhoneNumber());
+		contact.setMainEmail(newContact.getMain().getMobileNumber());
+		contact.setMainFax(newContact.getMain().getFax());
+
 		if (newContact.getBilling().isSameAsMainContact()) {
 			contact.setAccountingGender(newContact.getMain().getSalutation());
 			contact.setAccountingGivenName(newContact.getMain().getGivenName());
@@ -809,10 +808,8 @@ public class UserServiceImpl implements UserService {
 			contact.setAccountingEmail(newContact.getBilling().getEmail());
 		}
 
-		// update general user and company contact
-		// return customerDao.updateGeneralUser(user) &&
-		// companyDao.updateCompanyContact(compId, contact);
-		if (customerDao.updateGeneralUser(user) && companyDao.updateCompanyContact(compId, contact)) {
+		//update company contact
+		if (companyDao.updateCompanyContact(compId, contact)) {
 			logger.info("update contact in DB finished ! userId:  " + userId);
 			return this.updateUserBeanInCache(userId);
 		}
