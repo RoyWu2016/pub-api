@@ -422,4 +422,23 @@ public class UserImpl implements User {
 
 	}
 
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/employee/{employeeEmail}/reset-password", method = RequestMethod.PUT)
+	@ApiOperation(value = "Reset password by email", response = String.class)
+	public ResponseEntity<ApiCallResult> resetPW(@ApiParam(value = "employeeEmail", required = true) @PathVariable("employeeEmail") String employeeEmail) {
+		ApiCallResult apiCallResult = new ApiCallResult();
+		try {
+			apiCallResult = userService.resetPW(employeeEmail);
+			if (StringUtils.isBlank(apiCallResult.getMessage())) {
+				return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			apiCallResult.setMessage(e.toString());
+		}
+		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
 }
