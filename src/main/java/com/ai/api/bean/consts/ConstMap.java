@@ -134,7 +134,9 @@ public class ConstMap {
 	private static void colletModuleName(Map<String, HashSet<String>> map, List<EmployeeRole> roles) {
 		for (EmployeeRole role : roles) {
 			if (role != null) {
-				map.put(role.getModuleName(), new HashSet<String>());
+				if(null != role.getModuleName()){
+					map.put(role.getModuleName(), new HashSet<String>());
+				}
 			}
 		}
 	}
