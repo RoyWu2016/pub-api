@@ -45,4 +45,6 @@ public interface SSOUserServiceDao {
 	String getToken(String authorizationHeader, HttpServletResponse response) throws IOException;
 
 	ApiCallResult isFirstLogin(String login);
+
+	ApiCallResult resetPW(String employeeEmail) throws Exception;
 }

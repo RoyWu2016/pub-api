@@ -92,4 +92,6 @@ public interface User {
 
 	ResponseEntity<String> getQualityManual(String userId, String sessionId, String verifiedCode,
 			HttpServletResponse httpResponse);
+
+	ResponseEntity<ApiCallResult> resetPW(String employeeEmail);
 }

@@ -90,4 +90,6 @@ public interface UserService {
 	boolean getQualityManual(String userId,HttpServletResponse httpResponse) throws IOException, AIException;
 
 	ApiCallResult isFirstLogin(String userId) throws Exception;
+
+	ApiCallResult resetPW(String employeeEmail) throws Exception;
 }

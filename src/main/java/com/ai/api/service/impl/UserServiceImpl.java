@@ -1118,4 +1118,9 @@ public class UserServiceImpl implements UserService {
 		}
 		return ssoUserServiceDao.isFirstLogin(userBean.getLogin());
 	}
+
+	@Override
+	public ApiCallResult resetPW(String employeeEmail) throws Exception {
+		return ssoUserServiceDao.resetPW(employeeEmail);
+	}
 }
