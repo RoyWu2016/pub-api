@@ -38,12 +38,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.aims.services.dto.TestFilterDTO;
+import com.ai.aims.services.dto.TurnAroundTimeDTO;
 import com.ai.aims.services.model.TestMaster;
 import com.ai.api.bean.OfficeSearchBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.RegionSearchBean;
 import com.ai.api.bean.TagSearchBean;
-import com.ai.api.bean.TatSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.controller.LTParameter;
 import com.ai.api.service.LTParameterService;
@@ -324,14 +324,16 @@ public class LTParameterImpl implements LTParameter {
 	}
 	
 	@Override
-	@ApiOperation(value = "Search Turnaround Time API", produces = "application/json", response = TatSearchBean.class, httpMethod = "GET")
+	@ApiOperation(value = "Search Turnaround Time API", produces = "application/json", response = TurnAroundTimeDTO.class, httpMethod = "GET")
 	@TokenSecured
 	@RequestMapping(value = "/parameter/lt/office/{officeId}/tats", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchTATs(
-			@ApiParam(value="Office ID") @PathVariable String officeId) {
+			@ApiParam(value="Office ID") @PathVariable("officeId") String officeId,
+			@ApiParam(value="Program ID") @RequestParam(value = "programId", required = false, defaultValue = "") String programId,
+			@ApiParam(value="Test IDs") @RequestParam(value = "testIds", required = false, defaultValue = "") String testIds) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-			callResult = ltparameterService.searchTATs(officeId);
+			callResult = ltparameterService.searchTATs(officeId, programId, testIds);
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("search tat error: " + ExceptionUtils.getFullStackTrace(e));
