@@ -306,21 +306,14 @@ public class UserImpl implements User {
 		if (cust != null) {
 			try {
 				result = ConstMap.convert2ApiEmployeeBean(cust);
+				return new ResponseEntity<>(result, HttpStatus.OK);
 			} catch (Exception e) {
 				logger.error("error!! set roles value", e);
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-	}
-
-	private Map<String, List<String>> createModule(Map<String, List<String>> result, String moduleName,
-			String displayName) {
-		// TODO Auto-generated method stub
-		// List<String> list = new ArrayList<String>();
-
-		return result;
 	}
 
 	@Override
@@ -421,6 +414,7 @@ public class UserImpl implements User {
 						RedisUtil.HOUR * 24 * 365 * 10);
 				return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
 			}
+            logger.error("fail from sso-service !"+apiCallResult.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			apiCallResult.setMessage(e.toString());
@@ -430,7 +424,6 @@ public class UserImpl implements User {
 	}
 
 	@Override
-	@TokenSecured
 	@RequestMapping(value = "/employee/{employeeEmail}/reset-password", method = RequestMethod.PUT)
 	@ApiOperation(value = "Reset password by email", response = String.class)
 	public ResponseEntity<ApiCallResult> resetPW(@ApiParam(value = "employeeEmail", required = true) @PathVariable("employeeEmail") String employeeEmail) {
@@ -440,8 +433,10 @@ public class UserImpl implements User {
 			if (StringUtils.isBlank(apiCallResult.getMessage())) {
 				return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
 			}
+			logger.error("fail from sso-service !"+apiCallResult.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error Exception!"+e);
 			apiCallResult.setMessage(e.toString());
 		}
 		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
