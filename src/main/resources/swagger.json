@@ -47,29 +47,6 @@
   } ],
   "schemes" : [ "http" ],
   "paths" : {
-    "/ /employee/{employeeEmail}/reset-password" : {
-      "put" : {
-        "tags" : [ "User Profile" ],
-        "summary" : "Reset password by email",
-        "description" : "",
-        "operationId" : "resetPW",
-        "parameters" : [ {
-          "name" : "employeeEmail",
-          "in" : "path",
-          "description" : "employeeEmail",
-          "required" : true,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "string"
-            }
-          }
-        }
-      }
-    },
     "/auth/refresh-token" : {
       "put" : {
         "tags" : [ "Authentication" ],
@@ -132,6 +109,29 @@
         "summary" : "Verify Public Api Token",
         "description" : "",
         "operationId" : "verifyPublicAPIToken",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/employee/{employeeEmail}/reset-password" : {
+      "put" : {
+        "tags" : [ "User Profile" ],
+        "summary" : "Reset password by email",
+        "description" : "",
+        "operationId" : "resetPW",
+        "parameters" : [ {
+          "name" : "employeeEmail",
+          "in" : "path",
+          "description" : "employeeEmail",
+          "required" : true,
+          "type" : "string"
+        } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
@@ -2460,7 +2460,7 @@
           "name" : "body",
           "required" : false,
           "schema" : {
-            "$ref" : "#/definitions/ContactInfoBean"
+            "$ref" : "#/definitions/ApiContactInfoBean"
           }
         } ],
         "responses" : {
@@ -5092,36 +5092,16 @@
           "in" : "path",
           "required" : true,
           "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "string"
-            }
-          }
-        }
-      }
-    },
-    "/user/{userId}/report/{productId}/filename/{fileName}/pdf-base64" : {
-      "get" : {
-        "tags" : [ "Report" ],
-        "summary" : "Get User's PDF Report Base64 Code",
-        "description" : "",
-        "operationId" : "downloadPDFBase64",
-        "parameters" : [ {
-          "name" : "userId",
-          "in" : "path",
+        }, {
+          "name" : "sessionId",
+          "in" : "query",
+          "description" : "user token sessionId",
           "required" : true,
           "type" : "string"
         }, {
-          "name" : "productId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "fileName",
-          "in" : "path",
+          "name" : "code",
+          "in" : "query",
+          "description" : "last 50 chars of the user token",
           "required" : true,
           "type" : "string"
         } ],
@@ -5655,6 +5635,17 @@
         }
       }
     },
+    "ApiContactInfoBean" : {
+      "type" : "object",
+      "properties" : {
+        "main" : {
+          "$ref" : "#/definitions/MainBean"
+        },
+        "billing" : {
+          "$ref" : "#/definitions/BillingBean"
+        }
+      }
+    },
     "ApiEmployeeBean" : {
       "type" : "object",
       "properties" : {
@@ -6078,23 +6069,23 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "lcnumber" : {
-          "type" : "string"
+        "icneeded" : {
+          "type" : "boolean",
+          "default" : false
         },
         "lcappName" : {
+          "type" : "string"
+        },
+        "lcbeneAddress" : {
           "type" : "string"
         },
         "lcbeneName" : {
           "type" : "string"
         },
-        "icneeded" : {
-          "type" : "boolean",
-          "default" : false
-        },
-        "lcbeneAddress" : {
+        "lcappAddress" : {
           "type" : "string"
         },
-        "lcappAddress" : {
+        "lcnumber" : {
           "type" : "string"
         }
       }
@@ -6922,16 +6913,16 @@
           "type" : "boolean",
           "default" : false
         },
-        "lcbeneficaryCompanyName" : {
-          "type" : "string"
-        },
-        "lcapplicantCompanyName" : {
+        "lcbeneficaryAddress" : {
           "type" : "string"
         },
         "lcapplicantAddress" : {
           "type" : "string"
         },
-        "lcbeneficaryAddress" : {
+        "lcapplicantCompanyName" : {
+          "type" : "string"
+        },
+        "lcbeneficaryCompanyName" : {
           "type" : "string"
         },
         "lcnumber" : {
@@ -7612,9 +7603,18 @@
         "introducedByTradeshow" : {
           "type" : "string"
         },
+        "domainName" : {
+          "type" : "string"
+        },
         "isTestAccount" : {
           "type" : "boolean",
           "default" : false
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "turnover" : {
+          "type" : "string"
         },
         "login" : {
           "type" : "string"
@@ -7622,28 +7622,19 @@
         "userIp" : {
           "type" : "string"
         },
-        "domainName" : {
-          "type" : "string"
-        },
         "contactInfo" : {
           "$ref" : "#/definitions/ContactInfoBean"
         },
-        "activity" : {
-          "type" : "string"
-        },
-        "turnover" : {
-          "type" : "string"
-        },
-        "introducedBy" : {
-          "type" : "string"
-        },
-        "uniqueId" : {
+        "refer" : {
           "type" : "string"
         },
         "affiliateID" : {
           "type" : "string"
         },
-        "refer" : {
+        "introducedBy" : {
+          "type" : "string"
+        },
+        "activity" : {
           "type" : "string"
         }
       }
@@ -7835,11 +7826,68 @@
     "ContactInfoBean" : {
       "type" : "object",
       "properties" : {
-        "main" : {
-          "$ref" : "#/definitions/MainBean"
+        "salutation" : {
+          "type" : "string"
         },
-        "billing" : {
-          "$ref" : "#/definitions/BillingBean"
+        "firstName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "position" : {
+          "type" : "string"
+        },
+        "emails" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "telephone" : {
+          "type" : "string"
+        },
+        "mobile" : {
+          "type" : "string"
+        },
+        "companyName" : {
+          "type" : "string"
+        },
+        "supplierCompanyName" : {
+          "type" : "string"
+        },
+        "address" : {
+          "type" : "string"
+        },
+        "fax" : {
+          "type" : "string"
+        },
+        "postCode" : {
+          "type" : "string"
+        },
+        "city" : {
+          "type" : "string"
+        },
+        "country" : {
+          "type" : "string"
+        },
+        "billingSalutation" : {
+          "type" : "string"
+        },
+        "billingContactName" : {
+          "type" : "string"
+        },
+        "billingEmail" : {
+          "type" : "string"
+        },
+        "homePage" : {
+          "type" : "string"
+        },
+        "industry" : {
+          "type" : "string"
+        },
+        "industryString" : {
+          "type" : "string"
         }
       }
     },
@@ -8826,6 +8874,9 @@
         },
         "mobileNumber" : {
           "type" : "string"
+        },
+        "fax" : {
+          "type" : "string"
         }
       }
     },
@@ -9258,6 +9309,9 @@
         "selected" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "extraOption" : {
+          "type" : "string"
         },
         "fieldName" : {
           "type" : "string"
@@ -10340,28 +10394,28 @@
         "supplierValidateCode" : {
           "type" : "string"
         },
-        "lcnumber" : {
-          "type" : "string"
-        },
         "sic" : {
-          "type" : "string"
-        },
-        "itlmanager" : {
-          "type" : "string"
-        },
-        "lcappName" : {
-          "type" : "string"
-        },
-        "lcbeneName" : {
           "type" : "string"
         },
         "icneeded" : {
           "type" : "string"
         },
+        "lcappName" : {
+          "type" : "string"
+        },
+        "itlmanager" : {
+          "type" : "string"
+        },
         "lcbeneAddress" : {
           "type" : "string"
         },
+        "lcbeneName" : {
+          "type" : "string"
+        },
         "lcappAddress" : {
+          "type" : "string"
+        },
+        "lcnumber" : {
           "type" : "string"
         }
       }
@@ -16750,7 +16804,7 @@
           "$ref" : "#/definitions/CompanyBean"
         },
         "contacts" : {
-          "$ref" : "#/definitions/ContactInfoBean"
+          "$ref" : "#/definitions/ApiContactInfoBean"
         },
         "preferences" : {
           "$ref" : "#/definitions/PreferencesBean"

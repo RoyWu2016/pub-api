@@ -28,7 +28,7 @@ public class UserBean implements Serializable {
 
     private CompanyBean company;
 
-    private ContactInfoBean contacts;
+    private ApiContactInfoBean contacts;
 
     private PreferencesBean preferences;
 
@@ -92,11 +92,11 @@ public class UserBean implements Serializable {
         this.company = company;
     }
 
-    public ContactInfoBean getContacts() {
+    public ApiContactInfoBean getContacts() {
         return contacts;
     }
 
-    public void setContacts(ContactInfoBean contacts) {
+    public void setContacts(ApiContactInfoBean contacts) {
         this.contacts = contacts;
     }
 

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by KK on 4/25/2016.
  */
-public class ContactInfoBean implements Serializable {
+public class ApiContactInfoBean implements Serializable {
     private MainBean main;
 
     private BillingBean billing;

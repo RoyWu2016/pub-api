@@ -14,7 +14,7 @@ import com.ai.api.bean.AqlAndSamplingSizeBean;
 import com.ai.api.bean.BillingBean;
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.ApiContactInfoBean;
 import com.ai.api.bean.CustomAQLBean;
 import com.ai.api.bean.MainBean;
 import com.ai.api.bean.MinQuantityToBeReadyBean;
@@ -140,7 +140,7 @@ public class UserImplTest {
 		BillingBean billing = new BillingBean();
 		billing.setSameAsMainContact(true);
 
-		ContactInfoBean newContact = new ContactInfoBean();
+		ApiContactInfoBean newContact = new ApiContactInfoBean();
 		newContact.setMain(main);
 		newContact.setBilling(billing);
 

@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.ApiContactInfoBean;
 import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
@@ -53,7 +53,7 @@ public interface UserService {
 
 	UserBean updateCompany(CompanyBean crmCompanyBean, String userId) throws IOException, AIException;
 
-	UserBean updateContact(ContactInfoBean newContact, String userId) throws IOException, AIException;
+	UserBean updateContact(ApiContactInfoBean newContact, String userId) throws IOException, AIException;
 
 	UserBean updateBookingPreference(BookingPreferenceBean newBookingPref, String user_id)
 			throws IOException, AIException;
