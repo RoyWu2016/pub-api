@@ -293,6 +293,7 @@ public class CustomerDaoImpl implements CustomerDao {
 						LOGGER.error("getEmployeeProfile from user-service response 200  but EmployeeBean is null");
 						return null;
 					}
+					LOGGER.info("response string: " + result.getResponseString());
 					generalUserBean = JsonUtil.mapToObject(result.getResponseString(), EmployeeBean.class);
 					LOGGER.info("saving employee into redis employee id: " + employeeId);
 					RedisUtil.hset("employeeCache", employeeId, JSON.toJSONString(generalUserBean), RedisUtil.HOUR * 2);
