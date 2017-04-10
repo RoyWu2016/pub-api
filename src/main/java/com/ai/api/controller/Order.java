@@ -64,7 +64,7 @@ public interface Order {
 
 	ResponseEntity<ApiCallResult> getFilesByOrderID(String userId, String orderId) throws IOException;
 
-	ResponseEntity<PageBean<SimpleOrderSearchBean>> getReInspectionList(String userId, String serviceType, String keyword,
+	ResponseEntity<ApiCallResult> getReInspectionList(String userId, String serviceType, String keyword,
 			 String pageSize, String pageNumber);
 
 //	ResponseEntity<Map<String, ApiCallResult>> getOrderAction(String userId, String orderId);
