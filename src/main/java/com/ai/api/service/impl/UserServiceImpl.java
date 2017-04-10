@@ -23,7 +23,7 @@ import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
 import com.ai.api.bean.CompanyRelationshipBean;
-import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.ApiContactInfoBean;
 import com.ai.api.bean.CustomAQLBean;
 import com.ai.api.bean.CustomizedProductType;
 import com.ai.api.bean.EmployeeBean;
@@ -353,7 +353,7 @@ public class UserServiceImpl implements UserService {
 		user.setPayment(payment);
 
 		// ------------Set ContactInfoBean Properties ----------------
-		ContactInfoBean contactInfoBean = new ContactInfoBean();
+		ApiContactInfoBean contactInfoBean = new ApiContactInfoBean();
 
 		MainBean main = new MainBean();
 		main.setSalutation(contactBean.getMainGender());
@@ -782,7 +782,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserBean updateContact(ContactInfoBean newContact, String userId) throws IOException, AIException {
+	public UserBean updateContact(ApiContactInfoBean newContact, String userId) throws IOException, AIException {
 
 		String compId = getCustById(userId).getCompany().getId();
 		// get contact bean

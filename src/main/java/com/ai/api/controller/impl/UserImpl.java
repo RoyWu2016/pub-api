@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.ApiContactInfoBean;
 import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.bean.consts.ConstMap;
@@ -147,7 +147,7 @@ public class UserImpl implements User {
 	@ApiOperation(value = "Update User Profile Contact API", response = UserBean.class)
 	public ResponseEntity<UserBean> updateUserProfileContact(
 			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
-			@RequestBody ContactInfoBean newContact) throws IOException, AIException {
+			@RequestBody ApiContactInfoBean newContact) throws IOException, AIException {
 		logger.info("updating User contact " + userId);
 		UserBean cust = userService.updateContact(newContact, userId);
 		if (cust != null) {

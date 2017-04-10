@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.ApiContactInfoBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
@@ -53,7 +53,7 @@ public interface User {
 	ResponseEntity<UserBean> updateUserProfileCompany(String userId, CompanyBean newComp)
 			throws IOException, AIException;
 
-	ResponseEntity<UserBean> updateUserProfileContact(String userId, ContactInfoBean newContact)
+	ResponseEntity<UserBean> updateUserProfileContact(String userId, ApiContactInfoBean newContact)
 			throws IOException, AIException;
 
 	ResponseEntity<UserBean> updateUserBookingPreference(String userId, BookingPreferenceBean newBookingPref)

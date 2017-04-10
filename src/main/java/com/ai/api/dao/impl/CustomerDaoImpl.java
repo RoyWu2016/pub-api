@@ -262,6 +262,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return true;
 			}
+			LOGGER.error("fail to create new Account from customer-service!"+result.getStatusCode()+" || "+result.getResponseString());
 		} catch (IOException e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
