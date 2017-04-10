@@ -44,7 +44,7 @@ public interface LTParameter {
 
 	public ResponseEntity<ApiCallResult> searchRegions();
 	
-	public ResponseEntity<ApiCallResult> searchTATs(String officeId);
+	public ResponseEntity<ApiCallResult> searchTATs(String officeId, String programId, String testIds);
 
 	public ResponseEntity<ApiCallResult> searchPackages(String programId);
 
