@@ -94,4 +94,6 @@ public interface User {
 			HttpServletResponse httpResponse);
 
 	ResponseEntity<ApiCallResult> resetPW(String employeeEmail);
+
+	ResponseEntity<ApiCallResult> swaggerLogin(String login,String pw);
 }
