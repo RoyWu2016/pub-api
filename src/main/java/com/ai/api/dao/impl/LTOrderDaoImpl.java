@@ -143,6 +143,10 @@ public class LTOrderDaoImpl implements LTOrderDao {
 		if (!StringUtils.stripToEmpty(cloneType).trim().isEmpty())
 			builder.queryParam("cloneType", cloneType.trim());
 		
+		String keyword = null != searchParams.get("keyword") ? String.valueOf(searchParams.get("keyword")) : null;
+		if (!StringUtils.stripToEmpty(keyword).trim().isEmpty())
+			builder.queryParam("keyword", keyword.trim());
+			
 		builder.queryParam("requestor", "external");
 		return builder;
 	}
