@@ -50,6 +50,7 @@ import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.ProductBean;
@@ -174,7 +175,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<SimpleOrderSearchBean> searchOrders(String userId, String serviceType, String startDate, String endDate,
+	public PageBean<SimpleOrderSearchBean> searchOrders(String userId, String serviceType, String startDate, String endDate,
 			String keyWord, String orderStatus, String pageSize, String pageNumber) throws IOException, AIException {
 		String companyId = "";
 		String parentId = "";
@@ -222,7 +223,7 @@ public class OrderServiceImpl implements OrderService {
 		String pageSize = "10000";// hard code in order to return all of the
 									// orders in page 1;
 		String pageNumber = "1";
-		List<SimpleOrderSearchBean> list = orderDao.searchOrders(userId, companyId, parentId, serviceType, startDate,
+		PageBean<SimpleOrderSearchBean> list = orderDao.searchOrders(userId, companyId, parentId, serviceType, startDate,
 				endDate, keyWord, orderStatus, pageSize, pageNumber);
 		if (null == list) {
 			logger.info("Order is not found from psi-service");
@@ -230,7 +231,7 @@ public class OrderServiceImpl implements OrderService {
 		} else {
 			XSSFWorkbook wb = new XSSFWorkbook();
 			logger.info("Orders are found and begin to generate excle.");
-			return createExcleFile(wb, list, clientLogin, inspectionPeriod);
+			return createExcleFile(wb, list.getPageItems(), clientLogin, inspectionPeriod);
 		}
 	}
 

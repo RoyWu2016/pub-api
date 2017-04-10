@@ -13,6 +13,7 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 
 /***************************************************************************
@@ -53,7 +54,7 @@ public interface Order {
 
 	ResponseEntity<Map<String, Object>> saveOrderByDraft(String userId, String draftId, String orderId);
 
-	ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(String userId, String serviceType, String startDate,
+	ResponseEntity<ApiCallResult> searchOrders(String userId, String serviceType, String startDate,
 			String endDate, String keyWord, String orderStatus, String pageNumber, String pageSize);
 
 	ResponseEntity<Map<String, String>> exportOrders(String userId, String serviceType, String startDate,
@@ -63,7 +64,7 @@ public interface Order {
 
 	ResponseEntity<ApiCallResult> getFilesByOrderID(String userId, String orderId) throws IOException;
 
-	ResponseEntity<List<SimpleOrderSearchBean>> getReInspectionList(String userId, String serviceType, String keyword,
+	ResponseEntity<PageBean<SimpleOrderSearchBean>> getReInspectionList(String userId, String serviceType, String keyword,
 			 String pageSize, String pageNumber);
 
 //	ResponseEntity<Map<String, ApiCallResult>> getOrderAction(String userId, String orderId);

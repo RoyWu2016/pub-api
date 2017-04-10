@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.ai.api.bean.OrderSearchBean;
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
 import com.ai.commons.beans.psi.ProductBean;
@@ -52,7 +53,7 @@ public interface OrderDao {
 
 	InspectionBookingBean saveOrderByDraft(String userId, String draftId, String companyId, String parentId);
 
-	List<SimpleOrderSearchBean> searchOrders(String userId, String compId, String parentId, String serviceType,
+	PageBean<SimpleOrderSearchBean> searchOrders(String userId, String compId, String parentId, String serviceType,
 			String startDate, String endDate, String keyWord, String orderStatus, String pageSize, String pageNumber);
 
 	public List<OrderSearchBean> searchLTOrders(String compId, String orderStatus, String pageSize, String pageNumber,
