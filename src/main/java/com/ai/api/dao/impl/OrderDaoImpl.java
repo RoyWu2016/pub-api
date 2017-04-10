@@ -198,7 +198,7 @@ public class OrderDaoImpl implements OrderDao {
 	}
 
 	@Override
-	public List<SimpleOrderSearchBean> searchOrders(String userId, String compId, String parentId, String serviceType,
+	public PageBean<SimpleOrderSearchBean> searchOrders(String userId, String compId, String parentId, String serviceType,
 			String startDate, String endDate, String keyWord, String orderStatus, String pageSize, String pageNumber) {
 		try {
 			StringBuilder url = new StringBuilder(config.getPsiServiceUrl());
@@ -218,7 +218,7 @@ public class OrderDaoImpl implements OrderDao {
 				// Object arrayStr = object.get("content");
 				// PageBean<SimpleOrderSearchBean> pageBeanList =
 				// JsonUtil.mapToObject(arrayStr + "", PageBean.class);
-				return pageBeanList.getPageItems();
+				return pageBeanList;
 
 			} else {
 //				logger.error(

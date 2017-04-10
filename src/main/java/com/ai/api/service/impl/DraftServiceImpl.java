@@ -9,6 +9,8 @@ import com.ai.api.dao.DraftDao;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.DraftService;
 import com.ai.api.service.UserService;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.order.SimpleDraftSearchBean;
 import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
@@ -160,7 +162,7 @@ public class DraftServiceImpl implements DraftService {
 	}
 	
 	@Override
-	public List<DraftOrder> searchDraft(String userId, String serviceType, String startDate, String endDate,
+	public PageBean<SimpleDraftSearchBean> searchDraft(String userId, String serviceType, String startDate, String endDate,
 			String keyWord, String pageNumber, String pageSize) throws IOException, AIException {
 		String companyId = "null";
 		String parentId = "null";

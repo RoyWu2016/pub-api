@@ -4,6 +4,8 @@ package com.ai.api.controller;
 import java.util.List;
 
 import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.PageBean;
+import com.ai.commons.beans.order.SimpleDraftSearchBean;
 import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
@@ -47,7 +49,7 @@ public interface Draft {
 	ResponseEntity<OrderPriceMandayViewBean> calculatePricing(String userId, String draftId, String samplingLevel,
 			String measurementSamplingSize);
 
-	ResponseEntity<List<DraftOrder>> searchDraft(String userId, String serviceType, String startDate, String endDate,
+	ResponseEntity<ApiCallResult> searchDraft(String userId, String serviceType, String startDate, String endDate,
 			String keyWord, String pageNumber, String pageSize);
 
 	/*
