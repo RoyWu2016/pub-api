@@ -8,10 +8,7 @@ package com.ai.api.controller.impl;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,6 +39,7 @@ import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -79,6 +77,10 @@ public class UserImpl implements User {
 	@Autowired
 	UserService userService; // Service which will do all data
 								// retrieval/manipulation work
+	@Value("${swagger.user1}")
+	String swaggerUser1;
+	@Value("${swagger.user2}")
+	String swaggerUser2;
 
 	// @Autowired
 	// ApiCallResult callResult;
@@ -435,6 +437,34 @@ public class UserImpl implements User {
 				return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
 			}
 			logger.error("fail from sso-service !"+apiCallResult.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error Exception!"+e);
+			apiCallResult.setMessage(e.toString());
+		}
+		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
+	@Override
+	@RequestMapping(value = "/swagger", method = RequestMethod.POST)
+	@ApiOperation(value = "swagger Login", response = String.class)
+	public ResponseEntity<ApiCallResult> swaggerLogin(@RequestParam("login") String login,@RequestParam("pw") String pw) {
+		ApiCallResult apiCallResult = new ApiCallResult();
+		Map<String,String> userMap = new HashMap<>();
+		userMap.put(swaggerUser1.split("/")[0],swaggerUser1.split("/")[1]);
+		userMap.put(swaggerUser2.split("/")[0],swaggerUser2.split("/")[1]);
+		try {
+			logger.info("swagger login ..."+login+"-||-"+pw);
+			Iterator<Map.Entry<String,String>> iterator = userMap.entrySet().iterator();
+			while (iterator.hasNext()){
+				Map.Entry<String,String> entry = iterator.next();
+				if (login.equals(entry.getKey()) && pw.equals(entry.getValue())) {
+					apiCallResult.setContent(true);
+					return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
+				}
+			}
+			apiCallResult.setMessage("Wrong login or password");
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Error Exception!"+e);

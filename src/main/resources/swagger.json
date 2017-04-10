@@ -1324,6 +1324,33 @@
         }
       }
     },
+    "/swagger" : {
+      "post" : {
+        "tags" : [ "User Profile" ],
+        "summary" : "swagger Login",
+        "description" : "",
+        "operationId" : "swaggerLogin",
+        "parameters" : [ {
+          "name" : "login",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "pw",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
     "/user" : {
       "put" : {
         "tags" : [ "User Profile" ],
@@ -6082,13 +6109,13 @@
         "lcappName" : {
           "type" : "string"
         },
-        "lcbeneAddress" : {
+        "lcappAddress" : {
           "type" : "string"
         },
         "lcbeneName" : {
           "type" : "string"
         },
-        "lcappAddress" : {
+        "lcbeneAddress" : {
           "type" : "string"
         },
         "lcnumber" : {
@@ -6919,10 +6946,7 @@
           "type" : "boolean",
           "default" : false
         },
-        "lcbeneficaryAddress" : {
-          "type" : "string"
-        },
-        "lcapplicantAddress" : {
+        "lcnumber" : {
           "type" : "string"
         },
         "lcapplicantCompanyName" : {
@@ -6931,7 +6955,10 @@
         "lcbeneficaryCompanyName" : {
           "type" : "string"
         },
-        "lcnumber" : {
+        "lcbeneficaryAddress" : {
+          "type" : "string"
+        },
+        "lcapplicantAddress" : {
           "type" : "string"
         }
       }
@@ -7603,10 +7630,10 @@
         "password" : {
           "type" : "string"
         },
-        "introducedByOtherType" : {
+        "affiliateID" : {
           "type" : "string"
         },
-        "introducedByTradeshow" : {
+        "uniqueId" : {
           "type" : "string"
         },
         "domainName" : {
@@ -7616,31 +7643,31 @@
           "type" : "boolean",
           "default" : false
         },
-        "uniqueId" : {
-          "type" : "string"
-        },
-        "turnover" : {
-          "type" : "string"
-        },
-        "login" : {
-          "type" : "string"
-        },
-        "userIp" : {
-          "type" : "string"
-        },
         "contactInfo" : {
           "$ref" : "#/definitions/ContactInfoBean"
         },
-        "refer" : {
-          "type" : "string"
-        },
-        "affiliateID" : {
+        "turnover" : {
           "type" : "string"
         },
         "introducedBy" : {
           "type" : "string"
         },
+        "userIp" : {
+          "type" : "string"
+        },
+        "refer" : {
+          "type" : "string"
+        },
+        "login" : {
+          "type" : "string"
+        },
         "activity" : {
+          "type" : "string"
+        },
+        "introducedByTradeshow" : {
+          "type" : "string"
+        },
+        "introducedByOtherType" : {
           "type" : "string"
         }
       }
@@ -10400,25 +10427,25 @@
         "supplierValidateCode" : {
           "type" : "string"
         },
-        "sic" : {
-          "type" : "string"
-        },
         "icneeded" : {
           "type" : "string"
         },
         "lcappName" : {
           "type" : "string"
         },
-        "itlmanager" : {
+        "lcappAddress" : {
           "type" : "string"
         },
-        "lcbeneAddress" : {
+        "sic" : {
           "type" : "string"
         },
         "lcbeneName" : {
           "type" : "string"
         },
-        "lcappAddress" : {
+        "lcbeneAddress" : {
+          "type" : "string"
+        },
+        "itlmanager" : {
           "type" : "string"
         },
         "lcnumber" : {
