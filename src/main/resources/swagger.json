@@ -3723,6 +3723,12 @@
           "required" : true,
           "type" : "string"
         }, {
+          "name" : "keyword",
+          "in" : "query",
+          "description" : "Search Keyword",
+          "required" : false,
+          "type" : "string"
+        }, {
           "name" : "orderStatus",
           "in" : "query",
           "description" : "Order Status",
