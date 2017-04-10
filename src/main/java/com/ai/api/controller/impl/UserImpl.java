@@ -302,6 +302,7 @@ public class UserImpl implements User {
 		// TODO Auto-generated method stub
 		logger.info("getEmployeeProfile employeeId: " + employeeId);
 		EmployeeBean cust = userService.getEmployeeProfile(employeeId, refresh);
+		logger.info(JSON.toJSONString(cust));
 		ApiEmployeeBean result = null;
 		if (cust != null) {
 			try {
