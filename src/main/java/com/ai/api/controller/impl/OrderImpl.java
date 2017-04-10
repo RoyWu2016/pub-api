@@ -305,23 +305,26 @@ public class OrderImpl implements Order {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/re-inspection-list", method = RequestMethod.GET)
 	@ApiOperation(value = "Get User Re-inspction List API", response = PageBean.class)
-	public ResponseEntity<PageBean<SimpleOrderSearchBean>> getReInspectionList(
+	public ResponseEntity<ApiCallResult> getReInspectionList(
 			@ApiParam(required = true) @PathVariable("userId") String userId,
 			@ApiParam(required = false) @RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
 			@ApiParam(required = false) @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
 			@ApiParam(required = false) @RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
 			@ApiParam(required = false) @RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
 
+		ApiCallResult result = new ApiCallResult();
 		PageBean<SimpleOrderSearchBean> ordersList = new PageBean<SimpleOrderSearchBean>();
 		String orderStatus = "60";
 		try {
 			ordersList = orderService.searchOrders(userId, serviceType, "", "", keyword, orderStatus, pageSize,
 					pageNumber);
 			// if not data found, just return 200 with empty list
-			return new ResponseEntity<>(ordersList, HttpStatus.OK);
+			result.setContent(ordersList);
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		} catch (Exception e) {
+			result.setMessage("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
