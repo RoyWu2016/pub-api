@@ -82,6 +82,7 @@ public class LTOrderImpl implements LTOrder {
 	@RequestMapping(value = "/user/{userId}/lt/orders", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchLTOrders(
 			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="Keyword") @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
 			@ApiParam(value="Order Status") @RequestParam(value = "orderStatus", required = false, defaultValue = "") String orderStatus,
 			@ApiParam(value="Order Clone Type", allowableValues="reorder,retest") @RequestParam(value = "cloneType", required = false, defaultValue = "") String cloneType,
 			@ApiParam(value="Page Number") @RequestParam(value = "pageNo", required = false, defaultValue = "1") Integer pageNumber,
@@ -90,6 +91,7 @@ public class LTOrderImpl implements LTOrder {
 		try {
 			Map<String, Object> searchParams = new HashMap<String, Object>();
 			searchParams.put("userId", userId);
+			searchParams.put("keyword", keyword);
 			searchParams.put("orderStatus", orderStatus);
 			searchParams.put("cloneType", cloneType);
 			List<OrderSearchBean> list = ltOrderService.searchLTOrders(searchParams, pageSize, pageNumber);
