@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import com.ai.api.exception.AIException;
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.order.SimpleDraftSearchBean;
 import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
@@ -50,7 +48,7 @@ public interface DraftService {
 	OrderPriceMandayViewBean calculatePricing(String userId, String draftId, String samplingLevel,
 			String measurementSamplingSize) throws Exception;
 
-	PageBean<SimpleDraftSearchBean> searchDraft(String userId, String serviceType, String startDate, String endDate, String keyWord,
+	List<DraftOrder> searchDraft(String userId, String serviceType, String startDate, String endDate, String keyWord,
 			String pageNumber, String pageSize) throws IOException, AIException;
 
 	/*

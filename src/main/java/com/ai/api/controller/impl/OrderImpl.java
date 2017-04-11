@@ -37,7 +37,6 @@ import com.ai.api.service.OrderService;
 import com.ai.api.service.UserService;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.audit.AuditBookingBean;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.ai.commons.beans.order.SimpleOrderSearchBean;
@@ -261,7 +260,7 @@ public class OrderImpl implements Order {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-orders", method = RequestMethod.GET)
 	@ApiOperation(value = "Search User Orders API", response = SimpleOrderSearchBean.class)
-	public ResponseEntity<ApiCallResult> searchOrders(
+	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(
 			@ApiParam(required = true) @PathVariable("userId") String userId,
 			@ApiParam(required = false) @RequestParam(value = "service-type", defaultValue = "1,2,3,4,6") String serviceType,
 			@ApiParam(required = false) @RequestParam(value = "start", required = false, defaultValue = "") String startDate,
@@ -286,45 +285,39 @@ public class OrderImpl implements Order {
 				orderStatus = String.join(",", status);
 			}
 		}
-		ApiCallResult result = new ApiCallResult();
-		PageBean<SimpleOrderSearchBean> ordersList = new PageBean<SimpleOrderSearchBean>();
+		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
 		try {
 			ordersList = orderService.searchOrders(userId, serviceType, startDate, endDate, keyword, orderStatus,
 					pageSize, pageNumber);
 			// if not data found, just return 200 with empty list
-			result.setContent(ordersList);
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			return new ResponseEntity<>(ordersList, HttpStatus.OK);
 		} catch (Exception e) {
-			result.setMessage("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/re-inspection-list", method = RequestMethod.GET)
-	@ApiOperation(value = "Get User Re-inspction List API", response = PageBean.class)
-	public ResponseEntity<ApiCallResult> getReInspectionList(
+	@ApiOperation(value = "Get User Re-inspction List API", response = SimpleOrderSearchBean.class)
+	public ResponseEntity<List<SimpleOrderSearchBean>> getReInspectionList(
 			@ApiParam(required = true) @PathVariable("userId") String userId,
 			@ApiParam(required = false) @RequestParam(value = "service-type", required = false, defaultValue = "") String serviceType,
 			@ApiParam(required = false) @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
 			@ApiParam(required = false) @RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize,
 			@ApiParam(required = false) @RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber) {
 
-		ApiCallResult result = new ApiCallResult();
-		PageBean<SimpleOrderSearchBean> ordersList = new PageBean<SimpleOrderSearchBean>();
+		List<SimpleOrderSearchBean> ordersList = new ArrayList<SimpleOrderSearchBean>();
 		String orderStatus = "60";
 		try {
 			ordersList = orderService.searchOrders(userId, serviceType, "", "", keyword, orderStatus, pageSize,
 					pageNumber);
 			// if not data found, just return 200 with empty list
-			result.setContent(ordersList);
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			return new ResponseEntity<>(ordersList, HttpStatus.OK);
 		} catch (Exception e) {
-			result.setMessage("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
 			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

@@ -2,8 +2,6 @@ package com.ai.api.dao;
 
 import java.util.List;
 
-import com.ai.commons.beans.PageBean;
-import com.ai.commons.beans.order.SimpleDraftSearchBean;
 import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
@@ -52,7 +50,7 @@ public interface DraftDao {
 			String parentId,String draftId,
 			String samplingLevel,String measurementSamplingSize);
 	
-	 PageBean<SimpleDraftSearchBean> searchDraft(String userId, String compId, String parentId,  String serviceType, String startDate, String endDate, String keyWord, String pageSize, String pageNumber);
+	 List<DraftOrder> searchDraft(String userId, String compId, String parentId,  String serviceType, String startDate, String endDate, String keyWord, String pageSize, String pageNumber);
 
 	/*
 	boolean saveProduct(String userId,String companyId,String parentId,InspectionProductBookingBean draftProduct);
