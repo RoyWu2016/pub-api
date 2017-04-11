@@ -75,6 +75,7 @@
           }
           if(showSwagger==0){
               $("#swagger-ui-container").css({"visibility":"hidden","display":"none"});
+              showpopup();
           }
           $("#show_login").css({"visibility":"visible","display":"block"});
         },
@@ -117,14 +118,22 @@
 <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
 
 <center>
-<input type="button" id="show_login" value="Show Login">
+<!--<input type="button" id="show_login" value="Show Login">-->
 <div id = "loginform">
   <form id="my_login_form">
-    <p>Please Login ！</p>
+    <p style="font-size: medium; text-align:left; margin-left: 80px">Please enter: </p>
+      <br />
     <!--<input type = "image" id = "close_login" src = "images/logo.png"><br/>-->
-    <input type = "text" id = "login" placeholder = "Email Id" name = "uid">
-    <input type = "password" id = "password" name = "upass" placeholder = "***">
-    <input type = "button" id = "dologin" value = "Login">
+    <input type = "text" id = "login" placeholder = "username" name = "uid"> <br />
+    <input type = "password" id = "password" name = "upass" placeholder = "password"> <br />
+    <input type = "button" id = "dologin" value = "Submit"> <br />
+      <table width="100%"><tbody>
+      <tr><td height="20" style="color: red; font-size: small; display: block; margin-top: 12px;"  align="center">
+          <span id="message" style="display: none">Sorry, username and password doesn't match.</span>
+      </td></tr>
+      <tr><td height="30" align="right" style="color: #fff; font-size: 12px;">
+          <br />Write to allen.zhang@asiainspection.com for access.
+      </td></tr></tbody></table>
   </form>
 </div>
 </center>

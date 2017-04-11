@@ -39,15 +39,17 @@ function doLogin()
         dataType: "json",
         success: function(testData){
          if(testData.content==true){
+             $("#message").css({"visibility":"hidden","display":"none"});
              hidepopup();
              $("#swagger-ui-container").css({"visibility":"visible","display":"block"});
          }
         },
         error:function(testData){
-             hidepopup();
+             //hidepopup();
              $("#swagger-ui-container").css({"visibility":"hidden","display":"none"});
-             $("#show_login").css({"visibility":"visible","display":"block"});
-             alert(testData.responseText)
+             //$("#show_login").css({"visibility":"visible","display":"block"});
+             $("#message").css({"visibility":"visible","display":"block"});
+             //alert(testData.responseText)
         }
     });
 }
