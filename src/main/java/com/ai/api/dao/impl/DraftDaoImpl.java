@@ -19,7 +19,6 @@ import com.ai.commons.HttpUtil;
 import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.order.SimpleDraftSearchBean;
 import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
@@ -267,7 +266,7 @@ public class DraftDaoImpl implements DraftDao {
 	}
 	
 	@Override
-	public PageBean<SimpleDraftSearchBean> searchDraft(String userId, String compId, String parentId, String serviceType,
+	public List<DraftOrder> searchDraft(String userId, String compId, String parentId, String serviceType,
 										String startDate, String endDate, String keyWord, String pageSize, String pageNumber) {
 		try {
 
@@ -286,12 +285,12 @@ public class DraftDaoImpl implements DraftDao {
 			   ServiceCallResult result = HttpUtil.issueGetRequest(url.toString(), null);
 				if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 					@SuppressWarnings("unchecked")
-					PageBean<SimpleDraftSearchBean> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
+					PageBean<DraftOrder> pageBeanList = JsonUtil.mapToObject(result.getResponseString(),PageBean.class);
 //					JSONObject object = JSONObject.parseObject(result.getResponseString());
 //					Object arrayStr = object.get("content");
 //					PageBean<DraftOrder> pageBeanList = JsonUtil.mapToObject(arrayStr + "", PageBean.class);
 					
-					 return pageBeanList;
+					 return pageBeanList.getPageItems();
 
 				} else {
 //					logger.error("searchDraftOrder from PSI error: " + result.getStatusCode() + ", " + result.getResponseString());
