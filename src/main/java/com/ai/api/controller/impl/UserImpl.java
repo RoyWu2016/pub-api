@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.bean.BookingPreferenceBean;
@@ -36,6 +38,7 @@ import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,10 +80,8 @@ public class UserImpl implements User {
 	@Autowired
 	UserService userService; // Service which will do all data
 								// retrieval/manipulation work
-	@Value("${swagger.user1}")
-	String swaggerUser1;
-	@Value("${swagger.user2}")
-	String swaggerUser2;
+	@Value("${swagger-access-map}")
+	String swaggerUser;
 
 	// @Autowired
 	// ApiCallResult callResult;
@@ -448,12 +449,13 @@ public class UserImpl implements User {
 
 	@Override
 	@RequestMapping(value = "/swagger", method = RequestMethod.POST)
-	@ApiOperation(value = "swagger Login", response = String.class)
-	public ResponseEntity<ApiCallResult> swaggerLogin(@RequestParam("login") String login,@RequestParam("pw") String pw) {
+	public ResponseEntity<ApiCallResult> swaggerLogin(@RequestParam("login") String login,@RequestParam("pw") String pw, HttpServletResponse response) {
 		ApiCallResult apiCallResult = new ApiCallResult();
 		Map<String,String> userMap = new HashMap<>();
-		userMap.put(swaggerUser1.split("/")[0],swaggerUser1.split("/")[1]);
-		userMap.put(swaggerUser2.split("/")[0],swaggerUser2.split("/")[1]);
+		String users[] =  swaggerUser.split(";");
+		for (int i=0;i<users.length;i++){
+			userMap.put(users[i].split("/")[0],users[i].split("/")[1]);
+		}
 		try {
 			logger.info("swagger login ..."+login+"-||-"+pw);
 			Iterator<Map.Entry<String,String>> iterator = userMap.entrySet().iterator();
@@ -461,10 +463,33 @@ public class UserImpl implements User {
 				Map.Entry<String,String> entry = iterator.next();
 				if (login.equals(entry.getKey()) && pw.equals(entry.getValue())) {
 					apiCallResult.setContent(true);
+					Cookie cookie = new Cookie("swaggerUser",login);
+					cookie.setMaxAge(1800);
+					response.addCookie(cookie);
 					return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
 				}
 			}
 			apiCallResult.setMessage("Wrong login or password");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error Exception!"+e);
+			apiCallResult.setMessage(e.toString());
+		}
+		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
+	@Override
+	@RequestMapping(value = "/swagger-logout", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> swaggerLogout(HttpServletResponse response) {
+		ApiCallResult apiCallResult = new ApiCallResult();
+		try {
+			logger.info("swagger logout ...");
+			Cookie cookie = new Cookie("swaggerUser",null);
+			cookie.setMaxAge(0);
+			response.addCookie(cookie);
+			apiCallResult.setContent(true);
+			return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Error Exception!"+e);

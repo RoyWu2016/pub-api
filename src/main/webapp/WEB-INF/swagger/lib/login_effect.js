@@ -1,15 +1,12 @@
 $(document).ready(function()
 {
- $("#show_login").click(function(){
-  showpopup();
- });
- // $("#close_login").click(function(){
- //  hidepopup();
- // });
+     $("#show_login").click(function(){
+      showpopup();
+     });
 
-$("#dologin").click(function(){
-    doLogin();
-});
+    $("#dologin").click(function(){
+        doLogin();
+    });
 });
 
 function showpopup()
@@ -29,9 +26,10 @@ function doLogin()
 {
     var loginName = $("#login").val();
     var pw = $("#password").val();
+    var url = basePath+"/swagger";
     $.ajax({
         type: 'POST',
-        url: "/swagger",
+        url: url,
         data: {
          "login":loginName,
          "pw":pw
@@ -42,6 +40,7 @@ function doLogin()
              $("#message").css({"visibility":"hidden","display":"none"});
              hidepopup();
              $("#swagger-ui-container").css({"visibility":"visible","display":"block"});
+             $("#login-info").html('Welcome[ '+getCurrentUser()+'] <input type="button" value="Logout" id="logout-button" onclick="doLogout()"/>');
          }
         },
         error:function(testData){
@@ -50,6 +49,23 @@ function doLogin()
              //$("#show_login").css({"visibility":"visible","display":"block"});
              $("#message").css({"visibility":"visible","display":"block"});
              //alert(testData.responseText)
+        }
+    });
+}
+function doLogout()
+{
+
+    var url = basePath+"/swagger-logout";
+    $.ajax({
+        type: 'POST',
+        url: url ,
+        success: function(testData){
+            if(testData.content==true){
+                window.location.href=basePath;
+            }
+        },
+        error:function(){
+            $("#logout-button").val('Logout-Retry');
         }
     });
 }

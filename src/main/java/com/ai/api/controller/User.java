@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpResponse;
 import org.springframework.http.ResponseEntity;
 
 import com.ai.api.bean.BookingPreferenceBean;
@@ -95,5 +96,7 @@ public interface User {
 
 	ResponseEntity<ApiCallResult> resetPW(String employeeEmail);
 
-	ResponseEntity<ApiCallResult> swaggerLogin(String login,String pw);
+	ResponseEntity<ApiCallResult> swaggerLogin(String login, String pw, HttpServletResponse response);
+
+	ResponseEntity<ApiCallResult> swaggerLogout(HttpServletResponse response);
 }
