@@ -20,7 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ai.api.controller.Draft;
 import com.ai.api.service.DraftService;
 import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.PageBean;
 import com.ai.commons.beans.audit.AuditBookingBean;
+import com.ai.commons.beans.order.SimpleDraftSearchBean;
 import com.ai.commons.beans.order.draft.DraftOrder;
 import com.ai.commons.beans.order.price.OrderPriceMandayViewBean;
 import com.ai.commons.beans.psi.InspectionBookingBean;
@@ -234,24 +237,28 @@ public class DraftImpl implements Draft {
 	@Override
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/psi-drafts", method = RequestMethod.GET)
-	@ApiOperation(value = "Search User Drafts API", response = DraftOrder.class)
-	public ResponseEntity<List<DraftOrder>> searchDraft(
+	@ApiOperation(value = "Search User Drafts API", response = PageBean.class)
+	public ResponseEntity<ApiCallResult> searchDraft(
 			@ApiParam(required = true) @PathVariable("userId") String userId,
 			@ApiParam(required = true) @RequestParam(value = "service-type", defaultValue = "1,2,3,4,6") String serviceType,
-			@ApiParam(required = false) @RequestParam(value = "start", required = false, defaultValue = "") String startDate,
+			@ApiParam(required = false) @RequestParam(value = "start", required = false,defaultValue = "") String startDate,
 			@ApiParam(required = false) @RequestParam(value = "end", required = false, defaultValue = "") String endDate,
 			@ApiParam(required = false) @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
 			@ApiParam(required = false) @RequestParam(value = "page", required = false, defaultValue = "1") String pageNumber,
 			@ApiParam(required = false) @RequestParam(value = "page-size", required = false, defaultValue = "20") String pageSize) {
+		ApiCallResult result = new ApiCallResult();
 		try {
-			List<DraftOrder> draftList = draftService.searchDraft(userId, serviceType, startDate, endDate, keyword,
+			PageBean<SimpleDraftSearchBean> draftList = draftService.searchDraft(userId, serviceType, startDate, endDate, keyword,
 					pageNumber, pageSize);
 			// if not data found, just return 200 with empty list
-			return new ResponseEntity<>(draftList, HttpStatus.OK);
+			result.setContent(draftList);
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		} catch (Exception e) {
+			result.setMessage("get draft search error: " + ExceptionUtils.getFullStackTrace(e));
 			logger.error("get draft search error: " + ExceptionUtils.getFullStackTrace(e));
 		}
-		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		
+		return new ResponseEntity<>(result,HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
 
