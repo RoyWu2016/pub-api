@@ -26,7 +26,7 @@ function doLogin()
 {
     var loginName = $("#login").val();
     var pw = $("#password").val();
-    var url = basePath+"/swagger";
+    var url = basePath+"/swagger-login";
     $.ajax({
         type: 'POST',
         url: url,

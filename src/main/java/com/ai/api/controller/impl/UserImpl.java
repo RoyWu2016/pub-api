@@ -8,16 +8,19 @@ package com.ai.api.controller.impl;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.api.bean.ApiContactInfoBean;
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.ApiContactInfoBean;
 import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.bean.consts.ConstMap;
@@ -38,7 +41,6 @@ import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -448,7 +450,7 @@ public class UserImpl implements User {
 	}
 
 	@Override
-	@RequestMapping(value = "/swagger", method = RequestMethod.POST)
+	@RequestMapping(value = "/swagger-login", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> swaggerLogin(@RequestParam("login") String login,@RequestParam("pw") String pw, HttpServletResponse response) {
 		ApiCallResult apiCallResult = new ApiCallResult();
 		Map<String,String> userMap = new HashMap<>();
