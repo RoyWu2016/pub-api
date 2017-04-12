@@ -731,12 +731,24 @@
           "description" : "Office ID",
           "required" : true,
           "type" : "string"
+        }, {
+          "name" : "programId",
+          "in" : "query",
+          "description" : "Program ID",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "testIds",
+          "in" : "query",
+          "description" : "Test IDs",
+          "required" : false,
+          "type" : "string"
         } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/TatSearchBean"
+              "$ref" : "#/definitions/TurnAroundTimeDTO"
             }
           }
         }
@@ -1319,33 +1331,6 @@
             "description" : "successful operation",
             "schema" : {
               "type" : "boolean"
-            }
-          }
-        }
-      }
-    },
-    "/swagger" : {
-      "post" : {
-        "tags" : [ "User Profile" ],
-        "summary" : "swagger Login",
-        "description" : "",
-        "operationId" : "swaggerLogin",
-        "parameters" : [ {
-          "name" : "login",
-          "in" : "query",
-          "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "pw",
-          "in" : "query",
-          "required" : true,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "string"
             }
           }
         }
@@ -3752,7 +3737,7 @@
         }, {
           "name" : "keyword",
           "in" : "query",
-          "description" : "Search Keyword",
+          "description" : "Keyword",
           "required" : false,
           "type" : "string"
         }, {
@@ -6102,9 +6087,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "icneeded" : {
-          "type" : "boolean",
-          "default" : false
+        "lcbeneName" : {
+          "type" : "string"
+        },
+        "lcbeneAddress" : {
+          "type" : "string"
         },
         "lcappName" : {
           "type" : "string"
@@ -6112,11 +6099,9 @@
         "lcappAddress" : {
           "type" : "string"
         },
-        "lcbeneName" : {
-          "type" : "string"
-        },
-        "lcbeneAddress" : {
-          "type" : "string"
+        "icneeded" : {
+          "type" : "boolean",
+          "default" : false
         },
         "lcnumber" : {
           "type" : "string"
@@ -6949,16 +6934,16 @@
         "lcnumber" : {
           "type" : "string"
         },
-        "lcapplicantCompanyName" : {
-          "type" : "string"
-        },
-        "lcbeneficaryCompanyName" : {
+        "lcapplicantAddress" : {
           "type" : "string"
         },
         "lcbeneficaryAddress" : {
           "type" : "string"
         },
-        "lcapplicantAddress" : {
+        "lcapplicantCompanyName" : {
+          "type" : "string"
+        },
+        "lcbeneficaryCompanyName" : {
           "type" : "string"
         }
       }
@@ -7630,44 +7615,44 @@
         "password" : {
           "type" : "string"
         },
-        "affiliateID" : {
-          "type" : "string"
-        },
-        "uniqueId" : {
-          "type" : "string"
-        },
-        "domainName" : {
-          "type" : "string"
-        },
-        "isTestAccount" : {
-          "type" : "boolean",
-          "default" : false
-        },
-        "contactInfo" : {
-          "$ref" : "#/definitions/ContactInfoBean"
-        },
         "turnover" : {
           "type" : "string"
         },
         "introducedBy" : {
           "type" : "string"
         },
-        "userIp" : {
-          "type" : "string"
-        },
-        "refer" : {
-          "type" : "string"
-        },
-        "login" : {
+        "affiliateID" : {
           "type" : "string"
         },
         "activity" : {
           "type" : "string"
         },
-        "introducedByTradeshow" : {
+        "isTestAccount" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "login" : {
+          "type" : "string"
+        },
+        "uniqueId" : {
+          "type" : "string"
+        },
+        "contactInfo" : {
+          "$ref" : "#/definitions/ContactInfoBean"
+        },
+        "refer" : {
+          "type" : "string"
+        },
+        "domainName" : {
+          "type" : "string"
+        },
+        "userIp" : {
           "type" : "string"
         },
         "introducedByOtherType" : {
+          "type" : "string"
+        },
+        "introducedByTradeshow" : {
           "type" : "string"
         }
       }
@@ -9658,6 +9643,9 @@
         "labOrderno" : {
           "type" : "string"
         },
+        "prevLabOrderno" : {
+          "type" : "string"
+        },
         "description" : {
           "type" : "string"
         },
@@ -10427,16 +10415,7 @@
         "supplierValidateCode" : {
           "type" : "string"
         },
-        "icneeded" : {
-          "type" : "string"
-        },
-        "lcappName" : {
-          "type" : "string"
-        },
-        "lcappAddress" : {
-          "type" : "string"
-        },
-        "sic" : {
+        "itlmanager" : {
           "type" : "string"
         },
         "lcbeneName" : {
@@ -10445,7 +10424,16 @@
         "lcbeneAddress" : {
           "type" : "string"
         },
-        "itlmanager" : {
+        "lcappName" : {
+          "type" : "string"
+        },
+        "sic" : {
+          "type" : "string"
+        },
+        "lcappAddress" : {
+          "type" : "string"
+        },
+        "icneeded" : {
           "type" : "string"
         },
         "lcnumber" : {
@@ -13760,6 +13748,9 @@
         "isDefault" : {
           "type" : "boolean",
           "default" : false
+        },
+        "latestVersion" : {
+          "$ref" : "#/definitions/ProgramVersion"
         }
       },
       "description" : "Program Representation"
@@ -13793,6 +13784,9 @@
         "destination" : {
           "$ref" : "#/definitions/Planet"
         },
+        "region" : {
+          "$ref" : "#/definitions/Planet"
+        },
         "email" : {
           "type" : "string"
         },
@@ -13813,6 +13807,37 @@
           "items" : {
             "$ref" : "#/definitions/ProgramTestLocation"
           }
+        }
+      }
+    },
+    "ProgramBookingOptionDTO" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "createTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "updateTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "createBy" : {
+          "type" : "string"
+        },
+        "updateBy" : {
+          "type" : "string"
+        },
+        "origin" : {
+          "$ref" : "#/definitions/PlanetDTO"
+        },
+        "destination" : {
+          "$ref" : "#/definitions/PlanetDTO"
+        },
+        "region" : {
+          "$ref" : "#/definitions/PlanetDTO"
         }
       }
     },
@@ -14361,6 +14386,31 @@
         },
         "programName" : {
           "type" : "string"
+        }
+      }
+    },
+    "ProgramVersionDTO" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "createTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "updateTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "createBy" : {
+          "type" : "string"
+        },
+        "updateBy" : {
+          "type" : "string"
+        },
+        "bookingOption" : {
+          "$ref" : "#/definitions/ProgramBookingOptionDTO"
         }
       }
     },
@@ -16080,39 +16130,6 @@
         }
       }
     },
-    "TatSearchBean" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "string"
-        },
-        "name" : {
-          "type" : "string"
-        },
-        "tat" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "isExpService" : {
-          "type" : "boolean",
-          "default" : false
-        },
-        "internalDue" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "status" : {
-          "type" : "string"
-        },
-        "office" : {
-          "type" : "string"
-        },
-        "surcharge" : {
-          "type" : "number",
-          "format" : "double"
-        }
-      }
-    },
     "TestAssignmentDTO" : {
       "type" : "object",
       "properties" : {
@@ -16790,6 +16807,39 @@
         },
         "status" : {
           "type" : "string"
+        }
+      }
+    },
+    "TurnAroundTimeDTO" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "createTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "updateTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "createBy" : {
+          "type" : "string"
+        },
+        "updateBy" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "tat" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "surcharge" : {
+          "type" : "number",
+          "format" : "double"
         }
       }
     },
