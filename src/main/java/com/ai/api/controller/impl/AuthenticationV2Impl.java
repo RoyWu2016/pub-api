@@ -9,6 +9,7 @@ import com.ai.commons.HttpUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  * Created by Hugo on 2017/4/12.
  */
 @RestController
+@Api(tags = { "AuthenticationV2" }, description = "Authentication tokens V2 APIs")
 public class AuthenticationV2Impl implements AuthenticationV2 {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationV2Impl.class);
 

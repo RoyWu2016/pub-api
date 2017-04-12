@@ -15,6 +15,8 @@
   }, {
     "name" : "Authentication"
   }, {
+    "name" : "AuthenticationV2"
+  }, {
     "name" : "Checklist"
   }, {
     "name" : "Draft"
@@ -93,6 +95,78 @@
             "$ref" : "#/definitions/LoginBean"
           }
         } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/auth/v2/refresh-token" : {
+      "put" : {
+        "tags" : [ "AuthenticationV2" ],
+        "summary" : "Refresh Api Token",
+        "description" : "",
+        "operationId" : "refreshAPIToken",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/auth/v2/remove-token" : {
+      "put" : {
+        "tags" : [ "AuthenticationV2" ],
+        "summary" : "Remove Api Token",
+        "description" : "",
+        "operationId" : "removeAPIToken",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/auth/v2/token" : {
+      "post" : {
+        "tags" : [ "AuthenticationV2" ],
+        "summary" : "User Login Then Get Api Token",
+        "description" : "",
+        "operationId" : "getAPIToken",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/LoginBean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/auth/v2/verify-token" : {
+      "get" : {
+        "tags" : [ "AuthenticationV2" ],
+        "summary" : "Verify Public Api Token",
+        "description" : "",
+        "operationId" : "verifyAPIToken",
         "responses" : {
           "200" : {
             "description" : "successful operation",
@@ -6087,6 +6161,10 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "icneeded" : {
+          "type" : "boolean",
+          "default" : false
+        },
         "lcbeneName" : {
           "type" : "string"
         },
@@ -6098,10 +6176,6 @@
         },
         "lcappAddress" : {
           "type" : "string"
-        },
-        "icneeded" : {
-          "type" : "boolean",
-          "default" : false
         },
         "lcnumber" : {
           "type" : "string"
@@ -6931,19 +7005,19 @@
           "type" : "boolean",
           "default" : false
         },
-        "lcnumber" : {
+        "lcbeneficaryAddress" : {
+          "type" : "string"
+        },
+        "lcbeneficaryCompanyName" : {
           "type" : "string"
         },
         "lcapplicantAddress" : {
           "type" : "string"
         },
-        "lcbeneficaryAddress" : {
-          "type" : "string"
-        },
         "lcapplicantCompanyName" : {
           "type" : "string"
         },
-        "lcbeneficaryCompanyName" : {
+        "lcnumber" : {
           "type" : "string"
         }
       }
@@ -7615,44 +7689,44 @@
         "password" : {
           "type" : "string"
         },
+        "introducedByTradeshow" : {
+          "type" : "string"
+        },
+        "introducedByOtherType" : {
+          "type" : "string"
+        },
         "turnover" : {
           "type" : "string"
         },
-        "introducedBy" : {
+        "refer" : {
           "type" : "string"
         },
         "affiliateID" : {
           "type" : "string"
         },
-        "activity" : {
+        "userIp" : {
+          "type" : "string"
+        },
+        "contactInfo" : {
+          "$ref" : "#/definitions/ContactInfoBean"
+        },
+        "login" : {
           "type" : "string"
         },
         "isTestAccount" : {
           "type" : "boolean",
           "default" : false
         },
-        "login" : {
-          "type" : "string"
-        },
         "uniqueId" : {
           "type" : "string"
         },
-        "contactInfo" : {
-          "$ref" : "#/definitions/ContactInfoBean"
+        "activity" : {
+          "type" : "string"
         },
-        "refer" : {
+        "introducedBy" : {
           "type" : "string"
         },
         "domainName" : {
-          "type" : "string"
-        },
-        "userIp" : {
-          "type" : "string"
-        },
-        "introducedByOtherType" : {
-          "type" : "string"
-        },
-        "introducedByTradeshow" : {
           "type" : "string"
         }
       }
@@ -10418,6 +10492,12 @@
         "itlmanager" : {
           "type" : "string"
         },
+        "icneeded" : {
+          "type" : "string"
+        },
+        "sic" : {
+          "type" : "string"
+        },
         "lcbeneName" : {
           "type" : "string"
         },
@@ -10427,13 +10507,7 @@
         "lcappName" : {
           "type" : "string"
         },
-        "sic" : {
-          "type" : "string"
-        },
         "lcappAddress" : {
-          "type" : "string"
-        },
-        "icneeded" : {
           "type" : "string"
         },
         "lcnumber" : {
@@ -16303,6 +16377,9 @@
           "format" : "double"
         },
         "status" : {
+          "type" : "string"
+        },
+        "description" : {
           "type" : "string"
         },
         "translatedInfo" : {
