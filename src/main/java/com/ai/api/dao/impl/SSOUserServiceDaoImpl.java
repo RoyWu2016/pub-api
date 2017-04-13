@@ -16,7 +16,6 @@ import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.SSOUserServiceDao;
 import com.ai.commons.Consts;
 import com.ai.commons.HttpUtil;
-import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.user.TokenSession;
@@ -83,6 +82,13 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 
             if (jwt != null) {
 	            JwtClaims claims = tokenJWTDao.getClaimsByJWT(jwt);
+	            if (null == claims) {
+		            //not valid
+		            result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+		            result.setReasonPhase("Bad token to verify, can't get claim.");
+		            result.setResponseString("");
+		            return result;
+	            }
 	            TokenSession oldToken = tokenJWTDao.getTokenSessionFromRedis((String)claims.getClaimValue("sessId"));
 	            final String userType = (String) claims.getClaimValue("userType");
 	            TokenSession tokenSession = null;
@@ -118,7 +124,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 	public ServiceCallResult verifyAPIToken(HttpServletRequest request, HttpServletResponse response) {
 		String authorization = request.getHeader("authorization");
 		String apiAccessToken = request.getHeader("ai-api-access-token");
-		String requestedURL = request.getHeader("requested-url").toLowerCase();
+		String requestedURL = request.getHeader("requested-url") == null ? "" : request.getHeader("requested-url").toLowerCase();
 		try {
 			//check api access token in header
 			ServiceCallResult result = checkAccessHeader(apiAccessToken);
@@ -129,6 +135,13 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 //			LOGGER.info("get token  :"+token);
 			if (token != null) {
 				JwtClaims claims = tokenJWTDao.getClaimsByJWT(token);
+				if (null == claims) {
+					//not valid
+					result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+					result.setReasonPhase("Bad token to verify, can't get claim.");
+					result.setResponseString("");
+					return result;
+				}
 
 				//user can only reqeust resource belong to that user
 				final String tokenUserId = (String)claims.getClaimValue("userId");

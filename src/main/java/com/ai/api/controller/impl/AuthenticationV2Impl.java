@@ -1,5 +1,10 @@
 package com.ai.api.controller.impl;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ai.api.bean.LoginBean;
 import com.ai.api.controller.AuthenticationV2;
 import com.ai.api.dao.SSOUserServiceDao;
@@ -9,6 +14,8 @@ import com.ai.commons.HttpUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.user.TokenSession;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -21,9 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by Hugo on 2017/4/12.
@@ -40,8 +44,8 @@ public class AuthenticationV2Impl implements AuthenticationV2 {
 
     @Override
     @RequestMapping(method = RequestMethod.POST, value = "/auth/v2/token")
-    @ApiOperation(value = "User Login Then Get Api Token", response = String.class)
-    public ResponseEntity<ApiCallResult> getAPIToken(@ApiParam(required = true) @RequestBody LoginBean loginBean, HttpServletRequest request, HttpServletResponse response) {
+    @ApiOperation(value = "User Login Then Get Api Token", response = TokenSession.class)
+    public ResponseEntity<ApiCallResult> getAPIToken(@ApiParam(required = true) @RequestBody LoginBean loginBean, HttpServletRequest request, HttpServletResponse response) throws IOException {
         logger.info("getAPIToken...");
         ApiCallResult result = new ApiCallResult();
         String account = loginBean.getAccount();
@@ -62,28 +66,32 @@ public class AuthenticationV2Impl implements AuthenticationV2 {
         }
         ServiceCallResult callResult = authenticationService.userLogin(account, password, userType, request);
         if (callResult.getStatusCode()==HttpServletResponse.SC_OK){
-            result.setContent(callResult.getResponseString());
+	        ObjectMapper mapper = new ObjectMapper();
+	        TokenSession ts = mapper.readValue(callResult.getResponseString(), TokenSession.class);
+            result.setContent(ts);
             return new ResponseEntity<>(result, HttpStatus.OK);
         }else {
             logger.error("Fail!getAPIToken..."+callResult.getReasonPhase()+callResult.getResponseString());
-            result.setMessage(callResult.getResponseString());
+            result.setMessage(callResult.getReasonPhase());
             return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     @RequestMapping(method = RequestMethod.PUT, value = "/auth/v2/refresh-token")
-    @ApiOperation(value = "Refresh Api Token", response = String.class)
-    public ResponseEntity<ApiCallResult> refreshAPIToken(HttpServletRequest request, HttpServletResponse response) {
+    @ApiOperation(value = "Refresh Api Token", response = TokenSession.class)
+    public ResponseEntity<ApiCallResult> refreshAPIToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         logger.info("refreshAPIToken...");
         ApiCallResult result = new ApiCallResult();
         ServiceCallResult callResult = ssoUserServiceDao.refreshAPIToken(request, response);
         if (callResult.getStatusCode()==HttpServletResponse.SC_OK){
-            result.setContent(callResult.getResponseString());
+	        ObjectMapper mapper = new ObjectMapper();
+	        TokenSession ts = mapper.readValue(callResult.getResponseString(), TokenSession.class);
+            result.setContent(ts);
             return new ResponseEntity<>(result, HttpStatus.OK);
         }else {
             logger.error("Fail!refreshAPIToken..."+callResult.getReasonPhase()+callResult.getResponseString());
-            result.setMessage(callResult.getResponseString());
+            result.setMessage(callResult.getReasonPhase());
             return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -96,11 +104,12 @@ public class AuthenticationV2Impl implements AuthenticationV2 {
         ApiCallResult result = new ApiCallResult();
         ServiceCallResult callResult = authenticationService.removeAPIToken(request, response);
         if (callResult.getStatusCode()==HttpServletResponse.SC_OK){
-            result.setContent(callResult.getResponseString());
+	        result.setMessage("");
+	        result.setContent("");
             return new ResponseEntity<>(result, HttpStatus.OK);
         }else {
             logger.error("Fail!removeAPIToken..."+callResult.getReasonPhase()+callResult.getResponseString());
-            result.setMessage(callResult.getResponseString());
+            result.setMessage(callResult.getReasonPhase());
             return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -113,11 +122,12 @@ public class AuthenticationV2Impl implements AuthenticationV2 {
         ApiCallResult result = new ApiCallResult();
         ServiceCallResult callResult = ssoUserServiceDao.verifyAPIToken(request, response);
         if (callResult.getStatusCode()==HttpServletResponse.SC_OK){
-            result.setContent(callResult.getResponseString());
+	        result.setMessage("");
+            result.setContent("");
             return new ResponseEntity<>(result, HttpStatus.OK);
         }else {
             logger.error("Fail!verifyAPIToken..."+callResult.getReasonPhase()+callResult.getResponseString());
-            result.setMessage(callResult.getResponseString());
+            result.setMessage(callResult.getReasonPhase());
             return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
