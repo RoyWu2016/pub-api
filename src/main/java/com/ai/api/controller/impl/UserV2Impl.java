@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +34,9 @@ import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.controller.UserV2;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
+import com.ai.api.util.AIUtil;
+import com.ai.api.util.RedisUtil;
+import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
@@ -37,8 +44,6 @@ import com.ai.commons.beans.audit.api.ApiEmployeeBean;
 import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.customer.RateBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -233,7 +238,7 @@ public class UserV2Impl implements UserV2 {
 		}
 		if (b) {
 			rest.setContent(b);
-			return new ResponseEntity<>(rest,HttpStatus.OK);
+			return new ResponseEntity<>(rest, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -285,7 +290,7 @@ public class UserV2Impl implements UserV2 {
 				return new ResponseEntity<>(rest, HttpStatus.OK);
 			} catch (Exception e) {
 				rest.setMessage("error!! set roles valu: " + e.toString());
-				return new ResponseEntity<>(rest,HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<>(rest, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -301,7 +306,7 @@ public class UserV2Impl implements UserV2 {
 			@ApiParam(value = "true or false", required = false) @RequestParam(value = "refresh", defaultValue = "false") boolean refresh)
 			throws IOException, AIException {
 		// TODO Auto-generated method stub
-		ApiCallResult rest = new ApiCallResult();
+		ApiCallResult<Object> rest = new ApiCallResult();
 		if (userId == null) {
 			rest.setMessage("User id can't be null or empty!");
 			return new ResponseEntity<>(rest, HttpStatus.NOT_FOUND);
@@ -319,10 +324,10 @@ public class UserV2Impl implements UserV2 {
 		}
 		if (cust == null) {
 			rest.setMessage("User with id " + userId + " not found");
-			return new ResponseEntity<>(rest,HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(rest, HttpStatus.NOT_FOUND);
 		}
 		RateBean rate = cust.getRate();
-		if(null != rate) {
+		if (null != rate) {
 			rate.setCountryPricingRates(null);
 			rate.setLabTestRate(null);
 			rate.setCreateTime(null);
@@ -330,6 +335,137 @@ public class UserV2Impl implements UserV2 {
 		}
 		rest.setContent(cust);
 		return new ResponseEntity<>(rest, HttpStatus.OK);
+	}
+
+	@Override
+	@RequestMapping(value = "/user/v2/{login}/reset-password", method = RequestMethod.PUT)
+	@ApiOperation(value = "Reset Password API", response = String.class)
+	public ResponseEntity<ApiCallResult> resetPassword(
+			@ApiParam(value = "login", required = true) @PathVariable("login") String login) {
+		ApiCallResult callResult = new ApiCallResult();
+
+		ServiceCallResult temp = userService.resetPassword(login);
+		if (null != temp) {
+			if (temp.getStatusCode() == HttpStatus.OK.value() && temp.getReasonPhase().equalsIgnoreCase("OK")) {
+				callResult.setContent(temp.getResponseString());
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
+			} else {
+				logger.error("Reset password get error:" + temp.getStatusCode() + ", " + temp.getResponseString());
+				callResult.setMessage(temp.getResponseString());
+				return new ResponseEntity<>(callResult, HttpStatus.OK);
+			}
+		} else {
+			callResult.setMessage("Get null from internal service call.");
+			return new ResponseEntity<>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@RequestMapping(value = "/user/{userId}/quality-manual", method = RequestMethod.GET)
+	@ApiOperation(value = "Download User Quality Manual", response = String.class)
+	public ResponseEntity<String> getQualityManual(
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "user token sessionId", required = true) @RequestParam("sessionId") String sessionId,
+			@ApiParam(value = "last 50 chars of the user token", required = true) @RequestParam("code") String verifiedCode,
+			HttpServletResponse httpResponse) {
+		try {
+			if (AIUtil.verifiedAccess(userId, verifiedCode, sessionId)) {
+				boolean b = userService.getQualityManual(userId, httpResponse);
+				if (b) {
+					return new ResponseEntity<>(HttpStatus.OK);
+				}
+			} else {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/is-first-time-log-in-aca", method = RequestMethod.GET)
+	@ApiOperation(value = "Is First Login", response = boolean.class)
+	public ResponseEntity<ApiCallResult> isFirstLogin(
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId) {
+		ApiCallResult apiCallResult = new ApiCallResult();
+		try {
+			logger.info("check from redis...");
+			String existing = RedisUtil.hget("loginUserList", userId);
+			if (StringUtils.isNotBlank(existing)) {
+				apiCallResult.setContent(false);
+				return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
+			}
+			logger.info("check from service...");
+			apiCallResult = userService.isFirstLogin(userId);
+			if (null == apiCallResult.getMessage()) {
+				RedisUtil.hset("loginUserList", userId, apiCallResult.getContent().toString(),
+						RedisUtil.HOUR * 24 * 365 * 10);
+				return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
+			}
+			logger.error("fail from sso-service !" + apiCallResult.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			apiCallResult.setMessage(e.toString());
+		}
+		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
+	@Override
+	@RequestMapping(value = "/swagger-login", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> swaggerLogin(@RequestParam("login") String login,
+			@RequestParam("pw") String pw, HttpServletResponse response) {
+		ApiCallResult apiCallResult = new ApiCallResult();
+		Map<String, String> userMap = new HashMap<>();
+		String users[] = swaggerUser.split(";");
+		for (int i = 0; i < users.length; i++) {
+			userMap.put(users[i].split("/")[0], users[i].split("/")[1]);
+		}
+		try {
+			logger.info("swagger login ..." + login + "-||-" + pw);
+			Iterator<Map.Entry<String, String>> iterator = userMap.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry<String, String> entry = iterator.next();
+				if (login.equals(entry.getKey()) && pw.equals(entry.getValue())) {
+					apiCallResult.setContent(true);
+					Cookie cookie = new Cookie("swaggerUser", login);
+					cookie.setMaxAge(1800);
+					response.addCookie(cookie);
+					return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
+				}
+			}
+			apiCallResult.setMessage("Wrong login or password");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error Exception!" + e);
+			apiCallResult.setMessage(e.toString());
+		}
+		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
+	@Override
+	@RequestMapping(value = "/swagger-logout", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> swaggerLogout(HttpServletResponse response) {
+		ApiCallResult apiCallResult = new ApiCallResult();
+		try {
+			logger.info("swagger logout ...");
+			Cookie cookie = new Cookie("swaggerUser", null);
+			cookie.setMaxAge(0);
+			response.addCookie(cookie);
+			apiCallResult.setContent(true);
+			return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error Exception!" + e);
+			apiCallResult.setMessage(e.toString());
+		}
+		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
+
 	}
 
 }

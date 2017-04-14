@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.ResponseEntity;
 
 import com.ai.api.bean.ApiContactInfoBean;
@@ -47,5 +49,16 @@ public interface UserV2 {
 			throws IOException, AIException;
 
 	ResponseEntity<ApiCallResult> getUserProfile(String userId, boolean refresh) throws IOException, AIException;
+
+	ResponseEntity<ApiCallResult> resetPassword(String login);
+
+	ResponseEntity<String> getQualityManual(String userId, String sessionId, String verifiedCode,
+			HttpServletResponse httpResponse);
+
+	ResponseEntity<ApiCallResult> isFirstLogin(String userId);
+
+	ResponseEntity<ApiCallResult> swaggerLogin(String login, String pw, HttpServletResponse response);
+
+	ResponseEntity<ApiCallResult> swaggerLogout(HttpServletResponse response);
 
 }
