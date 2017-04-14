@@ -361,7 +361,7 @@ public class UserV2Impl implements UserV2 {
 	}
 
 	@Override
-	@RequestMapping(value = "/user/{userId}/quality-manual", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/v2/{userId}/quality-manual", method = RequestMethod.GET)
 	@ApiOperation(value = "Download User Quality Manual", response = String.class)
 	public ResponseEntity<String> getQualityManual(
 			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
@@ -387,7 +387,7 @@ public class UserV2Impl implements UserV2 {
 
 	@Override
 	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/is-first-time-log-in-aca", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/v2/{userId}/is-first-time-log-in-aca", method = RequestMethod.GET)
 	@ApiOperation(value = "Is First Login", response = boolean.class)
 	public ResponseEntity<ApiCallResult> isFirstLogin(
 			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId) {
@@ -409,59 +409,6 @@ public class UserV2Impl implements UserV2 {
 			logger.error("fail from sso-service !" + apiCallResult.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			apiCallResult.setMessage(e.toString());
-		}
-		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
-
-	}
-
-	@Override
-	@RequestMapping(value = "/swagger-login", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> swaggerLogin(@RequestParam("login") String login,
-			@RequestParam("pw") String pw, HttpServletResponse response) {
-		ApiCallResult apiCallResult = new ApiCallResult();
-		Map<String, String> userMap = new HashMap<>();
-		String users[] = swaggerUser.split(";");
-		for (int i = 0; i < users.length; i++) {
-			userMap.put(users[i].split("/")[0], users[i].split("/")[1]);
-		}
-		try {
-			logger.info("swagger login ..." + login + "-||-" + pw);
-			Iterator<Map.Entry<String, String>> iterator = userMap.entrySet().iterator();
-			while (iterator.hasNext()) {
-				Map.Entry<String, String> entry = iterator.next();
-				if (login.equals(entry.getKey()) && pw.equals(entry.getValue())) {
-					apiCallResult.setContent(true);
-					Cookie cookie = new Cookie("swaggerUser", login);
-					cookie.setMaxAge(1800);
-					response.addCookie(cookie);
-					return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
-				}
-			}
-			apiCallResult.setMessage("Wrong login or password");
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Error Exception!" + e);
-			apiCallResult.setMessage(e.toString());
-		}
-		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
-
-	}
-
-	@Override
-	@RequestMapping(value = "/swagger-logout", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> swaggerLogout(HttpServletResponse response) {
-		ApiCallResult apiCallResult = new ApiCallResult();
-		try {
-			logger.info("swagger logout ...");
-			Cookie cookie = new Cookie("swaggerUser", null);
-			cookie.setMaxAge(0);
-			response.addCookie(cookie);
-			apiCallResult.setContent(true);
-			return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Error Exception!" + e);
 			apiCallResult.setMessage(e.toString());
 		}
 		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);

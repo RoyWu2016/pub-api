@@ -57,8 +57,4 @@ public interface UserV2 {
 
 	ResponseEntity<ApiCallResult> isFirstLogin(String userId);
 
-	ResponseEntity<ApiCallResult> swaggerLogin(String login, String pw, HttpServletResponse response);
-
-	ResponseEntity<ApiCallResult> swaggerLogout(HttpServletResponse response);
-
 }
