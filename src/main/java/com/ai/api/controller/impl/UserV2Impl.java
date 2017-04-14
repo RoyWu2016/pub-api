@@ -35,6 +35,7 @@ import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.audit.api.ApiEmployeeBean;
 import com.ai.commons.beans.customer.DashboardBean;
+import com.ai.commons.beans.customer.RateBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -320,14 +321,14 @@ public class UserV2Impl implements UserV2 {
 			rest.setMessage("User with id " + userId + " not found");
 			return new ResponseEntity<>(rest,HttpStatus.NOT_FOUND);
 		}
-
-		JSONObject result = JSON.parseObject(JSON.toJSONString(cust));
-		JSONObject rateObj = result.getJSONObject("rate");
-		rateObj.remove("countryPricingRates");
-		rateObj.remove("labTestRate");
-		rateObj.remove("createTime");
-		rateObj.remove("createTime");
-		rest.setContent(result);
+		RateBean rate = cust.getRate();
+		if(null != rate) {
+			rate.setCountryPricingRates(null);
+			rate.setLabTestRate(null);
+			rate.setCreateTime(null);
+			rate.setUpdateTime(null);
+		}
+		rest.setContent(cust);
 		return new ResponseEntity<>(rest, HttpStatus.OK);
 	}
 
