@@ -174,6 +174,7 @@ public class AIUtil {
 			if (null != session) {
 				String token = session.getToken().substring(session.getToken().length() - 50,
 						session.getToken().length());
+				logger.info("token last 50: " + token);
 				if (userId.equals(session.getUserId()) && verifiedCode.equals(token)) {
 					flag = true;
 					logger.info("User: " + userId +" get download access successfully");
