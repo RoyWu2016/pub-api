@@ -15,6 +15,8 @@ import com.ai.commons.StringUtils;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.user.TokenSession;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -72,7 +74,12 @@ public class AuthenticationV2Impl implements AuthenticationV2 {
             return new ResponseEntity<>(result, HttpStatus.OK);
         }else {
             logger.error("Fail!getAPIToken..."+callResult.getReasonPhase()+callResult.getResponseString());
-            result.setMessage(callResult.getReasonPhase());
+	        JSONObject temp = JSON.parseObject(callResult.getResponseString());
+	        if (null != temp) {
+		        result.setMessage(temp.getString("message"));
+	        } else {
+		        result.setMessage(callResult.getReasonPhase());
+	        }
             return new ResponseEntity<>(result, HttpStatus.valueOf(callResult.getStatusCode()));
         }
     }
