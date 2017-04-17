@@ -73,7 +73,7 @@ public class AuthenticationV2Impl implements AuthenticationV2 {
         }else {
             logger.error("Fail!getAPIToken..."+callResult.getReasonPhase()+callResult.getResponseString());
             result.setMessage(callResult.getReasonPhase());
-            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(result, HttpStatus.valueOf(callResult.getStatusCode()));
         }
     }
 
