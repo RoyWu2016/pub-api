@@ -172,7 +172,7 @@ public class AIUtil {
 			logger.info("Get Session from Redis successfully: " + str);
 			TokenSession session = (TokenSession) JsonUtil.mapToObject(str, TokenSession.class);
 			if (null != session) {
-				String token = session.getToken().substring(session.getToken().length() - 49,
+				String token = session.getToken().substring(session.getToken().length() - 50,
 						session.getToken().length());
 				if (userId.equals(session.getUserId()) && verifiedCode.equals(token)) {
 					flag = true;
