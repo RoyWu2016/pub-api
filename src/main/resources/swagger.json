@@ -817,7 +817,7 @@
           "description" : "Test IDs",
           "required" : false,
           "type" : "string"
-        } ],
+        }  ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
