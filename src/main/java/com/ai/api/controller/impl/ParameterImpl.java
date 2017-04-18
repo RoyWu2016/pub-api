@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ai.api.bean.ChecklistSampleSize;
@@ -648,8 +649,8 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public void showSwaggerDoc(HttpServletResponse response) throws IOException {
-		response.sendRedirect("/doc/index.html");
+	public void showSwaggerDoc(HttpServletRequest requet, HttpServletResponse response) throws IOException {
+		response.sendRedirect(requet.getRequestURI() + "doc/index.html");
 	}
 
 	@RequestMapping(value = "/swagger.json", method = RequestMethod.GET)

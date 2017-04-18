@@ -9,12 +9,17 @@
     }
   },
   "host" : "localhost:8080",
+  "basePath" : "/",
   "tags" : [ {
     "name" : "Audit"
   }, {
     "name" : "Authentication"
   }, {
+    "name" : "Authentication V2"
+  }, {
     "name" : "Checklist"
+  }, {
+    "name" : "Draft"
   }, {
     "name" : "File"
   }, {
@@ -28,6 +33,8 @@
   }, {
     "name" : "Lab Test Report"
   }, {
+    "name" : "Order"
+  }, {
     "name" : "Parameter"
   }, {
     "name" : "Payment"
@@ -36,9 +43,13 @@
   }, {
     "name" : "Supplier"
   }, {
+    "name" : "Supplier V2"
+  }, {
     "name" : "Survey"
   }, {
     "name" : "User Profile"
+  }, {
+    "name" : "User V2 Profile"
   } ],
   "schemes" : [ "http" ],
   "paths" : {
@@ -98,12 +109,136 @@
         }
       }
     },
+    "/auth/v2/refresh-token" : {
+      "put" : {
+        "tags" : [ "Authentication V2" ],
+        "summary" : "Refresh Api Token",
+        "description" : "",
+        "operationId" : "refreshAPIToken",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/TokenSession"
+            }
+          }
+        }
+      }
+    },
+    "/auth/v2/remove-token" : {
+      "put" : {
+        "tags" : [ "Authentication V2" ],
+        "summary" : "Remove Api Token",
+        "description" : "",
+        "operationId" : "removeAPIToken",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/auth/v2/token" : {
+      "post" : {
+        "tags" : [ "Authentication V2" ],
+        "summary" : "User Login Then Get Api Token",
+        "description" : "",
+        "operationId" : "getAPIToken",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/LoginBean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/TokenSession"
+            }
+          }
+        }
+      }
+    },
+    "/auth/v2/verify-token" : {
+      "get" : {
+        "tags" : [ "Authentication V2" ],
+        "summary" : "Verify Public Api Token",
+        "description" : "",
+        "operationId" : "verifyAPIToken",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
     "/auth/verify-token" : {
       "get" : {
         "tags" : [ "Authentication" ],
         "summary" : "Verify Public Api Token",
         "description" : "",
         "operationId" : "verifyPublicAPIToken",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/employee/v2/{employeeId}" : {
+      "get" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Get Employee Profile API",
+        "description" : "",
+        "operationId" : "getEmployeeProfile",
+        "parameters" : [ {
+          "name" : "employeeId",
+          "in" : "path",
+          "description" : "employeeId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "refresh",
+          "in" : "query",
+          "description" : "true or false",
+          "required" : true,
+          "type" : "boolean"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/ApiEmployeeBean"
+            }
+          }
+        }
+      }
+    },
+    "/employee/{employeeEmail}/reset-password" : {
+      "put" : {
+        "tags" : [ "User Profile" ],
+        "summary" : "Reset password by email",
+        "description" : "",
+        "operationId" : "resetPW",
+        "parameters" : [ {
+          "name" : "employeeEmail",
+          "in" : "path",
+          "description" : "employeeEmail",
+          "required" : true,
+          "type" : "string"
+        } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
@@ -137,7 +272,255 @@
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/EmployeeBean"
+              "$ref" : "#/definitions/ApiEmployeeBean"
+            }
+          }
+        }
+      }
+    },
+    "/finance/net-suite/invoice" : {
+      "post" : {
+        "tags" : [ "Finance" ],
+        "summary" : "Save Invoice From NetSuite API",
+        "description" : "",
+        "operationId" : "processInvoice",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/finance/net-suite/logs" : {
+      "post" : {
+        "tags" : [ "Finance" ],
+        "summary" : "Save Log From NetSuite API",
+        "description" : "",
+        "operationId" : "processNSLog",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/finance/net-suite/memo" : {
+      "post" : {
+        "tags" : [ "Finance" ],
+        "summary" : "Save Memo From NetSuite API",
+        "description" : "",
+        "operationId" : "processCreditOrDebitMemos",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/order/v2/{orderId}/audit-factory" : {
+      "get" : {
+        "tags" : [ "Supplier V2" ],
+        "summary" : "Get Audit Factory Confirmation Info",
+        "description" : "",
+        "operationId" : "getAuditFactoryConfirm",
+        "parameters" : [ {
+          "name" : "orderId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "password",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/ApiAuditSupplierConfirmInfoBean"
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Supplier V2" ],
+        "summary" : "Confirm Audit Factory Info",
+        "description" : "",
+        "operationId" : "updateAuditFactoryConfirm",
+        "parameters" : [ {
+          "name" : "orderId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "password",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "auditDate",
+          "in" : "query",
+          "description" : "format like 2016-12-01",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "containerReadyDate",
+          "in" : "query",
+          "description" : "format like 2016-12-01",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ApiOrderFactoryBean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/AuditBookingBean"
+            }
+          }
+        }
+      }
+    },
+    "/order/v2/{orderId}/factory" : {
+      "get" : {
+        "tags" : [ "Supplier V2" ],
+        "summary" : "Get Inspection Factory Confirmation Info",
+        "description" : "",
+        "operationId" : "getFactoryConfirm",
+        "parameters" : [ {
+          "name" : "orderId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "password",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/InspectionBookingBean"
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Supplier V2" ],
+        "summary" : "Confirm Inspection Factory Info",
+        "description" : "",
+        "operationId" : "updateFactoryConfirm",
+        "parameters" : [ {
+          "name" : "orderId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "password",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "inspectionDate",
+          "in" : "query",
+          "description" : "format like 2016-12-01",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "containerReadyDate",
+          "in" : "query",
+          "description" : "format like 2016-12-01",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/OrderFactoryBean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/InspectionBookingBean"
+            }
+          }
+        }
+      }
+    },
+    "/order/v2/{orderId}/supplier" : {
+      "put" : {
+        "tags" : [ "Supplier V2" ],
+        "summary" : "Update User's Supplier Info Without Login",
+        "description" : "",
+        "operationId" : "updateSupplierDetailInfo",
+        "parameters" : [ {
+          "name" : "orderId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "password",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/SupplierDetailBean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/InspectionBookingBean"
             }
           }
         }
@@ -664,129 +1047,6 @@
         }
       }
     },
-    "/parameter/lt/packages/tests" : {
-      "get" : {
-        "tags" : [ "Lab Test Parameter" ],
-        "summary" : "Search LT Tests by Packages API",
-        "description" : "",
-        "operationId" : "searchPackageTests",
-        "parameters" : [ {
-          "name" : "countries",
-          "in" : "query",
-          "description" : "Countries",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "testNames",
-          "in" : "query",
-          "description" : "Test Names",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "package",
-          "in" : "query",
-          "description" : "Package ID",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "office",
-          "in" : "query",
-          "description" : "Office ID",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "program",
-          "in" : "query",
-          "description" : "Program ID",
-          "required" : false,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/TestFilterDTO"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/parameter/lt/program/{programID}/packages" : {
-      "get" : {
-        "tags" : [ "Lab Test Parameter" ],
-        "summary" : "Search Packages API",
-        "description" : "",
-        "operationId" : "searchPackages",
-        "parameters" : [ {
-          "name" : "",
-          "in" : "path",
-          "description" : "Program ID",
-          "required" : true,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/OfficeSearchBean"
-            }
-          }
-        }
-      }
-    },
-    "/parameter/lt/programs/tests" : {
-      "get" : {
-        "tags" : [ "Lab Test Parameter" ],
-        "summary" : "Search LT Tests by Program API",
-        "description" : "",
-        "operationId" : "searchProgramTests",
-        "parameters" : [ {
-          "name" : "countries",
-          "in" : "query",
-          "description" : "Countries",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "testNames",
-          "in" : "query",
-          "description" : "Test Names",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "office",
-          "in" : "query",
-          "description" : "Office ID",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "program",
-          "in" : "query",
-          "description" : "Program ID",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "isFavorite",
-          "in" : "query",
-          "description" : "Only search for favorite tests",
-          "required" : false,
-          "type" : "boolean"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/TestFilterDTO"
-              }
-            }
-          }
-        }
-      }
-    },
     "/parameter/lt/programs/{programId}" : {
       "get" : {
         "tags" : [ "Lab Test Parameter" ],
@@ -830,12 +1090,39 @@
         }
       }
     },
-    "/parameter/lt/tags/tests" : {
+    "/parameter/lt/test/{testId}" : {
       "get" : {
         "tags" : [ "Lab Test Parameter" ],
-        "summary" : "Search LT Tests by Tags API",
+        "summary" : "Search LT Test By Test Id API",
         "description" : "",
-        "operationId" : "searchTagTests",
+        "operationId" : "searchTest",
+        "parameters" : [ {
+          "name" : "refresh",
+          "in" : "query",
+          "required" : true,
+          "type" : "boolean"
+        }, {
+          "name" : "",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/TestMaster"
+            }
+          }
+        }
+      }
+    },
+    "/parameter/lt/tests" : {
+      "get" : {
+        "tags" : [ "Lab Test Parameter" ],
+        "summary" : "Search LT Tests with filters API",
+        "description" : "",
+        "operationId" : "searchTestsWithFilters",
         "parameters" : [ {
           "name" : "countries",
           "in" : "query",
@@ -887,33 +1174,6 @@
               "items" : {
                 "$ref" : "#/definitions/TestFilterDTO"
               }
-            }
-          }
-        }
-      }
-    },
-    "/parameter/lt/test/{testId}" : {
-      "get" : {
-        "tags" : [ "Lab Test Parameter" ],
-        "summary" : "Search LT Test By Test Id API",
-        "description" : "",
-        "operationId" : "searchTest",
-        "parameters" : [ {
-          "name" : "refresh",
-          "in" : "query",
-          "required" : true,
-          "type" : "boolean"
-        }, {
-          "name" : "",
-          "in" : "path",
-          "required" : true,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/TestMaster"
             }
           }
         }
@@ -1225,6 +1485,535 @@
           "schema" : {
             "$ref" : "#/definitions/ClientInfoBean"
           }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2" : {
+      "put" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Create New Account API",
+        "description" : "",
+        "operationId" : "createNewAccount",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ClientInfoBean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{login}/reset-password" : {
+      "put" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Reset Password API",
+        "description" : "",
+        "operationId" : "resetPassword",
+        "parameters" : [ {
+          "name" : "login",
+          "in" : "path",
+          "description" : "login",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{userId}" : {
+      "get" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Get UserProfile API",
+        "description" : "",
+        "operationId" : "getUserProfile",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "userId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "refresh",
+          "in" : "query",
+          "description" : "true or false",
+          "required" : true,
+          "type" : "boolean"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/UserBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{userId}/company" : {
+      "put" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Update User Profile Company API",
+        "description" : "",
+        "operationId" : "updateUserProfileCompany",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "userId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/CompanyBean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/UserBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{userId}/company/{companyId}/logo" : {
+      "get" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Get Company Logo API",
+        "description" : "",
+        "operationId" : "getCompanyLogo",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "userId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "companyId",
+          "in" : "path",
+          "description" : "companyId",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "object"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Update Company Logo API",
+        "description" : "",
+        "operationId" : "updateCompanyLogo",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "userId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "companyId",
+          "in" : "path",
+          "description" : "companyId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/CompanyLogoBean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{userId}/contact-info" : {
+      "put" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Update User Profile Contact API",
+        "description" : "",
+        "operationId" : "updateUserProfileContact",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "userId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ApiContactInfoBean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/UserBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{userId}/dashboard" : {
+      "get" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Get User Dashboard API",
+        "description" : "",
+        "operationId" : "getUserDashboard",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "userId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "startDate",
+          "in" : "query",
+          "description" : "must be in format like 2016-12-01",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "endDate",
+          "in" : "query",
+          "description" : "must be in format like 2016-12-01",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/DashboardBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{userId}/is-first-time-log-in-aca" : {
+      "get" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Is First Login",
+        "description" : "",
+        "operationId" : "isFirstLogin",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "userId",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{userId}/password" : {
+      "put" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Update User Password API",
+        "description" : "",
+        "operationId" : "updateUserPassword",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "userId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/ServiceCallResult"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{userId}/preference/booking" : {
+      "put" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Update User Booking Preference API",
+        "description" : "",
+        "operationId" : "updateUserBookingPreference",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "userId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/BookingPreferenceBean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/UserBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{userId}/preference/booking/preferred-product-families" : {
+      "put" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Update User Booking Preference Product Family API",
+        "description" : "",
+        "operationId" : "updateUserBookingPreferredProductFamily",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "userId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/UserBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{userId}/quality-manual" : {
+      "get" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Download User Quality Manual",
+        "description" : "",
+        "operationId" : "getQualityManual",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "userId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "sessionId",
+          "in" : "query",
+          "description" : "user token sessionId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "code",
+          "in" : "query",
+          "description" : "last 50 chars of the user token",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{userId}/supplier" : {
+      "post" : {
+        "tags" : [ "Supplier V2" ],
+        "summary" : "Add User's Supplier",
+        "description" : "",
+        "operationId" : "createSupplier",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/SupplierDetailBean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SupplierDetailBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{userId}/supplier/{supplierId}" : {
+      "get" : {
+        "tags" : [ "Supplier V2" ],
+        "summary" : "Get User's Supplier Detail Info",
+        "description" : "",
+        "operationId" : "getSupplierDetailInfoById",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "supplierId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SupplierDetailBean"
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Supplier V2" ],
+        "summary" : "Update User's Supplier Detail Info",
+        "description" : "",
+        "operationId" : "updateUserSupplierDetailInfo",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "supplierId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/SupplierDetailBean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{userId}/suppliers" : {
+      "get" : {
+        "tags" : [ "Supplier V2" ],
+        "summary" : "Get User's Supplier List",
+        "description" : "",
+        "operationId" : "getSuppliersByUserId",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SupplierSearchResultBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/v2/{userId}/suppliers/{supplierIds}" : {
+      "delete" : {
+        "tags" : [ "Supplier V2" ],
+        "summary" : "Delete User's Suppliers Info",
+        "description" : "",
+        "operationId" : "deleteSuppliers",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "supplierIds",
+          "in" : "path",
+          "description" : "sepearted by comma when multiple format like '123,232,334'",
+          "required" : true,
+          "type" : "string"
         } ],
         "responses" : {
           "200" : {
@@ -2348,7 +3137,7 @@
           "name" : "body",
           "required" : false,
           "schema" : {
-            "$ref" : "#/definitions/ContactInfoBean"
+            "$ref" : "#/definitions/ApiContactInfoBean"
           }
         } ],
         "responses" : {
@@ -2468,6 +3257,247 @@
             "description" : "successful operation",
             "schema" : {
               "$ref" : "#/definitions/FileMetaBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/draft" : {
+      "post" : {
+        "tags" : [ "Draft" ],
+        "summary" : "Create Draft API",
+        "description" : "",
+        "operationId" : "createDraft",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "serviceType",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/InspectionBookingBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/draft/previous-psi-order/{orderId}" : {
+      "post" : {
+        "tags" : [ "Draft" ],
+        "summary" : "Create Draft From Previous Order API",
+        "description" : "",
+        "operationId" : "createDraftFromPreviousOrder",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "orderId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "service-type",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/InspectionBookingBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/draft/{draftId}" : {
+      "get" : {
+        "tags" : [ "Draft" ],
+        "summary" : "Get User Draft API",
+        "description" : "",
+        "operationId" : "getDraft",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "draftId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/InspectionBookingBean"
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Draft" ],
+        "summary" : "Save User Draft API",
+        "description" : "",
+        "operationId" : "saveDraft",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "draftId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/InspectionBookingBean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/draft/{draftId}/product" : {
+      "post" : {
+        "tags" : [ "Draft" ],
+        "summary" : "Add Product API",
+        "description" : "",
+        "operationId" : "addProduct",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "draftId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/InspectionProductBookingBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/draft/{draftId}/product/{productId}" : {
+      "delete" : {
+        "tags" : [ "Draft" ],
+        "summary" : "Delete Product API",
+        "description" : "",
+        "operationId" : "deleteProduct",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "draftId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "productId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/draft/{draftId}/sampling-level/{samplingLevel}/price" : {
+      "get" : {
+        "tags" : [ "Draft" ],
+        "summary" : "Calculate Pricing API",
+        "description" : "",
+        "operationId" : "calculatePricing",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "draftId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "samplingLevel",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "measurementSamplingSize",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/OrderPriceMandayViewBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/drafts/{draftIds}" : {
+      "delete" : {
+        "tags" : [ "Draft" ],
+        "summary" : "Delete Draft API",
+        "description" : "",
+        "operationId" : "deleteDrafts",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "draftIds",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "boolean"
             }
           }
         }
@@ -3223,42 +4253,6 @@
         }
       }
     },
-    "/user/{userId}/lt/order/{orderId}/clone/{cloneType}" : {
-      "post" : {
-        "tags" : [ "Lab Test" ],
-        "summary" : "Clone Order API",
-        "description" : "",
-        "operationId" : "cloneOrder",
-        "parameters" : [ {
-          "name" : "userId",
-          "in" : "path",
-          "description" : "User ID",
-          "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "orderId",
-          "in" : "path",
-          "description" : "Order ID",
-          "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "cloneType",
-          "in" : "path",
-          "description" : "Clone Type",
-          "required" : true,
-          "type" : "string",
-          "enum" : [ "reorder", "retest", "copy" ]
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/ApiCallResult"
-            }
-          }
-        }
-      }
-    },
     "/user/{userId}/lt/order/{orderId}/test/{testId}" : {
       "delete" : {
         "tags" : [ "Lab Test" ],
@@ -3375,13 +4369,6 @@
           "required" : false,
           "type" : "string"
         }, {
-          "name" : "cloneType",
-          "in" : "query",
-          "description" : "Order Clone Type",
-          "required" : false,
-          "type" : "string",
-          "enum" : [ "reorder", "retest" ]
-        }, {
           "name" : "pageNo",
           "in" : "query",
           "description" : "Page Number",
@@ -3431,50 +4418,6 @@
             "description" : "successful operation",
             "schema" : {
               "$ref" : "#/definitions/ApiCallResult"
-            }
-          }
-        }
-      }
-    },
-    "/user/{userId}/lt/program/{programId}/tests" : {
-      "put" : {
-        "tags" : [ "Lab Test" ],
-        "summary" : "Update LT Program Tests",
-        "description" : "",
-        "operationId" : "updateProgramTests",
-        "parameters" : [ {
-          "name" : "",
-          "in" : "path",
-          "description" : "User ID",
-          "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "",
-          "in" : "path",
-          "description" : "Program ID",
-          "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "tests",
-          "in" : "query",
-          "description" : "Test IDs",
-          "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "isFavorite",
-          "in" : "query",
-          "description" : "Update Favorite Tests",
-          "required" : false,
-          "type" : "boolean"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/TestFilterDTO"
-              }
             }
           }
         }
@@ -3676,6 +4619,65 @@
               "items" : {
                 "$ref" : "#/definitions/OrderSearchBean"
               }
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/order/{orderId}/draft/{draftId}/re-inspection" : {
+      "post" : {
+        "tags" : [ "Order" ],
+        "summary" : "Re-inspection Api",
+        "description" : "",
+        "operationId" : "reInspection",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "orderId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "draftId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/InspectionBookingBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/order/{orderId}/files" : {
+      "get" : {
+        "tags" : [ "Order" ],
+        "summary" : "Get Files by Order Id",
+        "description" : "",
+        "operationId" : "getFilesByOrderID",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "orderId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/FileMetaBean"
             }
           }
         }
@@ -3964,6 +4966,306 @@
         }
       }
     },
+    "/user/{userId}/psi-drafts" : {
+      "get" : {
+        "tags" : [ "Draft" ],
+        "summary" : "Search User Drafts API",
+        "description" : "",
+        "operationId" : "searchDraft",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "service-type",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "start",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "end",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "keyword",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "page-size",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/DraftOrder"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/psi-order" : {
+      "post" : {
+        "tags" : [ "Order" ],
+        "summary" : "Create Order by Draft API",
+        "description" : "",
+        "operationId" : "createOrderByDraft",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "draftId",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/InspectionBookingBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/psi-order/{orderId}" : {
+      "get" : {
+        "tags" : [ "Order" ],
+        "summary" : "Get User Order Detail API",
+        "description" : "",
+        "operationId" : "getOrderDetail",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "orderId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/InspectionBookingBean"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Order" ],
+        "summary" : "Cancel User Order API",
+        "description" : "",
+        "operationId" : "cancelOrder",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "orderId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "reason",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "reason_options",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/psi-order/{orderId}/draft/{draftId}/saved" : {
+      "put" : {
+        "tags" : [ "Order" ],
+        "summary" : "Save Order by Draft API",
+        "description" : "",
+        "operationId" : "saveOrderByDraft",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "draftId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "orderId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/InspectionBookingBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/psi-order/{orderId}/editing" : {
+      "put" : {
+        "tags" : [ "Order" ],
+        "summary" : "Edit User Order API",
+        "description" : "",
+        "operationId" : "editOrder",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "orderId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/InspectionBookingBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/psi-orders" : {
+      "get" : {
+        "tags" : [ "Order" ],
+        "summary" : "Search User Orders API",
+        "description" : "",
+        "operationId" : "searchOrders",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "service-type",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "start",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "end",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "keyword",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "description" : "status must be within: 15,17,20,22,23,25,30,40,50,60 and separated by comma",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "page-size",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SimpleOrderSearchBean"
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/psi-orders-export" : {
+      "get" : {
+        "tags" : [ "Order" ],
+        "summary" : "Export Orders Excle Base64",
+        "description" : "",
+        "operationId" : "exportOrders",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "service-type",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "start",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "end",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
     "/user/{userId}/public-checklist/{checklistId}" : {
       "post" : {
         "tags" : [ "Checklist" ],
@@ -4144,6 +5446,48 @@
               "items" : {
                 "$ref" : "#/definitions/SimpleOrderSearchBean"
               }
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/re-inspection-list" : {
+      "get" : {
+        "tags" : [ "Order" ],
+        "summary" : "Get User Re-inspction List API",
+        "description" : "",
+        "operationId" : "getReInspectionList",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "service-type",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "keyword",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "page-size",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SimpleOrderSearchBean"
             }
           }
         }
@@ -4668,6 +6012,35 @@
           }
         }
       }
+    },
+    "/user/{userId}/v2/company/{companyId}/logo" : {
+      "delete" : {
+        "tags" : [ "User V2 Profile" ],
+        "summary" : "Delete Company Logo API",
+        "description" : "",
+        "operationId" : "deleteCompanyLogo",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "userId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "companyId",
+          "in" : "path",
+          "description" : "companyId",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "boolean"
+            }
+          }
+        }
+      }
     }
   },
   "definitions" : {
@@ -4691,10 +6064,10 @@
         "updateBy" : {
           "type" : "string"
         },
-        "name" : {
+        "status" : {
           "type" : "string"
         },
-        "status" : {
+        "name" : {
           "type" : "string"
         }
       }
@@ -4852,6 +6225,65 @@
         },
         "content" : {
           "type" : "object"
+        }
+      }
+    },
+    "ApiContactInfoBean" : {
+      "type" : "object",
+      "properties" : {
+        "main" : {
+          "$ref" : "#/definitions/MainBean"
+        },
+        "billing" : {
+          "$ref" : "#/definitions/BillingBean"
+        }
+      }
+    },
+    "ApiEmployeeBean" : {
+      "type" : "object",
+      "properties" : {
+        "userId" : {
+          "type" : "string"
+        },
+        "firstName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "departmentId" : {
+          "type" : "string"
+        },
+        "departmentName" : {
+          "type" : "string"
+        },
+        "position" : {
+          "type" : "string"
+        },
+        "employeeType" : {
+          "type" : "string"
+        },
+        "email" : {
+          "type" : "string"
+        },
+        "phone" : {
+          "type" : "string"
+        },
+        "login" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string"
+        },
+        "roles" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "uniqueItems" : true,
+            "items" : {
+              "type" : "string"
+            }
+          }
         }
       }
     },
@@ -5233,21 +6665,21 @@
         "lcnumber" : {
           "type" : "string"
         },
-        "lcappName" : {
-          "type" : "string"
-        },
-        "lcappAddress" : {
-          "type" : "string"
-        },
         "lcbeneAddress" : {
-          "type" : "string"
-        },
-        "lcbeneName" : {
           "type" : "string"
         },
         "icneeded" : {
           "type" : "boolean",
           "default" : false
+        },
+        "lcbeneName" : {
+          "type" : "string"
+        },
+        "lcappName" : {
+          "type" : "string"
+        },
+        "lcappAddress" : {
+          "type" : "string"
         }
       }
     },
@@ -6074,16 +7506,16 @@
           "type" : "boolean",
           "default" : false
         },
-        "lcnumber" : {
-          "type" : "string"
-        },
-        "lcapplicantAddress" : {
-          "type" : "string"
-        },
         "lcbeneficaryCompanyName" : {
           "type" : "string"
         },
         "lcapplicantCompanyName" : {
+          "type" : "string"
+        },
+        "lcnumber" : {
+          "type" : "string"
+        },
+        "lcapplicantAddress" : {
           "type" : "string"
         },
         "lcbeneficaryAddress" : {
@@ -6758,38 +8190,38 @@
         "password" : {
           "type" : "string"
         },
-        "contactInfo" : {
-          "$ref" : "#/definitions/ContactInfoBean"
+        "refer" : {
+          "type" : "string"
         },
         "login" : {
+          "type" : "string"
+        },
+        "turnover" : {
           "type" : "string"
         },
         "introducedBy" : {
           "type" : "string"
         },
-        "refer" : {
+        "contactInfo" : {
+          "$ref" : "#/definitions/ContactInfoBean"
+        },
+        "activity" : {
           "type" : "string"
         },
         "domainName" : {
           "type" : "string"
         },
-        "activity" : {
-          "type" : "string"
-        },
-        "uniqueId" : {
-          "type" : "string"
-        },
-        "userIp" : {
+        "affiliateID" : {
           "type" : "string"
         },
         "isTestAccount" : {
           "type" : "boolean",
           "default" : false
         },
-        "affiliateID" : {
+        "userIp" : {
           "type" : "string"
         },
-        "turnover" : {
+        "uniqueId" : {
           "type" : "string"
         },
         "introducedByTradeshow" : {
@@ -6863,6 +8295,20 @@
       "type" : "object",
       "properties" : {
         "id" : {
+          "type" : "string"
+        },
+        "createTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "updateTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "createBy" : {
+          "type" : "string"
+        },
+        "updateBy" : {
           "type" : "string"
         },
         "name" : {
@@ -6973,11 +8419,68 @@
     "ContactInfoBean" : {
       "type" : "object",
       "properties" : {
-        "main" : {
-          "$ref" : "#/definitions/MainBean"
+        "salutation" : {
+          "type" : "string"
         },
-        "billing" : {
-          "$ref" : "#/definitions/BillingBean"
+        "firstName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "position" : {
+          "type" : "string"
+        },
+        "emails" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "telephone" : {
+          "type" : "string"
+        },
+        "mobile" : {
+          "type" : "string"
+        },
+        "companyName" : {
+          "type" : "string"
+        },
+        "supplierCompanyName" : {
+          "type" : "string"
+        },
+        "address" : {
+          "type" : "string"
+        },
+        "fax" : {
+          "type" : "string"
+        },
+        "postCode" : {
+          "type" : "string"
+        },
+        "city" : {
+          "type" : "string"
+        },
+        "country" : {
+          "type" : "string"
+        },
+        "billingSalutation" : {
+          "type" : "string"
+        },
+        "billingContactName" : {
+          "type" : "string"
+        },
+        "billingEmail" : {
+          "type" : "string"
+        },
+        "homePage" : {
+          "type" : "string"
+        },
+        "industry" : {
+          "type" : "string"
+        },
+        "industryString" : {
+          "type" : "string"
         }
       }
     },
@@ -7117,6 +8620,23 @@
         "id" : {
           "type" : "string"
         },
+        "createTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "updateTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "createBy" : {
+          "type" : "string"
+        },
+        "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string"
+        },
         "code" : {
           "type" : "string"
         },
@@ -7126,11 +8646,37 @@
         "comments" : {
           "type" : "string"
         },
+        "currencyRate" : {
+          "$ref" : "#/definitions/CurrencyRate"
+        }
+      }
+    },
+    "CurrencyRate" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "createTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "updateTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "createBy" : {
+          "type" : "string"
+        },
+        "updateBy" : {
+          "type" : "string"
+        },
         "status" : {
           "type" : "string"
         },
-        "userTime" : {
-          "$ref" : "#/definitions/UserAndTimeEntity"
+        "rate" : {
+          "type" : "number",
+          "format" : "double"
         }
       }
     },
@@ -7286,6 +8832,58 @@
         }
       }
     },
+    "DraftOrder" : {
+      "type" : "object",
+      "properties" : {
+        "draftId" : {
+          "type" : "string"
+        },
+        "orderId" : {
+          "type" : "string"
+        },
+        "userId" : {
+          "type" : "string"
+        },
+        "companyId" : {
+          "type" : "string"
+        },
+        "parentCompanyId" : {
+          "type" : "string"
+        },
+        "inspectionType" : {
+          "type" : "string"
+        },
+        "completed" : {
+          "type" : "string"
+        },
+        "inspectionDate" : {
+          "type" : "string"
+        },
+        "createTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "updateTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "orderInfo" : {
+          "type" : "string"
+        },
+        "draftOrderInfo" : {
+          "type" : "string"
+        },
+        "supplierName" : {
+          "type" : "string"
+        },
+        "clientReference" : {
+          "type" : "string"
+        },
+        "bookingDate" : {
+          "type" : "string"
+        }
+      }
+    },
     "DraftStepBean" : {
       "type" : "object",
       "properties" : {
@@ -7313,173 +8911,6 @@
           "type" : "string"
         },
         "value" : {
-          "type" : "string"
-        }
-      }
-    },
-    "EmployeeBean" : {
-      "type" : "object",
-      "properties" : {
-        "userId" : {
-          "type" : "string"
-        },
-        "firstName" : {
-          "type" : "string"
-        },
-        "lastName" : {
-          "type" : "string"
-        },
-        "joinDate" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "departmentId" : {
-          "type" : "string"
-        },
-        "departmentName" : {
-          "type" : "string"
-        },
-        "position" : {
-          "type" : "string"
-        },
-        "employeeType" : {
-          "type" : "string"
-        },
-        "email" : {
-          "type" : "string"
-        },
-        "phone" : {
-          "type" : "string"
-        },
-        "login" : {
-          "type" : "string"
-        },
-        "password" : {
-          "type" : "string"
-        },
-        "status" : {
-          "type" : "string"
-        },
-        "createTime" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "updateTime" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "groups" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/EmployeeGroup"
-          }
-        },
-        "roles" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/EmployeeRole"
-          }
-        },
-        "criteriaStatusList" : {
-          "type" : "array",
-          "items" : {
-            "type" : "string"
-          }
-        },
-        "criteriaDepartmentIdList" : {
-          "type" : "array",
-          "items" : {
-            "type" : "string"
-          }
-        },
-        "criteriaGroupIdList" : {
-          "type" : "array",
-          "items" : {
-            "type" : "string"
-          }
-        },
-        "criteriaRoleIdList" : {
-          "type" : "array",
-          "items" : {
-            "type" : "string"
-          }
-        },
-        "reportTos" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/EmployeeBean"
-          }
-        },
-        "modifiedBy" : {
-          "type" : "string"
-        },
-        "modifiedDate" : {
-          "type" : "string",
-          "format" : "date-time"
-        }
-      }
-    },
-    "EmployeeGroup" : {
-      "type" : "object",
-      "properties" : {
-        "groupId" : {
-          "type" : "string"
-        },
-        "groupName" : {
-          "type" : "string"
-        },
-        "description" : {
-          "type" : "string"
-        },
-        "createTime" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "updateTime" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "roles" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/EmployeeRole"
-          }
-        },
-        "departmentId" : {
-          "type" : "string"
-        },
-        "departmentName" : {
-          "type" : "string"
-        }
-      }
-    },
-    "EmployeeRole" : {
-      "type" : "object",
-      "properties" : {
-        "roleId" : {
-          "type" : "string"
-        },
-        "roleName" : {
-          "type" : "string"
-        },
-        "moduleId" : {
-          "type" : "string"
-        },
-        "description" : {
-          "type" : "string"
-        },
-        "createTime" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "updateTime" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "moduleName" : {
-          "type" : "string"
-        },
-        "displayName" : {
           "type" : "string"
         }
       }
@@ -7669,6 +9100,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "lab" : {
           "$ref" : "#/definitions/LabMaster"
         },
@@ -7697,6 +9131,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "name" : {
           "type" : "string"
         },
@@ -7704,9 +9141,6 @@
           "type" : "string"
         },
         "description" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         }
       }
@@ -7806,13 +9240,13 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "name" : {
           "type" : "string"
         },
         "date" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         }
       }
@@ -7835,6 +9269,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "code" : {
@@ -7862,9 +9299,6 @@
           "type" : "string"
         },
         "comments" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         },
         "contactName" : {
@@ -7987,12 +9421,12 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "day" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "status" : {
-          "type" : "string"
         }
       }
     },
@@ -8032,6 +9466,9 @@
           "type" : "string"
         },
         "mobileNumber" : {
+          "type" : "string"
+        },
+        "fax" : {
           "type" : "string"
         }
       }
@@ -8188,13 +9625,13 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "name" : {
           "type" : "string"
         },
         "date" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         }
       }
@@ -8219,13 +9656,13 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "fileName" : {
           "type" : "string"
         },
         "fileHash" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         }
       }
@@ -8250,6 +9687,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "name" : {
           "type" : "string"
         },
@@ -8272,9 +9712,6 @@
           "$ref" : "#/definitions/Currency"
         },
         "zipCode" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         },
         "workingDays" : {
@@ -8370,12 +9807,12 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "day" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "status" : {
-          "type" : "string"
         }
       }
     },
@@ -8399,6 +9836,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "label" : {
           "type" : "string"
         },
@@ -8413,9 +9853,6 @@
           "type" : "string"
         },
         "fileHashcode" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         }
       }
@@ -8465,6 +9902,9 @@
         "selected" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "extraOption" : {
+          "type" : "string"
         },
         "fieldName" : {
           "type" : "string"
@@ -8678,6 +10118,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "currency" : {
           "type" : "string"
         },
@@ -8693,9 +10136,6 @@
           "format" : "double"
         },
         "description" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         },
         "creditDebitStatus" : {
@@ -8737,6 +10177,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "fileName" : {
           "type" : "string"
         },
@@ -8745,9 +10188,6 @@
           "format" : "int64"
         },
         "fileHashCode" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         }
       }
@@ -8776,6 +10216,9 @@
           "type" : "string"
         },
         "labOrderno" : {
+          "type" : "string"
+        },
+        "prevLabOrderno" : {
           "type" : "string"
         },
         "description" : {
@@ -9547,13 +10990,19 @@
         "supplierValidateCode" : {
           "type" : "string"
         },
+        "subServiceTypeName" : {
+          "type" : "string"
+        },
         "lcnumber" : {
           "type" : "string"
         },
-        "sic" : {
+        "lcbeneAddress" : {
           "type" : "string"
         },
-        "itlmanager" : {
+        "icneeded" : {
+          "type" : "string"
+        },
+        "lcbeneName" : {
           "type" : "string"
         },
         "lcappName" : {
@@ -9562,13 +11011,10 @@
         "lcappAddress" : {
           "type" : "string"
         },
-        "lcbeneAddress" : {
+        "sic" : {
           "type" : "string"
         },
-        "lcbeneName" : {
-          "type" : "string"
-        },
-        "icneeded" : {
+        "itlmanager" : {
           "type" : "string"
         }
       }
@@ -9593,6 +11039,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "holdReason" : {
           "type" : "string"
         },
@@ -9603,9 +11052,6 @@
         "offHoldDate" : {
           "type" : "string",
           "format" : "date-time"
-        },
-        "status" : {
-          "type" : "string"
         }
       }
     },
@@ -9627,6 +11073,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "currency" : {
@@ -9657,9 +11106,6 @@
         "totalActualAmount" : {
           "type" : "number",
           "format" : "double"
-        },
-        "status" : {
-          "type" : "string"
         },
         "invoiceStatus" : {
           "type" : "string"
@@ -9735,6 +11181,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "fileName" : {
           "type" : "string"
         },
@@ -9743,9 +11192,6 @@
           "format" : "int64"
         },
         "fileHashCode" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         }
       }
@@ -9770,6 +11216,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "name" : {
           "type" : "string"
         },
@@ -9785,9 +11234,6 @@
           "type" : "string"
         },
         "comments" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         },
         "noOfActualTest" : {
@@ -9884,6 +11330,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "reportNo" : {
           "type" : "string"
         },
@@ -9932,9 +11381,6 @@
           "type" : "string"
         },
         "contact" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         },
         "orderStatus" : {
@@ -10281,6 +11727,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "message" : {
           "type" : "string"
         },
@@ -10291,9 +11740,6 @@
           "type" : "string"
         },
         "messageSubj" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         },
         "details" : {
@@ -10365,6 +11811,161 @@
         }
       }
     },
+    "OrderPriceMandayViewBean" : {
+      "type" : "object",
+      "properties" : {
+        "orderId" : {
+          "type" : "string"
+        },
+        "draftId" : {
+          "type" : "string"
+        },
+        "totalManday" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "totalCharge" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "totalMandayByClient" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "inspUnitPrice" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "inspectionCharge" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "expressBookingFee" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "totalQuantity" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "sampleLevel" : {
+          "type" : "string"
+        },
+        "sampleSizeUnit" : {
+          "type" : "string"
+        },
+        "sampleSizeTotal" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "measurementSampleLevel" : {
+          "type" : "string"
+        },
+        "measurementSampleQuantity" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "fabricSampleLevel" : {
+          "type" : "string"
+        },
+        "nbOfContainers" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "sampleCollectionRequestByClient" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "sampleCharge" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "sampleCollectionRate" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "nbOfExtraReports" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extraReportRate" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "extraReportCharge" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "pointsQtyToInspect" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "taxAmount" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "otherAuditRate" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "countryNb" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "optionalQuantity" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "optionalUnitPrice" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "optionalCharge" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "otherChargeName" : {
+          "type" : "string"
+        },
+        "factoryWorkers" : {
+          "type" : "string"
+        },
+        "auditNbOfMDBookedByClient" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "auditUnitPrice" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "auditPrice" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "nbOfMDSpent" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "mdRequested" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "sampleCollectedAndSentByAI" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "otherCharge" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "productPriceMandayViews" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ProductPriceMandayViewBean"
+          }
+        }
+      }
+    },
     "OrderProdReferenceBean" : {
       "type" : "object",
       "properties" : {
@@ -10410,6 +12011,23 @@
         "id" : {
           "type" : "string"
         },
+        "createTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "updateTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "createBy" : {
+          "type" : "string"
+        },
+        "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string"
+        },
         "classification" : {
           "type" : "string"
         }
@@ -10433,6 +12051,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "recommendedAgeGrade" : {
@@ -10472,6 +12093,23 @@
         "id" : {
           "type" : "string"
         },
+        "createTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "updateTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "createBy" : {
+          "type" : "string"
+        },
+        "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string"
+        },
         "nature" : {
           "type" : "string"
         }
@@ -10497,6 +12135,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "currency" : {
           "type" : "string"
         },
@@ -10520,9 +12161,6 @@
           "format" : "double"
         },
         "quotationStatus" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         },
         "adjustmentAmount" : {
@@ -10565,6 +12203,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "name" : {
           "type" : "string"
         },
@@ -10584,9 +12225,6 @@
           "type" : "string"
         },
         "comments" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         },
         "quotationRemark" : {
@@ -10612,6 +12250,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "trackingNo" : {
@@ -10679,9 +12320,6 @@
         "courierTrackingNo" : {
           "type" : "string"
         },
-        "status" : {
-          "type" : "string"
-        },
         "productPhotoAttachmentId" : {
           "type" : "string"
         }
@@ -10705,6 +12343,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "sku" : {
@@ -10814,9 +12455,6 @@
           "type" : "boolean",
           "default" : false
         },
-        "description" : {
-          "type" : "string"
-        },
         "testStartDate" : {
           "type" : "string"
         },
@@ -10880,6 +12518,15 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string"
+        },
+        "reorderRemark" : {
+          "type" : "string"
+        },
+        "retestRemark" : {
           "type" : "string"
         },
         "bookingRemark" : {
@@ -10949,6 +12596,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "location" : {
           "type" : "string"
         },
@@ -10989,6 +12639,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "assortment" : {
           "type" : "string"
         },
@@ -11027,9 +12680,6 @@
         "photoDescription" : {
           "type" : "string"
         },
-        "status" : {
-          "type" : "string"
-        },
         "photoAttachmentId" : {
           "type" : "string"
         }
@@ -11053,6 +12703,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "lab" : {
@@ -11096,9 +12749,6 @@
           "format" : "date-time"
         },
         "subContractComments" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         },
         "labId" : {
@@ -11243,6 +12893,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "test" : {
           "$ref" : "#/definitions/TestMaster"
         },
@@ -11277,9 +12930,6 @@
           "type" : "string"
         },
         "comment" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         },
         "testTimesheet" : {
@@ -11372,6 +13022,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "userId" : {
           "type" : "string"
         },
@@ -11387,9 +13040,6 @@
           "format" : "double"
         },
         "timesheetDescription" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         },
         "testAssignment" : {
@@ -11418,6 +13068,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "strFilingDate" : {
@@ -11482,6 +13135,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "sampleLocation" : {
@@ -11559,6 +13215,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "sampleLocation" : {
           "type" : "string"
         },
@@ -11610,6 +13269,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "name" : {
           "type" : "string"
         },
@@ -11635,9 +13297,6 @@
         "expiryDate" : {
           "type" : "string",
           "format" : "date-time"
-        },
-        "status" : {
-          "type" : "string"
         },
         "tests" : {
           "type" : "array",
@@ -12353,6 +14012,115 @@
         }
       }
     },
+    "ProductPriceMandayViewBean" : {
+      "type" : "object",
+      "properties" : {
+        "productId" : {
+          "type" : "string"
+        },
+        "productName" : {
+          "type" : "string"
+        },
+        "draftProductId" : {
+          "type" : "string"
+        },
+        "productManday" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "inspUnitPrice" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "sampleLevel" : {
+          "type" : "string"
+        },
+        "sampleSizeUnit" : {
+          "type" : "string"
+        },
+        "mdNb" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "mdp" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "aqlQuantityLog" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "sampleSize" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "maxRefPerMD" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "normalCurrentMd" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "mdPerRef" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "aqlQuantity" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "nbPerMd" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "maxNbPerMd" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "fabricSampleLevel" : {
+          "type" : "string"
+        },
+        "totalFabricLength" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "rightFabricLength" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "sampleLevelWorkManShip" : {
+          "type" : "string"
+        },
+        "sampleLevelMeasurement" : {
+          "type" : "string"
+        },
+        "totalSampleSizeWorkManShip" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "totalSampleSizeMeasurement" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "mdByMeasurementLog" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "measurementAqlQuantityLog" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalMeasurementAqlLog" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "nbMeasurementPerMdLog" : {
+          "type" : "number",
+          "format" : "double"
+        }
+      }
+    },
     "ProductSpecBean" : {
       "type" : "object",
       "properties" : {
@@ -12530,6 +14298,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "programName" : {
           "type" : "string",
           "description" : "Program Name"
@@ -12552,6 +14323,9 @@
         "isDefault" : {
           "type" : "boolean",
           "default" : false
+        },
+        "latestVersion" : {
+          "$ref" : "#/definitions/ProgramVersion"
         }
       },
       "description" : "Program Representation"
@@ -12576,10 +14350,16 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "origin" : {
           "$ref" : "#/definitions/Planet"
         },
         "destination" : {
+          "$ref" : "#/definitions/Planet"
+        },
+        "region" : {
           "$ref" : "#/definitions/Planet"
         },
         "email" : {
@@ -12623,6 +14403,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "company" : {
@@ -12679,6 +14462,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "payFrom" : {
@@ -12776,6 +14562,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "otherRemarks" : {
           "type" : "string"
         },
@@ -12802,6 +14591,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "notificationOption" : {
@@ -12835,6 +14627,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "notifications" : {
           "type" : "array",
           "uniqueItems" : true,
@@ -12862,6 +14657,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "testOption" : {
@@ -12906,6 +14704,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "remarks" : {
           "type" : "string"
         }
@@ -12929,6 +14730,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "rating" : {
@@ -12960,6 +14764,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "testOption" : {
@@ -13001,6 +14808,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "testLocation" : {
           "$ref" : "#/definitions/OfficeMaster"
         }
@@ -13024,6 +14834,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "packageName" : {
@@ -13081,9 +14894,15 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "version" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "program" : {
+          "$ref" : "#/definitions/Program"
         },
         "bookingOption" : {
           "$ref" : "#/definitions/ProgramBookingOption"
@@ -13108,6 +14927,9 @@
         },
         "programCompany" : {
           "$ref" : "#/definitions/ProgramCompany"
+        },
+        "programName" : {
+          "type" : "string"
         }
       }
     },
@@ -13392,14 +15214,14 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "code" : {
           "type" : "integer",
           "format" : "int32"
         },
         "description" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         }
       }
@@ -13594,6 +15416,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "name" : {
           "type" : "string"
         },
@@ -13603,9 +15428,6 @@
           "items" : {
             "$ref" : "#/definitions/RegionCountries"
           }
-        },
-        "status" : {
-          "type" : "string"
         },
         "module" : {
           "type" : "string"
@@ -13630,6 +15452,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "country" : {
@@ -14196,6 +16021,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "name" : {
           "type" : "string"
         },
@@ -14345,6 +16173,21 @@
           "type" : "string"
         },
         "productId" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ServiceCallResult" : {
+      "type" : "object",
+      "properties" : {
+        "statusCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "reasonPhase" : {
+          "type" : "string"
+        },
+        "responseString" : {
           "type" : "string"
         }
       }
@@ -14502,6 +16345,12 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "reorderRemark" : {
+          "type" : "string"
+        },
+        "retestRemark" : {
           "type" : "string"
         },
         "bookingRemark" : {
@@ -14949,6 +16798,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "label" : {
           "type" : "string"
         },
@@ -14963,9 +16815,6 @@
           "type" : "string"
         },
         "fileHashcode" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         }
       }
@@ -15051,6 +16900,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "packageClassification" : {
           "type" : "string"
         },
@@ -15058,9 +16910,6 @@
           "type" : "string"
         },
         "packageCriteria" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         }
       }
@@ -15108,6 +16957,9 @@
         "country" : {
           "type" : "string"
         },
+        "region" : {
+          "type" : "string"
+        },
         "tags" : {
           "type" : "array",
           "items" : {
@@ -15125,6 +16977,9 @@
         "favorite" : {
           "type" : "boolean",
           "default" : false
+        },
+        "currency" : {
+          "type" : "string"
         }
       }
     },
@@ -15146,6 +17001,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "lab" : {
@@ -15174,9 +17032,6 @@
         "price" : {
           "type" : "number",
           "format" : "double"
-        },
-        "status" : {
-          "type" : "string"
         },
         "name" : {
           "type" : "string"
@@ -15223,6 +17078,9 @@
           "type" : "string"
         },
         "updateBy" : {
+          "type" : "string"
+        },
+        "status" : {
           "type" : "string"
         },
         "code" : {
@@ -15280,9 +17138,6 @@
           "type" : "number",
           "format" : "double"
         },
-        "status" : {
-          "type" : "string"
-        },
         "testDetails" : {
           "$ref" : "#/definitions/TestDetails"
         },
@@ -15336,6 +17191,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "lab" : {
           "$ref" : "#/definitions/LabMaster"
         },
@@ -15353,9 +17211,6 @@
           "type" : "string"
         },
         "isDefaultLab" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         },
         "tatRegular" : {
@@ -15447,6 +17302,9 @@
         "updateBy" : {
           "type" : "string"
         },
+        "status" : {
+          "type" : "string"
+        },
         "standardName" : {
           "type" : "string"
         },
@@ -15460,9 +17318,6 @@
           "type" : "string"
         },
         "langCode" : {
-          "type" : "string"
-        },
-        "status" : {
           "type" : "string"
         }
       }
@@ -15479,6 +17334,26 @@
         "measurementPoints" : {
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "TokenSession" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "userId" : {
+          "type" : "string"
+        },
+        "userType" : {
+          "type" : "string"
+        },
+        "token" : {
+          "type" : "string"
+        },
+        "validBefore" : {
+          "type" : "string"
         }
       }
     },
@@ -15566,7 +17441,7 @@
           "$ref" : "#/definitions/CompanyBean"
         },
         "contacts" : {
-          "$ref" : "#/definitions/ContactInfoBean"
+          "$ref" : "#/definitions/ApiContactInfoBean"
         },
         "preferences" : {
           "$ref" : "#/definitions/PreferencesBean"

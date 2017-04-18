@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.ai.api.bean.InspectionDraftBean;
 import com.ai.api.bean.InspectionDraftProductBean;
+import com.ai.commons.JsonUtil;
 import com.ai.commons.beans.customer.CompanyEntireBean;
 import com.ai.commons.beans.customer.ExtraBean;
 import com.ai.commons.beans.order.Draft;
@@ -32,6 +33,7 @@ import com.ai.commons.beans.order.draft.DraftProduct;
 import com.ai.commons.beans.order.draft.DraftProductInfo;
 import com.ai.commons.beans.psi.InspectionOrderBookingBean;
 import com.ai.commons.beans.psi.InspectionProductBookingBean;
+import com.ai.commons.beans.user.TokenSession;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -66,8 +68,8 @@ public class AIUtil {
 			return "CHB";
 		} else if (extra.getIsFI() != null && extra.getIsFI().equalsIgnoreCase("Yes")) {
 			return "AFI";
-		} else if (companyEntire.getOverview().getBusinessUnitText() != null &&
-				companyEntire.getOverview().getBusinessUnitText().equals("AG")) {
+		} else if (companyEntire.getOverview().getBusinessUnitText() != null
+				&& companyEntire.getOverview().getBusinessUnitText().equals("AG")) {
 			return "AG";
 		} else {
 			return "AI";
@@ -161,5 +163,26 @@ public class AIUtil {
 	public static void setMessageConverters(RestTemplate restTemplate) {
 		restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
 	    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+	}
+
+	public static boolean verifiedAccess(String userId, String verifiedCode, String sessionId) {
+		logger.info("SessionId: " + sessionId + " " + "User Id: " + userId + " " + "Verified Code: " + verifiedCode);
+		boolean flag = false;
+		String str = RedisUtil.hget("publicAPIToken",sessionId);
+		if (null != str) {
+			logger.info("Get Session from Redis successfully: " + str);
+			TokenSession session = (TokenSession) JsonUtil.mapToObject(str, TokenSession.class);
+			if (null != session) {
+				String token = session.getToken().substring(session.getToken().length() - 50,
+						session.getToken().length());
+				logger.info("token last 50: " + token);
+				if (userId.equals(session.getUserId()) && verifiedCode.equals(token)) {
+					flag = true;
+					logger.info("User: " + userId +" get download access successfully");
+				}
+			}
+		}
+
+		return flag;
 	}
 }

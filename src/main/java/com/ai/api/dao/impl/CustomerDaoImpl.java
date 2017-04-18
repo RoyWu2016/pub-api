@@ -29,7 +29,6 @@ import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -262,6 +261,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			if (result.getStatusCode() == HttpStatus.OK.value() && result.getReasonPhase().equalsIgnoreCase("OK")) {
 				return true;
 			}
+			LOGGER.error("fail to create new Account from customer-service!"+result.getStatusCode()+" || "+result.getResponseString());
 		} catch (IOException e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
@@ -292,6 +292,7 @@ public class CustomerDaoImpl implements CustomerDao {
 						LOGGER.error("getEmployeeProfile from user-service response 200  but EmployeeBean is null");
 						return null;
 					}
+					LOGGER.info("response string: " + result.getResponseString());
 					generalUserBean = JsonUtil.mapToObject(result.getResponseString(), EmployeeBean.class);
 					LOGGER.info("saving employee into redis employee id: " + employeeId);
 					RedisUtil.hset("employeeCache", employeeId, JSON.toJSONString(generalUserBean), RedisUtil.HOUR * 2);

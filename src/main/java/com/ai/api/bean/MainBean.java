@@ -20,6 +20,8 @@ public class MainBean implements Serializable {
 
     private String mobileNumber;
 
+	private String fax;
+
     public String getSalutation() {
         return salutation;
     }
@@ -75,4 +77,12 @@ public class MainBean implements Serializable {
     public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
     }
+
+	public String getFax() {
+		return fax;
+	}
+
+	public void setFax(String fax) {
+		this.fax = fax;
+	}
 }

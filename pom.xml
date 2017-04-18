@@ -36,6 +36,7 @@
         <!-- AspectJ -->
         <aspectj.version>1.7.4</aspectj.version>
         <host>localhost:8080</host>
+        <basepath>/</basepath>
 	</properties>
 
 
@@ -325,7 +326,7 @@
                             <!--set the host in mvn command like:
                                 clean compile package -Dmaven.test.skip=true -Dhost=web02dev.asiainspection.com:8080-->
                             <host>${host}</host>
-                            <!--<basePath>/api</basePath>-->
+                            <basePath>${basepath}</basePath>
                             <info>
                                 <title>AsiaInspection - Api Documentation</title>
                                 <version>0.2</version>

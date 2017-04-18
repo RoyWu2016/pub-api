@@ -23,7 +23,7 @@ import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
 import com.ai.api.bean.CompanyRelationshipBean;
-import com.ai.api.bean.ContactInfoBean;
+import com.ai.api.bean.ApiContactInfoBean;
 import com.ai.api.bean.CustomAQLBean;
 import com.ai.api.bean.CustomizedProductType;
 import com.ai.api.bean.EmployeeBean;
@@ -353,16 +353,17 @@ public class UserServiceImpl implements UserService {
 		user.setPayment(payment);
 
 		// ------------Set ContactInfoBean Properties ----------------
-		ContactInfoBean contactInfoBean = new ContactInfoBean();
+		ApiContactInfoBean contactInfoBean = new ApiContactInfoBean();
 
 		MainBean main = new MainBean();
-		main.setSalutation(userBean.getFollowName());
-		main.setFamilyName(userBean.getLastName());
-		main.setGivenName(userBean.getFirstName());
+		main.setSalutation(contactBean.getMainGender());
+		main.setFamilyName(contactBean.getMainFamilyName());
+		main.setGivenName(contactBean.getMainGivenName());
 		main.setPosition(contactBean.getMainPosition());
-		main.setEmail(userBean.getPersonalEmail());
-		main.setPhoneNumber(userBean.getLandline());
-		main.setMobileNumber(userBean.getMobile());
+		main.setEmail(contactBean.getMainEmail());
+		main.setPhoneNumber(contactBean.getMainTel());
+		main.setMobileNumber(contactBean.getMainMobile());
+		main.setFax(contactBean.getMainFax());
 
 		contactInfoBean.setMain(main);
 
@@ -781,21 +782,21 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserBean updateContact(ContactInfoBean newContact, String userId) throws IOException, AIException {
-		// get general user bean
-		GeneralUserBean user = customerDao.getGeneralUser(userId);
-		user.setFollowName(newContact.getMain().getSalutation());
-		user.setFirstName(newContact.getMain().getGivenName());
-		user.setLastName(newContact.getMain().getFamilyName());
-		user.setPersonalEmail(newContact.getMain().getEmail());
-		user.setLandline(newContact.getMain().getPhoneNumber());
-		user.setMobile(newContact.getMain().getMobileNumber());
+	public UserBean updateContact(ApiContactInfoBean newContact, String userId) throws IOException, AIException {
 
 		String compId = getCustById(userId).getCompany().getId();
 
 		// get contact bean
 		ContactBean contact = companyDao.getCompanyContact(compId);
 		contact.setMainPosition(newContact.getMain().getPosition());
+		contact.setMainGender(newContact.getMain().getSalutation());
+		contact.setMainGivenName(newContact.getMain().getGivenName());
+		contact.setMainFamilyName(newContact.getMain().getFamilyName());
+		contact.setMainEmail(newContact.getMain().getEmail());
+		contact.setMainTel(newContact.getMain().getPhoneNumber());
+		contact.setMainEmail(newContact.getMain().getMobileNumber());
+		contact.setMainFax(newContact.getMain().getFax());
+
 		if (newContact.getBilling().isSameAsMainContact()) {
 			contact.setAccountingGender(newContact.getMain().getSalutation());
 			contact.setAccountingGivenName(newContact.getMain().getGivenName());
@@ -808,10 +809,8 @@ public class UserServiceImpl implements UserService {
 			contact.setAccountingEmail(newContact.getBilling().getEmail());
 		}
 
-		// update general user and company contact
-		// return customerDao.updateGeneralUser(user) &&
-		// companyDao.updateCompanyContact(compId, contact);
-		if (customerDao.updateGeneralUser(user) && companyDao.updateCompanyContact(compId, contact)) {
+		//update company contact
+		if (companyDao.updateCompanyContact(compId, contact)) {
 			logger.info("update contact in DB finished ! userId:  " + userId);
 			return this.updateUserBeanInCache(userId);
 		}
@@ -1117,5 +1116,10 @@ public class UserServiceImpl implements UserService {
 			throw new Exception("Can not getUser by id:"+userId);
 		}
 		return ssoUserServiceDao.isFirstLogin(userBean.getLogin());
+	}
+
+	@Override
+	public ApiCallResult resetPW(String employeeEmail) throws Exception {
+		return ssoUserServiceDao.resetPW(employeeEmail);
 	}
 }

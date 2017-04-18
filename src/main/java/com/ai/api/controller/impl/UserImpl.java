@@ -10,27 +10,17 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.ai.api.bean.ApiContactInfoBean;
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.ContactInfoBean;
 import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.bean.consts.ConstMap;
@@ -47,10 +37,21 @@ import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /***************************************************************************
  * <PRE>
@@ -80,6 +81,8 @@ public class UserImpl implements User {
 	@Autowired
 	UserService userService; // Service which will do all data
 								// retrieval/manipulation work
+	@Value("${swagger-access-map}")
+	String swaggerUser;
 
 	// @Autowired
 	// ApiCallResult callResult;
@@ -148,7 +151,7 @@ public class UserImpl implements User {
 	@ApiOperation(value = "Update User Profile Contact API", response = UserBean.class)
 	public ResponseEntity<UserBean> updateUserProfileContact(
 			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
-			@RequestBody ContactInfoBean newContact) throws IOException, AIException {
+			@RequestBody ApiContactInfoBean newContact) throws IOException, AIException {
 		logger.info("updating User contact " + userId);
 		UserBean cust = userService.updateContact(newContact, userId);
 		if (cust != null) {
@@ -303,25 +306,19 @@ public class UserImpl implements User {
 		// TODO Auto-generated method stub
 		logger.info("getEmployeeProfile employeeId: " + employeeId);
 		EmployeeBean cust = userService.getEmployeeProfile(employeeId, refresh);
+		logger.info(JSON.toJSONString(cust));
 		ApiEmployeeBean result = null;
 		if (cust != null) {
 			try {
 				result = ConstMap.convert2ApiEmployeeBean(cust);
+				return new ResponseEntity<>(result, HttpStatus.OK);
 			} catch (Exception e) {
 				logger.error("error!! set roles value", e);
-			}
-			return new ResponseEntity<>(result, HttpStatus.OK);
-		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-
-	private Map<String, List<String>> createModule(Map<String, List<String>> result, String moduleName,
-			String displayName) {
-		// TODO Auto-generated method stub
-		// List<String> list = new ArrayList<String>();
-
-		return result;
 	}
 
 	@Override
@@ -382,7 +379,7 @@ public class UserImpl implements User {
 	public ResponseEntity<String> getQualityManual(
 			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,HttpServletResponse httpResponse) {
 		try {
-			boolean b = userService.getQualityManual(userId,httpResponse);
+			boolean b = userService.getQualityManual(userId, httpResponse);
 			if(b) {
 				return new ResponseEntity<>(HttpStatus.OK);
 			}
@@ -413,8 +410,81 @@ public class UserImpl implements User {
                 RedisUtil.hset("loginUserList",userId,apiCallResult.getContent().toString(),RedisUtil.HOUR*24*365*10);
                 return new ResponseEntity<>(apiCallResult,HttpStatus.OK);
             }
+            logger.error("fail from sso-service !"+apiCallResult.getMessage());
 		}  catch (Exception e) {
 			e.printStackTrace();
+			apiCallResult.setMessage(e.toString());
+		}
+		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
+	@Override
+	@RequestMapping(value = "/employee/{employeeEmail}/reset-password", method = RequestMethod.PUT)
+	@ApiOperation(value = "Reset password by email", response = String.class)
+	public ResponseEntity<ApiCallResult> resetPW(@ApiParam(value = "employeeEmail", required = true) @PathVariable("employeeEmail") String employeeEmail) {
+		ApiCallResult apiCallResult = new ApiCallResult();
+		try {
+			apiCallResult = userService.resetPW(employeeEmail);
+			if (StringUtils.isBlank(apiCallResult.getMessage())) {
+				return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
+			}
+			logger.error("fail from sso-service !"+apiCallResult.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error Exception!"+e);
+			apiCallResult.setMessage(e.toString());
+		}
+		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
+	@Override
+	@RequestMapping(value = "/swagger-login", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> swaggerLogin(@RequestParam("login") String login,@RequestParam("pw") String pw, HttpServletResponse response) {
+		ApiCallResult apiCallResult = new ApiCallResult();
+		Map<String,String> userMap = new HashMap<>();
+		String users[] =  swaggerUser.split(";");
+		for (int i=0;i<users.length;i++){
+			userMap.put(users[i].split("/")[0],users[i].split("/")[1]);
+		}
+		try {
+			logger.info("swagger login ..."+login+"-||-"+pw);
+			Iterator<Map.Entry<String,String>> iterator = userMap.entrySet().iterator();
+			while (iterator.hasNext()){
+				Map.Entry<String,String> entry = iterator.next();
+				if (login.equals(entry.getKey()) && pw.equals(entry.getValue())) {
+					apiCallResult.setContent(true);
+					Cookie cookie = new Cookie("swaggerUser",login);
+					cookie.setMaxAge(1800);
+					response.addCookie(cookie);
+					return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
+				}
+			}
+			apiCallResult.setMessage("Wrong login or password");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error Exception!"+e);
+			apiCallResult.setMessage(e.toString());
+		}
+		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
+
+	}
+
+	@Override
+	@RequestMapping(value = "/swagger-logout", method = RequestMethod.POST)
+	public ResponseEntity<ApiCallResult> swaggerLogout(HttpServletResponse response) {
+		ApiCallResult apiCallResult = new ApiCallResult();
+		try {
+			logger.info("swagger logout ...");
+			Cookie cookie = new Cookie("swaggerUser",null);
+			cookie.setMaxAge(0);
+			response.addCookie(cookie);
+			apiCallResult.setContent(true);
+			return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error Exception!"+e);
 			apiCallResult.setMessage(e.toString());
 		}
 		return new ResponseEntity<>(apiCallResult,HttpStatus.INTERNAL_SERVER_ERROR);

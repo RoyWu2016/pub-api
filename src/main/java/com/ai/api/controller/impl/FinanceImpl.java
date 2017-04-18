@@ -7,6 +7,7 @@ import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.helpers.http.beans.ServiceResponse;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,7 @@ public class FinanceImpl implements Finance {
     @Override
     @TokenSecured
     @RequestMapping(value = "/finance/net-suite/logs", method = RequestMethod.POST)
+    @ApiOperation(value = "Save Log From NetSuite API", response = String.class)
     public ResponseEntity<ApiCallResult> processNSLog(@RequestBody String nsLogs) {
         StringBuilder url = new StringBuilder(config.getFinanceServiceBaseUrl()).append("/netsuite/interface/log/save");
         ApiCallResult callResult = new ApiCallResult();
@@ -63,6 +65,7 @@ public class FinanceImpl implements Finance {
     @Override
     @TokenSecured
     @RequestMapping(value = "/finance/net-suite/memo", method = RequestMethod.POST)
+    @ApiOperation(value = "Save Memo From NetSuite API", response = String.class)
     public ResponseEntity<ApiCallResult> processCreditOrDebitMemos(@RequestBody String cndnMap) {
         StringBuilder url = new StringBuilder(config.getFinanceServiceBaseUrl()).append("/netsuite/cndn/save");
         ApiCallResult callResult = new ApiCallResult();
@@ -87,6 +90,7 @@ public class FinanceImpl implements Finance {
     @Override
     @TokenSecured
     @RequestMapping(value = "/finance/net-suite/invoice", method = RequestMethod.POST)
+    @ApiOperation(value = "Save Invoice From NetSuite API", response = String.class)
     public ResponseEntity<ApiCallResult> processInvoice(@RequestBody String invMap){
         StringBuilder url = new StringBuilder(config.getFinanceServiceBaseUrl()).append("/netsuite/invoice/save");
         ApiCallResult callResult = new ApiCallResult();

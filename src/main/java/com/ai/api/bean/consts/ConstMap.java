@@ -11,6 +11,9 @@ import com.ai.api.bean.EmployeeBean;
 import com.ai.api.bean.EmployeeGroup;
 import com.ai.api.bean.EmployeeRole;
 import com.ai.commons.beans.audit.api.ApiEmployeeBean;
+import com.alibaba.fastjson.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /***************************************************************************
  * <PRE>
@@ -31,6 +34,7 @@ import com.ai.commons.beans.audit.api.ApiEmployeeBean;
  ***************************************************************************/
 
 public class ConstMap {
+	private static final Logger logger = LoggerFactory.getLogger(ConstMap.class);
 
 	public final static Map<String, String> bucketMap = new HashMap();
 	public final static Map<String, String> serviceTypeMap = new HashMap();
@@ -122,30 +126,37 @@ public class ConstMap {
 			}
 		}
 		convert2Roles(apiEmployeeBean.getRoles(), allRoles);
-
+		logger.info(JSON.toJSONString(apiEmployeeBean));
 		return apiEmployeeBean;
 
 	}
 
 	private static void colletModuleName(Map<String, HashSet<String>> map, List<EmployeeRole> roles) {
-		// TODO Auto-generated method stub
 		for (EmployeeRole role : roles) {
-			HashSet<String> hs = new HashSet<String>();
-			map.put(role.getModuleName(), hs);
+			if (role != null) {
+				if(null != role.getModuleName()){
+					map.put(role.getModuleName(), new HashSet<String>());
+		}
+	}
 		}
 	}
 
-	private static void convert2Roles(Map<String, HashSet<String>> result, List<EmployeeRole> sources) {
-		// TODO Auto-generated method stub
+	private static void convert2Roles(Map<String, HashSet<String>> target, List<EmployeeRole> sources) {
 		if(null == sources) {
 			return;
 		}
 		for (EmployeeRole role : sources) {
-			for(String key : result.keySet()) {
+			if (role != null) {
+				for (String key : target.keySet()) {
+					if (null != key) {
 				if(key.equals(role.getModuleName())){
-					result.get(key).add(role.getDisplayName());
+							target.get(key).add(role.getDisplayName());
+							logger.info("module: role added: " + key);
 				}
 			}
 		}
 	}
+}
+	}
+
 }
