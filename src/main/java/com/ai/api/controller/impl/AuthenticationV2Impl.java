@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Created by Hugo on 2017/4/12.
  */
 @RestController
-@Api(tags = { "AuthenticationV2" }, description = "Authentication tokens V2 APIs")
+@Api(tags = { "Authentication V2" }, description = "Authentication tokens V2 APIs")
 public class AuthenticationV2Impl implements AuthenticationV2 {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationV2Impl.class);
 
