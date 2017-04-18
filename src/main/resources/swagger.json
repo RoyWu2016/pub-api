@@ -15,6 +15,8 @@
   }, {
     "name" : "Authentication"
   }, {
+    "name" : "AuthenticationV2"
+  }, {
     "name" : "Checklist"
   }, {
     "name" : "Draft"
@@ -93,6 +95,78 @@
             "$ref" : "#/definitions/LoginBean"
           }
         } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/auth/v2/refresh-token" : {
+      "put" : {
+        "tags" : [ "AuthenticationV2" ],
+        "summary" : "Refresh Api Token",
+        "description" : "",
+        "operationId" : "refreshAPIToken",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/auth/v2/remove-token" : {
+      "put" : {
+        "tags" : [ "AuthenticationV2" ],
+        "summary" : "Remove Api Token",
+        "description" : "",
+        "operationId" : "removeAPIToken",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/auth/v2/token" : {
+      "post" : {
+        "tags" : [ "AuthenticationV2" ],
+        "summary" : "User Login Then Get Api Token",
+        "description" : "",
+        "operationId" : "getAPIToken",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/LoginBean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/auth/v2/verify-token" : {
+      "get" : {
+        "tags" : [ "AuthenticationV2" ],
+        "summary" : "Verify Public Api Token",
+        "description" : "",
+        "operationId" : "verifyAPIToken",
         "responses" : {
           "200" : {
             "description" : "successful operation",
@@ -743,7 +817,7 @@
           "description" : "Test IDs",
           "required" : false,
           "type" : "string"
-        }  ],
+        } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
@@ -3737,7 +3811,7 @@
         }, {
           "name" : "keyword",
           "in" : "query",
-          "description" : "Search Keyword",
+          "description" : "Keyword",
           "required" : false,
           "type" : "string"
         }, {
@@ -6091,13 +6165,13 @@
           "type" : "boolean",
           "default" : false
         },
-        "lcappName" : {
+        "lcbeneName" : {
           "type" : "string"
         },
         "lcbeneAddress" : {
           "type" : "string"
         },
-        "lcbeneName" : {
+        "lcappName" : {
           "type" : "string"
         },
         "lcappAddress" : {
@@ -6934,13 +7008,13 @@
         "lcbeneficaryAddress" : {
           "type" : "string"
         },
+        "lcbeneficaryCompanyName" : {
+          "type" : "string"
+        },
         "lcapplicantAddress" : {
           "type" : "string"
         },
         "lcapplicantCompanyName" : {
-          "type" : "string"
-        },
-        "lcbeneficaryCompanyName" : {
           "type" : "string"
         },
         "lcnumber" : {
@@ -7615,13 +7689,28 @@
         "password" : {
           "type" : "string"
         },
-        "introducedByOtherType" : {
-          "type" : "string"
-        },
         "introducedByTradeshow" : {
           "type" : "string"
         },
-        "domainName" : {
+        "introducedByOtherType" : {
+          "type" : "string"
+        },
+        "turnover" : {
+          "type" : "string"
+        },
+        "refer" : {
+          "type" : "string"
+        },
+        "affiliateID" : {
+          "type" : "string"
+        },
+        "userIp" : {
+          "type" : "string"
+        },
+        "contactInfo" : {
+          "$ref" : "#/definitions/ContactInfoBean"
+        },
+        "login" : {
           "type" : "string"
         },
         "isTestAccount" : {
@@ -7631,28 +7720,13 @@
         "uniqueId" : {
           "type" : "string"
         },
-        "turnover" : {
-          "type" : "string"
-        },
-        "login" : {
-          "type" : "string"
-        },
-        "userIp" : {
-          "type" : "string"
-        },
-        "contactInfo" : {
-          "$ref" : "#/definitions/ContactInfoBean"
-        },
-        "refer" : {
-          "type" : "string"
-        },
-        "affiliateID" : {
+        "activity" : {
           "type" : "string"
         },
         "introducedBy" : {
           "type" : "string"
         },
-        "activity" : {
+        "domainName" : {
           "type" : "string"
         }
       }
@@ -9643,6 +9717,9 @@
         "labOrderno" : {
           "type" : "string"
         },
+        "prevLabOrderno" : {
+          "type" : "string"
+        },
         "description" : {
           "type" : "string"
         },
@@ -10412,22 +10489,22 @@
         "supplierValidateCode" : {
           "type" : "string"
         },
-        "sic" : {
+        "itlmanager" : {
           "type" : "string"
         },
         "icneeded" : {
           "type" : "string"
         },
-        "lcappName" : {
+        "sic" : {
           "type" : "string"
         },
-        "itlmanager" : {
+        "lcbeneName" : {
           "type" : "string"
         },
         "lcbeneAddress" : {
           "type" : "string"
         },
-        "lcbeneName" : {
+        "lcappName" : {
           "type" : "string"
         },
         "lcappAddress" : {
@@ -13745,6 +13822,9 @@
         "isDefault" : {
           "type" : "boolean",
           "default" : false
+        },
+        "latestVersion" : {
+          "$ref" : "#/definitions/ProgramVersion"
         }
       },
       "description" : "Program Representation"
@@ -13778,6 +13858,9 @@
         "destination" : {
           "$ref" : "#/definitions/Planet"
         },
+        "region" : {
+          "$ref" : "#/definitions/Planet"
+        },
         "email" : {
           "type" : "string"
         },
@@ -13798,6 +13881,37 @@
           "items" : {
             "$ref" : "#/definitions/ProgramTestLocation"
           }
+        }
+      }
+    },
+    "ProgramBookingOptionDTO" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "createTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "updateTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "createBy" : {
+          "type" : "string"
+        },
+        "updateBy" : {
+          "type" : "string"
+        },
+        "origin" : {
+          "$ref" : "#/definitions/PlanetDTO"
+        },
+        "destination" : {
+          "$ref" : "#/definitions/PlanetDTO"
+        },
+        "region" : {
+          "$ref" : "#/definitions/PlanetDTO"
         }
       }
     },
@@ -14346,6 +14460,31 @@
         },
         "programName" : {
           "type" : "string"
+        }
+      }
+    },
+    "ProgramVersionDTO" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "createTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "updateTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "createBy" : {
+          "type" : "string"
+        },
+        "updateBy" : {
+          "type" : "string"
+        },
+        "bookingOption" : {
+          "$ref" : "#/definitions/ProgramBookingOptionDTO"
         }
       }
     },
@@ -16065,39 +16204,6 @@
         }
       }
     },
-    "TatSearchBean" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "string"
-        },
-        "name" : {
-          "type" : "string"
-        },
-        "tat" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "isExpService" : {
-          "type" : "boolean",
-          "default" : false
-        },
-        "internalDue" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "status" : {
-          "type" : "string"
-        },
-        "office" : {
-          "type" : "string"
-        },
-        "surcharge" : {
-          "type" : "number",
-          "format" : "double"
-        }
-      }
-    },
     "TestAssignmentDTO" : {
       "type" : "object",
       "properties" : {
@@ -16271,6 +16377,9 @@
           "format" : "double"
         },
         "status" : {
+          "type" : "string"
+        },
+        "description" : {
           "type" : "string"
         },
         "translatedInfo" : {
@@ -16775,6 +16884,39 @@
         },
         "status" : {
           "type" : "string"
+        }
+      }
+    },
+    "TurnAroundTimeDTO" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "createTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "updateTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "createBy" : {
+          "type" : "string"
+        },
+        "updateBy" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "tat" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "surcharge" : {
+          "type" : "number",
+          "format" : "double"
         }
       }
     },
