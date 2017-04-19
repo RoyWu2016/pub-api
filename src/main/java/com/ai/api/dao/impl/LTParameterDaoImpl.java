@@ -287,7 +287,8 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/tats/office/").append(officeId).toString();
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
 		        .queryParam("programId", programId)
-		        .queryParam("testIds", testIds);
+		        .queryParam("testIds", testIds)
+		        .queryParam("requestor", "external");
 		List<TurnAroundTimeDTO> tats = Arrays.asList(restTemplate.getForObject(builder.build().encode().toUri(), TurnAroundTimeDTO[].class));
 		callResult.setContent(tats);
 		return callResult;
