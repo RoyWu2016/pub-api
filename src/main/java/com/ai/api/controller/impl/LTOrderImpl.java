@@ -63,7 +63,7 @@ public class LTOrderImpl implements LTOrder {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/order", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> addOrder(HttpServletRequest request, 
-			@ApiParam(value="User ID") @PathVariable String userId) {
+			@ApiParam(value="User ID") @PathVariable("userId") String userId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			callResult = ltOrderService.saveOrder(userId, new OrderMaster());
@@ -121,7 +121,7 @@ public class LTOrderImpl implements LTOrder {
 	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> findOrder(
 			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
-			@ApiParam(value="User ID") @PathVariable String userId) {
+			@ApiParam(value="User ID") @PathVariable("userId") String userId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
             OrderDTO order = ltOrderService.findOrder(orderId);
@@ -144,8 +144,8 @@ public class LTOrderImpl implements LTOrder {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> editOrder(HttpServletRequest request, 
-			@ApiParam(value="User ID") @PathVariable String userId, 
-			@ApiParam(value="Order ID") @PathVariable String orderId, 
+			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
 			@RequestBody OrderMaster order,
 			@ApiParam(value="Send Mail") @RequestParam(value = "sendMail", required = true, defaultValue = "false") Boolean sendMail) {
 		ApiCallResult callResult = new ApiCallResult();
@@ -165,7 +165,7 @@ public class LTOrderImpl implements LTOrder {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/orders", method = RequestMethod.DELETE)
 	public ResponseEntity<ApiCallResult> deleteOrders(HttpServletRequest request,
-			@ApiParam(value="User ID") @PathVariable String userId,
+			@ApiParam(value="User ID") @PathVariable("userId") String userId,
 			@ApiParam(value="Order IDs") @RequestParam String orderIds) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
@@ -183,7 +183,7 @@ public class LTOrderImpl implements LTOrder {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/programs", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchPrograms(
-			@ApiParam(value="User ID") @PathVariable String userId) {
+			@ApiParam(value="User ID") @PathVariable("userId") String userId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			callResult = ltparameterService.searchPrograms(userId);
@@ -201,8 +201,8 @@ public class LTOrderImpl implements LTOrder {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/program/{programId}/testlocations", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchProgramTestLocations(
-			@ApiParam(value="User ID") @PathVariable String userId,
-			@ApiParam(value="Program ID") @PathVariable String programId) {
+			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="Program ID") @PathVariable("programId") String programId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			callResult = ltparameterService.searchProgramTestLocations(programId);
@@ -220,8 +220,8 @@ public class LTOrderImpl implements LTOrder {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/program/{programId}/tests", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> updateProgramTests(
-			@ApiParam(value="User ID") @PathVariable String userId,
-			@ApiParam(value="Program ID") @PathVariable String programId,
+			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="Program ID") @PathVariable("programId") String programId,
 			@ApiParam(value="Test IDs") @RequestParam(value = "tests", required = true, defaultValue = "")  String tests,
 			@ApiParam(value="Update Favorite Tests") @RequestParam(value = "isFavorite", required = false, defaultValue = "false") Boolean isFavorite) {
 		ApiCallResult callResult = new ApiCallResult();
