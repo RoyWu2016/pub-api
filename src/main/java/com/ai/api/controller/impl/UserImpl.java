@@ -27,6 +27,7 @@ import com.ai.api.bean.consts.ConstMap;
 import com.ai.api.controller.User;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
+import com.ai.api.util.AIUtil;
 import com.ai.api.util.RedisUtil;
 import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
@@ -373,15 +374,22 @@ public class UserImpl implements User {
 	}
 
 	@Override
-	@TokenSecured
+//	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/quality-manual", method = RequestMethod.GET)
-	@ApiOperation(value = "Get User Quality-manual", response = String.class)
+	@ApiOperation(value = "Download User Quality Manual", response = String.class)
 	public ResponseEntity<String> getQualityManual(
-			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,HttpServletResponse httpResponse) {
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "user token sessionId", required = true) @RequestParam("sessionId") String sessionId,
+			@ApiParam(value = "last 50 chars of the user token", required = true) @RequestParam("code") String verifiedCode,
+			HttpServletResponse httpResponse) {
 		try {
+			if(AIUtil.verifiedAccess(userId, verifiedCode, sessionId)) {
 			boolean b = userService.getQualityManual(userId, httpResponse);
 			if(b) {
 				return new ResponseEntity<>(HttpStatus.OK);
+			}
+			}else {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 			}
 		}  catch (Exception e) {
 			// TODO Auto-generated catch block

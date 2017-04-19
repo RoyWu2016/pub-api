@@ -13,12 +13,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.ResponseEntity;
-
+import com.ai.api.bean.ApiContactInfoBean;
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.ApiContactInfoBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
@@ -27,6 +25,7 @@ import com.ai.commons.beans.audit.api.ApiEmployeeBean;
 import com.ai.commons.beans.customer.DashboardBean;
 import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
  * <PRE>
@@ -90,8 +89,8 @@ public interface User {
 
 	ResponseEntity<ApiCallResult> isFirstLogin(String userId);
 
-	ResponseEntity<String> getQualityManual(String userId, HttpServletResponse httpResponse);
-
+	ResponseEntity<String> getQualityManual(String userId, String sessionId, String verifiedCode,
+			HttpServletResponse httpResponse);
 
 	ResponseEntity<ApiCallResult> resetPW(String employeeEmail);
 
