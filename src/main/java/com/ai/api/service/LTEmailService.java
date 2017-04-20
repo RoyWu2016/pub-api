@@ -5,6 +5,4 @@ import com.ai.aims.services.dto.order.OrderDTO;
 public interface LTEmailService {
 	
 	public boolean sendEmailAddOrder(OrderDTO order, String userId);
-
-	public boolean sendEmailWaitingForCancellation(OrderDTO order, String userId);
 }

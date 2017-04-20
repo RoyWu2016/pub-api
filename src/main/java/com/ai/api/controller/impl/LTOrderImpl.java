@@ -1,15 +1,23 @@
 package com.ai.api.controller.impl;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ai.aims.services.dto.order.OrderDTO;
+import com.ai.aims.services.model.OrderMaster;
+import com.ai.api.bean.OrderSearchBean;
+import com.ai.api.bean.OrderTestBean;
+import com.ai.api.config.ServiceConfig;
+import com.ai.api.controller.LTOrder;
+import com.ai.api.service.LTOrderService;
+import com.ai.api.service.LTParameterService;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.program.model.Program;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,21 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.ai.aims.services.dto.TestFilterDTO;
-import com.ai.aims.services.dto.office.OfficeDTO;
-import com.ai.aims.services.dto.order.OrderDTO;
-import com.ai.aims.services.model.OrderMaster;
-import com.ai.api.bean.OrderSearchBean;
-import com.ai.api.bean.OrderTestBean;
-import com.ai.api.bean.SearchResultBean;
-import com.ai.api.config.ServiceConfig;
-import com.ai.api.controller.LTOrder;
-import com.ai.api.service.LTOrderService;
-import com.ai.api.service.LTParameterService;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.program.dto.ProgramDTO;
 
 @SuppressWarnings({"rawtypes"})
 @RestController
@@ -63,7 +56,7 @@ public class LTOrderImpl implements LTOrder {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/order", method = RequestMethod.POST)
 	public ResponseEntity<ApiCallResult> addOrder(HttpServletRequest request, 
-			@ApiParam(value="User ID") @PathVariable("userId") String userId) {
+			@ApiParam(value="User ID") @PathVariable String userId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			callResult = ltOrderService.saveOrder(userId, new OrderMaster());
@@ -82,28 +75,17 @@ public class LTOrderImpl implements LTOrder {
 	@RequestMapping(value = "/user/{userId}/lt/orders", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchLTOrders(
 			@ApiParam(value="User ID") @PathVariable("userId") String userId,
-			@ApiParam(value="Keyword") @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
 			@ApiParam(value="Order Status") @RequestParam(value = "orderStatus", required = false, defaultValue = "") String orderStatus,
-			@ApiParam(value="Order Clone Type", allowableValues="reorder,retest") @RequestParam(value = "cloneType", required = false, defaultValue = "") String cloneType,
 			@ApiParam(value="Page Number") @RequestParam(value = "pageNo", required = false, defaultValue = "1") Integer pageNumber,
 			@ApiParam(value="Page Size") @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
-			Map<String, Object> searchParams = new HashMap<String, Object>();
-			searchParams.put("userId", userId);
-			searchParams.put("keyword", keyword);
-			searchParams.put("orderStatus", orderStatus);
-			searchParams.put("cloneType", cloneType);
-			List<OrderSearchBean> list = ltOrderService.searchLTOrders(searchParams, pageSize, pageNumber);
-			Long total = ltOrderService.countTotalOrders(searchParams, pageSize, pageNumber);
-			SearchResultBean result = new SearchResultBean();
-			result.setPageItems(list);
-			result.setTotalSize(Integer.valueOf(null != total ? total.toString() : "0"));
-			result.setPageNo(pageNumber);
-			callResult.setContent(result);
+			List<OrderSearchBean> list = ltOrderService.searchLTOrders(userId, orderStatus, pageSize, pageNumber);
 			if (null!=list && list.size()>0){
+				callResult.setContent(list);
 				return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 			}else {
+				callResult.setContent(list);
                 callResult.setMessage("Got empty LT orders list.");
                 return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.NO_CONTENT);
             }
@@ -121,7 +103,7 @@ public class LTOrderImpl implements LTOrder {
 	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> findOrder(
 			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
-			@ApiParam(value="User ID") @PathVariable("userId") String userId) {
+			@PathVariable String userId) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
             OrderDTO order = ltOrderService.findOrder(orderId);
@@ -144,8 +126,8 @@ public class LTOrderImpl implements LTOrder {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}", method = RequestMethod.PUT)
 	public ResponseEntity<ApiCallResult> editOrder(HttpServletRequest request, 
-			@ApiParam(value="User ID") @PathVariable("userId") String userId,
-			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
+			@ApiParam(value="User ID") @PathVariable String userId, 
+			@ApiParam(value="Order ID") @PathVariable String orderId,
 			@RequestBody OrderMaster order,
 			@ApiParam(value="Send Mail") @RequestParam(value = "sendMail", required = true, defaultValue = "false") Boolean sendMail) {
 		ApiCallResult callResult = new ApiCallResult();
@@ -153,7 +135,7 @@ public class LTOrderImpl implements LTOrder {
 			order.setId(orderId);
 			callResult = ltOrderService.editOrder(userId, order, sendMail);
 		} catch (Exception e) {
-			logger.error("Edit order error: " + ExceptionUtils.getFullStackTrace(e));
+			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
 			callResult.setMessage("Error in saving updates to LT order.");
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -165,13 +147,13 @@ public class LTOrderImpl implements LTOrder {
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/orders", method = RequestMethod.DELETE)
 	public ResponseEntity<ApiCallResult> deleteOrders(HttpServletRequest request,
-			@ApiParam(value="User ID") @PathVariable("userId") String userId,
+			@ApiParam(value="User ID") @PathVariable String userId,
 			@ApiParam(value="Order IDs") @RequestParam String orderIds) {
 		ApiCallResult callResult = new ApiCallResult();
 		try {
 			callResult = ltOrderService.deleteOrders(userId, orderIds);
 		} catch (Exception e) {
-			logger.error("Delete order error: " + ExceptionUtils.getFullStackTrace(e));
+			logger.error("get orders search error: " + ExceptionUtils.getFullStackTrace(e));
 			callResult.setMessage("Error in deleting LT order.");
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -179,60 +161,34 @@ public class LTOrderImpl implements LTOrder {
 	}
 
 	@Override
-	@ApiOperation(value = "Search User's LT Program API", produces = "application/json", response = ProgramDTO.class, httpMethod = "GET", responseContainer = "List")
+	@ApiOperation(value = "Search User's LT Program API", produces = "application/json", response = Program.class, httpMethod = "GET", responseContainer = "List")
 	@TokenSecured
 	@RequestMapping(value = "/user/{userId}/lt/programs", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchPrograms(
-			@ApiParam(value="User ID") @PathVariable("userId") String userId) {
+//			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh,
+			@PathVariable String userId) {
 		ApiCallResult callResult = new ApiCallResult();
+		/*if (!refresh) {
+			logger.info("try to searchPrograms from redis ...");
+			String jsonStringTextileProductCategory = RedisUtil.get("ltProgramsCache");
+			programs = JSON.parseArray(jsonStringTextileProductCategory, Program.class);
+		}
+		if (null == programs) {*/
 		try {
 			callResult = ltparameterService.searchPrograms(userId);
 			logger.info("saving searchPrograms");
-			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("search Programs error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("Error in getting LT programs:");
-			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+			//RedisUtil.set("ltProgramsCache", JSON.toJSONString(programs), RedisUtil.HOUR * 24);
 
-	@Override
-	@ApiOperation(value = "Search User's LT Program Test Locations API", produces = "application/json", response = OfficeDTO.class, httpMethod = "GET", responseContainer = "List")
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/lt/program/{programId}/testlocations", method = RequestMethod.GET)
-	public ResponseEntity<ApiCallResult> searchProgramTestLocations(
-			@ApiParam(value="User ID") @PathVariable("userId") String userId,
-			@ApiParam(value="Program ID") @PathVariable("programId") String programId) {
-		ApiCallResult callResult = new ApiCallResult();
-		try {
-			callResult = ltparameterService.searchProgramTestLocations(programId);
-			logger.info("saving searchPrograms");
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("search Programs error: " + ExceptionUtils.getFullStackTrace(e));
 			callResult.setMessage("Error in getting LT programs:");
 			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}
-	
-	@Override
-	@ApiOperation(value = "Update LT Program Tests", produces = "application/json", response = TestFilterDTO.class, httpMethod = "PUT", responseContainer = "List")
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/lt/program/{programId}/tests", method = RequestMethod.PUT)
-	public ResponseEntity<ApiCallResult> updateProgramTests(
-			@ApiParam(value="User ID") @PathVariable("userId") String userId,
-			@ApiParam(value="Program ID") @PathVariable("programId") String programId,
-			@ApiParam(value="Test IDs") @RequestParam(value = "tests", required = true, defaultValue = "")  String tests,
-			@ApiParam(value="Update Favorite Tests") @RequestParam(value = "isFavorite", required = false, defaultValue = "false") Boolean isFavorite) {
-		ApiCallResult callResult = new ApiCallResult();
-		try {
-			callResult = ltparameterService.updateProgramTests(userId, programId, tests, isFavorite);
-			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("update LT Program Tests error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("can't update LT program tests");
-			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		/*} else {
+			logger.info("get lt programs from redis successfully");
+			return new ResponseEntity<List<Program>>(programs, HttpStatus.OK);
+		}*/
 	}
 
 	@ApiOperation(value = "Get Order Test Assignments API", produces = "application/json", response = OrderTestBean.class, httpMethod = "GET")
@@ -291,22 +247,4 @@ public class LTOrderImpl implements LTOrder {
 		}
 	}
 
-	@ApiOperation(value = "Clone Order API", produces = "application/json", httpMethod = "POST")
-	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/lt/order/{orderId}/clone/{cloneType}", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> cloneOrder (
-			@ApiParam(value="User ID") @PathVariable("userId") String userId,
-			@ApiParam(value="Order ID") @PathVariable("orderId") String orderId,
-			@ApiParam(value="Clone Type", allowableValues="reorder,retest,copy") @PathVariable("cloneType") String cloneType) {
-		ApiCallResult callResult = new ApiCallResult();
-		try {
-			callResult = ltOrderService.cloneOrder(userId, orderId, cloneType);
-			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("clone order error: " + ExceptionUtils.getFullStackTrace(e));
-			callResult.setMessage("Error in cloning order");
-			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
 }

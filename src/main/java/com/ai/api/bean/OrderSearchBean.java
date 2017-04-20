@@ -12,7 +12,6 @@ public class OrderSearchBean extends SimpleOrderSearchBean implements Serializab
 
 	private static final long serialVersionUID = -8209861354874434803L;
     
-	private String description;
     private String testStartDate;
     private String office;
     private String program;
@@ -29,14 +28,6 @@ public class OrderSearchBean extends SimpleOrderSearchBean implements Serializab
     
     public OrderSearchBean() {
     	super();
-    }
-    
-    public String getDescription() {
-    	return description;
-    }
-    
-    public void setDescription(String description) {
-    	this.description = description;
     }
 
 	public String getTestStartDate() {

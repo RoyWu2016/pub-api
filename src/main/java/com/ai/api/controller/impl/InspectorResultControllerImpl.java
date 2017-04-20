@@ -340,8 +340,7 @@ public class InspectorResultControllerImpl implements InspectorResultController 
             }
 //            logger.info("mapFileList size :"+mapFileList.size());
             File tempDir = null;
-            for (Map.Entry<String, List> map : mapFileList.entrySet())
-            {
+            for (Map.Entry<String, List> map : mapFileList.entrySet()) {
 //                logger.info("get each mapFile " + map.getKey()+" -- "+map.getValue());
                 List<FileMetaBean> beanList = new ArrayList<>();
                 List<File>  toBeDeleted = new ArrayList<>();
@@ -387,13 +386,13 @@ public class InspectorResultControllerImpl implements InspectorResultController 
                 logger.info("delete done!");
             }
             callResult.setContent(fileMetaList);
-	        logger.info("=====uploading report [product ID]" + sourceId + " done successfully =====");
+	        logger.info("=====uploading report [product ID]" + sourceId + "done successfully =====");
             return new ResponseEntity<>(callResult,HttpStatus.OK);
         }catch(Exception e){
             logger.error("Error in uploading report [product ID]" + sourceId + "to file service!" + ExceptionUtils.getFullStackTrace(e));
             callResult.setMessage("Error in uploading reports! " + ExceptionUtils.getStackTrace(e));
-        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+	        return new ResponseEntity<>(callResult,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
