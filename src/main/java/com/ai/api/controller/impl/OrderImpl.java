@@ -262,7 +262,7 @@ public class OrderImpl implements Order {
 	@ApiOperation(value = "Search User Orders API", response = SimpleOrderSearchBean.class)
 	public ResponseEntity<List<SimpleOrderSearchBean>> searchOrders(
 			@ApiParam(required = true) @PathVariable("userId") String userId,
-			@ApiParam(required = false) @RequestParam(value = "service-type", defaultValue = "1,2,3,4,6") String serviceType,
+			@ApiParam(required = false) @RequestParam(value = "service-type", required = false,defaultValue = "1,2,3,4,6") String serviceType,
 			@ApiParam(required = false) @RequestParam(value = "start", required = false, defaultValue = "") String startDate,
 			@ApiParam(required = false) @RequestParam(value = "end", required = false, defaultValue = "") String endDate,
 			@ApiParam(required = false) @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
