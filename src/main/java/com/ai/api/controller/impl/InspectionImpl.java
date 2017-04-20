@@ -224,9 +224,9 @@ public class InspectionImpl implements Inspection {
 	@RequestMapping(value = "/user/{userId}/inspection-orders", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchOrders(@ApiParam(required = true) @PathVariable("userId") String userId,
 			@ApiParam(value = "must be one of psi, clc, pm, dupro, ipc or comma delimited", required = true) @RequestParam(value = "service-type", defaultValue = "psi,ipc,dupro,clc,pm") String serviceType,
-			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "start", defaultValue = "") String startDate,
-			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "end", defaultValue = "") String endDate,
-			@ApiParam(required = false) @RequestParam(value = "keyword", defaultValue = "") String keyword,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "start", required = false,defaultValue = "") String startDate,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "end", required = false,defaultValue = "") String endDate,
+			@ApiParam(required = false) @RequestParam(value = "keyword", required = false,defaultValue = "") String keyword,
 			@ApiParam(value = "must be a single status value or comma delimited <br />for open orders: 15,17,20,22,23,25,30,40,50 <br />for completed orders:60", required = false) @RequestParam(value = "status", required = false, defaultValue = "15,17,20,22,23,25,30,40,50,60") String orderStatus,
 			@RequestParam(value = "pageSize", required = false, defaultValue = "20") String pageSize,
 			@RequestParam(value = "pageNumber", required = false, defaultValue = "1") String pageNumber) {
@@ -276,8 +276,8 @@ public class InspectionImpl implements Inspection {
 	@RequestMapping(value = "/user/{userId}/inspection-drafts", method = RequestMethod.GET)
 	public ResponseEntity<ApiCallResult> searchDraft(@ApiParam(required = true) @PathVariable("userId") String userId,
 			@ApiParam(value = "must be one of psi, clc, pm, dupro, ipc or comma delimited", required = true) @RequestParam(value = "service-type", defaultValue = "psi,ipc,dupro,clc,pm") String serviceType,
-			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "start date", defaultValue = "") String startDate,
-			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "end date", defaultValue = "") String endDate,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "start date", required = false,defaultValue = "") String startDate,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "end date", required = false,defaultValue = "") String endDate,
 			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
 			@RequestParam(value = "pageNumber", required = false, defaultValue = "1") String pageNumber,
 			@RequestParam(value = "pageSize", required = false, defaultValue = "20") String pageSize) {
