@@ -237,7 +237,7 @@ public class DraftImpl implements Draft {
 	@ApiOperation(value = "Search User Drafts API", response = DraftOrder.class)
 	public ResponseEntity<List<DraftOrder>> searchDraft(
 			@ApiParam(required = true) @PathVariable("userId") String userId,
-			@ApiParam(required = true) @RequestParam(value = "service-type", defaultValue = "1,2,3,4,6") String serviceType,
+			@ApiParam(required = false) @RequestParam(value = "service-type", required = false,defaultValue = "1,2,3,4,6") String serviceType,
 			@ApiParam(required = false) @RequestParam(value = "start", required = false, defaultValue = "") String startDate,
 			@ApiParam(required = false) @RequestParam(value = "end", required = false, defaultValue = "") String endDate,
 			@ApiParam(required = false) @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
