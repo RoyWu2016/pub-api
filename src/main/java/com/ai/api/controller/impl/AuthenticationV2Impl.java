@@ -134,7 +134,7 @@ public class AuthenticationV2Impl implements AuthenticationV2 {
             return new ResponseEntity<>(result, HttpStatus.OK);
         }else {
             logger.error("Fail!verifyAPIToken..."+callResult.getReasonPhase()+callResult.getResponseString());
-            result.setMessage(callResult.getReasonPhase());
+            result.setMessage(callResult.getReasonPhase() + callResult.getResponseString());
             return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
