@@ -140,8 +140,15 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 				if (userType != null && userType.equals(Consts.Http.USER_TYPE_CLIENT) &&
 						requestedURL.startsWith(Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX)) {
 					//need to check if user id in token is same as user id in reqeusted url
-					if (!requestedURL.startsWith(Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX + tokenUserId.toLowerCase())) {
+					if (requestedURL.startsWith(Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX + tokenUserId.toLowerCase()) ||
+						requestedURL.startsWith(Consts.Http.PUBLIC_API_USER_RESOURCE_URL_PREFIX_V2 + tokenUserId.toLowerCase() )) {
+						//urls start with /user or /user/v2 and access allowed
+//						LOGGER.info("let it go. " + requestedURL);
+					} else {
+						//access not allowed
 						LOGGER.info("forbid to access:" + requestedURL);
+						LOGGER.info("blocked user id: " + tokenUserId + ", user type: " + userType);
+						LOGGER.info("with token: " + token);
 						//access forbidden
 						result.setStatusCode(HttpServletResponse.SC_UNAUTHORIZED);
 						result.setReasonPhase("Access of requested resource not allowed. ");
@@ -149,6 +156,7 @@ public class SSOUserServiceDaoImpl implements SSOUserServiceDao {
 						return result;
 					}
 				} else {
+					//urls not start with /user or /user/v2
 //					LOGGER.info("let it go. " + requestedURL);
 				}
 
