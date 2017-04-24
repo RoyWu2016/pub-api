@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.ai.aims.services.model.search.SearchPackageTestCriteria;
-import com.ai.aims.services.model.search.SearchProgramTestCriteria;
 import com.ai.aims.services.model.search.SearchTagCriteria;
 import com.ai.aims.services.model.search.SearchTagTestCriteria;
 import com.ai.api.bean.UserBean;
@@ -66,11 +64,6 @@ public class LTParameterServiceImpl implements LTParameterService {
 	@Autowired
 	@Qualifier("userService")
 	private UserService userService;
-	
-	@Override
-	public ApiCallResult searchPackages(String programID) throws IOException {
-		return ltparameterDao.searchPackages(programID);
-	}
 
 	@Override
 	public ApiCallResult searchOffice() throws IOException {
@@ -94,7 +87,7 @@ public class LTParameterServiceImpl implements LTParameterService {
 	}
 
 	@Override
-	public ApiCallResult searchTagTests(String countries, String regions, String testNames, 
+	public ApiCallResult searchTestWithFilters(String countries, String regions, String testNames, 
 			String tags, String productCategory, String office, String program) throws IOException {
 		SearchTagTestCriteria criteria = new SearchTagTestCriteria();
 		if(!StringUtils.stripToEmpty(countries).isEmpty())
@@ -111,45 +104,7 @@ public class LTParameterServiceImpl implements LTParameterService {
 			criteria.setOffice(office);
 		if(!StringUtils.stripToEmpty(program).isEmpty())
 			criteria.setProgram(program);
-		return ltparameterDao.searchTagTests(criteria);
-	}
-	
-	@Override
-	public ApiCallResult searchPackageTests(String countries, String regions, String testNames, 
-			String pckage, String office, String program) throws IOException {
-		SearchPackageTestCriteria criteria = new SearchPackageTestCriteria();
-		if(!StringUtils.stripToEmpty(countries).isEmpty())
-			criteria.setCountries(countries);
-		if(!StringUtils.stripToEmpty(regions).isEmpty())
-			criteria.setRegions(regions);
-		if(!StringUtils.stripToEmpty(testNames).isEmpty())
-			criteria.setTestName(testNames);
-		if(!StringUtils.stripToEmpty(pckage).isEmpty())
-			criteria.setPackageId(pckage);
-		if(!StringUtils.stripToEmpty(office).isEmpty())
-			criteria.setOfficeId(office);
-		if(!StringUtils.stripToEmpty(program).isEmpty())
-			criteria.setProgramId(program);
-		return ltparameterDao.searchPackageTests(criteria);
-	}
-	
-	@Override
-	public ApiCallResult searchProgramTests(String countries, String regions, String testNames, String office, 
-			String program, Boolean isFavorite) throws IOException {
-		SearchProgramTestCriteria criteria = new SearchProgramTestCriteria();
-		if(!StringUtils.stripToEmpty(countries).isEmpty())
-			criteria.setCountries(countries);
-		if(!StringUtils.stripToEmpty(regions).isEmpty())
-			criteria.setRegions(regions);
-		if(!StringUtils.stripToEmpty(testNames).isEmpty())
-			criteria.setTestName(testNames);
-		if(!StringUtils.stripToEmpty(office).isEmpty())
-			criteria.setOfficeId(office);
-		if(!StringUtils.stripToEmpty(program).isEmpty())
-			criteria.setProgramId(program);
-		if(null != isFavorite)
-			criteria.setIsFavorite(isFavorite);
-		return ltparameterDao.searchProgramTests(criteria);
+		return ltparameterDao.searchTests(criteria);
 	}
 
 	@Override
@@ -187,18 +142,7 @@ public class LTParameterServiceImpl implements LTParameterService {
 	}
 	
 	@Override
-	public ApiCallResult searchTATs(String officeId, String programId, String testIds) throws IOException {
-		return ltparameterDao.searchTATs(officeId, programId, testIds);
-	}
-
-	@Override
-	public ApiCallResult updateProgramTests(String userId, String programId, String tests,
-			Boolean isFavorite) throws IOException {
-		return ltparameterDao.updateProgramTests(userId, programId, tests, isFavorite);
-	}
-
-	@Override
-	public ApiCallResult searchProgramTestLocations(String programId) throws IOException {
-		return ltparameterDao.searchProgramTestLocations(programId);
+	public ApiCallResult searchTATs(String officeId) throws IOException {
+		return ltparameterDao.searchTATs(officeId);
 	}
 }

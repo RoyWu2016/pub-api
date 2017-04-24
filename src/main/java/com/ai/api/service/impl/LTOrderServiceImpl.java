@@ -8,8 +8,8 @@ package com.ai.api.service.impl;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.ai.aims.constants.OrderStatus;
 import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.CrmCompany;
 import com.ai.aims.services.model.OrderMaster;
@@ -69,34 +68,27 @@ public class LTOrderServiceImpl implements LTOrderService {
 	@Autowired
 	@Qualifier("userService")
 	private UserService userService;
-
+	
 	@Autowired
 	@Qualifier("ltEmailService")
 	private LTEmailService ltEmailService;
 
 	@Override
-	public Long countTotalOrders(Map<String, Object> searchParams, Integer pageNumber, Integer pageSize) throws IOException, AIException {
-		return ltorderDao.countTotalOrders(searchParams, pageSize, pageNumber, Sort.Direction.DESC.name().toLowerCase());
-	}
-
-	@Override
-	public List<OrderSearchBean> searchLTOrders(Map<String, Object> searchParams, Integer pageNumber, Integer pageSize) throws IOException, AIException {
+	public List<OrderSearchBean> searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize) throws IOException, AIException {
 		String companyId = "";
 		String parentId = "";
-		String userId = String.valueOf(searchParams.get("userId"));
 		UserBean user = userService.getCustById(userId);
 		if (null != user) {
 			parentId = user.getCompany().getParentCompanyId();
 			if (parentId == null)
 				parentId = "";
 			companyId = user.getCompany().getId();
-			searchParams.put("clientId", companyId);
 		}
 		if (null==companyId){
 		    logger.info("use incorrect userId["+userId+"] to search LT orders");
 			throw new AIException("incorrect userId");
 		}
-		return ltorderDao.searchLTOrders(searchParams, pageSize, pageNumber, Sort.Direction.DESC.name().toLowerCase());
+		return ltorderDao.searchLTOrders(companyId, orderStatus, pageSize, pageNumber, Sort.Direction.DESC.name().toLowerCase());
 	}
 	
 	@Override
@@ -118,23 +110,25 @@ public class LTOrderServiceImpl implements LTOrderService {
 	}
 
 	@Override
-	public ApiCallResult editOrder(String userId, OrderMaster order, boolean sendEmail) throws Exception {
-		ApiCallResult apiCallResult = ltorderDao.editOrder(userId, order);
-		OrderDTO orderDTO = (OrderDTO) apiCallResult.getContent();
-		if(sendEmail){
-			UserBean user = userService.getCustById(userId);
-			String companyId = user.getCompany().getId();
-			boolean sendEmailStatus = false;
-			if (OrderStatus.WAITING_FOR_CANCELLATION_CODE.equals(orderDTO.getStatusCode())) {
-				sendEmailStatus = ltEmailService.sendEmailWaitingForCancellation(orderDTO, companyId);
-			} else {
-				sendEmailStatus = ltEmailService.sendEmailAddOrder(orderDTO, companyId);
+	public ApiCallResult editOrder(String userId, OrderMaster order, boolean sendEmail) {
+		try{
+			ApiCallResult apiCallResult = ltorderDao.editOrder(userId, order);
+			OrderDTO orderDTO = (OrderDTO)apiCallResult.getContent();
+			if(sendEmail){
+				UserBean user = userService.getCustById(userId);
+				String companyId = user.getCompany().getId();
+				boolean sendEmailAddOrder = ltEmailService.sendEmailAddOrder(orderDTO, companyId);
+				if(!sendEmailAddOrder) {
+					logger.error(ExceptionUtils.getFullStackTrace(new AIException("Error during send mail after saving order")));
+					apiCallResult.setMessage("Error during send mail after saving order");
+				}
 			}
-			if(!sendEmailStatus) {
-				throw new AIException("Error during send mail after saving order");
-			}
+			return apiCallResult;
+		} catch (Exception e) {
+			logger.error("Exception in edit Order :: ");
+			logger.error(ExceptionUtils.getStackTrace(e));
+			return new ApiCallResult<>();
 		}
-		return apiCallResult;
 	}
 	
 	@Override
@@ -155,10 +149,5 @@ public class LTOrderServiceImpl implements LTOrderService {
 	@Override
 	public ApiCallResult deleteOrderTestAssignment(String userId, String testId) throws IOException {
 		return ltorderDao.deleteOrderTestAssignment(userId, testId);
-	}
-	
-	@Override
-	public ApiCallResult cloneOrder(String userId, String orderId, String cloneType) throws IOException {
-		return ltorderDao.cloneOrder(userId, orderId, cloneType);
 	}
 }

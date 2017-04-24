@@ -66,10 +66,7 @@ public class LTReportServiceImpl implements LTReportService {
 		    logger.info("use incorrect userId["+userId+"] to search LT orders");
 			throw new AIException("incorrect userId");
 		}
-		Map<String, Object> searchParams = new HashMap<String, Object>();
-		searchParams.put("clientId", companyId);
-		searchParams.put("orderStatus", OrderStatus.COMPLETED_CODE);
-		return ltOrderDao.searchLTOrders(searchParams, pageNumber, pageSize, Sort.Direction.DESC.name().toLowerCase());
+		return ltOrderDao.searchLTOrders(companyId, OrderStatus.COMPLETED_CODE, pageNumber, pageSize, Sort.Direction.DESC.name().toLowerCase());
 	}
 
 	@Override

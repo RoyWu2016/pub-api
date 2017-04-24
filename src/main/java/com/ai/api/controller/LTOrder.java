@@ -14,7 +14,7 @@ public interface LTOrder {
 	
 	public ResponseEntity<ApiCallResult> editOrder(HttpServletRequest request, String userId, String orderId, OrderMaster order, Boolean sendMail);
 	
-	public ResponseEntity<ApiCallResult> searchLTOrders(String userId, String keyword, String orderStatus, String cloneType, Integer pageNumber, Integer pageSize);
+	public ResponseEntity<ApiCallResult> searchLTOrders(String userId, String orderStatus, Integer pageNumber, Integer pageSize);
 	
 	public ResponseEntity<ApiCallResult> findOrder(String orderId, String userId);
 
@@ -27,10 +27,4 @@ public interface LTOrder {
 	public ResponseEntity<ApiCallResult> updateOrderTestAssignments(String userId, String orderId, String testIds);
 
 	public ResponseEntity<ApiCallResult> deleteOrderTestAssignment(String userId, String orderId, String testId);
-
-	public ResponseEntity<ApiCallResult> cloneOrder(String userId, String orderId, String cloneType);
-
-	public ResponseEntity<ApiCallResult> updateProgramTests(String userId, String programId, String tests, Boolean isFavorite);
-
-	public ResponseEntity<ApiCallResult> searchProgramTestLocations(String userId, String programId);
 }

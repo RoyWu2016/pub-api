@@ -8,7 +8,6 @@ package com.ai.api.dao;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import com.ai.aims.services.dto.order.OrderDTO;
 import com.ai.aims.services.model.OrderAttachment;
@@ -38,7 +37,7 @@ import com.ai.commons.beans.ApiCallResult;
 @SuppressWarnings("rawtypes")
 public interface LTOrderDao {
 	
-	public List<OrderSearchBean> searchLTOrders(Map<String, Object> searchParams, Integer pageNumber, Integer pageSize, String direction) throws IOException;
+	public List<OrderSearchBean> searchLTOrders(String compId, String orderStatus, Integer pageNumber, Integer pageSize, String direction) throws IOException;
 	
 	public OrderDTO findOrder(String orderId) throws IOException;
 
@@ -59,8 +58,4 @@ public interface LTOrderDao {
 	public ApiCallResult updateOrderTestAssignments(String userId, String orderId, String testIds) throws IOException;
 
 	public ApiCallResult deleteOrderTestAssignment(String userId, String testId) throws IOException;
-
-	public ApiCallResult cloneOrder(String userId, String orderId, String cloneType) throws IOException;
-
-	public Long countTotalOrders(Map<String, Object> searchParams, Integer pageNumber, Integer pageSize, String direction) throws IOException;
 }

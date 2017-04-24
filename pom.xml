@@ -216,11 +216,6 @@
 			<artifactId>program-services-model</artifactId>
 			<version>${program.service.model.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.ai.program.dto</groupId>
-			<artifactId>program-services-dto</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 
         <!-- AspectJ dependencies -->
         <dependency>
@@ -279,7 +274,6 @@
 
 	<build>
 		<finalName>api</finalName>
-		<pluginManagement>
 		<plugins>
             <!--<plugin>-->
                 <!--<groupId>org.codehaus.mojo</groupId>-->
@@ -398,6 +392,9 @@
                     <!--</dependency>-->
                 </dependencies>
             </plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
