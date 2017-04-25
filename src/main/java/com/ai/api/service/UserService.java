@@ -69,7 +69,7 @@ public interface UserService {
 
 	boolean deleteCompanyLogo(String userId, String companyId);
 
-	boolean createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
+	boolean createNewAccount(ClientInfoBean clientInfoBean, final String clientType) throws IOException, AIException;
 
 	String getCompanyLogo(String companyId);
 

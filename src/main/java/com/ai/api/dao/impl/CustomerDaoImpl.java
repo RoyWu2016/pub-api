@@ -29,7 +29,6 @@ import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.ai.commons.beans.user.GeneralUserBean;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -251,11 +250,12 @@ public class CustomerDaoImpl implements CustomerDao {
 	}
 
 	@Override
-	public boolean createNewAccount(ClientInfoBean clientInfoBean) {
-		String url = config.getCustomerServiceUrl() + "/customer-legacy/create-new-client-account?clientType=AFI";
+	public boolean createNewAccount(ClientInfoBean clientInfoBean, String clientType) {
+		String url = config.getCustomerServiceUrl() + "/customer-legacy/create-new-client-account?clientType=" + clientType;
 		try {
 			// String jsonStr = JsonUtil.mapToJson(clientInfoBean);
 			// url = url + "?clientInfo="+jsonStr;
+			LOGGER.info(JSON.toJSONString(clientInfoBean));
 			ServiceCallResult result = HttpUtil.issuePostRequest(url, null, clientInfoBean);
 			// ServiceCallResult result = HttpUtil.issuePostRequest(url, null,
 			// jsonStr);

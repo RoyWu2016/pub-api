@@ -6,15 +6,14 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.ResponseEntity;
-
 import com.ai.api.bean.ApiContactInfoBean;
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.beans.customer.ClientRegisterBean;
+import org.springframework.http.ResponseEntity;
 
 @SuppressWarnings("rawtypes")
 public interface UserV2 {
@@ -38,7 +37,7 @@ public interface UserV2 {
 
 	ResponseEntity<ApiCallResult> deleteCompanyLogo(String userId, String companyId);
 
-	ResponseEntity<ApiCallResult> createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
+	ResponseEntity<ApiCallResult> createNewAccount(ClientRegisterBean info) throws IOException, AIException;
 
 	ResponseEntity<ApiCallResult> updateCompanyLogo(String userId, String companyId, CompanyLogoBean logoBean);
 
