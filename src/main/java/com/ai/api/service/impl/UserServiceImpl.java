@@ -1004,8 +1004,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException {
-		return customerDao.createNewAccount(clientInfoBean);
+	public boolean createNewAccount(ClientInfoBean clientInfoBean, String clientType) throws IOException, AIException {
+		return customerDao.createNewAccount(clientInfoBean, clientType);
 	}
 
 	@Override
