@@ -30,7 +30,7 @@ public interface CustomerDao {
 
 	boolean deleteCompanyLogo(String companyId);
 
-	boolean createNewAccount(ClientInfoBean clientInfoBean);
+	boolean createNewAccount(ClientInfoBean clientInfoBean, String clientType);
 
 	EmployeeBean getEmployeeProfile(String employeeId, boolean refresh);
 

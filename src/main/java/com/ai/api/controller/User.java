@@ -13,21 +13,18 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.HttpResponse;
-import org.springframework.http.ResponseEntity;
-
+import com.ai.api.bean.ApiContactInfoBean;
 import com.ai.api.bean.BookingPreferenceBean;
 import com.ai.api.bean.CompanyBean;
 import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.ApiContactInfoBean;
 import com.ai.api.bean.UserBean;
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.audit.api.ApiEmployeeBean;
 import com.ai.commons.beans.customer.DashboardBean;
-import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.http.ResponseEntity;
 
 /***************************************************************************
  * <PRE>
@@ -75,8 +72,6 @@ public interface User {
 	// companyId, HttpServletRequest request);
 
 	ResponseEntity<String> deleteCompanyLogo(String userId, String companyId);
-
-	ResponseEntity<Boolean> createNewAccount(ClientInfoBean clientInfoBean) throws IOException, AIException;
 
 	ResponseEntity<String> updateCompanyLogo(String userId, String companyId, CompanyLogoBean logoBean);
 
