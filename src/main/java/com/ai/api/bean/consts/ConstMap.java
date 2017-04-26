@@ -56,8 +56,8 @@ public class ConstMap {
 		bucketMap.put("GI_INSP_RPT", "dm-general-instruction");
 		bucketMap.put("GI_LAB_TEST", "dm-general-instruction");
 		bucketMap.put("ORDER_ATT", "order-attachments");
-		bucketMap.put("CHECKLIST_TEST", "checklist-attachements");
-		bucketMap.put("CHECKLIST_EXPECTED_DEFECT", "checklist-attachements");
+		bucketMap.put("CHECK_LIST_TEST","dm-checklist");
+		bucketMap.put("CHECK_LIST_DEFECT","dm-checklist");
 		bucketMap.put("AUDIT_PREVIEW_DOC", "audit-docs");
 
 		serviceTypeMap.put("psi", "1");
@@ -73,8 +73,8 @@ public class ConstMap {
 		serviceTypeMap.put("stra", "9,91");
 
 		DOC_TYPE.add("ACCESS_MAP");
-		DOC_TYPE.add("CHECKLIST_TEST");
-		DOC_TYPE.add("CHECKLIST_EXPECTED_DEFECT");
+		DOC_TYPE.add("CHECK_LIST_TEST");
+		DOC_TYPE.add("CHECK_LIST_DEFECT");
 		DOC_TYPE.add("BUS_LIC");
 		DOC_TYPE.add("EXPORT_LIC");
 		DOC_TYPE.add("ROHS_CERT");
