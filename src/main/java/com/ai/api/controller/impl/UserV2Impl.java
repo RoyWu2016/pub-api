@@ -47,7 +47,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Api(tags = { "User V2 Profile" }, description = "User V2 profile APIs")
+@Api(tags = { "User Profile V2" }, description = "User profile V2 APIs")
 @SuppressWarnings("rawtypes")
 public class UserV2Impl implements com.ai.api.controller.UserV2 {
 

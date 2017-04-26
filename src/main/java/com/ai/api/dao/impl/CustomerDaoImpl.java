@@ -357,7 +357,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
@@ -377,7 +377,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			return result;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
