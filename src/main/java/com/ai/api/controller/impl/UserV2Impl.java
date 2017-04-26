@@ -4,13 +4,35 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ai.api.bean.ApiContactInfoBean;
+import com.ai.api.bean.BookingPreferenceBean;
+import com.ai.api.bean.CompanyBean;
+import com.ai.api.bean.CompanyLogoBean;
+import com.ai.api.bean.EmployeeBean;
+import com.ai.api.bean.UserBean;
+import com.ai.api.bean.consts.ConstMap;
+import com.ai.api.exception.AIException;
+import com.ai.api.service.UserService;
+import com.ai.api.util.AIUtil;
+import com.ai.api.util.RedisUtil;
+import com.ai.commons.StringUtils;
+import com.ai.commons.annotation.TokenSecured;
+import com.ai.commons.beans.ApiCallResult;
+import com.ai.commons.beans.ServiceCallResult;
+import com.ai.commons.beans.audit.api.ApiEmployeeBean;
+import com.ai.commons.beans.customer.ClientRegisterBean;
+import com.ai.commons.beans.customer.DashboardBean;
+import com.ai.commons.beans.customer.RateBean;
+import com.ai.commons.beans.legacy.customer.ClientInfoBean;
+import com.ai.commons.util.BeanUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,35 +46,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ai.api.bean.ApiContactInfoBean;
-import com.ai.api.bean.BookingPreferenceBean;
-import com.ai.api.bean.CompanyBean;
-import com.ai.api.bean.CompanyLogoBean;
-import com.ai.api.bean.EmployeeBean;
-import com.ai.api.bean.UserBean;
-import com.ai.api.bean.consts.ConstMap;
-import com.ai.api.controller.UserV2;
-import com.ai.api.exception.AIException;
-import com.ai.api.service.UserService;
-import com.ai.api.util.AIUtil;
-import com.ai.api.util.RedisUtil;
-import com.ai.commons.StringUtils;
-import com.ai.commons.annotation.TokenSecured;
-import com.ai.commons.beans.ApiCallResult;
-import com.ai.commons.beans.ServiceCallResult;
-import com.ai.commons.beans.audit.api.ApiEmployeeBean;
-import com.ai.commons.beans.customer.DashboardBean;
-import com.ai.commons.beans.customer.RateBean;
-import com.ai.commons.beans.legacy.customer.ClientInfoBean;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 @RestController
 @Api(tags = { "User Profile V2" }, description = "User profile V2 APIs")
 @SuppressWarnings("rawtypes")
-public class UserV2Impl implements UserV2 {
+public class UserV2Impl implements com.ai.api.controller.UserV2 {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserV2Impl.class);
 
@@ -206,13 +203,14 @@ public class UserV2Impl implements UserV2 {
 	}
 
 	@Override
-	@RequestMapping(value = "/user/v2", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user/v2", method = RequestMethod.POST)
 	@ApiOperation(value = "Create New Account API", response = boolean.class)
-	public ResponseEntity<ApiCallResult> createNewAccount(@RequestBody ClientInfoBean clientInfoBean)
+	public ResponseEntity<ApiCallResult> createNewAccount(@RequestBody ClientRegisterBean info)
 			throws IOException, AIException {
-		// TODO Auto-generated method stub
+		ClientInfoBean client = BeanUtil.buildClientInfoBean(info);
+		String clientType = info.getClientType();
 		ApiCallResult rest = new ApiCallResult();
-		if (userService.createNewAccount(clientInfoBean)) {
+		if (userService.createNewAccount(client, clientType)) {
 			rest.setContent(true);
 			return new ResponseEntity<>(rest, HttpStatus.OK);
 		} else {
@@ -228,7 +226,6 @@ public class UserV2Impl implements UserV2 {
 			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
 			@ApiParam(value = "companyId", required = true) @PathVariable("companyId") String companyId,
 			@RequestBody CompanyLogoBean logoBean) {
-		// TODO Auto-generated method stub
 		ApiCallResult rest = new ApiCallResult();
 		boolean b = false;
 		try {

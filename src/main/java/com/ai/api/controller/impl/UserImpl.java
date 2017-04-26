@@ -35,7 +35,6 @@ import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.audit.api.ApiEmployeeBean;
 import com.ai.commons.beans.customer.DashboardBean;
-import com.ai.commons.beans.legacy.customer.ClientInfoBean;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -278,19 +277,6 @@ public class UserImpl implements User {
 		}
 		if (b) {
 			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@Override
-	@RequestMapping(value = "/user", method = RequestMethod.PUT)
-	@ApiOperation(value = "Create New Account API", response = Boolean.class)
-	public ResponseEntity<Boolean> createNewAccount(@RequestBody ClientInfoBean clientInfoBean)
-			throws IOException, AIException {
-		logger.info("creating a new account . . . . . ");
-		if (userService.createNewAccount(clientInfoBean)) {
-			return new ResponseEntity<>(true, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
