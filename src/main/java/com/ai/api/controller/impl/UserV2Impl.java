@@ -352,7 +352,7 @@ public class UserV2Impl implements UserV2 {
 			} else {
 				logger.error("Reset password get error:" + temp.getStatusCode() + ", " + temp.getResponseString());
 				callResult.setMessage(temp.getResponseString());
-				return new ResponseEntity<>(callResult, HttpStatus.OK);
+				return new ResponseEntity<>(callResult, HttpStatus.NOT_FOUND);
 			}
 		} else {
 			callResult.setMessage("Get null from internal service call.");
