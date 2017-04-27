@@ -24,6 +24,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +40,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ai.aims.constants.Status;
 import com.ai.aims.services.dto.TestFilterDTO;
 import com.ai.aims.services.dto.TurnAroundTimeDTO;
+import com.ai.aims.services.dto.order.InvoiceDTO;
 import com.ai.aims.services.model.TestMaster;
 import com.ai.api.bean.OfficeSearchBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
@@ -89,27 +94,14 @@ public class LTParameterImpl implements LTParameter {
 	public ResponseEntity<ApiCallResult> searchOffice(
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh) {
 		ApiCallResult callResult = new ApiCallResult();
-		/*if (!refresh) {
-			logger.info("try to search lt Office from redis ...");
-			String jsonStringTextileProductCategory = RedisUtil.get("ltOfficesCache");
-			proTypeList = JSON.parseArray(jsonStringTextileProductCategory, OfficeMaster.class);
+		try {
+			callResult = ltparameterService.searchOffice();
+			logger.info("saving searchOffice");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("search office error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		if (null == proTypeList) {*/
-			logger.info("Can not find from redis search from aims service");
-			try {
-				callResult = ltparameterService.searchOffice();
-				logger.info("saving searchOffice");
-				//RedisUtil.set("ltOfficesCache", JSON.toJSONString(proTypeList), RedisUtil.HOUR * 24);
-
-				return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
-			} catch (Exception e) {
-				logger.error("search office error: " + ExceptionUtils.getFullStackTrace(e));
-				return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		/*} else {
-			logger.info("get lt offices from redis successfully");
-			return new ResponseEntity<List<OfficeMaster>>(proTypeList, HttpStatus.OK);
-		}*/
 	}
 
 
@@ -121,27 +113,15 @@ public class LTParameterImpl implements LTParameter {
 			@RequestParam(value = "refresh", defaultValue = "false") boolean refresh,
 			@PathVariable("programId") String programId) {
 		ApiCallResult callResult = new ApiCallResult();
-		/*if (!refresh) {
-			logger.info("try to searchProgram from redis ...");
-			String jsonStringTextileProductCategory = RedisUtil.get("ltProgramCache");
-			program = JSON.parseObject(jsonStringTextileProductCategory, Program.class);
+		try {				
+			callResult = ltparameterService.searchProgram(programId);				
+			logger.info("saving searchProgram");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("search Program error: " + ExceptionUtils.getFullStackTrace(e));
+			callResult.setMessage("can't get LT program by programId:" + programId);
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		if (null == program) {*/
-			try {				
-				callResult = ltparameterService.searchProgram(programId);				
-				logger.info("saving searchProgram");
-				//RedisUtil.set("ltProgramCache", JSON.toJSONString(program), RedisUtil.HOUR * 24);
-
-				return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
-			} catch (Exception e) {
-				logger.error("search Program error: " + ExceptionUtils.getFullStackTrace(e));
-				callResult.setMessage("can't get LT program by programId:" + programId);
-				return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		/*} else {
-			logger.info("get lt program from redis successfully");
-			return new ResponseEntity<Program>(program, HttpStatus.OK);
-		}*/
 	}
 	
 	@Override
@@ -337,6 +317,29 @@ public class LTParameterImpl implements LTParameter {
 			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("search tat error: " + ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@Override
+	@ApiOperation(value = "Search Payments API", produces = "application/json", response = InvoiceDTO.class, httpMethod = "GET")
+	@TokenSecured
+	@RequestMapping(value = "/parameter/lt/payments", method = RequestMethod.GET)
+	public ResponseEntity<ApiCallResult> searchPayments(
+			@ApiParam(value="Keyword") @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@ApiParam(value="Is Paid") @RequestParam(value = "isPaid", required = false, defaultValue = "false") Boolean isPaid,
+			@ApiParam(value="Page Number") @RequestParam(value = "pageNo", required = false, defaultValue = "1") Integer pageNumber,
+			@ApiParam(value="Page Size") @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
+		ApiCallResult callResult = new ApiCallResult();
+		try {
+			Map<String, Object> searchParams = new HashMap<String, Object>();
+			searchParams.put("keyword", keyword);
+			searchParams.put("isPaid", isPaid ? Status.YES.getValue() : Status.NO.getValue());
+			callResult = ltparameterService.searchPayments(searchParams, pageNumber, pageSize);
+			logger.info("searching for payments");
+			return new ResponseEntity<ApiCallResult>(callResult, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("search payment error: " + ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<ApiCallResult>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

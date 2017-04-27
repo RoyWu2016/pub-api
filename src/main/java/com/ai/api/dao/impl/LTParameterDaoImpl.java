@@ -25,6 +25,7 @@ import com.ai.aims.constants.Status;
 import com.ai.aims.services.dto.TestFilterDTO;
 import com.ai.aims.services.dto.TurnAroundTimeDTO;
 import com.ai.aims.services.dto.office.OfficeDTO;
+import com.ai.aims.services.dto.order.InvoiceDTO;
 import com.ai.aims.services.dto.packagemgmt.PackageDTO;
 import com.ai.aims.services.model.OfficeMaster;
 import com.ai.aims.services.model.ProductCategory;
@@ -39,6 +40,7 @@ import com.ai.aims.services.model.search.SearchTagTestCriteria;
 import com.ai.api.bean.OfficeSearchBean;
 import com.ai.api.bean.ProductCategoryDtoBean;
 import com.ai.api.bean.RegionSearchBean;
+import com.ai.api.bean.SearchResultBean;
 import com.ai.api.bean.TagSearchBean;
 import com.ai.api.config.ServiceConfig;
 import com.ai.api.dao.LTParameterDao;
@@ -294,6 +296,28 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		return callResult;
 	}
 
+	@Override
+	public ApiCallResult searchPayments(Map<String, Object> searchParams, int pageNo, int pageSize) throws IOException {
+		RestTemplate restTemplate = new RestTemplate();
+		AIUtil.addRestTemplateMessageConverter(restTemplate);
+		ApiCallResult callResult = new ApiCallResult();
+
+		String url = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/invoice/search").toString();
+		List<InvoiceDTO> invoices = Arrays.asList(restTemplate.getForObject(
+				buildPaymentSearchCriteria(searchParams, pageNo, pageSize, url).build().encode().toUri(), InvoiceDTO[].class));
+		SearchResultBean result = new SearchResultBean();
+		result.setPageItems(invoices);
+		result.setPageNo(pageNo);
+		
+		String countUrl = new StringBuilder(config.getAimsServiceBaseUrl()).append("/api/ordermanagement/order/invoice/count/total").toString();
+		Integer total = restTemplate.getForObject(
+				buildPaymentSearchCriteria(searchParams, pageNo, pageSize, countUrl).build().encode().toUri(), Integer.class);
+		result.setTotalSize(total);
+		
+		callResult.setContent(result);
+		return callResult;
+	}
+
 	private UriComponentsBuilder buildTagSearchCriteria(SearchTagCriteria criteria, String url) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
 		        .queryParam("page", criteria.getPage() != 0 ? criteria.getPage() - 1 : 0)
@@ -323,6 +347,26 @@ public class LTParameterDaoImpl implements LTParameterDao {
 		if(!StringUtils.stripToEmpty(criteria.getStatus()).trim().isEmpty())
 			builder.queryParam("status", Status.ACTIVE.getValue().trim());
 		
+		return builder;
+	}
+
+	private UriComponentsBuilder buildPaymentSearchCriteria(Map<String, Object> searchParams, int pageNo, int pageSize, String url) {
+		
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+		
+		String keyword = null != searchParams.get("keyword") ? String.valueOf(searchParams.get("keyword")) : null;
+		if (!StringUtils.stripToEmpty(keyword).trim().isEmpty()) {
+			builder.queryParam("keyword", keyword.trim());
+		}
+
+		String isPaid = null != searchParams.get("isPaid") ? String.valueOf(searchParams.get("isPaid")) : Status.NO.getValue();
+		builder.queryParam("isPaid", isPaid);
+		
+		builder.queryParam("page", pageNo - 1);
+		builder.queryParam("size", pageSize);
+		builder.queryParam("status", Status.ACTIVE.getValue().trim());
+		builder.queryParam("isGroupInvoice", Status.NO.getValue());
+		builder.queryParam("requestor", "external");	
 		return builder;
 	}
 	

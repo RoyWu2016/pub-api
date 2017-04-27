@@ -7,6 +7,7 @@
 package com.ai.api.service;
 
 import java.io.IOException;
+import java.util.Map;
 
 import com.ai.api.exception.AIException;
 import com.ai.commons.beans.ApiCallResult;
@@ -66,4 +67,6 @@ public interface LTParameterService {
 	public ApiCallResult updateProgramTests(String userId, String programId, String tests, Boolean isFavorite) throws IOException;
 	
 	public ApiCallResult searchProgramTestLocations(String programId) throws IOException;
+
+	public ApiCallResult searchPayments(Map<String, Object> searchParams, int pageNo, int pageSize) throws IOException, AIException;
 }

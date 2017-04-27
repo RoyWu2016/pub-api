@@ -53,4 +53,7 @@ public interface LTParameter {
 
 	public ResponseEntity<ApiCallResult> searchProgramTests(String countries, String regions,
 			String testNames, String office, String program, Boolean isFavorite);
+
+	public ResponseEntity<ApiCallResult> searchPayments(String keyword, Boolean isPaid, 
+			Integer pageNumber, Integer pageSize);
 }

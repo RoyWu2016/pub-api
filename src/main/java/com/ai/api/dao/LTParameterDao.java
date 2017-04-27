@@ -7,6 +7,7 @@
 package com.ai.api.dao;
 
 import java.io.IOException;
+import java.util.Map;
 
 import com.ai.aims.services.model.search.SearchPackageTestCriteria;
 import com.ai.aims.services.model.search.SearchProgramTestCriteria;
@@ -64,4 +65,6 @@ public interface LTParameterDao {
 	public ApiCallResult updateProgramTests(String userId, String programId, String tests, Boolean isFavorite) throws IOException;
 	
 	public ApiCallResult searchProgramTestLocations(String programId) throws IOException;
+
+	public ApiCallResult searchPayments(Map<String, Object> searchParams, int pageNo, int pageSize) throws IOException;
 }

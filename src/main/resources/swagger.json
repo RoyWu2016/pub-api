@@ -1117,6 +1117,52 @@
         }
       }
     },
+    "/parameter/lt/payments" : {
+      "get" : {
+        "tags" : [ "Lab Test Parameter" ],
+        "summary" : "Search Payments API",
+        "description" : "",
+        "operationId" : "searchLTPayments",
+        "parameters" : [ {
+          "name" : "keyword",
+          "in" : "query",
+          "description" : "Keyword",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "isPaid",
+          "in" : "query",
+          "description" : "Search for paid payments",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "pageNo",
+          "in" : "query",
+          "description" : "Page Number",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "pageSize",
+          "in" : "query",
+          "description" : "Page Size",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/InvoiceDTO"
+              }
+            }
+          }
+        }
+      }
+    },
     "/parameter/product-categories" : {
       "get" : {
         "tags" : [ "Parameter" ],

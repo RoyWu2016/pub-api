@@ -7,6 +7,7 @@
 package com.ai.api.service.impl;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -200,5 +201,10 @@ public class LTParameterServiceImpl implements LTParameterService {
 	@Override
 	public ApiCallResult searchProgramTestLocations(String programId) throws IOException {
 		return ltparameterDao.searchProgramTestLocations(programId);
+	}
+
+	@Override
+	public ApiCallResult searchPayments(Map<String, Object> searchParams, int pageNo, int pageSize) throws IOException, AIException {
+		return ltparameterDao.searchPayments(searchParams, pageNo, pageSize);
 	}
 }
