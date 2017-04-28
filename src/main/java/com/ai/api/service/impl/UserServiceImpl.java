@@ -149,9 +149,9 @@ public class UserServiceImpl implements UserService {
 		logger.info("...........start getting UserBean from user service...........");
 		CompanyEntireBean companyEntireBean = companyDao.getCompanyEntireInfo(userId);
 		if (companyEntireBean == null) {
-		    logger.info("Can not get company by userId!");
-            return null;
-        }
+			logger.info("Can not get company by userId!");
+			return null;
+		}
 		GeneralUserBean userBean = null;
 		List<GeneralUserBean> generalUserBeenList = companyEntireBean.getUsers();
 		if (generalUserBeenList != null && generalUserBeenList.size() > 0) {
@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		if (userBean == null) {
-		    logger.info("Can not get user from companyEntireBean!");
+			logger.info("Can not get user from companyEntireBean!");
 			return null;
 		}
 		String compId = companyEntireBean.getCompanyId();
@@ -247,16 +247,20 @@ public class UserServiceImpl implements UserService {
 
 			SubordinateSettingsBean extraAccess = new SubordinateSettingsBean();
 
-			//read parent company's setting and set extra access
-			MasterBean subordinateMaster = companyDao.getMasterBeanByCompanyId(companyEntireBean.getDirectParents().get(0).getCompanyId());
+			// read parent company's setting and set extra access
+			MasterBean subordinateMaster = companyDao
+					.getMasterBeanByCompanyId(companyEntireBean.getDirectParents().get(0).getCompanyId());
 			if (subordinateMaster != null) {
-				extraAccess.setCanSeeReportActionButtons(!"yes".equalsIgnoreCase(subordinateMaster.getHideApproveButton()));
-				extraAccess.setCanSeeCcOptionInBookingForm(!"yes".equalsIgnoreCase(subordinateMaster.getHideCcFields()));
+				extraAccess.setCanSeeReportActionButtons(
+						!"yes".equalsIgnoreCase(subordinateMaster.getHideApproveButton()));
+				extraAccess
+						.setCanSeeCcOptionInBookingForm(!"yes".equalsIgnoreCase(subordinateMaster.getHideCcFields()));
 
-				ReportCertificateBean parentCertificate= companyDao.getCompanyReportCertificateInfo(companyEntireBean.getDirectParents().get(0).getCompanyId());
+				ReportCertificateBean parentCertificate = companyDao
+						.getCompanyReportCertificateInfo(companyEntireBean.getDirectParents().get(0).getCompanyId());
 				if (null != parentCertificate) {
 					extraAccess.setCanSeeReportsPage(!"yes".equalsIgnoreCase(parentCertificate.getSubReportAccess()));
-                    extraAccess.setFrozenIC("yes".equalsIgnoreCase(parentCertificate.getFrozenIc()));
+					extraAccess.setFrozenIC("yes".equalsIgnoreCase(parentCertificate.getFrozenIc()));
 				}
 			}
 
@@ -808,7 +812,7 @@ public class UserServiceImpl implements UserService {
 			contact.setAccountingEmail(newContact.getBilling().getEmail());
 		}
 
-		//update company contact
+		// update company contact
 		if (companyDao.updateCompanyContact(compId, contact)) {
 			logger.info("update contact in DB finished ! userId:  " + userId);
 			return this.updateUserBeanInCache(userId);
@@ -1076,7 +1080,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean getQualityManual(String userId,HttpServletResponse httpResponse) throws IOException, AIException {
+	public boolean getQualityManual(String userId, HttpServletResponse httpResponse) throws IOException, AIException {
 		// TODO Auto-generated method stub
 		UserBean userBean = this.getCustById(userId);
 		String parentId = "";
@@ -1089,10 +1093,10 @@ public class UserServiceImpl implements UserService {
 			companyId = userBean.getCompany().getId();
 		}
 		HttpResponse resp = customerDao.getQualityManual(companyId);
-		if(null != resp) {
+		if (null != resp) {
 			Header h = resp.getLastHeader("Content-Disposition");
-			if(null != h) {
-				httpResponse.setHeader(h.getName(),h.getValue());
+			if (null != h) {
+				httpResponse.setHeader(h.getName(), h.getValue());
 			}
 			HttpEntity entity = resp.getEntity();
 			InputStream inputStream = entity.getContent();
@@ -1103,7 +1107,7 @@ public class UserServiceImpl implements UserService {
 				output.write(buffer, 0, length);
 			}
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
@@ -1111,8 +1115,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ApiCallResult isFirstLogin(String userId) throws Exception {
 		UserBean userBean = this.getCustById(userId);
-		if (null==userBean){
-			throw new Exception("Can not getUser by id:"+userId);
+		if (null == userBean) {
+			throw new Exception("Can not getUser by id:" + userId);
 		}
 		return ssoUserServiceDao.isFirstLogin(userBean.getLogin());
 	}
@@ -1120,5 +1124,22 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ApiCallResult resetPW(String employeeEmail) throws Exception {
 		return ssoUserServiceDao.resetPW(employeeEmail);
+	}
+
+	@Override
+	public ApiCallResult getDashboardOverView(String userId, String startDate, String endDate)
+			throws IOException, AIException {
+		// TODO Auto-generated method stub
+		UserBean userBean = this.getCustById(userId);
+		String parentId = "";
+		String companyId = "";
+		if (null != userBean) {
+			parentId = userBean.getCompany().getParentCompanyId();
+			if (null == parentId) {
+				parentId = "";
+			}
+			companyId = userBean.getCompany().getId();
+		}
+		return customerDao.getDashboardOverView(userId, parentId, companyId, startDate, endDate);
 	}
 }

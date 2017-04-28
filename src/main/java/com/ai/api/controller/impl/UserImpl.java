@@ -360,7 +360,7 @@ public class UserImpl implements User {
 	}
 
 	@Override
-//	@TokenSecured
+	// @TokenSecured
 	@RequestMapping(value = "/user/{userId}/quality-manual", method = RequestMethod.GET)
 	@ApiOperation(value = "Download User Quality Manual", response = String.class)
 	public ResponseEntity<String> getQualityManual(
@@ -369,12 +369,12 @@ public class UserImpl implements User {
 			@ApiParam(value = "last 50 chars of the user token", required = true) @RequestParam("code") String verifiedCode,
 			HttpServletResponse httpResponse) {
 		try {
-			if(AIUtil.verifiedAccess(userId, verifiedCode, sessionId)) {
+			if (AIUtil.verifiedAccess(userId, verifiedCode, sessionId)) {
 				boolean b = userService.getQualityManual(userId, httpResponse);
 				if (b) {
 					return new ResponseEntity<>(HttpStatus.OK);
 				}
-			}else {
+			} else {
 				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 			}
 		} catch (Exception e) {
@@ -406,7 +406,7 @@ public class UserImpl implements User {
 						RedisUtil.HOUR * 24 * 365 * 10);
 				return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
 			}
-            logger.error("fail from sso-service !"+apiCallResult.getMessage());
+			logger.error("fail from sso-service !" + apiCallResult.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			apiCallResult.setMessage(e.toString());
@@ -418,17 +418,18 @@ public class UserImpl implements User {
 	@Override
 	@RequestMapping(value = "/employee/{employeeEmail}/reset-password", method = RequestMethod.PUT)
 	@ApiOperation(value = "Reset password by email", response = String.class)
-	public ResponseEntity<ApiCallResult> resetPW(@ApiParam(value = "employeeEmail", required = true) @PathVariable("employeeEmail") String employeeEmail) {
+	public ResponseEntity<ApiCallResult> resetPW(
+			@ApiParam(value = "employeeEmail", required = true) @PathVariable("employeeEmail") String employeeEmail) {
 		ApiCallResult apiCallResult = new ApiCallResult();
 		try {
 			apiCallResult = userService.resetPW(employeeEmail);
 			if (StringUtils.isBlank(apiCallResult.getMessage())) {
 				return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
 			}
-			logger.error("fail from sso-service !"+apiCallResult.getMessage());
+			logger.error("fail from sso-service !" + apiCallResult.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("Error Exception!"+e);
+			logger.error("Error Exception!" + e);
 			apiCallResult.setMessage(e.toString());
 		}
 		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -437,21 +438,22 @@ public class UserImpl implements User {
 
 	@Override
 	@RequestMapping(value = "/swagger-login", method = RequestMethod.POST)
-	public ResponseEntity<ApiCallResult> swaggerLogin(@RequestParam("login") String login,@RequestParam("pw") String pw, HttpServletResponse response) {
+	public ResponseEntity<ApiCallResult> swaggerLogin(@RequestParam("login") String login,
+			@RequestParam("pw") String pw, HttpServletResponse response) {
 		ApiCallResult apiCallResult = new ApiCallResult();
-		Map<String,String> userMap = new HashMap<>();
-		String users[] =  swaggerUser.split(";");
-		for (int i=0;i<users.length;i++){
-			userMap.put(users[i].split("/")[0],users[i].split("/")[1]);
+		Map<String, String> userMap = new HashMap<>();
+		String users[] = swaggerUser.split(";");
+		for (int i = 0; i < users.length; i++) {
+			userMap.put(users[i].split("/")[0], users[i].split("/")[1]);
 		}
 		try {
-			logger.info("swagger login ..."+login+"-||-"+pw);
-			Iterator<Map.Entry<String,String>> iterator = userMap.entrySet().iterator();
-			while (iterator.hasNext()){
-				Map.Entry<String,String> entry = iterator.next();
+			logger.info("swagger login ..." + login + "-||-" + pw);
+			Iterator<Map.Entry<String, String>> iterator = userMap.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry<String, String> entry = iterator.next();
 				if (login.equals(entry.getKey()) && pw.equals(entry.getValue())) {
 					apiCallResult.setContent(true);
-					Cookie cookie = new Cookie("swaggerUser",login);
+					Cookie cookie = new Cookie("swaggerUser", login);
 					cookie.setMaxAge(1800);
 					response.addCookie(cookie);
 					return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
@@ -460,7 +462,7 @@ public class UserImpl implements User {
 			apiCallResult.setMessage("Wrong login or password");
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("Error Exception!"+e);
+			logger.error("Error Exception!" + e);
 			apiCallResult.setMessage(e.toString());
 		}
 		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -473,18 +475,35 @@ public class UserImpl implements User {
 		ApiCallResult apiCallResult = new ApiCallResult();
 		try {
 			logger.info("swagger logout ...");
-			Cookie cookie = new Cookie("swaggerUser",null);
+			Cookie cookie = new Cookie("swaggerUser", null);
 			cookie.setMaxAge(0);
 			response.addCookie(cookie);
 			apiCallResult.setContent(true);
 			return new ResponseEntity<>(apiCallResult, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("Error Exception!"+e);
+			logger.error("Error Exception!" + e);
 			apiCallResult.setMessage(e.toString());
 		}
 		return new ResponseEntity<>(apiCallResult, HttpStatus.INTERNAL_SERVER_ERROR);
 
+	}
+
+	@Override
+	@TokenSecured
+	@RequestMapping(value = "/user/{userId}/dashboard-overview", method = RequestMethod.GET)
+	@ApiOperation(value = "Get User Dashboard OverView API", response = DashboardBean.class)
+	public ResponseEntity<ApiCallResult> getDashboardOverView(
+			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "startDate", required = false, defaultValue = "") String startDate,
+			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "endDate", required = false, defaultValue = "") String endDate)
+			throws IOException, AIException {
+		ApiCallResult result = userService.getDashboardOverView(userId, startDate, endDate);
+		if (null == result.getMessage()) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }

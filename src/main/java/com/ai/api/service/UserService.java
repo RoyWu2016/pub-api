@@ -92,4 +92,6 @@ public interface UserService {
 	ApiCallResult isFirstLogin(String userId) throws Exception;
 
 	ApiCallResult resetPW(String employeeEmail) throws Exception;
+
+	ApiCallResult getDashboardOverView(String userId, String startDate, String endDate) throws IOException, AIException;
 }

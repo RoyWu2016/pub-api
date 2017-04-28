@@ -7,6 +7,7 @@ import org.apache.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ai.api.bean.EmployeeBean;
+import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.ServiceCallResult;
 import com.ai.commons.beans.customer.ContactBean;
 import com.ai.commons.beans.customer.DashboardBean;
@@ -41,9 +42,12 @@ public interface CustomerDao {
 	ServiceCallResult resetPassword(String login);
 
 	boolean checkIfUserNameExist(String userName);
-	
+
 	ContactBean getCustomerContact(String customerId);
 
 	HttpResponse getQualityManual(String userId);
+
+	ApiCallResult getDashboardOverView(String userId, String parentId, String companyId, String startDate,
+			String endDate);
 
 }
