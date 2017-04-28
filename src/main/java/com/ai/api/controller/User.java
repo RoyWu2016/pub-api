@@ -78,7 +78,8 @@ public interface User {
 	ResponseEntity<DashboardBean> getUserDashboard(String userId, String startDate, String endDate)
 			throws IOException, AIException;
 
-	ResponseEntity<ApiEmployeeBean> getEmployeeProfile(String employeeId, boolean refresh) throws IOException, AIException;
+	ResponseEntity<ApiEmployeeBean> getEmployeeProfile(String employeeId, boolean refresh)
+			throws IOException, AIException;
 
 	ResponseEntity<JSONObject> getUserProfile(String userId, boolean refresh) throws IOException, AIException;
 
