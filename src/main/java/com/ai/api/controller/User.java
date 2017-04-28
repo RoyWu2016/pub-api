@@ -95,7 +95,4 @@ public interface User {
 	ResponseEntity<ApiCallResult> swaggerLogin(String login, String pw, HttpServletResponse response);
 
 	ResponseEntity<ApiCallResult> swaggerLogout(HttpServletResponse response);
-
-	ResponseEntity<ApiCallResult> getDashboardOverView(String userId, String startDate, String endDate)
-			throws IOException, AIException;
 }

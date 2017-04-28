@@ -489,21 +489,4 @@ public class UserImpl implements User {
 
 	}
 
-	@Override
-	@TokenSecured
-	@RequestMapping(value = "/user/{userId}/dashboard-overview", method = RequestMethod.GET)
-	@ApiOperation(value = "Get User Dashboard OverView API", response = DashboardBean.class)
-	public ResponseEntity<ApiCallResult> getDashboardOverView(
-			@ApiParam(value = "userId", required = true) @PathVariable("userId") String userId,
-			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "startDate", required = false, defaultValue = "") String startDate,
-			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "endDate", required = false, defaultValue = "") String endDate)
-			throws IOException, AIException {
-		ApiCallResult result = userService.getDashboardOverView(userId, startDate, endDate);
-		if (null == result.getMessage()) {
-			return new ResponseEntity<>(result, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
 }
