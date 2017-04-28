@@ -1,6 +1,8 @@
 package com.ai.api.controller.impl;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ai.api.controller.Dashboard;
 import com.ai.api.exception.AIException;
 import com.ai.api.service.UserService;
+import com.ai.commons.StringUtils;
 import com.ai.commons.annotation.TokenSecured;
 import com.ai.commons.beans.ApiCallResult;
 import com.ai.commons.beans.customer.DashboardBean;
@@ -38,6 +41,13 @@ public class DashboardImpl implements Dashboard {
 			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "startDate", required = false, defaultValue = "") String startDate,
 			@ApiParam(value = "must be in format like 2016-12-01", required = false) @RequestParam(value = "endDate", required = false, defaultValue = "") String endDate)
 			throws IOException, AIException {
+		if (StringUtils.isEmpty(startDate) || StringUtils.isEmpty(endDate)) {
+			Calendar cal = Calendar.getInstance();
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			endDate = sf.format(cal.getTime());
+			cal.add(Calendar.YEAR, -1);
+			startDate = sf.format(cal.getTime());
+		}
 		ApiCallResult result = userService.getDashboardOverView(userId, startDate, endDate);
 		if (null == result.getMessage()) {
 			return new ResponseEntity<>(result, HttpStatus.OK);
