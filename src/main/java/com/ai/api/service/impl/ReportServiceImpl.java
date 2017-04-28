@@ -20,6 +20,8 @@ import com.ai.commons.beans.fileservice.ApiFileMetaBean;
 import com.ai.commons.beans.fileservice.FileMetaBean;
 import com.ai.commons.beans.fileservice.FileType;
 import com.ai.commons.services.FileService;
+import com.alibaba.fastjson.JSON;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -98,7 +100,7 @@ public class ReportServiceImpl implements ReportService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		return reportDao.getAuditReports(useId,companyId,parentId, paramBean);
+		return reportDao.getAuditReports(useId, companyId, parentId, paramBean);
 	}
 
 	@Override
@@ -117,7 +119,7 @@ public class ReportServiceImpl implements ReportService {
 				parentId = "";
 			companyId = user.getCompany().getId();
 		}
-		return reportDao.getPSIReports(useId,companyId,parentId, paramBean);
+		return reportDao.getPSIReports(useId, companyId, parentId, paramBean);
 	}
 
 	@Override
@@ -183,12 +185,12 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return b;
 	}
-	
+
 	@Override
 	public InputStream downloadPDFBase64(String reportId, String fileName, HttpServletResponse httpResponse) {
 		try {
 			InputStream inputStream = reportDao.downloadPDF(reportId, fileName);
-			
+
 			return inputStream;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -197,27 +199,27 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public InputStream exportReports(String userId,PageParamBean criteria,String inspectionPeriod) {
+	public InputStream exportReports(String userId, PageParamBean criteria, String inspectionPeriod) {
 		try {
 			UserBean userBean = userService.getCustById(userId);
 			String clientLogin = userService.getLoginByUserId(userId);
 			String parentId = "";
 			String companyId = "";
-			if(null != userBean) {
+			if (null != userBean) {
 				parentId = userBean.getCompany().getParentCompanyId();
 				if (null == parentId) {
 					parentId = "";
 				}
 				companyId = userBean.getCompany().getId();
 			}
-			PageBean<ClientReportSearchBean> result = reportDao.getPSIReports(userId,companyId,parentId,criteria);
-			if(null == result) {
+			PageBean<ClientReportSearchBean> result = reportDao.getPSIReports(userId, companyId, parentId, criteria);
+			if (null == result) {
 				logger.info("Report is not found from psi-service");
 				return null;
-			}else {
+			} else {
 				XSSFWorkbook wb = new XSSFWorkbook();
 				logger.info("Reports are found and begin to generate excle.");
-				return createExcleFile(wb,result,clientLogin,inspectionPeriod);
+				return createExcleFile(wb, result, clientLogin, inspectionPeriod);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -225,10 +227,7 @@ public class ReportServiceImpl implements ReportService {
 		return null;
 	}
 
-	private InputStream createExcleFile(
-			XSSFWorkbook wb, 
-			PageBean<ClientReportSearchBean> result, 
-			String clientLogin, 
+	private InputStream createExcleFile(XSSFWorkbook wb, PageBean<ClientReportSearchBean> result, String clientLogin,
 			String inspectionPeriod) throws IOException {
 		// TODO Auto-generated method stub
 		int i = 0;
@@ -254,7 +253,7 @@ public class ReportServiceImpl implements ReportService {
 		tableHeadeCS.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
 		tableHeadeCS.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
 		tableHeadeCS.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
-		
+
 		CellStyle tableCS = wb.createCellStyle();
 		tableCS.setAlignment(CellStyle.ALIGN_CENTER);
 		tableCS.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
@@ -274,23 +273,23 @@ public class ReportServiceImpl implements ReportService {
 		}
 
 		sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 8));
-		
+
 		String fileName = config.getExcleLoggoCommonSource() + File.separator + "logo.png";
 		logger.info("Found the logo resource: " + fileName);
-		InputStream is = new FileInputStream(fileName);  
-    	byte[] bytes = IOUtils.toByteArray(is);  
-    	  
-    	int pictureIdx = wb.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);  
-    	  
-    	CreationHelper helper = wb.getCreationHelper();  
-    	Drawing drawing = sheet.createDrawingPatriarch();  
-    	ClientAnchor anchor = helper.createClientAnchor();  
-    	  
-    	anchor.setCol1(0);  
-    	anchor.setRow1(0);  
-    	
-    	Picture pict = drawing.createPicture(anchor, pictureIdx);  
-    	pict.resize();  
+		InputStream is = new FileInputStream(fileName);
+		byte[] bytes = IOUtils.toByteArray(is);
+
+		int pictureIdx = wb.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+
+		CreationHelper helper = wb.getCreationHelper();
+		Drawing drawing = sheet.createDrawingPatriarch();
+		ClientAnchor anchor = helper.createClientAnchor();
+
+		anchor.setCol1(0);
+		anchor.setRow1(0);
+
+		Picture pict = drawing.createPicture(anchor, pictureIdx);
+		pict.resize();
 
 		row = sheet.getRow(4);
 		Cell cell = row.createCell(0);
@@ -299,7 +298,7 @@ public class ReportServiceImpl implements ReportService {
 		cell.setCellStyle(tileCS);
 
 		row = sheet.getRow(6);
-		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MMMM-dd",Locale.ENGLISH);
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MMMM-dd", Locale.ENGLISH);
 		cell = row.createCell(0);
 		cell.setCellType(HSSFCell.CELL_TYPE_STRING);
 		cell.setCellValue("Date: " + sf.format(new Date()));
@@ -321,36 +320,56 @@ public class ReportServiceImpl implements ReportService {
 			cell.setCellValue(title[k]);
 			sheet.autoSizeColumn((short) k);
 		}
-		
-		String resultStr =  result.getPageItems().toString();
-		List<ClientReportSearchBean> list = JsonUtil.mapToObject(resultStr, new TypeReference<List<ClientReportSearchBean>>(){});
+
+		String resultStr = result.getPageItems().toString();
+		List<ClientReportSearchBean> list = JsonUtil.mapToObject(resultStr,
+				new TypeReference<List<ClientReportSearchBean>>() {
+				});
 		int rowid = 11;
-		for(ClientReportSearchBean each : list) {
+		for (ClientReportSearchBean each : list) {
 			row = sheet.createRow(rowid);
-			for(int cellid=0;cellid<title.length;cellid++) {
+			for (int cellid = 0; cellid < title.length; cellid++) {
 				cell = row.createCell(cellid);
 				cell.setCellStyle(tableCS);
 				cell.setCellType(HSSFCell.CELL_TYPE_STRING);
-				switch (cellid){
-				case 0: cell.setCellValue(each.getServiceTypeText());break;
-				case 1: cell.setCellValue(each.getProductName());break;
-				case 2: cell.setCellValue(each.getProdReference());break;
-				case 3: cell.setCellValue(each.getPoNumber());break;
-				case 4: cell.setCellValue(each.getInspectionDateMMMFormat());break;
-				case 5: cell.setCellValue(each.getSupplierName());break;
-				case 6: cell.setCellValue(each.getOverrallResult());break;
-				case 7: cell.setCellValue(each.getStatus());break;
-				case 8: cell.setCellValue(each.getOrderNumber());break;
+				switch (cellid) {
+				case 0:
+					cell.setCellValue(each.getServiceTypeText());
+					break;
+				case 1:
+					cell.setCellValue(each.getProductName());
+					break;
+				case 2:
+					cell.setCellValue(each.getProdReference());
+					break;
+				case 3:
+					cell.setCellValue(each.getPoNumber());
+					break;
+				case 4:
+					cell.setCellValue(each.getInspectionDateMMMFormat());
+					break;
+				case 5:
+					cell.setCellValue(each.getSupplierName());
+					break;
+				case 6:
+					cell.setCellValue(each.getOverrallResult());
+					break;
+				case 7:
+					cell.setCellValue(each.getStatus());
+					break;
+				case 8:
+					cell.setCellValue(each.getOrderNumber());
+					break;
 				}
 			}
 			rowid++;
 		}
-		
+
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		wb.write(out);
 		InputStream excelStream = new ByteArrayInputStream(out.toByteArray());
 		out.close();
-		
+
 		return excelStream;
 	}
 
@@ -441,8 +460,8 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public List<LotusSyncBean> listAllSyncObjByOracleId(String productId, String reportDetail) {
 		// TODO Auto-generated method stub
-		return reportDao.listAllSyncObjByOracleId(productId,reportDetail);
-		
+		return reportDao.listAllSyncObjByOracleId(productId, reportDetail);
+
 	}
 
 	@Override
@@ -452,8 +471,7 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public boolean forwardedAuditReports(String userId, String reportIds,
-			ReportsForwardingBean reportsForwardingBean) {
+	public boolean forwardedAuditReports(String userId, String reportIds, ReportsForwardingBean reportsForwardingBean) {
 		// TODO Auto-generated method stub
 		String companyId = "";
 		String parentId = "";
@@ -472,7 +490,7 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return reportDao.forwardedAuditReports(reportsForwardingBean, companyId, parentId, userId, reportIds);
 	}
-	
+
 	private UserBean getUserBeanByUserId(String userId) {
 		UserBean user = null;
 		try {
@@ -496,18 +514,18 @@ public class ReportServiceImpl implements ReportService {
 			companyId = user.getCompany().getId();
 		}
 		ApiCallResult result = new ApiCallResult();
-		PageBean<AuditReportsSearchBean> bean = reportDao.exportAuditReport(userId, companyId, parentId,criteriaBean);
+		PageBean<AuditReportsSearchBean> bean = reportDao.exportAuditReport(userId, companyId, parentId, criteriaBean);
 		if (null == bean) {
 			result.setMessage("Error from psi AuditReportApiController");
 		} else {
 			try {
-				String resultStr = bean.getPageItems().toString();
+				String resultStr = JSON.toJSONString(bean.getPageItems());
 				List<AuditReportsSearchBean> list = JsonUtil.mapToObject(resultStr,
 						new TypeReference<List<AuditReportsSearchBean>>() {
 						});
 				String fileStr = null;
 				XSSFWorkbook wb = new XSSFWorkbook();
-				InputStream inputStream = createExcleAuditRreport(wb, list, user.getLogin(),inspectionPeriod);
+				InputStream inputStream = createExcleAuditRreport(wb, list, user.getLogin(), inspectionPeriod);
 				if (inputStream != null) {
 					byte[] data = IOUtils.toByteArray(inputStream);
 					fileStr = Base64.encode(data);
@@ -663,7 +681,8 @@ public class ReportServiceImpl implements ReportService {
 					cell.setCellValue(each.getDateConfirmed());
 					break;
 				case 11:
-					cell.setCellValue(each.getInspectorsNamesList().toString());
+					cell.setCellValue(
+							null == each.getInspectorsNamesList() ? null : each.getInspectorsNamesList().toString());
 					break;
 				case 12:
 					cell.setCellValue(each.getNumberOfWorkers());
@@ -712,17 +731,18 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public ApiCallResult getAuditReportPDFInfo(String userId,String orderId){
+	public ApiCallResult getAuditReportPDFInfo(String userId, String orderId) {
 		ApiCallResult finalResult = new ApiCallResult();
 		List<ApiFileMetaBean> returnList = new ArrayList<>();
 		List<FileMetaBean> fileMetaBeanList = null;
 		try {
-			fileMetaBeanList = fileService.getFileInfoBySrcIdAndFileType(orderId, FileType.PROD_FINAL_REPORT.getType(), false);
-		}catch (Exception e){
-			finalResult.setMessage("Error exception!!"+e);
+			fileMetaBeanList = fileService.getFileInfoBySrcIdAndFileType(orderId, FileType.PROD_FINAL_REPORT.getType(),
+					false);
+		} catch (Exception e) {
+			finalResult.setMessage("Error exception!!" + e);
 		}
-		if (null!=fileMetaBeanList&&fileMetaBeanList.size()>0){
-			for (FileMetaBean f:fileMetaBeanList){
+		if (null != fileMetaBeanList && fileMetaBeanList.size() > 0) {
+			for (FileMetaBean f : fileMetaBeanList) {
 				returnList.add(new ApiFileMetaBean(f));
 			}
 		}
